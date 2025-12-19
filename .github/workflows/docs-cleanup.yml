@@ -18,9 +18,10 @@ permissions:
   pages: write
   id-token: write
 
-on:
-  schedule:
-    - cron: '0 0 * * *' # Runs every day at midnight UTC
+# TODO: Reenable after pitch
+# on:
+#   schedule:
+#     - cron: '0 0 * * *' # Runs every day at midnight UTC
 
 jobs:
   docs-cleanup:
