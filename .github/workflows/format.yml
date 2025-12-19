@@ -13,11 +13,12 @@
 
 name: Formatting checks
 
-on:
-  pull_request:
-    types: [opened, reopened, synchronize]
-  merge_group:
-    types: [checks_requested]
+# TODO: Reenable after pitch
+# on:
+#   pull_request:
+#     types: [opened, reopened, synchronize]
+#   merge_group:
+#     types: [checks_requested]
 
 jobs:
   formatting-check:
