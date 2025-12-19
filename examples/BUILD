@@ -1,8 +1,14 @@
-# Needed for Dash tool to check python dependency licenses.
-filegroup(
-    name = "cargo_lock",
-    srcs = [
-        "Cargo.lock",
-    ],
-    visibility = ["//visibility:public"],
+# examples/BUILD
+
+# Load necessary Bazel rules
+load("@rules_cc//cc:defs.bzl", "cc_binary")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_binary(
+    name = "get_current_time",
+    srcs = ["get_current_time.cpp"],
+    deps = [
+        "//src/tsync-lib:tsync",
+    ]
 )

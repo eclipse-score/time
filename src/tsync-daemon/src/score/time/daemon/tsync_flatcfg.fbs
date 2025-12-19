@@ -1,0 +1,131 @@
+namespace TSYNCFlatBuffer;
+
+// TSYNC version 4.0
+
+file_identifier "BTSY";
+file_extension "bin";
+
+enum EthGlobalTimeMessageFormatEnum : byte {
+  IEEE802_1AS = 0, // IEEE802-1AS
+  IEEE802_1AS_AUTOSAR = 1  // IEEE802-1AS-AUTOSAR
+}
+
+enum GlobalTimeCrcSupportEnum : byte {
+  CrcSupported = 0, // CRC-SUPPORTED
+  CrcNotSupported = 1  // CRC-NOT-SUPPORTED
+}
+
+enum GlobalTimeCrcValidationEnum : byte {
+  CrcValidated = 0, // CRC-VALIDATED
+  CrcNotValidated = 1, // CRC-NOT-VALIDATED
+  CrcIgnored = 2, // CRC-IGNORED
+  CrcOptional = 3  // CRC-OPTIONAL
+}
+
+enum PncGatewayTypeEnum : byte {
+  None = 0, // NONE
+  Active = 1, // ACTIVE
+  Passive = 2  // PASSIVE
+}
+
+table TSYNCEcuCfg {
+  functionCluster: string (id:0);
+  versionMajor: int (id:1);
+  versionMinor: int (id:2);
+  globalTimeDomain: [GlobalTimeDomain] (id:3);
+  ethernetCommunicationConnector: [EthernetCommunicationConnector] (id:4);
+}
+
+table GlobalTimeDomain {
+  shortName: string (id:0);
+  domainId: uint (id:1);
+  icvFreshnessValueId: uint (id:2);
+  maxProgressionMismatchThreshold: double (id:3);
+  syncLossTimeout: double (id:4);
+  debounceTime: double (id:5);
+  globalTimeEthMaster: [GlobalTimeEthMaster] (id:6);
+  globalTimeEthSlave: [GlobalTimeEthSlave] (id:7);
+  synchronizedTimeBaseProviders: [SynchronizedTimeBaseProvider] (id:8);
+  synchronizedTimeBaseConsumers: [SynchronizedTimeBaseConsumer] (id:9);
+  ethGlobalTimeDomainProps: [EthGlobalTimeDomainProps] (id:10);
+}
+
+table EthGlobalTimeDomainProps {
+  destinationPhysicalAddress: string (id:0);
+  fupDataIdList: [uint8] (id:1);
+  messageCompliance: EthGlobalTimeMessageFormatEnum (id:2);
+  vlanPriority: uint (id:3);
+  crcFlags: [CrcFlags] (id:4);
+}
+
+table CrcFlags {
+  crcCorrectionField: bool (id:0);
+  crcDomainNumber: bool (id:1);
+  crcMessageLength: bool (id:2);
+  crcPreciseOriginTimestamp: bool (id:3);
+  crcSourcePortIdentity: bool (id:4);
+  crcSequenceId: bool (id:5);
+}
+
+table SynchronizedTimeBaseProvider {
+  shortName: string (id:0);
+  networkTimeProvider: GlobalTimeEthMaster (id:1);
+  timeSyncCorrection: [TimeSyncCorrection] (id:2);
+}
+
+table SynchronizedTimeBaseConsumer {
+  shortName: string (id:0);
+  networkTimeConsumer: GlobalTimeEthSlave (id:1);
+}
+
+table GlobalTimeEthMaster {
+  shortName: string (id:0);
+  immediateResumeTime: double (id:2);
+  isSystemWideGlobalTimeMaster: bool (id:3);
+  syncPeriod: double (id:4);
+  crcSecured: GlobalTimeCrcSupportEnum (id:5);
+  holdOverTime: double (id:7);
+  communicationConnector: EthernetCommunicationConnector (id:1);
+  subTlvConfig: [SubTlvConfig] (id:6);
+}
+
+table SubTlvConfig {
+  statusSubTlv: bool (id:0);
+  timeSubTlv: bool (id:1);
+  userDataSubTlv: bool (id:2);
+}
+
+table GlobalTimeEthSlave {
+  shortName: string (id:0);
+  followUpTimeoutValue: double (id:2);
+  timeLeapFutureThreshold: double (id:3);
+  timeLeapHealingCounter: uint (id:4);
+  timeLeapPastThreshold: double (id:5);
+  crcValidated: GlobalTimeCrcValidationEnum (id:6);
+  globalTimeSequenceCounterJumpWidth: uint (id:7);
+  communicationConnector: EthernetCommunicationConnector (id:1);
+  subTlvConfig: [SubTlvConfig] (id:8);
+}
+
+table EthernetCommunicationConnector {
+  shortName: string (id:0);
+  createEcuWakeupSource: bool (id:1);
+  pncFilterArrayMasks: [uint] (id:2);
+  dynamicPncToChannelMappingEnabled: bool (id:3);
+  maximumTransmissionUnit: uint (id:4);
+  neighborCacheSize: uint (id:5);
+  pathMtuEnabled: bool (id:6);
+  pathMtuTimeout: double (id:7);
+  pncGatewayType: PncGatewayTypeEnum (id:8);
+}
+
+table TimeSyncCorrection {
+  allowProviderRateCorrection: bool (id:0);
+  offsetCorrectionAdaptionInterval: double (id:1);
+  offsetCorrectionJumpThreshold: double (id:2);
+  rateCorrectionsPerMeasurementDuration: uint (id:3);
+  rateDeviationMeasurementDuration: double (id:4);
+  providerRateDeviationMax: uint (id:5);
+}
+
+root_type TSYNCEcuCfg;

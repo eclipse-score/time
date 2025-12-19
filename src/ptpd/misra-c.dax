@@ -1,0 +1,28 @@
+<rules>
+<CERT.ENV.33 enabled="yes" />
+<CERT.ERR.33 enabled="yes" />
+<CERT.EXP.33 enabled="yes" />
+<CERT.MEM.34 enabled="yes" />
+<CERT.SIG.30 enabled="yes" />
+<CERT.STR.38 enabled="yes" />
+<M2023-C.7.5 enabled="yes" />
+<M2023-C.9.1 enabled="yes" />
+<M2023-C.12.5 enabled="yes" />
+<M2023-C.17.3 enabled="yes" />
+<M2023-C.17.4 enabled="yes" />
+<M2023-C.17.6 enabled="yes" />
+<M2023-C.17.9 enabled="yes" />
+<M2023-C.18.10 enabled="yes" />
+<M2023-C.19.1 enabled="yes" />
+<M2023-C.21.13 enabled="yes" />
+<M2023-C.21.17 enabled="yes" />
+<M2023-C.21.18 enabled="yes" />
+<M2023-C.21.19 enabled="yes" />
+<M2023-C.21.20 enabled="yes" />
+<M2023-C.21.22 enabled="yes" />
+<M2023-C.22.2 enabled="yes" />
+<M2023-C.22.4 enabled="yes" />
+<M2023-C.22.5 enabled="yes" />
+<M2023-C.22.6 enabled="yes" />
+<M2023-C.22.12 enabled="yes" />
+</rules>

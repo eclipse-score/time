@@ -1,0 +1,32 @@
+tr.needs_skipped td.needs_result p{
+    background-color: #1b6082;
+    padding: 3px 5px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #212174;
+    color: #ffffff;
+}
+
+tr.needs_failure td.needs_result p {
+    background-color: #c2162d;
+    padding: 3px 5px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #212174;
+    color: #ffffff;
+}
+
+tr.needs_passed td.needs_result p {
+    background-color: #1b822c;
+    padding: 3px 5px;
+    text-align: center;
+    border-radius: 10px;
+    border: 1px solid #212174;
+    color: #ffffff;
+}
+
+
+.wy-nav-content
+{
+   max-width: 70% !important;
+}

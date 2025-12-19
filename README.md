@@ -1,114 +1,87 @@
+# Time Synchronization
 
-# C++ & Rust Bazel Template Repository
+Time Synchronization between different applications and/or ECUs is of paramount importance when correlation of different
+events across a distributed system is needed, either to track such events in time or to trigger them at an accurate point
+in time.
 
-This repository serves as a **template** for setting up **C++ and Rust projects** using **Bazel**.
-It provides a **standardized project structure**, ensuring best practices for:
+The Time-Synchronization (TSync) module is responsible for providing users with the functionality to retrieve time
+information synchronized with other entities / ECUs.
 
-- **Build configuration** with Bazel.
-- **Testing** (unit and integration tests).
-- **Documentation** setup.
-- **CI/CD workflows**.
-- **Development environment** configuration.
+## Project Structure
 
----
+This C++ code implements the *Time Synchronization* module for S-CORE.
+The folder structure is:
 
-## 📂 Project Structure
+```plain
+score-time
+ ├── examples                tsync-lib usage examples
+ ├── src
+ |    ├── common             Common functionality used by "all" packages
+ │    ├── flatbuffer         Flatbuffers mod for coverage(?)
+ │    ├── flatcfg            Flatcfg implementation (to be moved to a common repo)
+ │    ├── ptpd               Modified variant of ptpd
+ │    ├── tsync-daemon       Daemon for managing tsync shared mem
+ │    ├── tsync-lib          Library to be used by time clients
+ │    │    ├── include         API definitions of tsync-lib (i.e. public headers)
+ │    │    └── src             Implementation (source files and privateheaders)
+ │    ├── tsync-ptp-lib      Library used by ptpd
+ │    └── tsync-utility-lib  Internal utility library for shared mem access
+ ├── tests
+      ├── Unit Tests
+      └── Binary Tests
+```
 
-| File/Folder                         | Description                                       |
-| ----------------------------------- | ------------------------------------------------- |
-| `README.md`                         | Short description & build instructions            |
-| `src/`                              | Source files for the module                       |
-| `tests/`                            | Unit tests (UT) and integration tests (IT)        |
-| `examples/`                         | Example files used for guidance                   |
-| `docs/`                             | Documentation (Doxygen for C++ / mdBook for Rust) |
-| `.github/workflows/`                | CI/CD pipelines                                   |
-| `.vscode/`                          | Recommended VS Code settings                      |
-| `.bazelrc`, `MODULE.bazel`, `BUILD` | Bazel configuration & settings                    |
-| `project_config.bzl`                | Project-specific metadata for Bazel macros        |
-| `LICENSE.md`                        | Licensing information                             |
-| `CONTRIBUTION.md`                   | Contribution guidelines                           |
-
----
+* Folder `include` contains the API definitions of TSYNC and the public headers.
+* Folder `src` contains source files of the TSYNC implementation and private headers.
+* Folder `test` contains unit tests for the implemented classes.
 
 ## 🚀 Getting Started
 
 ### 1️⃣ Clone the Repository
 
 ```sh
-git clone https://github.com/eclipse-score/YOUR_PROJECT.git
-cd YOUR_PROJECT
+git clone https://github.com/eclipse-score/inc_time.git
+cd inc_time
 ```
 
-### 2️⃣ Build the Examples of module
+## 2️⃣ Build
 
-> DISCLAIMER: Depending what module implements, it's possible that different
-> configuration flags needs to be set on command line.
+In order to build and run `ptpd`, install `libpcap`:
 
-To build all targets of the module the following command can be used:
-
-```sh
-bazel build //src/...
+```shell
+sudo apt-get install libpcap-dev
 ```
 
-This command will instruct Bazel to build all targets that are under Bazel
-package `src/`. The ideal solution is to provide single target that builds
-artifacts, for example:
+To build TSYNC, simply run Bazel:
 
-```sh
-bazel build //src/<module_name>:release_artifacts
+```shell
+bazel build //...
 ```
-
-where `:release_artifacts` is filegroup target that collects all release
-artifacts of the module.
-
-> NOTE: This is just proposal, the final decision is on module maintainer how
-> the module code needs to be built.
-
 ### 3️⃣ Run Tests
 
 ```sh
 bazel test //tests/...
 ```
 
----
+## 🛠 Usage
 
-## 🛠 Tools & Linters
+Run the timesync daemon:
 
-The template integrates **tools and linters** from **centralized repositories** to ensure consistency across projects.
+```shell
+export ECUCFG_ENV_VAR_ROOTFOLDER=$(pwd)/bazel-out/k8-fastbuild/bin/src/tsync-daemon/src/score/time/daemon/
+bazel run //src/tsync-daemon:tsync_daemon
+```
 
-- **C++:** `clang-tidy`, `cppcheck`, `Google Test`
-- **Rust:** `clippy`, `rustfmt`, `Rust Unit Tests`
-- **CI/CD:** GitHub Actions for automated builds and tests
+Run the ptp daemon:
 
----
+```shell
+sudo bazel run //src/ptpd -- -i <ethnernet-if> -d 1 --global:foreground=Y -S --ptpengine:transport=ethernet --ptpengine:delay_mechanism=DELAY_DISABLED --ptpengine:disable_bmca=y --score:globaltimepropagationdelay=0.0 -L --ptpengine:dot1as=1 --clock:no_adjust=Y
+```
 
 ## 📖 Documentation
 
-- A **centralized docs structure** is planned.
+- Feature: <https://eclipse-score.github.io/score/main/features/time/>
+- Module Documentation: <https://eclipse-score.github.io/inc_time>
+- Requirements: <https://eclipse-score.github.io/score/main/features/time/docs/requirements/>
 
 ---
-
-## ⚙️ `project_config.bzl`
-
-This file defines project-specific metadata used by Bazel macros, such as `dash_license_checker`.
-
-### 📌 Purpose
-
-It provides structured configuration that helps determine behavior such as:
-
-- Source language type (used to determine license check file format)
-- Safety level or other compliance info (e.g. ASIL level)
-
-### 📄 Example Content
-
-```python
-PROJECT_CONFIG = {
-    "asil_level": "QM",  # or "ASIL-A", "ASIL-B", etc.
-    "source_code": ["cpp", "rust"]  # Languages used in the module
-}
-```
-
-### 🔧 Use Case
-
-When used with macros like `dash_license_checker`, it allows dynamic selection of file types
- (e.g., `cargo`, `requirements`) based on the languages declared in `source_code`.

@@ -1,0 +1,49 @@
+@startuml
+title provider_immediate_transmission
+
+participant "score-ptp-daemon" as tsync_ptp_daemon order 2 #lightgrey
+actor "tsync-ptp-lib" as tsync_ptp_lib order 3 #lightgrey
+actor "physical-ethernet" as physical_ethernet order 1 #lightgreen
+
+
+<style>
+group {
+  LineColor black
+  BackgroundColor cornsilk
+}
+</style>
+group ImmediateTransmission
+    tsync_ptp_daemon  -> tsync_ptp_lib: Register the callback\nby calling the function\n TSync_RegisterTransmitGlobalTimeCallback()\n during initialization
+
+    tsync_ptp_lib  --> tsync_ptp_daemon: Callback to indicate immediate time transmission.
+
+    tsync_ptp_daemon  -> tsync_ptp_lib: TSync_BusGetGlobalTime()
+    tsync_ptp_lib  --> tsync_ptp_lib: The tsync-ptp-lib reads the GlobalTime \nand the VirtualLocalTime \nfrom the the shared memory\nand sends it back to score-ptp-daemon
+    tsync_ptp_lib  --> tsync_ptp_daemon: return
+    tsync_ptp_daemon -> tsync_ptp_daemon: Record the T0Vlt
+    note left #lightyellow
+        T0Vlt corresponds to the
+        VirtualLocalTime when the
+        GlobalTime was read.
+    end note
+    tsync_ptp_daemon -> physical_ethernet: Send Sync Message
+
+    tsync_ptp_daemon  -> tsync_ptp_lib: TSync_GetCurrentVirtualLocalTime()
+    tsync_ptp_lib  --> tsync_ptp_daemon: return
+    note left #lightyellow
+        Soon after the Sync Message
+        is sent, fetch
+        VirtualLocalTime again.
+    end note
+    tsync_ptp_daemon  -> tsync_ptp_daemon: Store this VirtualLocalTime as T4Vlt and \nuse it to compute PreciseOriginTime.
+    note left #lightyellow
+        The PreciseOriginTime is
+        computed using GlobalTime,
+        T0Vlt and T4Vlt.
+    end note
+
+    tsync_ptp_daemon -> physical_ethernet: Send the FollowUp Message
+
+end group
+
+@enduml

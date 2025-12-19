@@ -1,0 +1,22 @@
+SPDXID: SPDXRef-DOCUMENT
+creationInfo:
+  created: '2023-12-11T08:57:24Z'
+  creators:
+  - 'Organization: Robert Bosch GmbH'
+dataLicense: CC0-1.0
+documentNamespace: https://etas.com/spdx-oss-component-3ed1f8fc-c0e2-4958-8515-32245c2d5e48
+name: SPDX Document for OSS component ptpd
+packages:
+- SPDXID: SPDXRef-PACKAGE-ptpd-deee1469-c0ae-4125-906c-8b072a15fa89
+  downloadLocation: NONE
+  filesAnalyzed: false
+  homepage: https://github.com/ptpd/ptpd
+  licenseConcluded: NONE
+  licenseDeclared: BSD-2-Clause
+  name: ptpd
+  versionInfo: 2.3.2
+relationships:
+- relatedSpdxElement: SPDXRef-PACKAGE-ptpd-deee1469-c0ae-4125-906c-8b072a15fa89
+  relationshipType: DESCRIBES
+  spdxElementId: SPDXRef-DOCUMENT
+spdxVersion: SPDX-2.3

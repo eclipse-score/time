@@ -1,0 +1,31 @@
+/********************************************************************************
+ * (c) 2025 ETAS GmbH. All rights reserved.
+ ********************************************************************************/
+
+#ifndef SCORE_TIME_DAEMON_HOUSEKEEPING_H_
+#define SCORE_TIME_DAEMON_HOUSEKEEPING_H_
+
+#include <csignal>
+
+namespace score {
+namespace time {
+namespace daemon {
+
+class HouseKeeping {
+public:
+    HouseKeeping() /* noexcept */ = default;
+    ~HouseKeeping() /* noexcept */ = default;
+    void InitSignals();
+
+    // This flag will be set when an exit signal was received
+    static volatile std::sig_atomic_t exit_flag_;
+
+private:
+    static void InitFlags();
+};
+
+}  // namespace daemon
+}  // namespace time
+}  // namespace score
+
+#endif  // SCORE_TIME_DAEMON_HOUSEKEEPING_H_

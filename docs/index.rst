@@ -1,6 +1,6 @@
 ..
    # *******************************************************************************
-   # Copyright (c) 2024 Contributors to the Eclipse Foundation
+   # Copyright (c) 2025 Contributors to the Eclipse Foundation
    #
    # See the NOTICE file(s) distributed with this work for additional
    # information regarding copyright ownership.
@@ -12,10 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Module Template Documentation
+Time Synchronization
 =============================
 
-This documentation describes the structure, usage and configuration of the Bazel-based C++/Rust module template.
+This documentation describes the structure, usage and configuration of the Time Synchronization module.
 
 .. contents:: Table of Contents
    :depth: 2
@@ -44,7 +44,7 @@ Project Layout
 
 The module template includes the following top-level structure:
 
-- `src/`: Main C++/Rust sources
+- `src/`: Main C++/C sources
 - `tests/`: Unit and integration tests
 - `examples/`: Usage examples
 - `docs/`: Documentation using `docs-as-code`
@@ -76,7 +76,7 @@ Example:
 
    PROJECT_CONFIG = {
        "asil_level": "QM",
-       "source_code": ["cpp", "rust"]
+       "source_code": ["cpp"]
    }
 
 This enables conditional behavior (e.g., choosing `clang-tidy` for C++ or `clippy` for Rust).

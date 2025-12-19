@@ -1,5 +1,5 @@
 # *******************************************************************************
-# Copyright (c) 2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -20,9 +20,9 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Module Template Project"
-project_url = "https://eclipse-score.github.io/module_template/"
-project_prefix = "MODULE_TEMPLATE_"
+project = "S-Core Time Synchronization"
+project_url = "https://eclipse-score.github.io/inc_time/"
+project_prefix = "TIME_"
 author = "S-CORE"
 version = "0.1"
 

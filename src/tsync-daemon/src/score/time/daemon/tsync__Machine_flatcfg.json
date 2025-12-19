@@ -1,0 +1,134 @@
+{
+    "functionCluster": "tsync",
+    "versionMajor": 3,
+    "versionMinor": 1,
+    "globalTimeDomain": [
+        {
+            "shortName": "sysclock",
+            "domainId": 1,
+            "ethGlobalTimeDomainProps": [
+                {
+                    "crcFlags": [
+                        {
+                            "crcCorrectionField": true,
+                            "crcDomainNumber": true,
+                            "crcMessageLength": true,
+                            "crcPreciseOriginTimestamp": true,
+                            "crcSequenceId": true,
+                            "crcSourcePortIdentity": true
+                        }
+                    ],
+                    "destinationPhysicalAddress": "80:3F:5D:09:7A:86",
+                    "fupDataIdList": [
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
+                    ],
+                    "messageCompliance": 1,
+                    "vlanPriority": 2
+                }
+            ],
+            "globalTimeEthMaster": [
+                {
+                    "shortName": "GlobalTimeEthMaster",
+                    "communicationConnector": {
+                        "shortName": "EthernetCommunicationConnector",
+                        "createEcuWakeupSource": false, 
+                        "dynamicPncToChannelMappingEnabled": false,
+                        "pncFilterArrayMasks": [1],
+                        "pncGatewayType": 0,
+                        "maximumTransmissionUnit": 1500,
+                        "neighborCacheSize": 1024,
+                        "pathMtuEnabled": false,
+                        "pathMtuTimeout": 0.2
+                    },
+                    "immediateResumeTime": 1.0,
+                    "isSystemWideGlobalTimeMaster": true,
+                    "syncPeriod": 1.0,
+                    "crcSecured": 0,
+                    "holdOverTime": 60.0,
+                    "subTlvConfig": [
+                        {
+                            "statusSubTlv": false,
+                            "timeSubTlv": true,
+                            "userDataSubTlv": true
+                        }
+                    ]
+                }
+            ],
+            "icvFreshnessValueId": 1,
+            "maxProgressionMismatchThreshold": 5.0,
+            "globalTimeEthSlave": [
+                {
+                    "shortName": "GlobalTimeEthSlave",
+                    "subTlvConfig": [
+                        {
+                            "statusSubTlv": false,
+                            "timeSubTlv": true,
+                            "userDataSubTlv": true
+                        }
+                    ],
+                    "communicationConnector": {
+                        "shortName": "EthernetCommunicationConnector",
+                        "createEcuWakeupSource": false, 
+                        "dynamicPncToChannelMappingEnabled": false,
+                        "pncFilterArrayMasks": [1],
+                        "pncGatewayType": 0,
+                        "maximumTransmissionUnit": 1500,
+                        "neighborCacheSize": 1024,
+                        "pathMtuEnabled": false,
+                        "pathMtuTimeout": 0.2
+                    },
+                    "followUpTimeoutValue": 5.0,
+                    "timeLeapFutureThreshold": 2.4,
+                    "timeLeapHealingCounter": 3,
+                    "timeLeapPastThreshold": 2.5,
+                    "crcValidated": 0
+                }
+            ],
+            "synchronizedTimeBaseConsumers": [
+                {
+                    "shortName": "consumer",
+                    "networkTimeConsumer":                 {
+                        "shortName": "GlobalTimeEthSlave",
+                        "subTlvConfig": [
+                            {
+                                "statusSubTlv": false,
+                                "timeSubTlv": true,
+                                "userDataSubTlv": true
+                            }
+                        ],
+                        "communicationConnector": {
+                            "shortName": "EthernetCommunicationConnector",
+                            "createEcuWakeupSource": false, 
+                            "dynamicPncToChannelMappingEnabled": false,
+                            "pncFilterArrayMasks": [1],
+                            "pncGatewayType": 0,
+                            "maximumTransmissionUnit": 1500,
+                            "neighborCacheSize": 1024,
+                            "pathMtuEnabled": false,
+                            "pathMtuTimeout": 0.2
+                        },
+                        "followUpTimeoutValue": 5.0,
+                        "timeLeapFutureThreshold": 2.4,
+                        "timeLeapHealingCounter": 3,
+                        "timeLeapPastThreshold": 2.5,
+                        "crcValidated": 0
+                    }
+                }
+            ],
+            "syncLossTimeout": 1.0
+        }
+    ],
+    "ethernetCommunicationConnector": [
+        {
+            "shortName": "EthernetCommunicationConnector",
+            "createEcuWakeupSource": false, 
+            "dynamicPncToChannelMappingEnabled": false,
+            "pncFilterArrayMasks": [1],
+            "pncGatewayType": 0,
+            "maximumTransmissionUnit": 1500,
+            "neighborCacheSize": 1024,
+            "pathMtuEnabled": false,
+            "pathMtuTimeout": 0.2
+        }
+    ]
+}

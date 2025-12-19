@@ -1,0 +1,29 @@
+@startuml
+title consumer_reception
+
+actor "physical-ethernet" as physical_ethernet order 1 #lightgreen
+participant "score-ptp-daemon" as tsync_ptp_daemon order 2 #lightgrey
+participant "tsync-ptp-lib" as tsync_ptp_lib order 3 #lightgrey
+
+physical_ethernet -> tsync_ptp_daemon: Sync Message
+note left #lightyellow
+    Arrival of the Sync message on Ethernet
+end note
+tsync_ptp_daemon  -> tsync_ptp_lib: TSync_GetCurrentVirtualLocalTime()
+tsync_ptp_lib  --> tsync_ptp_daemon: return
+tsync_ptp_daemon  -> tsync_ptp_daemon: Store the "VirtualLocalTime" \nof the Sync Message
+
+physical_ethernet -> tsync_ptp_daemon: FollowUp Message
+note left #lightyellow
+    Arrival of the FollowUp message on Ethernet
+end note
+tsync_ptp_daemon  -> tsync_ptp_lib: TSync_GetCurrentVirtualLocalTime()
+tsync_ptp_lib  --> tsync_ptp_daemon: return
+tsync_ptp_daemon  -> tsync_ptp_daemon: Store the "VirtualLocalTime" \nof the FollowUp Message
+
+tsync_ptp_daemon -> tsync_ptp_daemon: Compute the GlobalTime and validate the SubTLVs received.
+tsync_ptp_daemon  -> tsync_ptp_lib: TSync_BusSetGlobalTime()
+tsync_ptp_lib  --> tsync_ptp_daemon: return
+tsync_ptp_lib  --> tsync_ptp_lib: The tsync-ptp-lib updates the GlobalTime \nand the VirtualLocalTime \nof the FollowUp message \ninto the shared memory
+
+@enduml
