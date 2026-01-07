@@ -13,7 +13,7 @@
    # *******************************************************************************
 
 Time Synchronization
-=============================
+====================
 
 This documentation describes the structure, usage and configuration of the Time Synchronization module.
 
