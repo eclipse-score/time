@@ -78,6 +78,32 @@ Run the ptp daemon:
 sudo bazel run //src/ptpd -- -i <ethnernet-if> -d 1 --global:foreground=Y -S --ptpengine:transport=ethernet --ptpengine:delay_mechanism=DELAY_DISABLED --ptpengine:disable_bmca=y --score:globaltimepropagationdelay=0.0 -L --ptpengine:dot1as=1 --clock:no_adjust=Y
 ```
 
+## High Level Design
+
+The basic architecture/high level design of the S-CORE time related components is given in the following figure:
+
+<figure>
+<img src="docs/deployment.drawio.svg" style="width:90%">
+<figcaption>
+<b>Deployment</b>: This figure shows an exemplary deployment of the time sync related components.
+</figcaption>
+</figure>
+
+* S-CORE time can handle multiple different time bases/time domains.
+* Syncing of the "clocks" of those time bases between different devices/exeution environments is done via PTP over Ethernet
+* A modified ptpd2 implementation is used to achive that on the S-CORE domain:
+   * It syncs a time base with its belonging master clock
+   * It stores the determined time offset between the time base and the local clock in a share memory area related to the time base
+   * It does *not* sync the local clock time!
+   * The modifications are done for supporting the AUTOSAR Time Synchronization Protocol
+* Applications use the tsync-lib to get the current time of the desired time base. The tsync-lib
+   * gets the time base's offset to the local clock from the respective shared memory ressource and
+   * adds it to the current local clock value.
+* The tsync-daemon is responsible to
+   * manage the shared memory ressources of the different configured time bases
+   * provide the time base configuration via shared memory to the applications and the ptpd2 process
+
+
 ## 📖 Documentation
 
 - Feature: <https://eclipse-score.github.io/score/main/features/time/>
