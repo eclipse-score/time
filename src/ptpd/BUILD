@@ -74,22 +74,19 @@ cc_library(
         "src/score/src/score_ptp_common.c",
         "src/score/src/score_ptp_arith.c",
         "src/score/src/score_ptp_subtlv.c",
-        
+
         "src/dep/eventtimer_posix.c",
         "src/dep/statistics.h",
         "src/dep/statistics.c",
         "src/dep/outlierfilter.h",
         "src/dep/outlierfilter.c",
-
-        "src/score/src/Crc.cpp",
-        "src/score/src/Crc_Cfg.cpp",
     ],
     hdrs = glob([
-        "src/**/*.h",      
+        "src/**/*.h",
         "src/**/*.def"
     ]),
-    includes = [           
-        "src",             
+    includes = [
+        "src",
         "src/def",
         "src/def/message",
         "src/def/managementTLV",
