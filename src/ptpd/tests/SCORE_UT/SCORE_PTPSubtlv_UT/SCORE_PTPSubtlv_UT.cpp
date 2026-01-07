@@ -69,7 +69,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpWriteAutosarTlvToBuffer_InputIsNull_Failed) 
     // Assert
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpWriteAutosarTlvToBuffer_NoCRCFlagAreSet_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpWriteAutosarTlvToBuffer_NoCRCFlagAreSet_Succeed) {
     // Arrange
     uint8_t output[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -104,7 +104,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpWriteAutosarTlvToBuffer_NoCRCFlagAreSet_Succ
     EXPECT_EQ(autosarTlv.subTLVUserdata.subtlvLength, SCORE_PTP_FUP_SUBTLV_LEN_FIELD_USERDATA);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpWriteAutosarTlvToBuffer_AllCRCFlagAreSet_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpWriteAutosarTlvToBuffer_AllCRCFlagAreSet_Succeed) {
     // Arrange
     uint8_t output[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -171,7 +171,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpWriteAutosarTlvToBuffer_WithoutCRCSupported_
     EXPECT_EQ(userData.subtlvLength, SCORE_PTP_FUP_SUBTLV_LEN_FIELD_USERDATA);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpWriteAutosarTlvToBuffer_With_numFupDataIdEntries_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpWriteAutosarTlvToBuffer_With_numFupDataIdEntries_Succeed) {
     // Arrange
     uint8_t output[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -218,7 +218,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTlvFromBuffer_InputIsNull_Succeed) {
     EXPECT_EQ(res, SCORE_PTP_TRUE);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTlvFromBuffer_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTlvFromBuffer_Succeed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -264,7 +264,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTlvFromBuffer_Succeed) {
     EXPECT_EQ(consumerData.followUpMsg.subTlv.userdata.userByte2, autosarTlv.subTLVUserdata.userdataByte2);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTlvFromBuffer_WithNoCrcFlagSet_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTlvFromBuffer_WithNoCrcFlagSet_Succeed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -327,7 +327,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTlvFromBuffer_WithZeroSubTlvConfigure
     EXPECT_EQ(res, SCORE_PTP_TRUE);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_CRC_And_TSYNC_CRC_NOT_VALIDATED_Failed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVUserdata_With_CRC_And_TSYNC_CRC_NOT_VALIDATED_Failed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -350,7 +350,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_CRC_And_TSYNC_CRC_NO
     EXPECT_EQ(res, SCORE_PTP_FALSE);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_TSYNC_CRC_IGNORED_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVUserdata_With_TSYNC_CRC_IGNORED_Succeed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -377,7 +377,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_TSYNC_CRC_IGNORED_Su
     EXPECT_EQ(consumerData.followUpMsg.subTlv.userdata.userByte2, autosarTlv.subTLVUserdata.userdataByte2);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_SCORE_PTP_FUP_SUBTLV_TYPE_USERDATA_WITHOUT_CRC_Failed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVUserdata_With_SCORE_PTP_FUP_SUBTLV_TYPE_USERDATA_WITHOUT_CRC_Failed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -400,7 +400,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_SCORE_PTP_FUP_SUBTLV
     EXPECT_EQ(res, SCORE_PTP_FALSE);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_SCORE_PTP_FUP_SUBTLV_TYPE_USERDATA_WITHOUT_CRC_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVUserdata_With_SCORE_PTP_FUP_SUBTLV_TYPE_USERDATA_WITHOUT_CRC_Succeed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -473,7 +473,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_Invalid_CrcValidatio
     EXPECT_EQ(res, SCORE_PTP_FALSE);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_numFupDataIdEntries_GreaterThanZero_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVUserdata_With_numFupDataIdEntries_GreaterThanZero_Succeed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -504,7 +504,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_numFupDataIdEntries_
     EXPECT_EQ(consumerData.followUpMsg.subTlv.userdata.userByte2, autosarTlv.subTLVUserdata.userdataByte2);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_crcComputed_Eq_crcUserData_Succeed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVUserdata_With_crcComputed_Eq_crcUserData_Succeed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.crcSupport = TSYNC_CRC_SUPPORTED;
@@ -534,7 +534,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_crcComputed_Eq_crcUs
     EXPECT_EQ(consumerData.followUpMsg.subTlv.userdata.userByte2, autosarTlv.subTLVUserdata.userdataByte2);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVUserdata_With_InconsistenciesCRC_Failed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVUserdata_With_InconsistenciesCRC_Failed) {
     // Arrange
     /**/
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
@@ -580,7 +580,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVTimeSecured_WithoutSupportFor_foll
     EXPECT_EQ(res, SCORE_PTP_TRUE);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVTimeSecured_CRCIsNotValid_Failed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVTimeSecured_CRCIsNotValid_Failed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     ptpConfig.timebaseConfig.messageCompliance = TSYNC_MC_IEEE8021AS_AUTOSAR;
@@ -649,7 +649,7 @@ TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVStatus_With_unsupported_SubTLV_Ret
     EXPECT_EQ(consumerData.followUpMsg.subTlv.userdata.userByte2, autosarTlv.subTLVUserdata.userdataByte2);
 }
 
-TEST_F(ScorePtpSubtlvTest, Score_PtpReadSubTLVTimeSecured_With_TimeSecuredWithInconsistenciesCRC_Failed) {
+TEST_F(ScorePtpSubtlvTest, DISABLED_Score_PtpReadSubTLVTimeSecured_With_TimeSecuredWithInconsistenciesCRC_Failed) {
     // Arrange
     uint8_t input[SCORE_PTP_TOTAL_AUTOSAR_TLV_LENGTH];
     Score_PtpAutosarTlvType autosarTlv;

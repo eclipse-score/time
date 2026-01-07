@@ -98,6 +98,7 @@ TSync_ReturnType TSync_GetTimebaseConfiguration(TSync_TimeBaseHandleType timebas
         config->globalTimeSequenceCounterJumpWidth =
             domain_config.consumer_config.time_slave_config.global_time_sequence_counter_jump_width;
 
+#if 0
         if((role_requested == TSYNC_ROLE_MASTER) && (domain_config.provider_config.time_master_config.is_valid == true)) {
             config->subTlvConfig.followUpStatusSubTLV = domain_config.provider_config.time_master_config.sub_tlv_config.status_enabled ?
                                                             TSYNC_SUBTLV_SUPPORTED : TSYNC_SUBTLV_NOT_SUPPORTED;
@@ -117,6 +118,13 @@ TSync_ReturnType TSync_GetTimebaseConfiguration(TSync_TimeBaseHandleType timebas
             config->subTlvConfig.followUpTimeSubTLV = TSYNC_SUBTLV_NOT_SUPPORTED;
             config->subTlvConfig.followUpUserDataSubTLV = TSYNC_SUBTLV_NOT_SUPPORTED;
         }
+#endif
+
+        // TODO: SubTLV features are not currently supported (for more details see #94128)
+        config->subTlvConfig.followUpStatusSubTLV = TSYNC_SUBTLV_NOT_SUPPORTED;
+        config->subTlvConfig.followUpTimeSubTLV = TSYNC_SUBTLV_NOT_SUPPORTED;
+        config->subTlvConfig.followUpUserDataSubTLV = TSYNC_SUBTLV_NOT_SUPPORTED;
+
         return E_OK;
     }
     return E_NOT_OK;

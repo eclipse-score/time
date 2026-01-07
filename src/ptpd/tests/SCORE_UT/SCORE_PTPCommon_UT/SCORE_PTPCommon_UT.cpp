@@ -133,7 +133,7 @@ TEST_F(ScorePtpCommonTest, Score_PtpDeInitialize_Success) {
     EXPECT_EQ(consumerData.syncState, SCORE_PTP_STATE_INVALID);
 }
 
-TEST_F(ScorePtpCommonTest, Score_PtpConfigure_With_TSYNC_MC_IEEE8021AS_AUTOSAR_AsProvider_Success) {
+TEST_F(ScorePtpCommonTest, DISABLED_Score_PtpConfigure_With_TSYNC_MC_IEEE8021AS_AUTOSAR_AsProvider_Success) {
     // Arrange
     Score_PtpBooleanType isProvider = true;
     const int64_t     syncPeriodMs = 5;
@@ -164,7 +164,7 @@ TEST_F(ScorePtpCommonTest, Score_PtpConfigure_With_TSYNC_MC_IEEE8021AS_AUTOSAR_A
     EXPECT_EQ(result, SCORE_PTP_E_OK);
 }
 
-TEST_F(ScorePtpCommonTest, Score_PtpConfigure_With_TSYNC_MC_IEEE8021AS_AUTOSAR_AsConsumer_Success) {
+TEST_F(ScorePtpCommonTest, DISABLED_Score_PtpConfigure_With_TSYNC_MC_IEEE8021AS_AUTOSAR_AsConsumer_Success) {
     // Arrange
     Score_PtpBooleanType isProvider = false;
     // Setup ptpConfig
@@ -194,7 +194,7 @@ TEST_F(ScorePtpCommonTest, Score_PtpConfigure_With_TSYNC_MC_IEEE8021AS_AUTOSAR_A
     EXPECT_EQ(result, SCORE_PTP_E_OK);
 }
 
-TEST_F(ScorePtpCommonTest, Score_PtpConfigure_UpdateNoCrcFlag_Success) {
+TEST_F(ScorePtpCommonTest, DISABLED_Score_PtpConfigure_UpdateNoCrcFlag_Success) {
     // Arrange
     Score_PtpBooleanType isProvider = false;
     // Setup ptpConfig
@@ -222,7 +222,7 @@ TEST_F(ScorePtpCommonTest, Score_PtpConfigure_UpdateNoCrcFlag_Success) {
     EXPECT_EQ(result, SCORE_PTP_E_OK);
 }
 
-TEST_F(ScorePtpCommonTest, Score_PtpConfigure_With_NoSubTLVSupported_AsProvider_Success) {
+TEST_F(ScorePtpCommonTest, DISABLED_Score_PtpConfigure_With_NoSubTLVSupported_AsProvider_Success) {
     // Arrange
     Score_PtpBooleanType isProvider = true;
     // Setup ptpConfig
@@ -245,7 +245,7 @@ TEST_F(ScorePtpCommonTest, Score_PtpConfigure_With_NoSubTLVSupported_AsProvider_
     EXPECT_EQ(result, SCORE_PTP_E_OK);
 }
 
-TEST_F(ScorePtpCommonTest, Score_PtpConfigure_With_NoSubTLVSupported_AsConsumer_Success) {
+TEST_F(ScorePtpCommonTest, DISABLED_Score_PtpConfigure_With_NoSubTLVSupported_AsConsumer_Success) {
     // Arrange
     Score_PtpBooleanType isProvider = false;
     // Setup ptpConfig

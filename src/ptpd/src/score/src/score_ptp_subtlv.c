@@ -3,11 +3,20 @@
  ********************************************************************************/
 
 #include "../inc/score_ptp_subtlv.h"
+#include "../inc/Std_Types.h"
 
 #include <arpa/inet.h>
 #include <string.h>
 #include "inc/score_ptp_types.h"
 #include "inc/score_ptp_config.h"
+
+/* Stub implementation of CRC function - CRC functionality is currently not available (for more details see #94128) */
+uint8 Crc_CalculateCRC8H2F(const uint8* Crc_DataPtr, uint32 Crc_Length, uint8 Crc_StartValue8, boolean Crc_IsFirstCall) {
+    (void)Crc_DataPtr;
+    (void)Crc_Length;
+    (void)Crc_IsFirstCall;
+    return Crc_StartValue8;
+}
 
 /** @brief Consolidates the all the provider timing information to compute
  * PreciseOriginTime

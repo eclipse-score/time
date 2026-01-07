@@ -6,7 +6,6 @@
 #define SCORE_PTP_SUBTLV_H
 
 #include <string.h>
-#include <Crc.h>
 
 #include "score_ptp_common.h"
 
