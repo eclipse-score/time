@@ -16,7 +16,7 @@ namespace score {
 namespace time {
 
 class TimeBaseReaderFactoryMock {
-   public:
+public:
     TimeBaseReaderFactoryMock() {
         ON_CALL(*this, Create).WillByDefault([](std::string_view name, std::size_t max_size) {
             return std::make_unique<::testing::NiceMock<SharedMemTimeBaseReaderMock>>(name, max_size);

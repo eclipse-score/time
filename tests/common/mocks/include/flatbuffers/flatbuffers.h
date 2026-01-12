@@ -39,7 +39,7 @@ struct Offset {
 
 template <typename T>
 class Vector {
-   public:
+public:
     Vector<T>() : vector_() {
     }
 
@@ -85,12 +85,12 @@ class Vector {
         vector_.resize(n, val);
     }
 
-   private:
+private:
     std::vector<T> vector_;
 };
 
 class String {
-   public:
+public:
     String(const char* str) : string_(str) {
     }
 
@@ -113,7 +113,7 @@ class String {
         return string_.length();
     }
 
-   private:
+private:
     std::string string_;
 };
 

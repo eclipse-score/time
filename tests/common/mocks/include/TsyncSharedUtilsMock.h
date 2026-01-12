@@ -16,7 +16,7 @@ namespace score {
 namespace time {
 
 class TsyncSharedUtilsMock {
-   public:
+public:
     MOCK_METHOD1(GetTransmissionSemaphoreName, std::string(std::uint32_t));
     MOCK_METHOD2(CreateTransmissionSemaphore, TsyncNamedSemaphore(std::uint32_t, bool));
     MOCK_METHOD0(GetCurrentVirtualLocalTime, std::optional<std::chrono::nanoseconds>());

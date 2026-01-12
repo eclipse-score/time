@@ -47,7 +47,7 @@ extern TsyncIdMappingsHandler mappings_handler;
 using score::time::mappings_handler;
 
 class SynchronizedTimeBaseProviderFixture : public ::testing::Test {
-   public:
+public:
     void SetUp() override {
         shared_utils_mock = std::make_unique<::testing::NiceMock<TsyncSharedUtilsMock>>();
         ;
@@ -95,7 +95,7 @@ const int32_t SynchronizedTimeBaseProviderFixture::EXIT_CODE = 1;
 // This fixture is for testing the setting of user data of different lengths. It will be
 // parametrized with values 0..4
 class SynchronizedTimeBaseProviderSetUserDataFixture : public ::testing::TestWithParam<unsigned char> {
-   public:
+public:
     void SetUp() override {
         shared_utils_mock = std::make_unique<::testing::NiceMock<TsyncSharedUtilsMock>>();
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
@@ -537,7 +537,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetTime_OnUpdateTimeHaveNoValue_Retu
 }  // namespace lib_synchronizedtimebaseprovider_ut
 
 class ProviderTimeBaseValidationNotificationImpl final : public ProviderTimeBaseValidationNotification {
-   public:
+public:
     void SetPdelayResponderData(const PdelayResponderMeasurementType&) override {
     }
 

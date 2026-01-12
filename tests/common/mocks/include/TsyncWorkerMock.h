@@ -11,7 +11,7 @@ namespace time {
 
 // Mock class for score::time::TsyncWorker
 class TsyncWorkerMock {
-   public:
+public:
     MOCK_METHOD0(Init, void());
     MOCK_METHOD0(Run, void());
     MOCK_METHOD0(ShutDown, void());
@@ -22,7 +22,7 @@ extern std::unique_ptr<TsyncWorkerMock> worker_mock;
 
 // Stub class for score::time::TsyncWorker
 class TsyncWorker {
-   public:
+public:
     TsyncWorker() noexcept;
     ~TsyncWorker() noexcept = default;
     TsyncWorker(const TsyncWorker&) = delete;

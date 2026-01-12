@@ -14,10 +14,10 @@ using namespace score::time;
 extern std::unique_ptr<testing::NiceMock<SysCallsReadWriteLockMock>> score::time::rw_lock_mock;
 
 class TSyncReadWriteLockTestFixture : public ::testing::Test {
-   public:
+public:
     static const int32_t EXIT_CODE;
 
-   protected:
+protected:
     void SetUp() override {
         rw_lock_mock = std::make_unique<testing::NiceMock<SysCallsReadWriteLockMock>>();
 

@@ -18,7 +18,7 @@ class TsyncConsumerConfig;
 class TsyncProviderConfig;
 
 class SharedMemTimeBaseReaderMock : public ITimeBaseAccessor, public ITimeBaseReader {
-   public:
+public:
     explicit SharedMemTimeBaseReaderMock(std::string_view /*name*/, uint32_t /* max_size */) noexcept {
         // Little hack to help with the TSyncWorker UTs.
         // The only purpose of this is to set the global sync status.
@@ -97,7 +97,7 @@ class SharedMemTimeBaseReaderMock : public ITimeBaseAccessor, public ITimeBaseRe
     MOCK_METHOD0(lock, void());
     MOCK_METHOD0(unlock, void());
 
-   private:
+private:
     TsyncTimeDomainConfig reader_mock_cfg_;
 };
 

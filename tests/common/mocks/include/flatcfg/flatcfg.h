@@ -17,13 +17,13 @@
 
 namespace flatcfg {
 class Mock_Flatcfg {
-   public:
+public:
     MOCK_METHOD0(getSwClusterList, score::Result<std::vector<std::string>>());
     MOCK_METHOD1(load, score::Result<std::shared_ptr<void>>(const std::string&));
 };
 
 class FlatCfg {
-   public:
+public:
     static Mock_Flatcfg* mock_flat_cfg_;
 
     template <typename T>

@@ -24,7 +24,7 @@ using testing::_;
 using testing::Invoke;
 
 class TsyncSharedUtilsTestFixture : public ::testing::Test {
-   public:
+public:
     void SetUp() override {
         tsync_util_ = std::make_unique<TsyncSharedUtils>();
         misc_mock = std::make_unique<::testing::NiceMock<SysCallsMiscMock>>();
@@ -37,7 +37,7 @@ class TsyncSharedUtilsTestFixture : public ::testing::Test {
         named_semaphore_mock.reset();
     }
 
-   protected:
+protected:
     std::unique_ptr<TsyncSharedUtils> tsync_util_;
     sem_t dummy_semaphore;
 };

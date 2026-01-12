@@ -9,7 +9,7 @@
 using namespace score::time;
 
 class TimeErrorDomainTestFixture : public ::testing::Test {
-   protected:
+protected:
     void SetUp() override {
     }
 

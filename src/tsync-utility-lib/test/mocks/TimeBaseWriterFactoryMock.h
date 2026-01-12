@@ -16,7 +16,7 @@ namespace score {
 namespace time {
 
 class TimeBaseWriterFactoryMock {
-   public:
+public:
     TimeBaseWriterFactoryMock() {
         ON_CALL(*this, Create).WillByDefault([](std::string_view name, std::size_t max_size, bool is_owner) {
             return std::make_unique<::testing::NiceMock<SharedMemTimeBaseWriterMock>>(name, max_size, is_owner);

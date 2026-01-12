@@ -164,7 +164,7 @@ int ThreadJoinFake(pthread_t thread, void** retval) {
 constexpr int32_t ABORT_CODE = 42;
 
 class PtpLibTestFixture : public testing::Test {
-   public:
+public:
     void SetUp() override {
         std::memset(&shmem_buf0_[0], 0, sizeof(shmem_buf0_));
         std::memset(&shmem_buf1_[0], 0, sizeof(shmem_buf1_));
@@ -329,7 +329,7 @@ class PtpLibTestFixture : public testing::Test {
         writer->Write(cfg);
     }
 
-   private:
+private:
     static uint8_t shmem_buf0_[kSharedMemPageSize];
     static uint8_t shmem_buf1_[kSharedMemPageSize];
     static uint8_t shmem_buf2_[kSharedMemPageSize];

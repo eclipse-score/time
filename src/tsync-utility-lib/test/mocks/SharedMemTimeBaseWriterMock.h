@@ -20,7 +20,7 @@ namespace time {
 class TsyncConsumerConfig;
 class TsyncProviderConfig;
 class SharedMemTimeBaseWriterMock : public ITimeBaseAccessor, public ITimeBaseWriter {
-   public:
+public:
     SharedMemTimeBaseWriterMock(std::string_view, std::size_t, bool) {
         ON_CALL(*this, GetAccessor()).WillByDefault(testing::ReturnRef(*this));
         ON_CALL(*this, Write(testing::An<uint32_t>())).WillByDefault(testing::Return(true));

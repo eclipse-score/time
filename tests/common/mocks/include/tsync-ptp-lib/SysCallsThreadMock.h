@@ -12,7 +12,7 @@ namespace score {
 namespace time {
 
 class SysCallsThreadMock {
-   public:
+public:
     MOCK_METHOD4(OsThreadCreate,
                  int(pthread_t* thread, const pthread_attr_t* attr, void* (*start_routine)(void*), void* arg));
 

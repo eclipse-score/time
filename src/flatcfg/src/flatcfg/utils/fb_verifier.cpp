@@ -15,7 +15,7 @@ namespace {
 
 /// @brief Helper class to check for fields required by SCORE in binary.
 class RequiredFields final : public flatbuffers::Table {
-   public:
+public:
     /// @brief Verify that we can parse required fields.
     /// @note  Required and called by flatbuffers::Verifier::VerifyBuffer(...).
     bool Verify(flatbuffers::Verifier& verifier) const {

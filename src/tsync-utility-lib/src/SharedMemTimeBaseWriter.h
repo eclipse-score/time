@@ -97,7 +97,7 @@ private:
 
     void Unlink();
 
-   private:
+private:
     const std::string time_base_name_{};
     std::string shm_name_{};
     TsyncReadWriteLock rw_lock_{};

@@ -24,10 +24,10 @@ using score::cpp::span;
 using namespace score::time;
 
 class SharedMemTimeBaseReaderTestFixture : public ::testing::Test {
-   public:
+public:
     static const int32_t EXIT_CODE;
 
-   protected:
+protected:
     void SetUp() override {
         tb_reader_ = std::make_unique<SharedMemTimeBaseReader>(shared_mem_name_);
         shared_mem_mock = std::make_unique<::testing::NiceMock<SysCallsShMemMock>>();
@@ -71,21 +71,21 @@ class SharedMemTimeBaseReaderTestFixture : public ::testing::Test {
 
 template <class Type>
 class SharedMemTimeBaseReaderReadComplexTypeTestFixture : public SharedMemTimeBaseReaderTestFixture {
-   protected:
+protected:
     Type struct_;
     Type read_data_;
 };
 
 template <class Type>
 class SharedMemTimeBaseReaderReadConfigTypeTestFixture : public SharedMemTimeBaseReaderTestFixture {
-   protected:
+protected:
     Type struct_;
     Type read_data_;
 };
 
 template <class Type>
 class SharedMemTimeBaseReaderReadTestFixture : public SharedMemTimeBaseReaderTestFixture {
-   protected:
+protected:
     Type value_ = 42;
     Type read_value_ = 0;
 };

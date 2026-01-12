@@ -27,10 +27,10 @@ using score::cpp::span;
 using namespace score::time;
 
 class SharedMemTimeBaseWriterTestFixture : public ::testing::Test {
-   public:
+public:
     static const int32_t EXIT_CODE;
 
-   protected:
+protected:
     void SetUpWriter(const std::string& name) {
         shared_mem_name_ = name;
         tb_writer_ = std::make_unique<SharedMemTimeBaseWriter>(shared_mem_name_);
@@ -81,21 +81,21 @@ const int32_t SharedMemTimeBaseWriterTestFixture::EXIT_CODE = 42;
 
 template <class Type>
 class SharedMemTimeBaseWriterComplexWriteTestFixture : public SharedMemTimeBaseWriterTestFixture {
-   protected:
+protected:
     Type struct_;
     Type* mem_ = reinterpret_cast<Type*>(reinterpret_cast<uint8_t*>(&this->mem_region_) + sizeof(pthread_rwlock_t));
 };
 
 template <class Type>
 class SharedMemTimeBaseWriterConfigWriteTestFixture : public SharedMemTimeBaseWriterTestFixture {
-   protected:
+protected:
     Type written_struct_;
     Type read_struct_;
 };
 
 template <class Type>
 class SharedMemTimeBaseWriterWriteTestFixture : public SharedMemTimeBaseWriterTestFixture {
-   protected:
+protected:
     Type value_ = 42;
     Type* mem_ = reinterpret_cast<Type*>(reinterpret_cast<uint8_t*>(&this->mem_region_) +
                                          sizeof(score::time::TsyncReadWriteLock));

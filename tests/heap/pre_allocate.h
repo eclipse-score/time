@@ -24,7 +24,7 @@ namespace heap {
 /// @note see C++ named requirements: Allocator
 template <class T, class Tag>
 class PoolAllocator {
-   public:
+public:
     typedef T value_type;
     //!! typedef typename ara::core::pmr::GlobalSafeMemoryPool<Tag>
     //!!     TaggedMemoryPool;  // <--- this is the memory pool going to be used by PoolAllocator

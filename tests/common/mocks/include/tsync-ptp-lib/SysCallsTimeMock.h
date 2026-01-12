@@ -12,7 +12,7 @@ namespace score {
 namespace time {
 
 class SysCallsTimeMock {
-   public:
+public:
     MOCK_METHOD2(OsClockGetTime, int(clockid_t clk_id, timespec* tp));
 
     ~SysCallsTimeMock() = default;

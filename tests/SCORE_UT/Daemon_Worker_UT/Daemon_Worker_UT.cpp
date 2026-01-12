@@ -74,10 +74,10 @@ namespace testing {
 namespace daemon_worker_ut {
 
 class DaemonWorkerFixture : public ::testing::Test {
-   public:
+public:
     static const int32_t EXIT_CODE;
 
-   protected:
+protected:
     void SetUp() override {
         writer_factory_mock_return_real_writer = false;
         reader_factory_mock_return_real_reader = false;

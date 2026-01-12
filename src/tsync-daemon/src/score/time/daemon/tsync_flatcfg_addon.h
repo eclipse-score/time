@@ -8,7 +8,7 @@ namespace flatbuffers {
 namespace score {
 
 class TSYNC : public FcBase<TSYNC> {
-   private:
+private:
     /* coverity[autosar_cpp14_a0_1_3_violation] The private method _versionMajor() is used by CRTP class FcBase<TSYNC>
      * and intentionally not accessible through the user API. */
     static constexpr int32_t _versionMajor() noexcept {

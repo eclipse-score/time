@@ -22,7 +22,7 @@ uint8 Crc_CalculateCRC8H2F(const uint8* Crc_DataPtr, uint32 Crc_Length, uint8 Cr
 }
 
 class ScorePtpSubtlvTest : public ::testing::Test {
-   protected:
+protected:
     PtpSubTlvMock ptp_sub_tlv;
     const uint8 crc_sample_data = 25;
 

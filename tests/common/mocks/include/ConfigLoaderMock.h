@@ -14,7 +14,7 @@
 namespace score {
 namespace time {
 class TsyncConfigLoaderMock {
-   public:
+public:
     MOCK_CONST_METHOD0(GetConfig, const TimeBaseConfiguration&());
     MOCK_METHOD0(DumpConfig, void());
 };

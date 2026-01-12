@@ -14,7 +14,7 @@ namespace score {
 namespace time {
 
 class SysCallsNamedSemMock {
-   public:
+public:
     MOCK_METHOD2(OsSemOpen, sem_t*(const char*, int));
     MOCK_METHOD4(OsSemOpen, sem_t*(const char*, int, mode_t, unsigned int));
     MOCK_METHOD1(OsSemClose, int(sem_t*));

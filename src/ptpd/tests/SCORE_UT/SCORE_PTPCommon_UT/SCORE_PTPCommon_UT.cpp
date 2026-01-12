@@ -19,7 +19,7 @@ PtpCommonMock ptpCommonMock;
 Score_PtpConsumerDataType consumerData;
 Score_PtpProviderDataType providerData;
 class ScorePtpCommonTest : public ::testing::Test {
-   protected:
+protected:
     PtpCommonMock ptp_common;
     const uint16_t testDomainNumber = 1;
     // Because all the function that interact with TSync_TimeBaseHandleType is mocked

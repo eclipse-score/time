@@ -48,7 +48,7 @@ static constexpr std::uint64_t kConsumerMagic = 0xabcddcbaabcddcba;
 static constexpr std::uint64_t kProviderMagic = 0x1122334444332211;
 
 class TsyncIdMappingsHandlerFixture : public ::testing::Test {
-   protected:
+protected:
     void SetUp() override {
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
         writer_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseWriterFactoryMock>>();
@@ -66,7 +66,7 @@ class TsyncIdMappingsHandlerFixture : public ::testing::Test {
         writer_factory_mock.reset();
     }
 
-   public:
+public:
     TsyncIdMappingsHandler mappings_handler_;
 
     static constexpr const uint32_t invalid_timebase_id_ = 99;
@@ -76,7 +76,7 @@ class TsyncIdMappingsHandlerFixture : public ::testing::Test {
 };
 
 class TsyncIdMappingsHandlerDeathFixture : public ::testing::Test {
-   protected:
+protected:
     void SetUp() override {
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
         writer_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseWriterFactoryMock>>();

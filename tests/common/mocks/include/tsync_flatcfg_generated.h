@@ -45,7 +45,7 @@ enum PncGatewayTypeEnum : int8_t {
 };
 
 class Mock_CrcFlags {
-   public:
+public:
     MOCK_METHOD0(crcCorrectionField, bool());
     MOCK_METHOD0(crcDomainNumber, bool());
     MOCK_METHOD0(crcMessageLength, bool());
@@ -54,7 +54,7 @@ class Mock_CrcFlags {
     MOCK_METHOD0(crcSourcePortIdentity, bool());
 };
 class Mock_EthGlobalTimeDomainProps {
-   public:
+public:
     MOCK_CONST_METHOD0(messageCompliance, EthGlobalTimeMessageFormatEnum());
     MOCK_CONST_METHOD0(destinationPhysicalAddress, flatbuffers::String*());
     MOCK_CONST_METHOD0(fupDataIdList, flatbuffers::Vector<uint8_t>*());
@@ -63,14 +63,14 @@ class Mock_EthGlobalTimeDomainProps {
 };
 
 class Mock_SubTlvConfig {
-   public:
+public:
     MOCK_METHOD0(statusSubTlv, bool());
     MOCK_METHOD0(timeSubTlv, bool());
     MOCK_METHOD0(userDataSubTlv, bool());
 };
 
 class Mock_GlobalTimeEthSlave {
-   public:
+public:
     MOCK_METHOD0(crcValidated, GlobalTimeCrcValidationEnum());
     MOCK_METHOD0(timeLeapHealingCounter, uint32_t());
     MOCK_METHOD0(followUpTimeoutValue, double());
@@ -81,13 +81,13 @@ class Mock_GlobalTimeEthSlave {
 };
 
 class Mock_SynchronizedTimeBaseConsumer {
-   public:
+public:
     MOCK_CONST_METHOD0(shortName, flatbuffers::String*());
     MOCK_CONST_METHOD0(networkTimeConsumer, Mock_GlobalTimeEthSlave*());
 };
 
 class Mock_GlobalTimeEthMaster {
-   public:
+public:
     MOCK_METHOD0(immediateResumeTime, double());
     MOCK_METHOD0(syncPeriod, double());
     MOCK_METHOD0(isSystemWideGlobalTimeMaster, bool());
@@ -96,7 +96,7 @@ class Mock_GlobalTimeEthMaster {
 };
 
 class Mock_TimeSyncCorrection {
-   public:
+public:
     MOCK_METHOD0(allowProviderRateCorrection, bool());
     MOCK_METHOD0(rateCorrectionsPerMeasurementDuration, uint32_t());
     MOCK_METHOD0(offsetCorrectionAdaptionInterval, double());
@@ -105,14 +105,14 @@ class Mock_TimeSyncCorrection {
 };
 
 class Mock_SynchronizedTimeBaseProvider {
-   public:
+public:
     MOCK_CONST_METHOD0(shortName, flatbuffers::String*());
     MOCK_CONST_METHOD0(networkTimeProvider, Mock_GlobalTimeEthMaster*());
     MOCK_CONST_METHOD0(timeSyncCorrection, flatbuffers::Vector<flatbuffers::Offset<Mock_TimeSyncCorrection>>*());
 };
 
 class Mock_GlobalTimeDomain {
-   public:
+public:
     MOCK_METHOD0(shortName, flatbuffers::String*());
     MOCK_METHOD0(domainId, uint32_t());
     MOCK_METHOD0(syncLossTimeout, double());
@@ -125,7 +125,7 @@ class Mock_GlobalTimeDomain {
 };
 
 class Mock_TSYNCEcuCfg {
-   public:
+public:
     MOCK_CONST_METHOD0(globalTimeDomain, flatbuffers::Vector<flatbuffers::Offset<Mock_GlobalTimeDomain>>*());
 };
 

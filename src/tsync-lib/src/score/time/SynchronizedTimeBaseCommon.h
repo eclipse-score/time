@@ -23,7 +23,7 @@ namespace time {
 class ITimeBaseReader;
 
 class SynchronizedTimeBaseCommon final {
-   public:
+public:
     // static helpers for provider and consumer
     static uint32_t GetTimeBaseDomainId(std::string_view timebase_name);
     static std::optional<Timestamp> GetCurrentTime(ITimeBaseReader& reader);
@@ -32,7 +32,7 @@ class SynchronizedTimeBaseCommon final {
     static UserDataView SanitizeUserData(const score::cpp::span<const std::byte>& ud);
     static std::optional<SynchronizationStatus> GetSynchronizationStatus(ITimeBaseReader& reader);
 
-   private:
+private:
     SynchronizedTimeBaseCommon();
     static std::optional<Timestamp> GetInterpolatedTimestamp(const TimestampWithStatus& ts,
                                                                    VirtualLocalTime ts_vlt);

@@ -12,7 +12,7 @@ namespace score {
 namespace time {
 
 class SysCallsMiscMock {
-   public:
+public:
     MOCK_METHOD1(OsUmask, mode_t(mode_t));
     MOCK_METHOD2(OsClockGetTime, int(clockid_t, timespec*));
     MOCK_METHOD4(OsThreadCreate,

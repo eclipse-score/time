@@ -12,7 +12,7 @@
 #define CLOCK_IDENTITY_LENGTH 8
 
 class PtpCommonMock {
-   public:
+public:
     // Mock method for tsync_ptp_lib functions
     MOCK_METHOD(TSync_ReturnType, TSync_Open, ());
     MOCK_METHOD(TSync_TimeBaseHandleType, TSync_OpenTimebase, (TSync_SynchronizedTimeBaseType));

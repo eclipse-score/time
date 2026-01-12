@@ -50,7 +50,7 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 
 class SynchronizedTimeBaseConsumerFixture : public ::testing::Test {
-   protected:
+protected:
     void SetUp() override {
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
         writer_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseWriterFactoryMock>>();
