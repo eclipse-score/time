@@ -15,8 +15,8 @@
 #include "score/time/utility/TsyncIdMappingsHandler.h"
 #include "score/time/utility/TsyncSharedUtils.h"
 
-#include "score/time/SynchronizedTimeBaseCommon.h"
-#include "score/time/TimeBaseStatusAccessMediator.h"
+#include "SynchronizedTimeBaseCommon.h"
+#include "TimeBaseStatusAccessMediator.h"
 
 using namespace std::chrono;
 using score::time::common::logFatalAndAbort;

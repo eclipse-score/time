@@ -19,7 +19,7 @@
 #include "score/time/utility/TsyncSharedUtils.h"
 
 #include "score/time/time_error_domain.h"
-#include "score/time/SynchronizedTimeBaseCommon.h"
+#include "SynchronizedTimeBaseCommon.h"
 
 using score::time::common::logFatalAndAbort;
 using score::cpp::span;
