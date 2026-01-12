@@ -4,14 +4,14 @@
 
 #include <gtest/gtest.h>
 #define private public
-#include "score/time/utility/TsyncReadWriteLock.h"
+#include "TsyncReadWriteLock.h"
 #undef private
 //!!#include "ara/core/abort.h"
 #include "score/span.hpp"
 #include "SysCallsReadWriteLockMock.h"
 
 using namespace score::time;
-std::unique_ptr<testing::NiceMock<SysCallsReadWriteLockMock>> score::time::rw_lock_mock;
+extern std::unique_ptr<testing::NiceMock<SysCallsReadWriteLockMock>> score::time::rw_lock_mock;
 
 class TSyncReadWriteLockTestFixture : public ::testing::Test {
    public:

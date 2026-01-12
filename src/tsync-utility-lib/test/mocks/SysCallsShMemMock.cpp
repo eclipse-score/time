@@ -7,6 +7,8 @@
 namespace score {
 namespace time {
 
+std::unique_ptr<::testing::NiceMock<SysCallsShMemMock>> shared_mem_mock;
+
 int OsShmOpen(const char* __name, int __oflag, mode_t __mode) {
     return shared_mem_mock->OsShmOpen(__name, __oflag, __mode);
 }

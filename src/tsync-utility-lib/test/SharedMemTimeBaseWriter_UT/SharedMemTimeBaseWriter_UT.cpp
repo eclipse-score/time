@@ -25,8 +25,6 @@ using score::cpp::span;
 #endif
 
 using namespace score::time;
-std::unique_ptr<::testing::NiceMock<SysCallsShMemMock>> score::time::shared_mem_mock;
-std::unique_ptr<::testing::NiceMock<SysCallsReadWriteLockMock>> score::time::rw_lock_mock;
 
 class SharedMemTimeBaseWriterTestFixture : public ::testing::Test {
    public:

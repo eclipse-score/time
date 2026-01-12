@@ -7,6 +7,8 @@
 namespace score {
 namespace time {
 
+std::unique_ptr<testing::NiceMock<SysCallsReadWriteLockMock>> rw_lock_mock;
+
 int OsRwLockInitAttr(pthread_rwlockattr_t* attr) {
     return rw_lock_mock->OsRwLockInitAttr(attr);
 }

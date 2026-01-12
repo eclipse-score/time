@@ -23,9 +23,6 @@
 using score::cpp::span;
 using namespace score::time;
 
-std::unique_ptr<::testing::NiceMock<SysCallsShMemMock>> score::time::shared_mem_mock;
-std::unique_ptr<testing::NiceMock<SysCallsReadWriteLockMock>> score::time::rw_lock_mock;
-
 class SharedMemTimeBaseReaderTestFixture : public ::testing::Test {
    public:
     static const int32_t EXIT_CODE;

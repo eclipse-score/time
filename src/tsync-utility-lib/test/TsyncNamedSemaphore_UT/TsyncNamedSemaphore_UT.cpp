@@ -13,25 +13,17 @@
 //!!#include "ara/core/abort.h"
 #include "SysCallsNamedSemMock.h"
 
-namespace score {
-namespace time {
-
-std::unique_ptr<::testing::NiceMock<SysCallsNamedSemMock>> named_semaphore_mock;
-
-}  // namespace time
-}  // namespace score
-
 using namespace score::time;
 
 #include <iostream>
 
 class TSyncNamedSemaphoreTestFixture : public ::testing::Test {
-   public:
+public:
     static const int32_t EXIT_CODE;
     static const char* TEST_LOCK_NAME;
     static const char* TEST_LOCK_NAME_2;
 
-   protected:
+protected:
     void SetUp() override {
         named_semaphore_mock = std::make_unique<::testing::NiceMock<SysCallsNamedSemMock>>();
 

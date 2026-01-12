@@ -23,8 +23,8 @@
 
 namespace score {
 namespace time {
-std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
-std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
+extern std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
+extern std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
 }  // namespace time
 }  // namespace score
 
@@ -43,13 +43,6 @@ const std::string_view kTimeProviderNames[2] = {
     "provider_1",
     "provider_2",
 };
-
-namespace testing {
-template <>
-Matcher<std::string_view>::Matcher(std::string_view s) {
-    *this = Eq(s.data());
-}
-}  // namespace testing
 
 static constexpr std::uint64_t kConsumerMagic = 0xabcddcbaabcddcba;
 static constexpr std::uint64_t kProviderMagic = 0x1122334444332211;
@@ -206,8 +199,8 @@ TEST_F(TsyncIdMappingsHandlerDeathFixture, CommitMappingsToSharedMemory_OnWriteD
 
 TEST_F(TsyncIdMappingsHandlerDeathFixture, CommitMappingsToSharedMemory_OnTooManyConsumerMappings_Aborts) {
     auto fn = [] {
-        Array<std::string, 129> consumer_names{};
-        Array<std::string_view, 129> consumer_names_views{};
+        std::array<std::string, 129> consumer_names{};
+        std::array<std::string_view, 129> consumer_names_views{};
         for (std::uint32_t i = 0; i < consumer_names.size(); ++i) {
             consumer_names[i] = std::to_string(i).c_str();
             consumer_names_views[i] = consumer_names[i];
