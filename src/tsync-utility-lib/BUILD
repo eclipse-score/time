@@ -154,15 +154,15 @@ cc_library(
         ":tsync_utility_if",
     ],
     srcs = [
+        ":utility_tsync_id_mappings_handler",
         ":utility_time_base_reader_factory",
         ":utility_time_base_writer_factory",
         ":utility_shared_mem_time_base_reader",
         ":utility_shared_mem_time_base_writer",
-        ":utility_sys_calls",
-        ":utility_tsync_id_mappings_handler",
+        ":utility_tsync_shared_utils",
         ":utility_tsync_named_semaphore",
         ":utility_tsync_read_write_lock",
-        ":utility_tsync_shared_utils",
+        ":utility_sys_calls",
     ],
     deps = [
         ":tsync_utility_if",

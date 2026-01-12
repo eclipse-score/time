@@ -244,7 +244,6 @@ bool SharedMemTimeBaseWriter::Write(UserDataView data) /* noexcept */ {
 
     if (data.size() == 0u) {
         return Write(make_array<std::byte>(0, 0, 0, 0));
-//        return Write({std::byte{0}, std::byte{0}, std::byte{0}, std::byte{0}});
     }
 
     // We're always writing 4 bytes of UserData (UD length + 3 bytes)
