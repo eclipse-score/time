@@ -20,21 +20,8 @@ void TimeBaseConfiguration::AddConfigData(const TimeBaseConfigData& config_data)
     configurations_[config_data.timebase_name] = config_data;
 }
 
-std::optional<TimeBaseConfigData> TimeBaseConfiguration::GetConfigData(
-    const std::string_view& instance_specifier) const noexcept {
-    std::string config_name(instance_specifier);
-
-    auto it = configurations_.find(config_name);
-    if (it != configurations_.end()) {
-        return std::optional<TimeBaseConfigData>(it->second);
-    }
-
-    return std::optional<TimeBaseConfigData>();
-}
-
-std::optional<TimeBaseConfigData> TimeBaseConfiguration::GetConfigData(std::string_view name) const noexcept {
+std::optional<TimeBaseConfigData> TimeBaseConfiguration::GetConfigData(const std::string_view& name) const noexcept {
     auto it = configurations_.find(std::string(name));
-
     if (it != configurations_.end()) {
         return std::optional<TimeBaseConfigData>(it->second);
     }

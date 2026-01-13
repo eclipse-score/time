@@ -13,15 +13,12 @@ namespace daemon {
 
 class HouseKeeping {
 public:
-    HouseKeeping() /* noexcept */ = default;
-    ~HouseKeeping() /* noexcept */ = default;
-    void InitSignals();
+    static void Init() noexcept;
 
     // This flag will be set when an exit signal was received
     static volatile std::sig_atomic_t exit_flag_;
 
-private:
-    static void InitFlags();
+    HouseKeeping() = delete;
 };
 
 }  // namespace daemon

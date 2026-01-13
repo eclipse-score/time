@@ -42,17 +42,15 @@ TsyncWorker::~TsyncWorker() noexcept {
 void TsyncWorker::Init() noexcept {
     if (!is_initialized_) {
         InitDaemon();
-        HouseKeeping hk;
-        hk.InitSignals();
+        HouseKeeping::Init();
         InitIdMappings();
         InitTimeBaseAccessors();
-
         is_initialized_ = true;
     } else {
         // TODO: log stuff
         std::cerr << "tsyncd: tsyncd: TsyncWorker::Init - TsyncWorker already initialized\n";
     }
-    ::std::cout << "tsyncd: TsyncWorker::Init - done.\n";
+    std::cout << "tsyncd: TsyncWorker::Init - done.\n";
 }
 
 void TsyncWorker::Run() noexcept {

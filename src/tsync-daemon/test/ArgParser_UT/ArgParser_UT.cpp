@@ -7,7 +7,7 @@
 #include "ArgParser.h"
 #undef private
 
-using namespace score::time;
+using namespace score::time::daemon;
 
 namespace testing {
 namespace daemon_argparser_ut {

@@ -22,17 +22,14 @@ score-time
  │    ├── ptpd               Modified variant of ptpd
  │    ├── tsync-daemon       Daemon for managing tsync shared mem
  │    ├── tsync-lib          Library to be used by time clients
- │    │    ├── include         API definitions of tsync-lib (i.e. public headers)
- │    │    └── src             Implementation (source files and privateheaders)
  │    ├── tsync-ptp-lib      Library used by ptpd
  │    └── tsync-utility-lib  Internal utility library for shared mem access
  ├── tests
-      ├── Unit Tests
-      └── Binary Tests
+      └── Binary/integration tests
 ```
-
-* Folder `include` contains the API definitions of TSYNC and the public headers.
-* Folder `src` contains source files of the TSYNC implementation and private headers.
+Common sub-structure of each component (if applicable):
+* Folder `include` contains the API definition of the component (i.e. its public headers).
+* Folder `src` contains source files of the implementation and private headers.
 * Folder `test` contains unit tests for the implemented classes.
 
 ## 🚀 Getting Started

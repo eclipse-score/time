@@ -3,7 +3,6 @@
  ********************************************************************************/
 
 #include <gtest/gtest.h>
-#include <signal.h>
 
 #include <memory>
 #include <thread>
@@ -20,16 +19,15 @@
 #define private public
 #include "TsyncWorker.h"
 #undef public
-#include "HouseKeepingMock.h"
 
 // flatcfg mock reference
 flatcfg::Mock_Flatcfg* flatcfg::FlatCfg::mock_flat_cfg_ = nullptr;
 
 namespace score {
 namespace time {
-std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
-std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
-std::unique_ptr<testing::NiceMock<TsyncSharedUtilsMock>> shared_utils_mock;
+extern std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
+extern std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
+extern std::unique_ptr<testing::NiceMock<TsyncSharedUtilsMock>> shared_utils_mock;
 extern bool writer_factory_mock_return_real_writer;
 extern bool reader_factory_mock_return_real_reader;
 
@@ -37,7 +35,7 @@ std::unique_ptr<::testing::NiceMock<SysCallsMiscMock>> misc_mock;
 }  // namespace time
 }  // namespace score
 
-using score::time::HouseKeeping;
+using score::time::daemon::HouseKeeping;
 using score::time::kIdMappingsShmemFileName;
 using score::time::kIdMappingsShmemSize;
 using score::time::kSharedMemPageSize;
@@ -49,8 +47,8 @@ using score::time::SharedMemTimeBaseReaderMock;
 using score::time::SharedMemTimeBaseWriterMock;
 using score::time::SynchronizationStatus;
 using score::time::SysCallsMiscMock;
-using score::time::TimeBaseConfigData;
-using score::time::TimeBaseConfiguration;
+using score::time::daemon::TimeBaseConfigData;
+using score::time::daemon::TimeBaseConfiguration;
 using score::time::TimeBaseReaderFactory;
 using score::time::TimeBaseReaderFactoryMock;
 using score::time::TimeBaseWriterFactory;
@@ -68,7 +66,7 @@ using ::testing::InSequence;
 using ::testing::ReturnRef;
 using ::testing::SetArgReferee;
 
-using WorkerMock = score::time::TsyncWorker;
+using WorkerMock = score::time::daemon::TsyncWorker;
 
 namespace testing {
 namespace daemon_worker_ut {

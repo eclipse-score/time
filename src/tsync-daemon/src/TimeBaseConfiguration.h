@@ -34,9 +34,7 @@ public:
     TimeBaseConfiguration& operator=(TimeBaseConfiguration&&) = delete;
 
     void AddConfigData(const TimeBaseConfigData& config_data) noexcept;
-    std::optional<TimeBaseConfigData> GetConfigData(
-        const std::string_view& instance_specifier) const noexcept;
-    std::optional<TimeBaseConfigData> GetConfigData(std::string_view name) const noexcept;
+    std::optional<TimeBaseConfigData> GetConfigData(const std::string_view& name) const noexcept;
     void Clear();
     iterator begin();
     const_iterator cbegin() const;

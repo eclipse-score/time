@@ -3,15 +3,57 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@flatbuffers//:build_defs.bzl", "flatbuffer_cc_library")
 
-cc_binary(
-    name = "tsync_daemon",
+cc_library(
+    name = "arg_parser",
+    srcs = ["src/ArgParser.cpp"],
+    hdrs = ["src/ArgParser.h"],
+    strip_include_prefix = "src",
+    visibility = [
+        ":__subpackages__",
+    ],
+)
+
+cc_library(
+    name = "house_keeping",
+    srcs = ["src/HouseKeeping.cpp"],
+    hdrs = ["src/HouseKeeping.h"],
+    strip_include_prefix = "src",
+    visibility = [
+        ":__subpackages__",
+    ],
+)
+
+cc_library(
+    name = "time_base_configuration",
+    srcs = ["src/TimeBaseConfiguration.cpp"],
+    hdrs = ["src/TimeBaseConfiguration.h"],
+    strip_include_prefix = "src",
     deps = [
-        ":tsync_daemon_lib",
+        "//src/tsync-utility-lib:tsync_utility_if",
     ],
-    data = [
-        ":config_file",
+    visibility = [
+        ":__subpackages__",
     ],
-    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "worker",
+    srcs = [
+        "src/ConfigLoader.h",
+        "src/HouseKeeping.h",
+        "src/TimeBaseConfiguration.h",
+        "src/TsyncWorker.cpp"
+    ],
+    hdrs = ["src/TsyncWorker.h"],
+    strip_include_prefix = "src",
+    deps = [
+        "//src/tsync-lib:tsync_if",
+        "//src/tsync-utility-lib:tsync_utility_if",
+        "//src/common",
+    ],
+    visibility = [
+        ":__subpackages__",
+    ],
 )
 
 cc_library(
@@ -51,4 +93,15 @@ genrule(
     """,
     message = "Generating daemon_config binary",
     tools = ["@flatbuffers//:flatc"],
+)
+
+cc_binary(
+    name = "tsync_daemon",
+    deps = [
+        ":tsync_daemon_lib",
+    ],
+    data = [
+        ":config_file",
+    ],
+    visibility = ["//visibility:public"],
 )

@@ -17,6 +17,7 @@
 #undef private
 
 using namespace score::time;
+using namespace score::time::daemon;
 using InstanceSpecifier = std::string_view;
 
 static const char* CONFIG_DATA_NAME = "TestConfig";
@@ -174,7 +175,7 @@ TEST(Daemon_TimeBaseConfiguration_UT, GetConfigData_ByInstanceSpecifier_ReturnsC
     TimeBaseConfiguration& instance = TimeBaseConfiguration::GetInstance();
     instance.Clear();
     InstanceSpecifier config_specifier("mytest/config");
-    TimeBaseConfigData expected_config{config_specifier,
+    TimeBaseConfigData expected_config{std::string(config_specifier),
                                        TsyncTimeDomainConfig{{}, {}, {}, {}, {}, 1}};
 
     instance.AddConfigData(expected_config);
