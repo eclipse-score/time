@@ -2,7 +2,7 @@
  * (c) 2025 ETAS GmbH. All rights reserved.
  ********************************************************************************/
 
-#include "score/time/daemon/ConfigLoader.h"
+#include "ConfigLoader.h"
 
 #include <algorithm>
 #include <cstring>
@@ -13,8 +13,9 @@
 
 #include "flatcfg/flatcfg.h"
 #include "score/time/common/Abort.h"
-#include "score/time/daemon/TimeBaseConfiguration.h"
-#include "score/time/daemon/tsync_flatcfg_addon.h"
+
+#include "TimeBaseConfiguration.h"
+#include "tsync_flatcfg_addon.h"
 #include "src/tsync-daemon/tsync_flatcfg_generated.h"
 
 using score::time::common::logFatalAndAbort;

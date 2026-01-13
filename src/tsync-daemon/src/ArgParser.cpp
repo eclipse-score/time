@@ -2,7 +2,7 @@
  * (c) 2025 ETAS GmbH. All rights reserved.
  ********************************************************************************/
 
-#include "score/time/daemon/ArgParser.h"
+#include "ArgParser.h"
 
 #include <algorithm>
 #include <iostream>

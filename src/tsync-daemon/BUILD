@@ -36,28 +36,19 @@ cc_library(
 
 flatbuffer_cc_library(
     name = "tsync_flatcfg",
-    srcs = ["src/score/time/daemon/tsync_flatcfg.fbs"],
+    srcs = ["src/tsync_flatcfg.fbs"],
 )
 
 genrule(
     name = "config_file",
     srcs = [
-        "src/score/time/daemon/tsync_flatcfg.fbs",
-        "src/score/time/daemon/tsync__Machine_flatcfg.json",
+        "src/tsync_flatcfg.fbs",
+        "src/tsync__Machine_flatcfg.json",
     ],
-    outs = ["src/score/time/daemon/tsync__Machine_flatcfg.bin"],
+    outs = ["src/tsync__Machine_flatcfg.bin"],
     cmd = """
-    $(location @flatbuffers//:flatc) --binary -o $(RULEDIR)/src/score/time/daemon/ $(SRCS)
+    $(location @flatbuffers//:flatc) --binary -o $(RULEDIR)/src/ $(SRCS)
     """,
     message = "Generating daemon_config binary",
     tools = ["@flatbuffers//:flatc"],
 )
-
-
-#exports_files(
-#    [
-#        "src/ConfigLoader.cpp",
-#        "src/tsyncd_main.cpp",
-#    ],
-#    visibility = ["//tests/SCORE_UT:__pkg__"],
-#)

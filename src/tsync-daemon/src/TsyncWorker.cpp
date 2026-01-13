@@ -2,7 +2,7 @@
  * (c) 2025 ETAS GmbH. All rights reserved.
  ********************************************************************************/
 
-#include "score/time/daemon/TsyncWorker.h"
+#include "TsyncWorker.h"
 
 #include <fcntl.h>
 
@@ -20,9 +20,9 @@
 #include "score/time/utility/TsyncIdMappingsHandler.h"
 #include "score/time/utility/TsyncSharedUtils.h"
 
-#include "score/time/daemon/ConfigLoader.h"
-#include "score/time/daemon/HouseKeeping.h"
-#include "score/time/daemon/TimeBaseConfiguration.h"
+#include "ConfigLoader.h"
+#include "HouseKeeping.h"
+#include "TimeBaseConfiguration.h"
 
 using score::time::common::logFatalAndAbort;
 using SteadyClock = std::chrono::steady_clock;

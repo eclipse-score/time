@@ -2,7 +2,7 @@
  * (c) 2025 ETAS GmbH. All rights reserved.
  ********************************************************************************/
 
-#include "score/time/daemon/TimeBaseConfiguration.h"
+#include "TimeBaseConfiguration.h"
 
 namespace score {
 namespace time {
