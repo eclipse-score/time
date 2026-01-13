@@ -9,12 +9,12 @@
 #include <memory>
 #include <string_view>
 
+#include "score/time/utility/ITimeBaseReader.h"
+
 namespace score {
 namespace time {
 
-class ITimeBaseReader;
-
-class TimeBaseReaderFactory {   
+class TimeBaseReaderFactory {
 public:
     using PointerType = std::unique_ptr<ITimeBaseReader>;
 

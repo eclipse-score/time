@@ -9,15 +9,15 @@
 #include <memory>
 #include <string_view>
 
+#include "score/time/utility/ITimeBaseWriter.h"
+
 namespace score {
 namespace time {
-
-class ITimeBaseWriter;
 
 class TimeBaseWriterFactory {
 public:
     using PointerType = std::unique_ptr<ITimeBaseWriter>;
-    
+
     static PointerType Create(std::string_view name, bool is_owner = false);
     static PointerType Create(std::string_view name, std::size_t max_size, bool is_owner = false);
 };

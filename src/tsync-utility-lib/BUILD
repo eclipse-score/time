@@ -166,6 +166,7 @@ cc_library(
     ],
     deps = [
         ":tsync_utility_if",
+        "//src/common",
     ],
     # linkstatic = True,
     visibility = [
