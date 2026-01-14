@@ -75,7 +75,7 @@ bazel run //src/tsync-daemon:tsync_daemon
 Run the ptp daemon:
 
 ```shell
-sudo bazel run //src/ptpd -- -i <ethnernet-if> -d 1 --global:foreground=Y -S --ptpengine:transport=ethernet --ptpengine:delay_mechanism=DELAY_DISABLED --ptpengine:disable_bmca=y --score:globaltimepropagationdelay=0.0 -L --ptpengine:dot1as=1 --clock:no_adjust=Y
+sudo bazelisk run //src/ptpd -- -i eth0 -d 1 --global:foreground=Y -S --ptpengine:transport=ethernet --ptpengine:delay_mechanism=DELAY_DISABLED --ptpengine:disable_bmca=y --score:globaltimepropagationdelay=0.0 -L --ptpengine:dot1as=1 --clock:no_adjust=Y
 ```
 
 ## High Level Design

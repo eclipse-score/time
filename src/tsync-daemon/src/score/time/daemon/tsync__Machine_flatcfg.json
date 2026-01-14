@@ -22,7 +22,7 @@
                     "fupDataIdList": [
                         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16
                     ],
-                    "messageCompliance": 1,
+                    "messageCompliance": 0,
                     "vlanPriority": 2
                 }
             ],
@@ -31,7 +31,7 @@
                     "shortName": "GlobalTimeEthMaster",
                     "communicationConnector": {
                         "shortName": "EthernetCommunicationConnector",
-                        "createEcuWakeupSource": false, 
+                        "createEcuWakeupSource": false,
                         "dynamicPncToChannelMappingEnabled": false,
                         "pncFilterArrayMasks": [1],
                         "pncGatewayType": 0,
@@ -68,7 +68,7 @@
                     ],
                     "communicationConnector": {
                         "shortName": "EthernetCommunicationConnector",
-                        "createEcuWakeupSource": false, 
+                        "createEcuWakeupSource": false,
                         "dynamicPncToChannelMappingEnabled": false,
                         "pncFilterArrayMasks": [1],
                         "pncGatewayType": 0,
@@ -98,7 +98,7 @@
                         ],
                         "communicationConnector": {
                             "shortName": "EthernetCommunicationConnector",
-                            "createEcuWakeupSource": false, 
+                            "createEcuWakeupSource": false,
                             "dynamicPncToChannelMappingEnabled": false,
                             "pncFilterArrayMasks": [1],
                             "pncGatewayType": 0,
@@ -121,7 +121,7 @@
     "ethernetCommunicationConnector": [
         {
             "shortName": "EthernetCommunicationConnector",
-            "createEcuWakeupSource": false, 
+            "createEcuWakeupSource": false,
             "dynamicPncToChannelMappingEnabled": false,
             "pncFilterArrayMasks": [1],
             "pncGatewayType": 0,
