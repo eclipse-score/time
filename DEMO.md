@@ -11,11 +11,17 @@ export ECUCFG_ENV_VAR_ROOTFOLDER=$(pwd)/bazel-out/k8-fastbuild/bin/src/tsync-dae
 sudo -E bazel-bin/src/tsync-daemon/tsync_daemon
 ```
 
-Second, start the PTP daemon
+Second, start the PTP daemon MASTER
 
 ```
 bazel build //src/ptpd
-sudo -E bazel-bin/src/ptpd/ptpd -i eth0 -d 1 --global:foreground=Y -S --ptpengine:transport=ethernet --ptpengine:delay_mechanism=DELAY_DISABLED --ptpengine:disable_bmca=y -L --clock:no_adjust=Y --ptpengine:dot1as=1
+sudo bazel-bin/src/ptpd/ptpd -i eth0 -d 1 --global:foreground=Y -M --ptpengine:transport=ethernet --ptpengine:delay_mechanism=DELAY_DISABLED --ptpengine:disable_bmca=y --score:globaltimepropagationdelay=0.0 -L --ptpengine:dot1as=1 --clock:no_adjust=Y -V
+```
+
+Start the PTP daemon SLAVE
+
+```
+sudo bazel-bin/src/ptpd/ptpd -i eth0 -d 1 --global:foreground=Y -s --ptpengine:transport=ethernet --ptpengine:delay_mechanism=DELAY_DISABLED --ptpengine:disable_bmca=y --score:globaltimepropagationdelay=0.0 -L --ptpengine:dot1as=1 --clock:no_adjust=Y -V
 ```
 
 Now start the demo application:
