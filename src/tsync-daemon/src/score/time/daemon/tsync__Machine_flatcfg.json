@@ -115,6 +115,39 @@
                     }
                 }
             ],
+            "synchronizedTimeBaseProviders": [
+                {
+                    "shortName": "provider",
+                    "networkTimeProvider": {
+                        "shortName": "GlobalTimeEthMaster",
+                        "communicationConnector": {
+                            "shortName": "EthernetCommunicationConnector",
+                            "createEcuWakeupSource": false,
+                            "dynamicPncToChannelMappingEnabled": false,
+                            "pncFilterArrayMasks": [1],
+                            "pncGatewayType": 0,
+                            "maximumTransmissionUnit": 1500,
+                            "neighborCacheSize": 1024,
+                            "pathMtuEnabled": false,
+                            "pathMtuTimeout": 0.2
+                        },
+                        "immediateResumeTime": 1.0,
+                        "isSystemWideGlobalTimeMaster": true,
+                        "syncPeriod": 1.0,
+                        "crcSecured": 0,
+                        "holdOverTime": 60.0,
+                        "subTlvConfig": [
+                            {
+                                "statusSubTlv": false,
+                                "timeSubTlv": true,
+                                "userDataSubTlv": true
+                            }
+                        ]
+                    },
+                    "timeSyncCorrection": [
+                    ]
+                }
+            ],
             "syncLossTimeout": 1.0
         }
     ],
