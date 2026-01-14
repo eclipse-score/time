@@ -5,10 +5,10 @@
 #include <gtest/gtest.h>
 #include <sys/mman.h>
 
+#include <csignal>
 #include <cstring>
 #include <mutex>
 
-//!!#include "ara/core/abort.h"
 #include "score/span.hpp"
 #define private public
 #include "score/time/utility/TsyncConfigTypes.h"
@@ -43,7 +43,7 @@ protected:
         ON_CALL(*shared_mem_mock, OsClose(::testing::_)).WillByDefault(::testing::Return(0));
 
         // install abort handler for our death tests
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        signal(SIGABRT, AbortHandler);
         // As we use here singleton mock object, clear expectations after each test
         ::testing::Mock::AllowLeak(shared_mem_mock.get());
     }
@@ -52,11 +52,11 @@ protected:
         tb_reader_.reset();
         shared_mem_mock.reset();
         rw_lock_mock.reset();
-
-        //!! ara::core::SetAbortHandler(nullptr);
+        // use the default abort handler again
+        signal(SIGABRT, SIG_DFL);
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept {
         // the mock has to be reset here, otherwise the expectations for our death tests
         // will never be met/evaluated.
         shared_mem_mock.reset();
