@@ -15,12 +15,11 @@
 Stakeholder Requirements
 ------------------------
 
-.. stkh_req:: <Title>
-   :id: stkh_req__<Title>
-   :reqtype: <Functional|Interface|Process|Non-Functional>
-   :security: <YES|NO>
-   :safety: <QM|ASIL_B>
-   :rational: <The rationale provides the reason that the requirement is needed.>
-   :valid_from: <milestone version>
-   :valid_until: <milestone version>
-   :status: <valid|invalid>
+.. stkh_req:: Vehicle Time synchronization
+   :id: stkh_req__time__vehicle_time_sync
+   :reqtype: Functional
+   :security: NO
+   :safety: QM
+   :rationale: Synchronize local clock with an external time master using gPTP protocol (IEEE 802.1AS)
+   :valid_from: v1.0.0
+   :status: valid

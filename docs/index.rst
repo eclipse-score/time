@@ -17,27 +17,17 @@ Time Synchronization
 
 This documentation describes the structure, usage and configuration of the Time Synchronization module.
 
-.. contents:: Table of Contents
-   :depth: 2
-   :local:
+.. toctree::
+   :maxdepth: 5
+
+   stakeholder_requirements/index
+   tool_requirements/index
 
 Overview
 --------
 
 This repository provides a standardized setup for projects using **C++** or **Rust** and **Bazel** as a build system.
 It integrates best practices for build, test, CI/CD and documentation.
-
-Requirements
-------------
-
-.. stkh_req:: Example Functional Requirement
-   :id: stkh_req__docgen_enabled__example
-   :status: valid
-   :safety: QM
-   :security: YES
-   :reqtype: Functional
-   :rationale: Ensure documentation builds are possible for all modules
-
 
 Project Layout
 --------------

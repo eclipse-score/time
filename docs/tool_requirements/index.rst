@@ -15,10 +15,11 @@
 Tool Requirements
 -----------------
 
-.. tool_req:: <Title>
-   :id: tool_req__<tool>__<Title>
-   :security: <YES|NO>
-   :safety: <QM|ASIL_B>
-   :satisfies: <link to process req id>
-   :status: <valid|invalid>
-   :implemented: <YES|PARTIAL|NO>
+.. tool_req:: Build Tool
+   :id: tool_req__build
+   :security: NO
+   :safety: QM
+   :status: valid
+   :implemented: YES
+
+   Build tool for building the module.
