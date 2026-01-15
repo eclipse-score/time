@@ -4,69 +4,40 @@
 
 #include <gtest/gtest.h>
 
+#include <chrono>
 #include <memory>
 #include <thread>
 
-#include "TimeBaseConfiguration.h"
+#include "score/time/utility/TsyncIdMappingsHandler.h"
+
 #include "SharedMemTimeBaseReaderMock.h"
 #include "SharedMemTimeBaseWriterMock.h"
+#include "SysCallsNamedSemMock.h"
 #include "SysCallsMiscMock.h"
 #include "TimeBaseReaderFactoryMock.h"
 #include "TimeBaseWriterFactoryMock.h"
 #include "TsyncSharedUtilsMock.h"
-#include "score/time/utility/TsyncIdMappingsHandler.h"
+
+#include "HouseKeeping.h"
+#include "TimeBaseConfiguration.h"
 
 #define private public
 #include "TsyncWorker.h"
 #undef public
 
-// flatcfg mock reference
-flatcfg::Mock_Flatcfg* flatcfg::FlatCfg::mock_flat_cfg_ = nullptr;
-
-namespace score {
-namespace time {
-extern std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
-extern std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
-extern std::unique_ptr<testing::NiceMock<TsyncSharedUtilsMock>> shared_utils_mock;
-extern bool writer_factory_mock_return_real_writer;
-extern bool reader_factory_mock_return_real_reader;
-
-std::unique_ptr<::testing::NiceMock<SysCallsMiscMock>> misc_mock;
-}  // namespace time
-}  // namespace score
+using namespace score::time;
+using namespace std::chrono_literals;
 
 using score::time::daemon::HouseKeeping;
-using score::time::kIdMappingsShmemFileName;
-using score::time::kIdMappingsShmemSize;
-using score::time::kSharedMemPageSize;
-using score::time::misc_mock;
-using score::time::reader_factory_mock;
-using score::time::reader_factory_mock_return_real_reader;
-using score::time::shared_utils_mock;
-using score::time::SharedMemTimeBaseReaderMock;
-using score::time::SharedMemTimeBaseWriterMock;
-using score::time::SynchronizationStatus;
-using score::time::SysCallsMiscMock;
 using score::time::daemon::TimeBaseConfigData;
 using score::time::daemon::TimeBaseConfiguration;
-using score::time::TimeBaseReaderFactory;
-using score::time::TimeBaseReaderFactoryMock;
-using score::time::TimeBaseWriterFactory;
-using score::time::TimeBaseWriterFactoryMock;
-using score::time::TsyncSharedUtilsMock;
-using score::time::TsyncTimeDomainConfig;
-using score::time::writer_factory_mock;
-using score::time::writer_factory_mock_return_real_writer;
 
 using ::testing::_;
 using ::testing::An;
-using ::testing::AnyNumber;
 using ::testing::DoAll;
 using ::testing::InSequence;
-using ::testing::ReturnRef;
+using ::testing::Return;
 using ::testing::SetArgReferee;
-
-using WorkerMock = score::time::daemon::TsyncWorker;
 
 namespace testing {
 namespace daemon_worker_ut {
@@ -80,10 +51,11 @@ protected:
         writer_factory_mock_return_real_writer = false;
         reader_factory_mock_return_real_reader = false;
         shared_utils_mock = std::make_unique<::testing::NiceMock<TsyncSharedUtilsMock>>();
-        ;
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
         writer_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseWriterFactoryMock>>();
         misc_mock = std::make_unique<::testing::NiceMock<SysCallsMiscMock>>();
+        named_semaphore_mock = std::make_unique<::testing::NiceMock<SysCallsNamedSemMock>>();
+
         TimeBaseConfigData cfg{"TEST", TsyncTimeDomainConfig{{}, {}, {}, {}, {}, 1}};
         cfg.timebase_config.provider_config.time_master_config.is_valid = true;
         TimeBaseConfiguration::GetInstance().AddConfigData(cfg);
@@ -102,7 +74,7 @@ protected:
         //!! ara::core::SetAbortHandler(nullptr);
     }
 
-    static void CleanUp() {
+    void CleanUp() {
         TimeBaseConfiguration::GetInstance().Clear();
 
         // these mocks have to be reset here, otherwise the expectations for our death tests
@@ -111,41 +83,41 @@ protected:
         writer_factory_mock.reset();
         misc_mock.reset();
         shared_utils_mock.reset();
-        worker_mock_.ShutDown();
+        worker_.ShutDown();
     }
 
     static void AbortHandler() noexcept {
-        CleanUp();
+        //!!CleanUp();
         std::exit(EXIT_CODE);
     }
 
-    static WorkerMock worker_mock_;
+    score::time::daemon::TsyncWorker worker_;
 };
 
-WorkerMock DaemonWorkerFixture::worker_mock_;
+// WorkerMock DaemonWorkerFixture::worker_;
 
 const int32_t DaemonWorkerFixture::EXIT_CODE = 1;
 
-TEST_F(DaemonWorkerFixture, InIt_InitOnce_Success) {
+TEST_F(DaemonWorkerFixture, Init_NotInitialized_Success) {
     // Arrange
     InSequence seq;
 
     // Act
-    worker_mock_.Init();
+    worker_.Init();
 
     // Assert
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    EXPECT_TRUE(worker_.is_initialized_);
 }
 
-TEST_F(DaemonWorkerFixture, Init_InitTwice_Success) {
+TEST_F(DaemonWorkerFixture, Init_AlreadyInitialized_Success) {
     // Arrange
     InSequence seq;
 
+    worker_.Init();
+
     // Act and Assert
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
 }
 
 TEST_F(DaemonWorkerFixture, Init_OnCommitMappingsToSharedMemoryFailure_Aborts) {
@@ -160,7 +132,7 @@ TEST_F(DaemonWorkerFixture, Init_OnCommitMappingsToSharedMemoryFailure_Aborts) {
                 .WillOnce(::testing::Return(testing::ByMove(std::move(writer_mock))));
 
             // Act
-            worker_mock_.Init();
+            worker_.Init();
         },
         ::testing::ExitedWithCode(EXIT_CODE), "Error writing time domain mapping");
 }
@@ -181,7 +153,7 @@ TEST_F(DaemonWorkerFixture, Init_OnAddDomainMappingFailure_Aborts) {
                 .WillOnce(::testing::Return(testing::ByMove(std::move(writer_mock))));
 
             // Act
-            worker_mock_.Init();
+            worker_.Init();
         },
         ::testing::ExitedWithCode(EXIT_CODE), "Error adding domain mapping");
 }
@@ -191,17 +163,17 @@ TEST_F(DaemonWorkerFixture, Run_RunUntilExit_Success) {
     InSequence seq;
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
 
     // Assert
     // This should make the Run method finish immediately
     HouseKeeping::exit_flag_ = 1;
-    worker_mock_.Run();
+    worker_.Run();
     SharedMemTimeBaseWriterMock* mock_ptr =
-        static_cast<SharedMemTimeBaseWriterMock*>(worker_mock_.time_base_writers_[0].get());
+        static_cast<SharedMemTimeBaseWriterMock*>(worker_.time_base_writers_[0].get());
     EXPECT_CALL(*mock_ptr, Close()).Times(1);
-    worker_mock_.ShutDown();
+    worker_.ShutDown();
 }
 
 TEST_F(DaemonWorkerFixture, Run_WithTimeoutCheck_Succeeds) {
@@ -215,8 +187,8 @@ TEST_F(DaemonWorkerFixture, Run_WithTimeoutCheck_Succeeds) {
     InSequence seq;
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
     HouseKeeping::exit_flag_ = 0;
 
     std::thread exit_toggler_thread([]() {
@@ -225,11 +197,11 @@ TEST_F(DaemonWorkerFixture, Run_WithTimeoutCheck_Succeeds) {
     });
 
     exit_toggler_thread.detach();
-    worker_mock_.Run();
+    worker_.Run();
     SharedMemTimeBaseWriterMock* mock_ptr =
-        static_cast<SharedMemTimeBaseWriterMock*>(worker_mock_.time_base_writers_[0].get());
+        static_cast<SharedMemTimeBaseWriterMock*>(worker_.time_base_writers_[0].get());
     EXPECT_CALL(*mock_ptr, Close()).Times(1);
-    worker_mock_.ShutDown();
+    worker_.ShutDown();
 }
 
 TEST_F(DaemonWorkerFixture, Run_WithTimeStampSkipError_Aborts) {
@@ -246,8 +218,8 @@ TEST_F(DaemonWorkerFixture, Run_WithTimeStampSkipError_Aborts) {
             InSequence seq;
 
             // Act
-            worker_mock_.Init();
-            EXPECT_TRUE(worker_mock_.is_initialized_);
+            worker_.Init();
+            EXPECT_TRUE(worker_.is_initialized_);
 
             HouseKeeping::exit_flag_ = 0;
 
@@ -257,20 +229,20 @@ TEST_F(DaemonWorkerFixture, Run_WithTimeStampSkipError_Aborts) {
             });
 
             exit_toggler_thread.detach();
-            auto raw_reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_mock_.time_base_readers_[1].get());
+            auto raw_reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_.time_base_readers_[1].get());
             EXPECT_CALL(*raw_reader_mock, SetPosition(_)).WillOnce(::testing::Return(false));
-            worker_mock_.Run();
+            worker_.Run();
         },
         ::testing::ExitedWithCode(EXIT_FAILURE), "Skip failed");
 }
 
 TEST_F(DaemonWorkerFixture, GetTimestampCurrentVlt_Fails) {
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
     EXPECT_CALL(*shared_utils_mock.get(), GetCurrentVirtualLocalTime()).WillOnce(Return(std::nullopt));
-    auto res = worker_mock_.GetTimestampCurrentVlt();
-    worker_mock_.ShutDown();
+    auto res = worker_.GetTimestampCurrentVlt();
+    worker_.ShutDown();
     EXPECT_EQ(res.count(), 0);
 }
 
@@ -281,9 +253,9 @@ TEST_F(DaemonWorkerFixture, GetTimestampLastUpdateTime_Succeeds) {
     EXPECT_CALL(*mock, Read(::testing::An<score::time::VirtualLocalTime&>())).WillOnce(::testing::Return(true));
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
-    worker_mock_.GetTimestampLastUpdateTime(p);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
+    worker_.GetTimestampLastUpdateTime(p);
 }
 
 TEST_F(DaemonWorkerFixture, GetTimestampLastUpdateTime_Read_Fails) {
@@ -293,9 +265,9 @@ TEST_F(DaemonWorkerFixture, GetTimestampLastUpdateTime_Read_Fails) {
     EXPECT_CALL(*mock, Read(::testing::An<score::time::VirtualLocalTime&>())).WillOnce(::testing::Return(false));
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
-    worker_mock_.GetTimestampLastUpdateTime(p);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
+    worker_.GetTimestampLastUpdateTime(p);
 }
 
 TEST_F(DaemonWorkerFixture, Run_CallRunBeforeInit_Aborts) {
@@ -303,7 +275,7 @@ TEST_F(DaemonWorkerFixture, Run_CallRunBeforeInit_Aborts) {
     ASSERT_EXIT(
         {
             // Act
-            worker_mock_.Run();
+            worker_.Run();
         },
         ::testing::ExitedWithCode(EXIT_CODE),
         "tsyncd: TsyncWorker::Run - TsyncWorker::Init must be called before TsyncWorker::Run");
@@ -312,7 +284,7 @@ TEST_F(DaemonWorkerFixture, Run_CallRunBeforeInit_Aborts) {
 TEST_F(DaemonWorkerFixture, ShutDown_Return_Success) {
     // This test verifies that the process returns from ShutDown().
     // Act
-    worker_mock_.ShutDown();
+    worker_.ShutDown();
 
     // Assert
     // ShutDown() doesn't have return value. Make success with SUCCEED().
@@ -339,7 +311,7 @@ TEST_F(DaemonWorkerFixture, InitIdMappings_OnAddConsumerFailure_Exit) {
     TimeBaseConfiguration::GetInstance().AddConfigData(cfg_valid1);
     TimeBaseConfiguration::GetInstance().AddConfigData(cfg_valid2);
 
-    ASSERT_EXIT({ worker_mock_.InitIdMappings(); }, ::testing::ExitedWithCode(EXIT_CODE),
+    ASSERT_EXIT({ worker_.InitIdMappings(); }, ::testing::ExitedWithCode(EXIT_CODE),
                 "Error adding consumer to time domain mapping");
 }
 
@@ -363,7 +335,7 @@ TEST_F(DaemonWorkerFixture, InitIdMappings_OnAddProviderFailure_Exit) {
     TimeBaseConfiguration::GetInstance().AddConfigData(cfg_valid1);
     TimeBaseConfiguration::GetInstance().AddConfigData(cfg_valid2);
 
-    ASSERT_EXIT({ worker_mock_.InitIdMappings(); }, ::testing::ExitedWithCode(EXIT_CODE),
+    ASSERT_EXIT({ worker_.InitIdMappings(); }, ::testing::ExitedWithCode(EXIT_CODE),
                 "Error adding provider to time domain mapping");
 }
 
@@ -379,15 +351,15 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_GetTimestampStatusReturnsInvalidStatus
     TimeBaseConfiguration::GetInstance().AddConfigData(cfg_valid1);
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
 
-    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_mock_.time_base_readers_[1].get());
+    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_.time_base_readers_[1].get());
 
     EXPECT_CALL(*reader_mock, lock()).Times(1);
     EXPECT_CALL(*reader_mock, Read(An<SynchronizationStatus&>())).WillOnce(Return(false));
     EXPECT_CALL(*reader_mock, unlock()).Times(1);
-    worker_mock_.CheckTimeouts();
+    worker_.CheckTimeouts();
 
     SUCCEED();
 }
@@ -404,10 +376,10 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_NoTimeDiff_Succeeds) {
     TimeBaseConfiguration::GetInstance().AddConfigData(cfg_valid1);
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
 
-    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_mock_.time_base_readers_[1].get());
+    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_.time_base_readers_[1].get());
 
     score::time::VirtualLocalTime vlt_to_inject(0);
 
@@ -417,7 +389,7 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_NoTimeDiff_Succeeds) {
     EXPECT_CALL(*reader_mock, Read(An<score::time::VirtualLocalTime&>()))
         .WillOnce(DoAll(SetArgReferee<0>(vlt_to_inject), Return(true)));
     EXPECT_CALL(*reader_mock, unlock()).Times(2);
-    worker_mock_.CheckTimeouts();
+    worker_.CheckTimeouts();
 
     SUCCEED();
 }
@@ -434,10 +406,10 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_UpdateimeIsGreater_Succeeds) {
     TimeBaseConfiguration::GetInstance().AddConfigData(cfg_valid1);
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
 
-    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_mock_.time_base_readers_[1].get());
+    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_.time_base_readers_[1].get());
 
     score::time::VirtualLocalTime vlt_to_inject(123456);
 
@@ -449,7 +421,7 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_UpdateimeIsGreater_Succeeds) {
     EXPECT_CALL(*reader_mock, Read(An<score::time::VirtualLocalTime&>()))
         .WillOnce(DoAll(SetArgReferee<0>(vlt_to_inject), Return(true)));
     EXPECT_CALL(*reader_mock, unlock()).Times(2);
-    worker_mock_.CheckTimeouts();
+    worker_.CheckTimeouts();
 
     SUCCEED();
 }
@@ -467,11 +439,11 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_OnWriteTimeBaseStatusFailure_Fails) {
     score::time::VirtualLocalTime vlt_to_inject1(1000000);
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
 
-    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_mock_.time_base_readers_[1].get());
-    auto writer_mock = static_cast<SharedMemTimeBaseWriterMock*>(worker_mock_.time_base_writers_[1].get());
+    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_.time_base_readers_[1].get());
+    auto writer_mock = static_cast<SharedMemTimeBaseWriterMock*>(worker_.time_base_writers_[1].get());
 
     score::time::SynchronizationStatus status_to_inject =
         score::time::SynchronizationStatus::kSynchronized;  // global sync
@@ -489,7 +461,7 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_OnWriteTimeBaseStatusFailure_Fails) {
     EXPECT_CALL(*writer_mock, Write(An<const score::time::SynchronizationStatus&>())).WillOnce(Return(false));
     EXPECT_CALL(*writer_mock, unlock()).Times(1);
 
-    worker_mock_.CheckTimeouts();
+    worker_.CheckTimeouts();
 
     SUCCEED();
 }
@@ -507,11 +479,11 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_OnWriteTimeBaseStatusSuccess_Succeed) 
     score::time::VirtualLocalTime vlt_to_inject1(1000000);
 
     // Act
-    worker_mock_.Init();
-    EXPECT_TRUE(worker_mock_.is_initialized_);
+    worker_.Init();
+    EXPECT_TRUE(worker_.is_initialized_);
 
-    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_mock_.time_base_readers_[1].get());
-    auto writer_mock = static_cast<SharedMemTimeBaseWriterMock*>(worker_mock_.time_base_writers_[1].get());
+    auto reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(worker_.time_base_readers_[1].get());
+    auto writer_mock = static_cast<SharedMemTimeBaseWriterMock*>(worker_.time_base_writers_[1].get());
     ::testing::Mock::AllowLeak(reader_mock);
     ::testing::Mock::AllowLeak(writer_mock);
 
@@ -533,7 +505,7 @@ TEST_F(DaemonWorkerFixture, CheckTimeouts_OnWriteTimeBaseStatusSuccess_Succeed) 
     EXPECT_CALL(*writer_mock, Write(An<const score::time::SynchronizationStatus&>())).WillOnce(Return(true));
     EXPECT_CALL(*writer_mock, unlock()).Times(1);
 
-    worker_mock_.CheckTimeouts();
+    worker_.CheckTimeouts();
 
     SUCCEED();
 }

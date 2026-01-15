@@ -34,11 +34,6 @@ using ::testing::ReturnRef;
 
 namespace score {
 namespace time {
-std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
-std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
-std::unique_ptr<testing::NiceMock<TsyncSharedUtilsMock>> shared_utils_mock;
-extern bool writer_factory_mock_return_real_writer;
-extern bool reader_factory_mock_return_real_reader;
 // defined in SynchronizedTimeBaseCommon.cpp
 extern TsyncIdMappingsHandler mappings_handler;
 }  // namespace time
