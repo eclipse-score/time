@@ -5,12 +5,12 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <csignal>
 #include <cstddef>
 
 #define private public
 #include "score/time/utility/TsyncNamedSemaphore.h"
 #undef private
-//!!#include "ara/core/abort.h"
 #include "SysCallsNamedSemMock.h"
 
 using namespace score::time;
@@ -53,13 +53,13 @@ protected:
             .WillByDefault(::testing::DoAll(testing::SetArgPointee<1>(::testing::ByRef(sem_val_)), testing::Return(0)));
 
         ::testing::Mock::AllowLeak(named_semaphore_mock.get());
-        signal(SIGABRT, AbortHandler);
+        std::signal(SIGABRT, AbortHandler);
     }
 
     void TearDown() override {
         // As we use here singleton mock object, clear expectations after each test
         named_semaphore_mock.reset(nullptr);
-        signal(SIGABRT, SIG_DFL);
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     static void AbortHandler(int /*signal*/) noexcept {

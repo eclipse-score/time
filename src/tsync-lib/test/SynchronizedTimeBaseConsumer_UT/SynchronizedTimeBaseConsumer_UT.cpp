@@ -5,6 +5,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <csignal>
 #include <cstddef>
 #include <iostream>
 #include <mutex>
@@ -65,7 +66,7 @@ protected:
         writer_factory_mock_return_real_writer = false;
 
         // install abort handler for our death tests
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        std::signal(SIGABRT, &AbortHandler);
         // As we use singleton mock objecty, clear expectations after each test
         ::testing::Mock::AllowLeak(reader_factory_mock.get());
         ::testing::Mock::AllowLeak(writer_factory_mock.get());
@@ -74,7 +75,7 @@ protected:
 
     void TearDown() override {
         CleanUp();
-        //!! ara::core::SetAbortHandler(nullptr);
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     static void CleanUp() {
@@ -83,7 +84,7 @@ protected:
         shared_utils_mock.reset();
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept {
         CleanUp();
         std::exit(EXIT_CODE);
     }

@@ -17,6 +17,7 @@ using score::time::OsSemOpen;
 #include <sys/mman.h>
 #include <sys/stat.h>
 
+#include <csignal>
 #include <cstring>
 #include <iostream>
 #include <mutex>
@@ -242,7 +243,7 @@ public:
         ud_.userByte1 = 2;
         ud_.userByte2 = 3;
 
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        std::signal(SIGABRT, &AbortHandler);
         //!! std::atexit(ExitHandler);
 
         // Create fake timebase id mappings
@@ -262,6 +263,7 @@ public:
         DeleteSemaphores();
         mappings_handler_.Clear();
         ExitHandler();
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     static void ExitHandler() {
@@ -278,7 +280,7 @@ public:
         misc_mock.reset();
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept {
         // the mock has to be reset here, otherwise the expectations for our death tests
         // will never be met/evaluated.
         ExitHandler();

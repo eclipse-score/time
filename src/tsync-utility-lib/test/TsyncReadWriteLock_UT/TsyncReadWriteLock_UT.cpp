@@ -3,10 +3,12 @@
  ********************************************************************************/
 
 #include <gtest/gtest.h>
+
+#include <csignal>
+
 #define private public
 #include "TsyncReadWriteLock.h"
 #undef private
-//!!#include "ara/core/abort.h"
 #include "score/span.hpp"
 #include "SysCallsReadWriteLockMock.h"
 
@@ -34,15 +36,14 @@ protected:
         ON_CALL(*rw_lock_mock, OsRwLockDestroyLock(::testing::_)).WillByDefault(::testing::Return(0));
 
         // install abort handler for our death tests
-        signal(SIGABRT, AbortHandler);
+        std::signal(SIGABRT, AbortHandler);
         // As we use here singleton mock object, clear expectations after each test
         ::testing::Mock::AllowLeak(rw_lock_mock.get());
     }
 
     void TearDown() override {
         rw_lock_mock.reset();
-
-        signal(SIGABRT, SIG_DFL);
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     static void AbortHandler(int /*signal*/) noexcept {
