@@ -61,7 +61,7 @@ protected:
         TimeBaseConfiguration::GetInstance().AddConfigData(cfg);
 
         // install abort handler for our death tests
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        std::signal(SIGABRT, &AbortHandler);
         // As we use singleton mock objects, clear expectations after each test
         ::testing::Mock::AllowLeak(misc_mock.get());
         ::testing::Mock::AllowLeak(shared_utils_mock.get());
@@ -71,7 +71,7 @@ protected:
 
     void TearDown() override {
         CleanUp();
-        //!! ara::core::SetAbortHandler(nullptr);
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     void CleanUp() {
@@ -86,7 +86,7 @@ protected:
         worker_.ShutDown();
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept {
         //!!CleanUp();
         std::exit(EXIT_CODE);
     }
