@@ -28,6 +28,9 @@ public:
     MOCK_METHOD2(Create, std::unique_ptr<ITimeBaseReader>(std::string_view, std::size_t));
 };
 
+extern std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
+extern bool reader_factory_mock_return_real_reader;
+
 }  // namespace time
 }  // namespace score
 

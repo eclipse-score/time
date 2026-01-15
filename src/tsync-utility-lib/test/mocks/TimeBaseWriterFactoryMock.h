@@ -28,6 +28,9 @@ public:
     MOCK_METHOD3(Create, std::unique_ptr<ITimeBaseWriter>(std::string_view, std::size_t, bool));
 };
 
+extern std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
+extern bool writer_factory_mock_return_real_writer;
+
 }  // namespace time
 }  // namespace score
 

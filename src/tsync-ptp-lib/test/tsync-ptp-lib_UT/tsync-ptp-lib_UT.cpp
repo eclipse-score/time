@@ -90,8 +90,6 @@ std::unique_ptr<NiceMock<score::time::SysCallsNamedSemMock>> named_semaphore_moc
 std::unique_ptr<NiceMock<score::time::SysCallsMiscMock>> misc_mock;
 std::unique_ptr<NiceMock<score::time::TimeBaseWriterFactoryMock>> writer_factory_mock;
 std::unique_ptr<NiceMock<score::time::TimeBaseReaderFactoryMock>> reader_factory_mock;
-extern bool writer_factory_mock_return_real_writer;
-extern bool reader_factory_mock_return_real_reader;
 }  // namespace time
 }  // namespace score
 
