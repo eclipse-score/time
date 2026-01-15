@@ -3,7 +3,9 @@
  ********************************************************************************/
 
 #include <gtest/gtest.h>
+
 #include <array>
+#include <csignal>
 
 #define private public
 #include "SharedMemTimeBaseWriter.h"
@@ -50,7 +52,7 @@ protected:
         ON_CALL(*shared_mem_mock, OsClose(::testing::_)).WillByDefault(::testing::Return(0));
 
         // install abort handler for our death tests
-        signal(SIGABRT, AbortHandler);
+        std::signal(SIGABRT, AbortHandler);
         // As we use here singleton mock object, clear expectations after each test
         ::testing::Mock::AllowLeak(shared_mem_mock.get());
     }
@@ -60,7 +62,7 @@ protected:
         shared_mem_mock.reset();
         rw_lock_mock.reset();
         // use the default abort handler again
-        signal(SIGABRT, SIG_DFL);
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     static void AbortHandler(int /*signal*/) noexcept {

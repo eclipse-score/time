@@ -3,6 +3,7 @@
  ********************************************************************************/
 
 #include <array>
+#include <csignal>
 #include <cstring>
 #include <string>
 #include <string_view>
@@ -88,7 +89,7 @@ protected:
         SharedMemTimeBaseReaderMock* reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(mh_->reader_.get());
         ::testing::Mock::AllowLeak(reader_mock);
         // install abort handler for our death tests
-        signal(SIGABRT, AbortHandler);
+        std::signal(SIGABRT, AbortHandler);
     }
 
     void TearDown() override {
@@ -96,7 +97,7 @@ protected:
         writer_factory_mock.reset();
         mh_.reset();
         // use the default abort handler again
-        signal(SIGABRT, SIG_DFL);
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     void AddMappings() {

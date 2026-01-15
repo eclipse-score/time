@@ -4,6 +4,7 @@
 
 #include <gmock/gmock.h>
 
+#include <csignal>
 #include <string_view>
 #include <type_traits>
 
@@ -61,7 +62,7 @@ public:
         reader_factory_mock_return_real_reader = false;
         writer_factory_mock_return_real_writer = false;
 
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        std::signal(SIGABRT, &AbortHandler);
         ::testing::Mock::AllowLeak(shared_utils_mock.get());
         ::testing::Mock::AllowLeak(reader_factory_mock.get());
         ::testing::Mock::AllowLeak(writer_factory_mock.get());
@@ -69,6 +70,7 @@ public:
 
     void TearDown() override {
         CleanUp();
+        std::signal(SIGABRT, SIG_DFL);
     }
 
     static void CleanUp() {
@@ -77,7 +79,7 @@ public:
         writer_factory_mock.reset();
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept {
         CleanUp();
         std::exit(EXIT_CODE);
     }
