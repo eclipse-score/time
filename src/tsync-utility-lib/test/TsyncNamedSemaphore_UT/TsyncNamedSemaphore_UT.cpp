@@ -53,16 +53,16 @@ protected:
             .WillByDefault(::testing::DoAll(testing::SetArgPointee<1>(::testing::ByRef(sem_val_)), testing::Return(0)));
 
         ::testing::Mock::AllowLeak(named_semaphore_mock.get());
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        signal(SIGABRT, AbortHandler);
     }
 
     void TearDown() override {
         // As we use here singleton mock object, clear expectations after each test
         named_semaphore_mock.reset(nullptr);
-        //!! ara::core::SetAbortHandler(nullptr);
+        signal(SIGABRT, SIG_DFL);
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept {
         // the mock has to be reset here, otherwise the expectations for our death tests
         // will never be met/evaluated.
         named_semaphore_mock.reset(nullptr);

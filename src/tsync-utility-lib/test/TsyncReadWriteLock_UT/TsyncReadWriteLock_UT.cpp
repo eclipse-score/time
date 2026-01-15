@@ -34,7 +34,7 @@ protected:
         ON_CALL(*rw_lock_mock, OsRwLockDestroyLock(::testing::_)).WillByDefault(::testing::Return(0));
 
         // install abort handler for our death tests
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        signal(SIGABRT, AbortHandler);
         // As we use here singleton mock object, clear expectations after each test
         ::testing::Mock::AllowLeak(rw_lock_mock.get());
     }
@@ -42,10 +42,10 @@ protected:
     void TearDown() override {
         rw_lock_mock.reset();
 
-        //!! ara::core::SetAbortHandler(nullptr);
+        signal(SIGABRT, SIG_DFL);
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept {
         // the mock has to be reset here, otherwise the expectations for our death tests
         // will never be met/evaluated.
         rw_lock_mock.reset();

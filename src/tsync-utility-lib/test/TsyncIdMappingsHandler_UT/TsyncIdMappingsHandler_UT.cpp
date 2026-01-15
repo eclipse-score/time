@@ -88,14 +88,15 @@ protected:
         SharedMemTimeBaseReaderMock* reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(mh_->reader_.get());
         ::testing::Mock::AllowLeak(reader_mock);
         // install abort handler for our death tests
-        //!! ara::core::SetAbortHandler(&AbortHandler);
+        signal(SIGABRT, AbortHandler);
     }
 
     void TearDown() override {
         reader_factory_mock.reset();
         writer_factory_mock.reset();
         mh_.reset();
-        //!! ara::core::SetAbortHandler(nullptr);
+        // use the default abort handler again
+        signal(SIGABRT, SIG_DFL);
     }
 
     void AddMappings() {
@@ -106,7 +107,7 @@ protected:
         mh_->AddProviderToDomain(kTimeDomainNames[0], kTimeProviderNames[0]);
     }
 
-    static void AbortHandler() noexcept {
+    static void AbortHandler(int /*signal*/) noexcept  {
         // the mocks have to be reset here, otherwise the expectations for our death tests
         // will never be met/evaluated.
         reader_factory_mock.reset();
