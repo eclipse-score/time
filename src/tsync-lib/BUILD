@@ -1,6 +1,3 @@
-# src/score/time/lib/BUILD
-# include/BUILD
-
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
@@ -92,9 +89,9 @@ cc_library(
         ":tsync_if",
     ],
     srcs = [
-        ":synchronized_time_base_common",
         ":synchronized_time_base_consumer_impl",
         ":synchronized_time_base_provider_impl",
+        ":synchronized_time_base_common",
         ":synchronized_time_base_status_impl",
     ],
     deps = [

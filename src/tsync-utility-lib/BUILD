@@ -171,6 +171,5 @@ cc_library(
     # linkstatic = True,
     visibility = [
         "//src:__subpackages__",
-        "//tests:__subpackages__",
     ],
 )
