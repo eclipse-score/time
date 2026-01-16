@@ -87,8 +87,9 @@ protected:
     }
 
     static void AbortHandler(int /*signal*/) noexcept {
-        //!!CleanUp();
-        std::exit(EXIT_CODE);
+        // the spawned child process from GTEST tries to clean up memory / call destr etc. which
+        // leads to a segfault inside this handler, so we do an immediate exit here.
+        std::_Exit(EXIT_CODE);
     }
 
     score::time::daemon::TsyncWorker worker_;
