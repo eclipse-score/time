@@ -18,6 +18,7 @@
 #include "TsyncSharedUtilsMock.h"
 #include "score/time/utility/TsyncIdMappingsHandler.h"
 #include "score/time/utility/TsyncNamedSemaphore.h"
+#include "score/time/utility/TsyncSharedUtils.h"
 
 #define private public
 // class under test
@@ -26,7 +27,7 @@
 
 using InstanceSpecifier = std::string_view;
 
-using namespace ::score::time;
+using namespace score::time;
 using ::testing::_;
 using ::testing::An;
 using ::testing::DoAll;
@@ -41,6 +42,18 @@ extern TsyncIdMappingsHandler mappings_handler;
 }  // namespace score
 
 using score::time::mappings_handler;
+
+namespace score {
+namespace cpp {
+bool operator==(const score::cpp::span<const std::byte>& v1, const score::cpp::span<const std::byte>& v2) {
+    return (std::equal(std::begin(v1), std::end(v1), std::begin(v2), std::end(v2)));
+}
+
+bool operator!=(const score::cpp::span<const std::byte>& v1, const score::cpp::span<const std::byte>& v2) {
+    return (!(v1 == v2));
+}
+}  // namespace cpp
+}  // namespace score
 
 class SynchronizedTimeBaseProviderFixture : public ::testing::Test {
 public:
@@ -118,14 +131,14 @@ public:
 };
 
 namespace testing {
-namespace lib_synchronizedtimebaseprovider_ut {
+namespace synchronizedtimebaseprovider_ut {
 
 TEST_F(SynchronizedTimeBaseProviderFixture, Ctor_Succeeds) {
-    std::unique_ptr<TsyncNamedSemaphore> dummy_sem1;
-    EXPECT_CALL(*shared_utils_mock.get(), GetTransmissionSemaphoreName(_))
-        .WillRepeatedly(Return(std::string("time_domain_1")));
-    dummy_sem1 = std::make_unique<TsyncNamedSemaphore>(TsyncSharedUtils::GetTransmissionSemaphoreName(1),
-                                                       TsyncNamedSemaphore::OpenMode::Unsignaled, true);
+    // std::unique_ptr<TsyncNamedSemaphore> dummy_sem1;
+    // EXPECT_CALL(*shared_utils_mock.get(), GetTransmissionSemaphoreName(_))
+    //     .WillRepeatedly(Return(std::string("time_domain_1")));
+    // dummy_sem1 = std::make_unique<TsyncNamedSemaphore>(TsyncSharedUtils::GetTransmissionSemaphoreName(1),
+    //                                                    TsyncNamedSemaphore::OpenMode::Unsignaled, true);
     SynchronizedTimeBaseProvider stbp(InstanceSpecifier("provider1"));
     ASSERT_NE(stbp.time_base_writer_.get(), nullptr);
 }
@@ -298,7 +311,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, UpdateTime_Succeeds) {
     Timestamp ts{ts_ns};
     auto tst = SynchronizedTimeBaseCommon::GetTimestampFromNs(ts_ns);
     tst.status = SynchronizationStatus::kSynchronized;
-    std::array<std::byte, 4> span_data = {3, 1, 2, 3};
+    auto span_data = make_array<std::byte>(3, 1, 2, 3);
     score::cpp::span<const std::byte> byte_span(span_data);
 
     EXPECT_CALL(*writerMock, GetAccessor()).WillRepeatedly(ReturnRef(*writerMock));
@@ -311,7 +324,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, UpdateTime_Succeeds) {
     EXPECT_CALL(*shared_utils_mock.get(), GetCurrentVirtualLocalTime()).WillOnce(Return(vlt_to_inject));
 
     auto res = stbp.UpdateTime(ts, byte_span);
-    ASSERT_TRUE(res.HasValue());
+    ASSERT_TRUE(res);
 
     // a bit of a sanity check here to verify symmetry of UpdateTime and GetCurrentTime
     auto readerMock = static_cast<SharedMemTimeBaseReaderMock*>(stbp.time_base_reader_.get());
@@ -347,7 +360,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, UpdateTime_WhenCalledTwice_Succeeds)
     Timestamp ts{ts_ns};
     auto tst = SynchronizedTimeBaseCommon::GetTimestampFromNs(ts_ns);
     tst.status = SynchronizationStatus::kSynchronized;
-    std::array<std::byte, 4> span_data = {3, 1, 2, 3};
+    auto span_data = make_array<std::byte>(3, 1, 2, 3);
     score::cpp::span<const std::byte> byte_span(span_data);
 
     EXPECT_CALL(*writerMock, GetAccessor()).WillRepeatedly(ReturnRef(*writerMock));
@@ -361,10 +374,10 @@ TEST_F(SynchronizedTimeBaseProviderFixture, UpdateTime_WhenCalledTwice_Succeeds)
     EXPECT_CALL(*writerMock, unlock()).Times(2);
 
     auto res = stbp.UpdateTime(ts, byte_span);
-    ASSERT_TRUE(res.HasValue());
+    ASSERT_TRUE(res);
 
     res = stbp.UpdateTime(ts, byte_span);
-    ASSERT_TRUE(res.HasValue());
+    ASSERT_TRUE(res);
 
     // a bit of a sanity check here to verify symmetry of UpdateTime and GetCurrentTime
     auto readerMock = static_cast<SharedMemTimeBaseReaderMock*>(stbp.time_base_reader_.get());
@@ -398,8 +411,8 @@ TEST_F(SynchronizedTimeBaseProviderFixture, UpdateTime_OnGetVltError_ReturnsErro
 
     Timestamp ts{std::chrono::nanoseconds(56789)};
     auto res = stbp.UpdateTime(ts);
-    ASSERT_FALSE(res.HasValue());
-    ASSERT_EQ(res.Error(), TimeErrorCode::kDaemonConnectionLost);
+    ASSERT_FALSE(res);
+    ASSERT_EQ(res.error(), TimeErrorCode::kDaemonConnectionLost);
 }
 
 TEST_F(SynchronizedTimeBaseProviderFixture, UpdateTime_OnVltReadError_ReturnsError) {
@@ -428,8 +441,8 @@ TEST_F(SynchronizedTimeBaseProviderFixture, UpdateTime_OnVltReadError_ReturnsErr
     Timestamp ts{std::chrono::nanoseconds(0)};
 
     auto res = stbp.UpdateTime(ts);
-    ASSERT_FALSE(res.HasValue());
-    ASSERT_EQ(res.Error(), TimeErrorCode::kDaemonConnectionLost);
+    ASSERT_FALSE(res);
+    ASSERT_EQ(res.error(), TimeErrorCode::kDaemonConnectionLost);
 }
 
 TEST_F(SynchronizedTimeBaseProviderFixture, GetUserData_OnError_ReturnsEmptyUserData) {
@@ -467,7 +480,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetTime_Succeeds) {
     auto tst = SynchronizedTimeBaseCommon::GetTimestampFromNs(ts_ns);
     tst.status = SynchronizationStatus::kSynchronized;
 
-    std::array<std::byte, 4> span_data = {3, 1, 2, 3};
+    auto span_data = make_array<std::byte>(3, 1, 2, 3);
     score::cpp::span<const std::byte> byte_span(span_data);
 
     // expected calls from successful UpdateTime call
@@ -483,7 +496,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetTime_Succeeds) {
     EXPECT_CALL(*writerMock, unlock()).Times(1);
 
     auto res = stbp.SetTime(ts, byte_span);
-    ASSERT_TRUE(res.HasValue());
+    ASSERT_TRUE(res);
 }
 
 TEST_F(SynchronizedTimeBaseProviderFixture, SetUserData_OnWriterSetPositionFailure_ReturnsError) {
@@ -504,8 +517,8 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetUserData_OnWriterSetPositionFailu
     score::cpp::span<const std::byte> user_data;
 
     auto res = stbp.SetUserData(user_data);
-    ASSERT_FALSE(res.HasValue());
-    ASSERT_EQ(res.Error(), TimeErrorCode::kDaemonConnectionLost);
+    ASSERT_FALSE(res);
+    ASSERT_EQ(res.error(), TimeErrorCode::kDaemonConnectionLost);
 }
 
 TEST_F(SynchronizedTimeBaseProviderFixture, SetTime_OnUpdateTimeHaveNoValue_ReturnsError) {
@@ -520,7 +533,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetTime_OnUpdateTimeHaveNoValue_Retu
 
     std::chrono::nanoseconds ts_ns(56789);
     Timestamp ts{ts_ns};
-    std::array<std::byte, 4> span_data = {3, 1, 2, 3};
+    auto span_data = make_array<std::byte>(3, 1, 2, 3);
     score::cpp::span<const std::byte> byte_span(span_data);
 
     EXPECT_CALL(*writerMock, GetAccessor()).WillRepeatedly(ReturnRef(*writerMock));
@@ -528,7 +541,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetTime_OnUpdateTimeHaveNoValue_Retu
     EXPECT_CALL(*shared_utils_mock.get(), GetCurrentVirtualLocalTime()).WillOnce(Return(std::nullopt));
 
     auto res = stbp.SetTime(ts, byte_span);
-    ASSERT_FALSE(res.HasValue());
+    ASSERT_FALSE(res);
 }
 
 }  // namespace lib_synchronizedtimebaseprovider_ut
@@ -572,7 +585,7 @@ TEST_P(SynchronizedTimeBaseProviderSetUserDataFixture, SetGetUserData_Succeeds) 
     auto span_data = new std::byte[ud_len];
 
     for (int i = 0; i < ud_len; ++i) {
-        span_data[i] = static_cast<std::byte>(i + 1));
+        span_data[i] = std::byte(i + 1);
     }
 
     score::cpp::span<const std::byte> byte_span(span_data, ud_len);
@@ -586,7 +599,7 @@ TEST_P(SynchronizedTimeBaseProviderSetUserDataFixture, SetGetUserData_Succeeds) 
     EXPECT_CALL(*writerMock, unlock()).Times(1);
 
     auto res = stbp.SetUserData(byte_span);
-    ASSERT_TRUE(res.HasValue());
+    ASSERT_TRUE(res);
 
     auto readerMock = static_cast<SharedMemTimeBaseReaderMock*>(stbp.time_base_reader_.get());
 
@@ -619,7 +632,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetGetUserData_Succeeds) {
     SynchronizedTimeBaseProvider stbp(InstanceSpecifier("provider1"));
     auto writerMock = static_cast<SharedMemTimeBaseWriterMock*>(stbp.time_base_writer_.get());
 
-    std::array<std::byte, 4> span_data = {3, 1, 2, 3};
+    auto span_data = make_array<std::byte>(3, 1, 2, 3);
     score::cpp::span<const std::byte> byte_span(span_data);
 
     EXPECT_CALL(*writerMock, GetAccessor()).WillRepeatedly(ReturnRef(*writerMock));
@@ -631,7 +644,7 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetGetUserData_Succeeds) {
     EXPECT_CALL(*writerMock, unlock()).Times(1);
 
     auto res = stbp.SetUserData(byte_span);
-    ASSERT_TRUE(res.HasValue());
+    ASSERT_TRUE(res);
 
     auto readerMock = static_cast<SharedMemTimeBaseReaderMock*>(stbp.time_base_reader_.get());
 
@@ -679,8 +692,8 @@ TEST_F(SynchronizedTimeBaseProviderFixture, SetRateCorrection_Succeeds) {
     auto result = stbp.SetRateCorrection(1);
 
     // Assert
-    ASSERT_TRUE(result.HasValue());
+    ASSERT_TRUE(result);
 }
 
-}  // namespace lib_synchronizedtimebaseprovider_ut
+}  // namespace synchronizedtimebaseprovider_ut
 }  // namespace testing

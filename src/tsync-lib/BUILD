@@ -17,14 +17,85 @@ cc_library(
 )
 
 cc_library(
+    name = "synchronized_time_base_common",
+    srcs = [
+        "src/SynchronizedTimeBaseCommon.cpp"
+    ],
+    hdrs = ["src/SynchronizedTimeBaseCommon.h"],
+    strip_include_prefix = "src",
+    deps = [
+        ":tsync_if",
+        "//src/tsync-utility-lib:tsync_utility_if",
+        "//src/common",
+        "@score_baselibs//score/language/futurecpp:futurecpp",
+    ],
+    visibility = [
+        "//src:__subpackages__",
+    ],
+)
+
+cc_library(
+    name = "synchronized_time_base_consumer_impl",
+    srcs = [
+        "src/SynchronizedTimeBaseCommon.h",
+        "src/SynchronizedTimeBaseConsumerImpl.cpp",
+        "src/TimeBaseStatusAccessMediator.h",
+    ],
+    deps = [
+        ":tsync_if",
+        "//src/tsync-utility-lib:tsync_utility_if",
+        "//src/common",
+    ],
+    visibility = [
+        "//src:__subpackages__",
+    ],
+)
+
+cc_library(
+    name = "synchronized_time_base_provider_impl",
+    srcs = [
+        "src/SynchronizedTimeBaseCommon.h",
+        "src/SynchronizedTimeBaseProviderImpl.cpp",
+    ],
+    deps = [
+        ":tsync_if",
+        "//src/tsync-utility-lib:tsync_utility_if",
+        "//src/common",
+        "@score_baselibs//score/result",
+    ],
+    visibility = [
+        "//src:__subpackages__",
+    ],
+)
+
+cc_library(
+    name = "synchronized_time_base_status_impl",
+    srcs = [
+        "src/SynchronizedTimeBaseStatusImpl.cpp",
+    ],
+    hdrs = [
+        "src/TimeBaseStatusAccessMediator.h",
+    ],
+    strip_include_prefix = "src",
+    deps = [
+        ":tsync_if",
+        "//src/tsync-utility-lib:tsync_utility_if",
+    ],
+    visibility = [
+        "//src:__subpackages__",
+    ],
+)
+
+cc_library(
     name = "tsync",
-    srcs = glob([
-        "src/**/*.cpp",
-        "src/**/*.h"
-    ]),
-    copts = ["-iquote src/tsync-lib/src"],
     hdrs = [
         ":tsync_if",
+    ],
+    srcs = [
+        ":synchronized_time_base_common",
+        ":synchronized_time_base_consumer_impl",
+        ":synchronized_time_base_provider_impl",
+        ":synchronized_time_base_status_impl",
     ],
     deps = [
         ":tsync_if",

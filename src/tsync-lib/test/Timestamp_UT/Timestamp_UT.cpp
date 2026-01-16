@@ -10,11 +10,11 @@
 using namespace score::time;
 
 namespace testing {
-namespace lib_timestampexistence_ut {
+namespace timestampexistence_ut {
 
-TEST(Lib_TimeStamp_Existence_UT, TypeExists) {
-    ASSERT_TRUE(std::is_constructible<Timestamp>::value);
+TEST(TimeStamp_Existence_UT, TypeExists) {
+    EXPECT_TRUE(std::is_constructible<Timestamp>::value);
 }
 
-}  // namespace lib_timestampexistence_ut
+}  // namespace timestampexistence_ut
 }  // namespace testing

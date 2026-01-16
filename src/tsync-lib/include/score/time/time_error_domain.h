@@ -5,6 +5,7 @@
 #ifndef SCORE_TIME_ERROR_DOMAIN_H
 #define SCORE_TIME_ERROR_DOMAIN_H
 
+#include "score/result/error.h"
 #include "score/result/error_code.h"
 #include "score/result/error_domain.h"
 
@@ -36,7 +37,7 @@ public:
             case Errc::kLimitsExceeded:
                 return "Value out of bounds";
             default:
-                return "Unknown time domain error";
+                return "Unknown time error code";
         }
     }
 };
