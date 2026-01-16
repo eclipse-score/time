@@ -1,0 +1,18 @@
+
+Unit tests:
+* Enable tests of tsync-ptp-lib
+* Fix disabled test of tsync-lib
+* Enable tests of ptpd
+
+Config:
+* Move config in tsync-daemon to a separate place, "at least" `src/tsync-daemon/cfg/`
+
+Flatbuffers:
+* Replace by S-CORE solution and remove folders `flatbuffer`+ `flatcfg`
+* Move stuff in `common` to tsync-utility-lib
+
+Coverage:
+* Enable coverage
+
+Renamings:
+* Rename tsync-* to time-* ??
