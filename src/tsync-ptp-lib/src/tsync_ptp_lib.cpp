@@ -212,12 +212,11 @@ TSync_ReturnType TSync_BusGetGlobalTime(TSync_TimeBaseHandleType timeBaseHandle,
         }
         userDataPtr->userDataLength = static_cast<uint8_t>(udv.size());
         if (userDataPtr->userDataLength > 0) {
-            // todo: Replace index access via udv.data() by index op on udv direcly once score::span supports it.
-            userDataPtr->userByte0 = static_cast<uint8_t>(udv.data()[0U]);
+            userDataPtr->userByte0 = static_cast<uint8_t>(udv[0U]);
             if (userDataPtr->userDataLength > 1) {
-                userDataPtr->userByte1 = static_cast<uint8_t>(udv.data()[1U]);
+                userDataPtr->userByte1 = static_cast<uint8_t>(udv[1U]);
                 if (userDataPtr->userDataLength > 2) {
-                    userDataPtr->userByte2 = static_cast<uint8_t>(udv.data()[2U]);
+                    userDataPtr->userByte2 = static_cast<uint8_t>(udv[2U]);
                 }
             }
         }

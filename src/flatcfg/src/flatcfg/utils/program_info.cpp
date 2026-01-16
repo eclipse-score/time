@@ -52,8 +52,7 @@ ProgramInfo::executablePath(span<char> outputBuffer) noexcept
     }
 
     // null-terminate and return
-    // todo: Replace .data() by direct index op once score::span supports it.
-    outputBuffer.data()[size] = '\0';
+    outputBuffer[size] = '\0';
     return size;
 
 #elif FLATCFG_INTERNAL_HAS_QNX
