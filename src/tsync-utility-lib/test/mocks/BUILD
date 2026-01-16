@@ -19,7 +19,6 @@ cc_library(
         "SysCallsShMemMock.h",
         "TimeBaseReaderFactoryMock.h",
         "TimeBaseWriterFactoryMock.h",
-        # "TsyncSharedUtilsMock.h",
     ],
     strip_include_prefix = ".",
     deps = [

@@ -11,19 +11,8 @@
 #include "score/time/utility/ITimeBaseAccessor.h"
 
 namespace score {
-namespace core {
-
-inline bool operator==(const score::cpp::span<const std::byte>& v1, const score::cpp::span<const std::byte>& v2) {
-    return (std::equal(std::begin(v1), std::end(v1), std::begin(v2), std::end(v2)));
-}
-
-inline bool operator!=(const score::cpp::span<const std::byte>& v1, const score::cpp::span<const std::byte>& v2) {
-    return (!(v1 == v2));
-}
-
-}  // namespace core
-
 namespace time {
+
 inline bool operator==(const TsyncConsumerConfig& lhs, const TsyncConsumerConfig& rhs) {
     return ((lhs.name == rhs.name) &&
             (lhs.time_slave_config.is_valid == rhs.time_slave_config.is_valid) && (lhs.time_slave_config.follow_up_timeout_value == rhs.time_slave_config.follow_up_timeout_value) &&

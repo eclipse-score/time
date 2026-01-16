@@ -6,6 +6,7 @@
 #define SCORE_TIME_CONSUMERTIMEBASEVALIDATIONNOTIFICATIONMOCK_H_
 
 #include <gmock/gmock.h>
+
 #include "score/time/consumer_time_base_validation_notification.h"
 
 namespace score {
@@ -18,4 +19,5 @@ class ConsumerTimeBaseValidationNotificationMock final : public ConsumerTimeBase
 
 }  // namespace time
 }  // namespace score
+
 #endif  // SCORE_TIME_CONSUMERTIMEBASEVALIDATIONNOTIFICATIONMOCK_H_

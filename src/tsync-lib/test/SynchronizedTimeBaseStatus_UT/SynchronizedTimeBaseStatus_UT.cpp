@@ -36,23 +36,21 @@
 #include <algorithm>
 #include <gtest/gtest.h>
 
+#include "score/time/utility/TsyncSharedUtils.h"
+
 // class under test
 #include "score/time/synchronized_time_base_status.h"
 #include "TimeBaseStatusAccessMediator.h"
 
-using score::time::LeapJump;
-using score::time::SynchronizationStatus;
-using score::time::SynchronizedTimeBaseStatus;
-using score::time::Timestamp;
-using score::time::TimeBaseStatusAccessMediator;
+using namespace score::time;
 
 const SynchronizationStatus sync_status = SynchronizationStatus::kSynchronized;
 const LeapJump leap_jump = LeapJump::kTimeLeapFuture;
-const std::byte ud_arr[3] = {1, 2, 3};
+auto ud_arr = make_array<std::byte>(1, 2, 3);
 const score::cpp::span<const std::byte> ud_span = ud_arr;
 
 namespace testing {
-namespace lib_synchronizedtimebasestatus_ut_bt {
+namespace synchronizedtimebasestatus_ut {
 
 /// @addtogroup SyncTimeBaseStatus_Test_Cases
 /// @verbatim embed:rst:leading-slashes
@@ -64,7 +62,7 @@ namespace lib_synchronizedtimebasestatus_ut_bt {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, ExistenceDefaultCtorDtor) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
 
     ASSERT_EQ(status.GetSynchronizationStatus(), SynchronizationStatus::kNotSynchronizedUntilStartup);
     ASSERT_EQ(status.GetLeapJump(), LeapJump::kTimeLeapNone);
@@ -82,7 +80,7 @@ TEST(SynchronizedTimeBaseStatusTest, ExistenceDefaultCtorDtor) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, MoveCtor) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
 
     Timestamp time_stamp(std::chrono::system_clock::now().time_since_epoch());
 
@@ -109,7 +107,7 @@ TEST(SynchronizedTimeBaseStatusTest, MoveCtor) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, CopyCtor) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
 
     Timestamp time_stamp(std::chrono::system_clock::now().time_since_epoch());
 
@@ -136,7 +134,7 @@ TEST(SynchronizedTimeBaseStatusTest, CopyCtor) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, MoveAssignment) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
 
     Timestamp time_stamp(std::chrono::system_clock::now().time_since_epoch());
 
@@ -145,7 +143,7 @@ TEST(SynchronizedTimeBaseStatusTest, MoveAssignment) {
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusCreationTime(status, time_stamp);
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusUserData(status, ud_span);
 
-    SynchronizedTimeBaseStatus moved_status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus moved_status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
     moved_status = std::move(status);
     ASSERT_EQ(moved_status.GetSynchronizationStatus(), sync_status);
     ASSERT_EQ(moved_status.GetLeapJump(), leap_jump);
@@ -164,7 +162,7 @@ TEST(SynchronizedTimeBaseStatusTest, MoveAssignment) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, CopyAssignment) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
 
     Timestamp time_stamp(std::chrono::system_clock::now().time_since_epoch());
 
@@ -173,7 +171,7 @@ TEST(SynchronizedTimeBaseStatusTest, CopyAssignment) {
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusCreationTime(status, time_stamp);
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusUserData(status, ud_span);
 
-    SynchronizedTimeBaseStatus copied_status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus copied_status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
     copied_status = status;
 
     ASSERT_EQ(copied_status.GetSynchronizationStatus(), sync_status);
@@ -193,7 +191,7 @@ TEST(SynchronizedTimeBaseStatusTest, CopyAssignment) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, GetSynchronizationStatus) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusSynchronizationStatus(status, sync_status);
 
     ASSERT_EQ(status.GetSynchronizationStatus(), sync_status);
@@ -209,7 +207,7 @@ TEST(SynchronizedTimeBaseStatusTest, GetSynchronizationStatus) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, GetLeapJump) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusLeapJump(status, leap_jump);
 
     ASSERT_EQ(status.GetLeapJump(), leap_jump);
@@ -225,7 +223,7 @@ TEST(SynchronizedTimeBaseStatusTest, GetLeapJump) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, GetCreationTime) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
     Timestamp time_stamp(std::chrono::system_clock::now().time_since_epoch());
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusCreationTime(status, time_stamp);
 
@@ -242,11 +240,11 @@ TEST(SynchronizedTimeBaseStatusTest, GetCreationTime) {
 ///
 /// @endverbatim
 TEST(SynchronizedTimeBaseStatusTest, GetUserData) {
-    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::GetSynchronizedTimeBaseStatusInstance();
+    SynchronizedTimeBaseStatus status = TimeBaseStatusAccessMediator::CreateSynchronizedTimeBaseStatusInstance();
     TimeBaseStatusAccessMediator::SetSynchronizedTimeBaseStatusUserData(status, ud_span);
 
     ASSERT_TRUE(std::equal(status.GetUserData().begin(), status.GetUserData().end(), ud_span.begin(), ud_span.end()));
 }
 
-}  // namespace lib_synchronizedtimebasestatus_ut_bt
+}  // namespace synchronizedtimebasestatus_ut
 }  // namespace testing

@@ -10,9 +10,10 @@
 #include <iostream>
 #include <mutex>
 #include <string_view>
+#include <thread>
 #include <type_traits>
 
-#include "tsync-ptp-lib/tsync_ptp_lib_types.h"
+//#include "tsync-ptp-lib/tsync_ptp_lib_types.h"
 #include "matcher_operators.h"
 #include "ConsumerTimeBaseValidationNotificationMock.h"
 #include "SharedMemTimeBaseReaderMock.h"
@@ -21,6 +22,7 @@
 #include "TimeBaseWriterFactoryMock.h"
 #include "TsyncSharedUtilsMock.h"
 #include "score/time/utility/TsyncIdMappingsHandler.h"
+#include "score/time/utility/TsyncSharedUtils.h"
 
 #define private public
 // class under test
@@ -310,7 +312,7 @@ TEST_F(SynchronizedTimeBaseConsumerFixture, GetTimeWithStatus_Succeeds) {
     SynchronizedTimeBaseConsumer stbc(InstanceSpecifier("consumer1"));
     auto reader_mock = static_cast<SharedMemTimeBaseReaderMock *>(stbc.time_base_reader_.get());
 
-    const std::byte ud_arr[3] = {1, 2, 3};
+    auto ud_arr = make_array<std::byte>(1, 2, 3);
     score::cpp::span<const std::byte> ud_span = ud_arr;
 
     EXPECT_CALL(*reader_mock, GetAccessor()).WillRepeatedly(ReturnRef(*reader_mock));
@@ -349,7 +351,7 @@ TEST_F(SynchronizedTimeBaseConsumerFixture, GetTimeWithStatus_WithOneByteUserDat
     SynchronizedTimeBaseConsumer stbc(InstanceSpecifier("consumer1"));
     auto reader_mock = static_cast<SharedMemTimeBaseReaderMock *>(stbc.time_base_reader_.get());
 
-    const std::byte ud_arr[1] = {1};
+    auto ud_arr = make_array<std::byte>(1);
     score::cpp::span<const std::byte> ud_span = ud_arr;
     score::cpp::span<const std::byte> empty_span;
 
@@ -369,7 +371,7 @@ TEST_F(SynchronizedTimeBaseConsumerFixture, GetTimeWithStatus_WithTwoByteUserDat
     SynchronizedTimeBaseConsumer stbc(InstanceSpecifier("consumer1"));
     auto reader_mock = static_cast<SharedMemTimeBaseReaderMock *>(stbc.time_base_reader_.get());
 
-    const std::byte ud_arr[2] = {1, 2};
+    auto ud_arr = make_array<std::byte>(1, 2);
     score::cpp::span<const std::byte> ud_span = ud_arr;
     score::cpp::span<const std::byte> empty_span;
 
@@ -607,9 +609,8 @@ TEST_F(SynchronizedTimeBaseConsumerFixture, UnregisterTimeLeapNotifier_Succeeds)
 
 TEST_F(SynchronizedTimeBaseConsumerFixture, RegisterTimeValidationNotification_Succeeds) {
     // Arrange
-
-    ConsumerTimeBaseValidationNotificationMock notification;
     SynchronizedTimeBaseConsumer stbc(InstanceSpecifier("consumer1"));
+    ConsumerTimeBaseValidationNotificationMock notification;
 
     // Act and assert
     EXPECT_NO_THROW(stbc.RegisterTimeValidationNotification(notification));
