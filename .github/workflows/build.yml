@@ -35,6 +35,10 @@ jobs:
             disk-cache: ${{ github.workflow }}
             # Share repository cache between workflows.
             repository-cache: true
+        - name: Install dependencies
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y libpcap-dev
         - name: Bazel build
           run: |
             bazel build //...
