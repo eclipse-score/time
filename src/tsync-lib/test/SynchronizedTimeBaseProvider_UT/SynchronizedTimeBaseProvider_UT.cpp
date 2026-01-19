@@ -58,7 +58,6 @@ bool operator!=(const score::cpp::span<const std::byte>& v1, const score::cpp::s
 class SynchronizedTimeBaseProviderFixture : public ::testing::Test {
 public:
     void SetUp() override {
-        GTEST_SKIP() << "Skipping all tests for this fixture";
         shared_utils_mock = std::make_unique<::testing::NiceMock<TsyncSharedUtilsMock>>();
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
         writer_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseWriterFactoryMock>>();
@@ -107,7 +106,6 @@ const int32_t SynchronizedTimeBaseProviderFixture::EXIT_CODE = 1;
 class SynchronizedTimeBaseProviderSetUserDataFixture : public ::testing::TestWithParam<unsigned char> {
 public:
     void SetUp() override {
-        GTEST_SKIP() << "Skipping all tests for this fixture";
         shared_utils_mock = std::make_unique<::testing::NiceMock<TsyncSharedUtilsMock>>();
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
         writer_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseWriterFactoryMock>>();
@@ -135,11 +133,11 @@ namespace testing {
 namespace synchronizedtimebaseprovider_ut {
 
 TEST_F(SynchronizedTimeBaseProviderFixture, Ctor_Succeeds) {
-    // std::unique_ptr<TsyncNamedSemaphore> dummy_sem1;
-    // EXPECT_CALL(*shared_utils_mock.get(), GetTransmissionSemaphoreName(_))
-    //     .WillRepeatedly(Return(std::string("time_domain_1")));
-    // dummy_sem1 = std::make_unique<TsyncNamedSemaphore>(TsyncSharedUtils::GetTransmissionSemaphoreName(1),
-    //                                                    TsyncNamedSemaphore::OpenMode::Unsignaled, true);
+    std::unique_ptr<TsyncNamedSemaphore> dummy_sem1;
+    EXPECT_CALL(*shared_utils_mock.get(), GetTransmissionSemaphoreName(_))
+        .WillRepeatedly(Return(std::string("time_domain_1")));
+    dummy_sem1 = std::make_unique<TsyncNamedSemaphore>(TsyncSharedUtils::GetTransmissionSemaphoreName(1),
+                                                       TsyncNamedSemaphore::OpenMode::Unsignaled, true);
     SynchronizedTimeBaseProvider stbp(InstanceSpecifier("provider1"));
     ASSERT_NE(stbp.time_base_writer_.get(), nullptr);
 }

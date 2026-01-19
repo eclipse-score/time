@@ -1,7 +1,6 @@
 
 Unit tests:
 * Enable tests of tsync-ptp-lib
-* Fix disabled test of tsync-lib
 * Enable tests of ptpd
 
 Config:
