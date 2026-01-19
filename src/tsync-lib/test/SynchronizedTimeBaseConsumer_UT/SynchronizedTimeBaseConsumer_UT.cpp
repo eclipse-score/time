@@ -7,7 +7,6 @@
 
 #include <csignal>
 #include <cstddef>
-#include <iostream>
 #include <mutex>
 #include <string_view>
 #include <thread>
@@ -50,7 +49,6 @@ using ::testing::ReturnRef;
 class SynchronizedTimeBaseConsumerFixture : public ::testing::Test {
 protected:
     void SetUp() override {
-        GTEST_SKIP() << "Skipping all tests for this fixture";
         reader_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseReaderFactoryMock>>();
         writer_factory_mock = std::make_unique<::testing::NiceMock<TimeBaseWriterFactoryMock>>();
         shared_utils_mock = std::make_unique<::testing::NiceMock<TsyncSharedUtilsMock>>();
