@@ -65,7 +65,7 @@ bazel test //src/...
 Run the timesync daemon:
 
 ```shell
-export ECUCFG_ENV_VAR_ROOTFOLDER=$(pwd)/bazel-out/k8-fastbuild/bin/src/tsync-daemon/src/score/time/daemon/
+export ECUCFG_ENV_VAR_ROOTFOLDER=$(pwd)/bazel-out/k8-fastbuild/bin/src/tsync-daemon/src/
 bazel run //src/tsync-daemon:tsync_daemon
 ```
 
