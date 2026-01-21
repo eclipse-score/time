@@ -11,11 +11,12 @@
 namespace score {
 namespace time {
 
+constexpr size_t kTimeBaseShmemFileSize{4096u};
 std::unique_ptr<::testing::NiceMock<TimeBaseWriterFactoryMock>> writer_factory_mock;
 bool writer_factory_mock_return_real_writer = false;
 
 std::unique_ptr<ITimeBaseWriter> TimeBaseWriterFactory::Create(std::string_view name, bool is_owner) {
-    return TimeBaseWriterFactory::Create(name, 0, is_owner);
+    return TimeBaseWriterFactory::Create(name, kTimeBaseShmemFileSize, is_owner);
 }
 
 std::unique_ptr<ITimeBaseWriter> TimeBaseWriterFactory::Create(std::string_view name, std::size_t max_size,

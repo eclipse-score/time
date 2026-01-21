@@ -11,11 +11,12 @@
 namespace score {
 namespace time {
 
+constexpr size_t kTimeBaseShmemFileSize{4096u};
 std::unique_ptr<::testing::NiceMock<TimeBaseReaderFactoryMock>> reader_factory_mock;
 bool reader_factory_mock_return_real_reader = false;
 
 std::unique_ptr<ITimeBaseReader> TimeBaseReaderFactory::Create(std::string_view name) {
-    return TimeBaseReaderFactory::Create(name, 0);
+    return TimeBaseReaderFactory::Create(name, kTimeBaseShmemFileSize);
 }
 
 std::unique_ptr<ITimeBaseReader> TimeBaseReaderFactory::Create(std::string_view name, std::size_t max_size) {
