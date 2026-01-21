@@ -2,8 +2,8 @@
  * (c) 2025 ETAS GmbH. All rights reserved.
  ********************************************************************************/
 
-#include "tsync-ptp-lib/internal/tsync_data_broker.h"
-#include "tsync-ptp-lib/tsync_ptp_lib.h"
+#include "tsync_data_broker.h"
+#include "tsync_ptp_lib.h"
 #include "score/time/utility/TsyncConfigTypes.h"
 #include "score/time/utility/SysCalls.h"
 #include "score/time/utility/TsyncIdMappingsHandler.h"
@@ -26,6 +26,7 @@ using score::time::OsSemOpen;
 #include <thread>
 #include <vector>
 
+#include "SharedMemLayout.h"
 #include "matcher_operators.h"
 #include "SharedMemTimeBaseReaderMock.h"
 #include "SharedMemTimeBaseWriterMock.h"
@@ -120,8 +121,14 @@ using score::time::TsyncTimeDomainConfig;
 using score::time::writer_factory_mock;
 using score::time::writer_factory_mock_return_real_writer;
 
-int CreateThreadFake(pthread_t* thread, const pthread_attr_t* attr, void* (*start_routine)(void*), void* arg) {
-    return pthread_create(thread, attr, start_routine, arg);
+static uint64_t g_fake_thread_id{0};
+static std::map<pthread_t, void*> g_fake_thread_args;
+
+int CreateThreadFake(pthread_t* thread, [[maybe_unused]] const pthread_attr_t* attr,
+                     [[maybe_unused]] void* (*start_routine)(void*), [[maybe_unused]] void* arg) {
+    *thread = static_cast<pthread_t>(++g_fake_thread_id);
+    g_fake_thread_args[*thread] = arg;  // Store the metadata pointer for later
+    return 0;
 }
 
 sem_t* SemOpenFake1(const char* name, int oflag) {
@@ -157,7 +164,20 @@ int SemGetValueFake(sem_t* sem, int* val) {
 }
 
 int ThreadJoinFake(pthread_t thread, void** retval) {
-    return pthread_join(thread, retval);
+    if (retval) {
+        *retval = nullptr;
+    }
+
+    // This simulates what TSync_TransmitGlobalTimeRunner does when it exits
+    auto it = g_fake_thread_args.find(thread);
+    if (it != g_fake_thread_args.end()) {
+        void* metadata_ptr = it->second;
+        TSync_DB_Timebase_Meta_Data* meta = static_cast<TSync_DB_Timebase_Meta_Data*>(metadata_ptr);
+        meta->transmitGlobalTime.threadStatus.store(TSYNC_DB_THREAD_STATUS_DEAD);
+        g_fake_thread_args.erase(it);
+    }
+
+    return 0;
 }
 
 constexpr int32_t ABORT_CODE = 42;
@@ -244,7 +264,7 @@ public:
         ud_.userByte2 = 3;
 
         std::signal(SIGABRT, &AbortHandler);
-        //!! std::atexit(ExitHandler);
+        // std::atexit(ExitHandler);
 
         // Create fake timebase id mappings
         TsyncTimeDomainConfig cfg;
@@ -258,8 +278,6 @@ public:
     }
 
     void TearDown() override {
-        // As we use singleton mock objects, clear expectations after each test
-        TSync_Close();
         DeleteSemaphores();
         mappings_handler_.Clear();
         ExitHandler();
@@ -278,13 +296,15 @@ public:
         rw_lock_mock.reset();
         shared_mem_mock.reset();
         misc_mock.reset();
+        g_fake_thread_args.clear();
     }
 
     static void AbortHandler(int /*signal*/) noexcept {
+        std::cout << "AbortHandler called" << std::endl;
         // the mock has to be reset here, otherwise the expectations for our death tests
         // will never be met/evaluated.
         ExitHandler();
-        std::exit(ABORT_CODE);
+        std::_Exit(ABORT_CODE);
     }
 
     void InvalidateTimeBaseMappings() {
@@ -323,7 +343,8 @@ public:
         auto writer = TimeBaseWriterFactory::Create(
             std::find_if(id_mappings_map_.begin(), id_mappings_map_.end(),
                          [timebase_id](const auto& it) { return it.second == timebase_id; })
-                ->first);
+                ->first,
+            kSharedMemPageSize);
         writer->GetAccessor().Open();
         std::lock_guard<ITimeBaseWriter> lock(*writer);
         writer->Write(cfg);
@@ -611,7 +632,7 @@ TEST_F(PtpLibTestFixture, TSync_BusSetGlobalTime_OnReadCurrentStatusFailure_Fail
 
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
@@ -639,11 +660,11 @@ TEST_F(PtpLibTestFixture, TSync_BusSetGlobalTime_OnWriteTimeStampWithStatusFailu
     ASSERT_EQ(result, E_OK);
 
     writer_factory_mock_return_real_writer = false;
-    auto writer_mock = writer_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, false);
+    auto writer_mock = writer_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0,kSharedMemPageSize, false);
     auto raw_writer_mock = static_cast<SharedMemTimeBaseWriterMock*>(writer_mock.get());
 
     reader_factory_mock_return_real_reader = false;
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_reader_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
@@ -674,7 +695,7 @@ TEST_F(PtpLibTestFixture, TSync_BusSetGlobalTime_WithTimeStampSkipFailure_Fails)
     ASSERT_EQ(result, E_OK);
     writer_factory_mock_return_real_writer = false;
 
-    auto writer_mock = writer_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, false);
+    auto writer_mock = writer_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize, false);
     auto raw_mock = static_cast<SharedMemTimeBaseWriterMock*>(writer_mock.get());
 
     EXPECT_CALL(*writer_factory_mock, Create(_, _, _)).WillOnce(Return(ByMove(std::move(writer_mock))));
@@ -701,7 +722,7 @@ TEST_F(PtpLibTestFixture, TSync_BusSetGlobalTime_WithLocalTimeSkipFailure_Fails)
     ASSERT_EQ(result, E_OK);
     writer_factory_mock_return_real_writer = false;
 
-    auto writer_mock = writer_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, false);
+    auto writer_mock = writer_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize, false);
     auto raw_mock = static_cast<SharedMemTimeBaseWriterMock*>(writer_mock.get());
 
     EXPECT_CALL(*writer_factory_mock, Create(_, _, _)).WillOnce(Return(ByMove(std::move(writer_mock))));
@@ -761,7 +782,7 @@ TEST_F(PtpLibTestFixture, TSync_BusSetGlobalTimeWithSynctoGateWayStatus_Succeeds
 
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
@@ -829,7 +850,7 @@ TEST_F(PtpLibTestFixture, TSync_BusGetGlobalTime_WithTimeStampSkipFailure_Fails)
     ASSERT_EQ(result, E_OK);
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
@@ -853,7 +874,7 @@ TEST_F(PtpLibTestFixture, TSync_BusGetGlobalTime_WithLocalTimeSkipFailure_Fails)
     ASSERT_EQ(result, E_OK);
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
@@ -877,7 +898,7 @@ TEST_F(PtpLibTestFixture, TSync_BusGetGlobalTime_WithTimeStampReadReturnFalse_Fa
     ASSERT_EQ(result, E_OK);
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     TSync_TimeStampType ts;
@@ -902,7 +923,7 @@ TEST_F(PtpLibTestFixture, TSync_BusGetGlobalTime_WithVirtualLocalTimeReadReturnF
     ASSERT_EQ(result, E_OK);
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     TSync_VirtualLocalTimeType vlt;
@@ -928,7 +949,7 @@ TEST_F(PtpLibTestFixture, TSync_BusGetGlobalTime_WithLUserDataReadReturnFalse_Fa
     ASSERT_EQ(result, E_OK);
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     TSync_UserDataType ud;
@@ -1022,7 +1043,7 @@ TEST_F(PtpLibTestFixture, TSync_BusGetGlobalTime_WithSynctoGatewayStatus_Succeed
     ASSERT_EQ(result, E_OK);
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     score::time::TimestampWithStatus ts_read{score::time::SynchronizationStatus::kSynchToGateway,
@@ -1320,9 +1341,9 @@ TEST_F(PtpLibTestFixture, TSync_GetTimebaseConfiguration_Succeeds) {
     ASSERT_EQ(config.crcValidation, TSYNC_CRC_IGNORED);
     ASSERT_EQ(config.messageCompliance, TSYNC_MC_IEEE8021AS);
     ASSERT_EQ(config.role, TSYNC_ROLE_MASTER);
-    ASSERT_EQ(config.subTlvConfig.followUpUserDataSubTLV, TSYNC_SUBTLV_SUPPORTED);
-    ASSERT_EQ(config.subTlvConfig.followUpStatusSubTLV, TSYNC_SUBTLV_SUPPORTED);
-    ASSERT_EQ(config.subTlvConfig.followUpTimeSubTLV, TSYNC_SUBTLV_SUPPORTED);
+    ASSERT_EQ(config.subTlvConfig.followUpUserDataSubTLV, TSYNC_SUBTLV_NOT_SUPPORTED);
+    ASSERT_EQ(config.subTlvConfig.followUpStatusSubTLV, TSYNC_SUBTLV_NOT_SUPPORTED);
+    ASSERT_EQ(config.subTlvConfig.followUpTimeSubTLV, TSYNC_SUBTLV_NOT_SUPPORTED);
     // arrange
     cfg.provider_config.time_master_config.crc_support = TsyncCrcSupport::kNotSupported;
     cfg.eth_time_domain.crcFlags.correction_field = TSYNC_CRC_SUPPORTED;
@@ -1406,9 +1427,9 @@ TEST_F(PtpLibTestFixture, TSync_GetTimebaseConfiguration_Succeeds) {
     result = TSync_GetTimebaseConfiguration(timeBaseHandle, role_requested, &config);
     // assert
     ASSERT_EQ(config.role, TSYNC_ROLE_SLAVE);
-    ASSERT_EQ(config.subTlvConfig.followUpStatusSubTLV, TSYNC_SUBTLV_SUPPORTED);
-    ASSERT_EQ(config.subTlvConfig.followUpTimeSubTLV, TSYNC_SUBTLV_SUPPORTED);
-    ASSERT_EQ(config.subTlvConfig.followUpUserDataSubTLV, TSYNC_SUBTLV_SUPPORTED);
+    ASSERT_EQ(config.subTlvConfig.followUpStatusSubTLV, TSYNC_SUBTLV_NOT_SUPPORTED);
+    ASSERT_EQ(config.subTlvConfig.followUpTimeSubTLV, TSYNC_SUBTLV_NOT_SUPPORTED);
+    ASSERT_EQ(config.subTlvConfig.followUpUserDataSubTLV, TSYNC_SUBTLV_NOT_SUPPORTED);
 
     // arrange
     cfg.consumer_config.time_slave_config.sub_tlv_config.status_enabled = false;
@@ -1454,7 +1475,7 @@ TEST_F(PtpLibTestFixture, TSync_Open_With16ElementsInMapping_OK) {
 
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     uint32_t num_zero{0};
@@ -1566,7 +1587,7 @@ TEST_F(PtpLibDeathTestFixture, TSync_OpenTimeBase_OnConfigReadError_Aborts) {
 
             reader_factory_mock_return_real_reader = false;
 
-            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
             auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
             EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
@@ -1733,7 +1754,7 @@ TEST_F(PtpLibDeathTestFixture, TSync_OpenTimebase_OnInvalidConfig_Aborts) {
             cfg.provider_config.time_master_config.is_valid = false;
             // use fake reader to return fake config
             reader_factory_mock_return_real_reader = false;
-            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
             auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
             EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
             EXPECT_CALL(*raw_mock, Read(An<TsyncTimeDomainConfig&>()))
@@ -1782,7 +1803,7 @@ TEST_F(PtpLibDeathTestFixture, TSync_GetTimebaseConfiguration_OnReadDomainConfig
     // use mocked reader
     reader_factory_mock_return_real_reader = false;
 
-    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+    auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
     auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
 
     ASSERT_EXIT(
@@ -1811,7 +1832,7 @@ TEST_F(PtpLibDeathTestFixture, TSync_SetTimeoutStatus_OnTimeStampReadError_Abort
             // use mocked reader
             reader_factory_mock_return_real_reader = false;
 
-            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
             auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
             EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
             auto handle = TSync_OpenTimebase(FAKE_TIMEBASE_ID_0);
@@ -1832,7 +1853,7 @@ TEST_F(PtpLibDeathTestFixture, TSync_GetTimebaseConfiguration_OnInvalidConfig_Ab
             // use mocked reader
             reader_factory_mock_return_real_reader = false;
 
-            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0);
+            auto reader_mock = reader_factory_mock->Create(FAKE_INSTANCE_SPECIFIER_0, kSharedMemPageSize);
             auto raw_mock = static_cast<SharedMemTimeBaseReaderMock*>(reader_mock.get());
             EXPECT_CALL(*reader_factory_mock, Create(_, _)).WillOnce(Return(ByMove(std::move(reader_mock))));
             auto handle = TSync_OpenTimebase(FAKE_TIMEBASE_ID_0);

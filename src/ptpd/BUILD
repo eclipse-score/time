@@ -102,7 +102,7 @@ cc_library(
     deps = [
         ":config_h_lib",
         "//src/common",
-        "//src/tsync-ptp-lib:tsync_ptp",
+        "//src/tsync-ptp-lib",
         "//src/tsync-utility-lib:tsync_utility"
     ],
     strip_include_prefix = "",
