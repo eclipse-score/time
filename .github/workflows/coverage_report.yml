@@ -61,8 +61,7 @@ jobs:
 
             # Find and copy test.log and test.xml files, preserving directory structure
             # Using -print0 and xargs -0 handles paths with spaces correctly
-            find bazel-testlogs -name "test.log" -print0 | xargs -0 -r -I{} cp --parents {} failed_test_logs/
-            find bazel-testlogs -name "test.xml" -print0 | xargs -0 -r -I{} cp --parents {} failed_test_logs/
+            find bazel-testlogs/ -name 'test.log' -print0 | xargs -0 -I{} cp --parents {} failed_test_logs/
           else
             echo "bazel-testlogs directory not found. Build might have failed before tests ran."
           fi
