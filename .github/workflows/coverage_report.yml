@@ -48,7 +48,7 @@ jobs:
       - name: Run Unit Test with Coverage for C++
         run: |
           # Note: Unit tests are not yet fully migrated to bazel from cmake
-          bazel coverage //src/... --build_tests_only --local_test_jobs=1
+          bazel coverage //src/... --build_tests_only
 
       - name: Collect Bazel Test Logs
         if: always()
@@ -58,9 +58,6 @@ jobs:
           # Check if logs directory exists to avoid script errors
           if [ -d "bazel-testlogs" ]; then
             echo "Collecting test.log and test.xml files..."
-
-            # Find and copy test.log and test.xml files, preserving directory structure
-            # Using -print0 and xargs -0 handles paths with spaces correctly
             find bazel-testlogs/ -name 'test.log' -print0 | xargs -0 -I{} cp --parents {} failed_test_logs/
           else
             echo "bazel-testlogs directory not found. Build might have failed before tests ran."
