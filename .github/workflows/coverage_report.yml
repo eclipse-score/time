@@ -47,8 +47,8 @@ jobs:
 
       - name: Run Unit Test with Coverage for C++
         run: |
-          # Note: Unit tests are not yet fully migrated to bazel from cmake
-          bazel coverage //src/... --build_tests_only
+          # Note: Some tets dont clean or leave files in /dev/shm, so we use --sandbox_tmpfs_path to avoid issues.
+          bazel coverage //src/... --build_tests_only --sandbox_tmpfs_path=/dev/shm
 
       - name: Generate HTML Coverage Report
         run: |
