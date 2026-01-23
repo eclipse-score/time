@@ -74,7 +74,7 @@ protected:
         std::signal(SIGABRT, SIG_DFL);
     }
 
-    void CleanUp() {
+    static void CleanUp() {
         TimeBaseConfiguration::GetInstance().Clear();
 
         // these mocks have to be reset here, otherwise the expectations for our death tests
@@ -87,15 +87,14 @@ protected:
     }
 
     static void AbortHandler(int /*signal*/) noexcept {
-        // the spawned child process from GTEST tries to clean up memory / call destr etc. which
-        // leads to a segfault inside this handler, so we do an immediate exit here.
-        std::_Exit(EXIT_CODE);
+        CleanUp();
+        std::exit(EXIT_CODE);
     }
 
-    score::time::daemon::TsyncWorker worker_;
+    static score::time::daemon::TsyncWorker worker_;
 };
 
-// WorkerMock DaemonWorkerFixture::worker_;
+ score::time::daemon::TsyncWorker DaemonWorkerFixture::worker_{};
 
 const int32_t DaemonWorkerFixture::EXIT_CODE = 1;
 
