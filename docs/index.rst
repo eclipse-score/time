@@ -34,8 +34,8 @@ Project Layout
 
 The module template includes the following top-level structure:
 
-- `src/`: Main C++/C sources
-- `tests/`: Unit and integration tests
+- `src/`: Software components of the time feature (incl. unit tests)
+- `tests/`: Future integration tests
 - `examples/`: Usage examples
 - `docs/`: Documentation using `docs-as-code`
 - `.github/workflows/`: CI/CD pipelines
