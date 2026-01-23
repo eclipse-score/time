@@ -65,19 +65,10 @@ jobs:
           fi
         shell: bash
 
-
-      - name: Gather google tests log files
-        run: |
-          mkdir -p artifacts
-          find bazel-testlogs/ -name 'test.log' -print0 | xargs -0 -I{} cp --parents {} artifacts/
-          cp -r cpp_coverage artifacts/
-        shell: bash
-
-
       # It will be available for download in the Actions "Summary" tab
       # Note: upload-artifact automatically creates a zip file, so we don't need to zip manually
       - name: Upload Coverage Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.event.repository.name }}_coverage_report
-          path: artifacts/
+          path: cpp_coverage/
