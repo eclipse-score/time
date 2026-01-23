@@ -30,8 +30,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
 
-      # - name: Free Disk Space (Ubuntu)
-      #   uses: ./.github/actions/free_disk_space
+      - name: Free Disk Space (Ubuntu)
+        uses: ./.github/actions/free_disk_space
 
       - name: Install lcov
         run: |
