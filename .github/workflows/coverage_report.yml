@@ -53,12 +53,12 @@ jobs:
       - name: Collect Bazel Test Logs
         if: always()
         run: |
-          mkdir -p failed_test_logs
+          mkdir -p unit_test_logs
 
           # Check if logs directory exists to avoid script errors
           if [ -d "bazel-testlogs" ]; then
             echo "Collecting test.log and test.xml files..."
-            find bazel-testlogs/ -name 'test.log' -print0 | xargs -0 -I{} cp --parents {} failed_test_logs/
+            find bazel-testlogs/ -name 'test.log' -print0 | xargs -0 -I{} cp --parents {} unit_test_logs/
           else
             echo "bazel-testlogs directory not found. Build might have failed before tests ran."
           fi
@@ -68,9 +68,8 @@ jobs:
         if: always()  # RUNS EVEN IF TESTS FAIL
         uses: actions/upload-artifact@v4
         with:
-          name: bazel-test-logs
-          path: failed_test_logs/
-          retention-days: 2
+          name: unit_test_logs
+          path: unit_test_logs/
 
 
       - name: Generate HTML Coverage Report
