@@ -38,6 +38,9 @@ protected:
     }
 
     void SetUp() override {
+        // Initialize memory region to zero
+        std::memset(mem_region_, 0, sizeof(mem_region_));
+
         tb_writer_ = std::make_unique<SharedMemTimeBaseWriter>(shared_mem_name_);
         shared_mem_mock = std::make_unique<::testing::NiceMock<SysCallsShMemMock>>();
         rw_lock_mock = std::make_unique<testing::NiceMock<SysCallsReadWriteLockMock>>();

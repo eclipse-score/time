@@ -8,3 +8,14 @@ common --enable_bzlmod
 
 common --@score_baselibs//score/mw/log/flags:KRemote_Logging=False
 common --@score_baselibs//score/json:base_library=nlohmann
+
+
+## Coverage settings
+
+# With this instrumentation filter we ensure that `bazel coverage //src/...` is yielding the correct results
+# The filter is that bazel instruments the path UNLESS the path contains /test/ or /tests/"
+coverage --instrumentation_filter="//src(?!.*[/:](test|tests)[/:])"
+
+coverage --combined_report=lcov
+coverage --coverage_report_generator=@bazel_tools//tools/test/CoverageOutputGenerator/java/com/google/devtools/coverageoutputgenerator:Main
+coverage --test_env=COVERAGE_GCOV_OPTIONS=-bcu

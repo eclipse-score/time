@@ -15,28 +15,16 @@
 name: Coverage Report
 
 on:
-  workflow_call:
-    inputs:
-      release_tag:
-        description: 'Release tag to upload artifacts to'
-        required: true
-        type: string
-  # Action triggers added for testing pruposes
-  workflow_dispatch:
-    inputs:
-      release_tag:
-        description: 'Release tag to upload artifacts to'
-        required: true
-        type: string
+  # Runs on every pull request regardless of path changes
   pull_request:
-    paths:
-      - '.github/workflows/release_coverage_report.yml'
+  # Allows manual triggering for testing without inputs
+  workflow_dispatch:
 
 jobs:
   coverage-report:
     runs-on: ubuntu-22.04
     permissions:
-      contents: write # required to upload release assets
+      contents: read # Changed from write, as we no longer upload to Releases
 
     steps:
       - name: Checkout Repository
@@ -60,7 +48,29 @@ jobs:
       - name: Run Unit Test with Coverage for C++
         run: |
           # Note: Unit tests are not yet fully migrated to bazel from cmake
-          bazel coverage //src/... --build_tests_only || echo "Coverage analysis prepared (tests not yet enabled)"
+          bazel coverage //src/... --build_tests_only
+
+      - name: Collect Bazel Test Logs
+        if: always()
+        run: |
+          mkdir -p unit_test_logs
+
+          # Check if logs directory exists to avoid script errors
+          if [ -d "bazel-testlogs" ]; then
+            echo "Collecting test.log and test.xml files..."
+            find bazel-testlogs/ -name 'test.log' -print0 | xargs -0 -I{} cp --parents {} unit_test_logs/
+          else
+            echo "bazel-testlogs directory not found. Build might have failed before tests ran."
+          fi
+        shell: bash
+
+      - name: Upload Test Logs Artifact
+        if: always()  # RUNS EVEN IF TESTS FAIL
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit_test_logs
+          path: unit_test_logs/
+
 
       - name: Generate HTML Coverage Report
         run: |
@@ -73,28 +83,14 @@ jobs:
               --function-coverage \
               --branch-coverage
           else
-            echo "Creating placeholder coverage directory (tests not yet enabled)"
-            mkdir -p cpp_coverage
-            echo "Coverage report will be generated once unit tests are fully migrated" > cpp_coverage/README.txt
+            echo "Cannot run test coverage report generation as no coverage data file found."
           fi
         shell: bash
 
-      - name: Create Archive of Coverage Report
-        run: |
-          mkdir -p artifacts
-          cp -r cpp_coverage artifacts/
-          zip -r ${{ github.event.repository.name }}_coverage_report.zip artifacts/
-        shell: bash
-
+      # It will be available for download in the Actions "Summary" tab
+      # Note: upload-artifact automatically creates a zip file, so we don't need to zip manually
       - name: Upload Coverage Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.repository.name }}_coverage_report.zip
-          path: ${{ github.event.repository.name }}_coverage_report.zip
-
-      - name: Upload Coverage Report to Release
-        run: |
-          # Upload the file to the existing release
-          gh release upload "${{ inputs.release_tag }}" "${{ github.event.repository.name }}_coverage_report.zip"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: ${{ github.event.repository.name }}_coverage_report
+          path: cpp_coverage/

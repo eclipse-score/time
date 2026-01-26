@@ -300,11 +300,10 @@ public:
     }
 
     static void AbortHandler(int /*signal*/) noexcept {
-        std::cout << "AbortHandler called" << std::endl;
         // the mock has to be reset here, otherwise the expectations for our death tests
         // will never be met/evaluated.
         ExitHandler();
-        std::_Exit(ABORT_CODE);
+        std::exit(ABORT_CODE);
     }
 
     void InvalidateTimeBaseMappings() {

@@ -26,6 +26,10 @@ jobs:
       steps:
         - name: Checkout repository
           uses: actions/checkout@v4.2.2
+
+        - name: Free Disk Space (Ubuntu)
+          uses: ./.github/actions/free_disk_space
+
         - name: Setup Bazel
           uses: bazel-contrib/setup-bazel@0.18.0
           with:
