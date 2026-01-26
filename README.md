@@ -59,6 +59,12 @@ bazel build //...
 ```sh
 bazel test //src/...
 ```
+### 4️⃣ Get the local coverage report
+```sh
+# the coverage HTML report will be generated in the folder `cpp_coverage`
+./run_coverage_local.sh
+```
+
 
 ## 🛠 Usage
 

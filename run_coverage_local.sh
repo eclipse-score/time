@@ -4,7 +4,7 @@
 set -e  # Exit on error
 
 echo "Running code coverage analysis..."
-bazel coverage //src/...
+bazel coverage //src/... --build_tests_only
 
 echo ""
 echo "Generating HTML coverage report..."
