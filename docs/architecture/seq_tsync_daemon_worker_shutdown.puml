@@ -1,0 +1,31 @@
+' =============================================================================
+'  (c) 2025 ETAS GmbH. All rights reserved.
+' =============================================================================
+
+@startuml
+
+actor main
+participant ":TsyncWorker" as wkr
+
+participant "id_mappings_handler_:\nTsyncIdMappingsHandler" as idmap
+collections "time_base_writers_:\narray of ITimeBaseWriter" as wrs
+collections "time_base_readers_:\narray of ITimeBaseReader" as rds
+collections "transmission_semaphores_:\nvector of TsyncNamedSemaphore" as sems
+
+main -> wkr ++ : ShutDown()
+wkr -> wkr ++ : CloseTimeBaseAccessors()
+wkr -> idmap !! : destroy
+loop over time_base_writers_
+    wkr -> wrs !! : destroy
+end
+loop over time_base_readers_
+    wkr -> rds !! : destroy
+end
+deactivate wkr
+
+wkr -> sems !! : clear(), i.e. destroy all semaphores
+
+wkr -> wkr : is_initialized_ = false
+return
+
+@enduml

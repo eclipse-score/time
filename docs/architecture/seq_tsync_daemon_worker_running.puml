@@ -1,0 +1,31 @@
+' =============================================================================
+'  (c) 2025 ETAS GmbH. All rights reserved.
+' =============================================================================
+
+@startuml
+
+actor main
+participant ":TsyncWorker" as wkr
+participant ":__HousKeeping__" as hk
+
+participant ":__TimeBaseConfiguration__" as cfg
+collections "time_base_writers_:\narray of ITimeBaseWriter" as wrs
+collections "time_base_readers_:\narray of ITimeBaseReader" as rds
+
+main -> wkr : Run()
+activate wkr
+loop HouseKeeping::exit_flag_ == false
+    wkr -> wkr : CheckTimeouts()
+    activate wkr
+    wkr -> cfg : GetInstance()
+    loop over configured time bases/domains
+        opt domain has valid consumer time slave configured AND\nreader's timestamp status is 'synchronized' AND\ncurrent time - last update time >= sync loss timeout of domain
+            wkr -> wrs : Set synchronization status of domain N to 'TimeOut'
+        end
+    end
+    deactivate wkr
+    wkr -> wkr : sleep 1s
+end loop
+main <-- wkr
+
+@enduml

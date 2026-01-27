@@ -1,0 +1,72 @@
+' =============================================================================
+'  (c) 2025 ETAS GmbH. All rights reserved.
+' =============================================================================
+
+@startuml
+
+actor main
+participant ":TsyncWorker" as wkr
+participant ":__HousKeeping__" as hk
+
+participant "id_mappings_handler_:\nTsyncIdMappingsHandler" as idmap
+participant ":__TimeBaseConfiguration__" as cfg
+collections "time_base_writers_:\narray of ITimeBaseWriter" as wrs
+collections "time_base_readers_:\narray of ITimeBaseReader" as rds
+collections "transmission_semaphores_:\nvector of TsyncNamedSemaphore" as sems
+
+create wkr
+main -> wkr : Create()
+main -> wkr : Init()
+activate wkr
+
+wkr -> wkr : InitDaemon()
+
+wkr -> hk : Init()
+activate hk
+hk -> hk : Register signal handlers
+activate hk
+deactivate hk
+deactivate hk
+
+wkr -> wkr : InitIdMappings()
+activate wkr
+create idmap
+wkr -> idmap : create()
+wkr -> cfg : GetInstance()
+loop over configured time bases/domains
+    wkr -> idmap : AddDomianMapping(domain_id, domain_name)
+    opt domain has valid consumer time slave configured
+        wkr -> idmap : AddConsumerToDomain(domain_id, consumer_name)
+    end
+    opt domain has valid provider time master configured
+        wkr -> idmap : AddProviderToDomain(domain_id, provider_name)
+    end
+end
+wkr -> idmap : CommitMappingsToSharedMemory()
+deactivate wkr
+
+wkr -> wkr : InitTimeBaseAccessors()
+activate wkr
+wkr -> cfg : GetInstance()
+loop over configured time bases/domains
+    create wrs
+    wkr -> wrs : create and open writer for domain N
+    note right of wrs
+    num of writers and readers
+    limited to 8 each
+    end note
+    create rds
+    wkr -> rds : create and open reader for domain N
+    opt domain N has valid provider time master configured
+        create sems
+        wkr -> sems : create for domain N as owner
+    end
+    wkr -> wrs : write time base config and init data of domain N
+end
+deactivate wkr
+
+wkr -> wkr : is_initialized_ = true
+main <-- wkr
+deactivate wkr
+
+@enduml
