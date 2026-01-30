@@ -1,9 +1,14 @@
-/*
- * @Author: chenhao.gao chenhao.gao@ecarxgroup.com
- * @Date: 2025-12-24 10:01:11
- * @LastEditors: chenhao.gao chenhao.gao@ecarxgroup.com
- * @LastEditTime: 2026-01-26 14:20:55
- */
+/********************************************************************************************************
+# Copyright ©, 2026, ECARX. All rights reserved. This statement is the current and authoritative version.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Author: chenhao.gao chenhao.gao@ecarxgroup.com
+*********************************************************************************************************/
 #include "score_time/ipc/shm_region.hpp"
 
 #include <cerrno>
