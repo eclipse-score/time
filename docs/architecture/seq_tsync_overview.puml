@@ -1,0 +1,79 @@
+@startuml
+
+hide footbox
+
+title Overview of data flow between components
+
+!pragma teoz true
+box "HPC (S-CORE based)" #f0f5f5
+  box "<<process>>\nClient app (time consumer)" #e6ffe6
+    participant "Business logic" as app #LightGreen
+    participant ": score::time::Synchronized-\nTimeBaseConsumer" as cons #LightGreen
+  end box
+  box "\nShared Memory" #f9f9f9
+    participant "Time base <->\ndomain mapping" as map #LightGrey
+    collections "Shared ressource of\ntime bases/domains 0..n" as sh #LightGrey
+  end box
+  participant "<<process>>\ntsync-daemon" as tsyncd #LightBlue
+  participant "<<OS>>\nSysClock" as os #LightBlue
+  collections "<<process>>\nPTP daemon\nfor domains 0..n" as ptpd #LightBlue
+end box
+participant "Ethernet" as eth #LightGrey
+box "ECU" #f0f5f5
+  collections "Time masters\nof domains 0..n" as mc #LightBlue
+end box
+
+==Setup and Initialization==
+tsyncd -> tsyncd: read configuration\nfrom file
+create map
+tsyncd -> map: create + init
+create sh
+tsyncd -> sh: create + init
+tsyncd -> sh: put time base configuration
+|||
+
+ptpd -> sh: get time base configuration of related domain
+|||
+
+create cons
+app -> cons: create('Vehicle\nTime Consumer')
+cons -> map: get mapping
+
+==Normal operation==
+par
+  loop
+    ptpd <--> mc : Performing ptp\ncommunication
+    ptpd --> os
+    ptpd -> ptpd : Calculation GM time\nas per ptp protocol
+    ptpd -> sh : Set synchronized GM time t0,\nlocal time lt0, opt. rate deviation rd, and status
+  end loop
+else
+  loop every 1s
+    tsyncd -> sh : get time sync data
+    tsyncd -> tsyncd : check for timeouts
+    opt timeout reached
+      tsyncd -> sh : Set sync status to 'kTimeOut'
+    end opt
+  end loop
+else
+  loop
+    app -> cons : GetTimeWithStatus()
+    cons -> sh : Read time base data
+    cons <-- sh : (t0, rd) valid at lt0
+    cons -> os : get current local time
+    cons <-- os : lt1
+    cons -> cons : calculate current time:\nt1 = (lt1 - lt0)*rd + t0
+    note right
+      rate deviation
+      currently unsupported
+    end note
+    app <-- cons : Return adjusted vehicle time and status
+    app -> app : Use synchronized time
+    note right
+      e.g. adding timestamps to events,
+      determine age of events, etc.
+    end note
+  end loop
+end par
+
+@enduml

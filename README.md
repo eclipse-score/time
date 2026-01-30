@@ -92,7 +92,7 @@ sudo bazelisk run //src/ptpd -- -i eth0 -d 1 --global:foreground=Y -s --ptpengin
 The basic architecture/high level design of the S-CORE time related components is given in the following figure:
 
 <figure>
-<img src="docs/deployment.drawio.svg" style="width:90%">
+<img src="docs/architecture/deployment.drawio.svg" style="width:90%">
 </figure>
 
 * S-CORE time can handle multiple different time bases/time domains.
@@ -100,17 +100,18 @@ The basic architecture/high level design of the S-CORE time related components i
 * A modified ptpd2 implementation is used to achive that on the S-CORE domain:
    * It syncs a single time base with its related master clock
    * For each time base a separate ptpd instance is required
-   * It stores the determined time offset between the time base and the local clock in a share memory area related to the time base
+   * It stores the determined master time and the related local clock in a shared memory area related to the time base
    * It typically does *not* sync the local clock time!
-   * The modifications are done for
+   * The modifications of ptpd2 are done for
      * supporting the AUTOSAR Time Synchronization Protocol
-     * posting the time sync information to the respective shared memory area
+     * interfacing to the shared memory for the local exchange time base data
 * Applications use the tsync-lib to get the current time of the desired time base. The tsync-lib
-   * gets the time base's offset to the local clock from the respective shared memory ressource and
-   * adds it to the current local clock value.
+   * gets the time base data from the respective shared memory ressource to
+   * determine the current master clock value using this data and the current local time
 * The tsync-daemon is responsible to
    * manage the shared memory ressources of the different configured time bases
    * provide the time base configuration via shared memory to the applications and the ptpd process
+   * determining timed out sync data
 
 Supported protocols:
 * IEEE 802.1AS-2011 - aka gPTP (w/o AUTOSAR extensions)
@@ -124,8 +125,8 @@ Client apps use the S-CORE Time API (`score::time`) to either consume or provide
 It is defined in folder `src/tsync-lib/include/` and provided via the `tsync` library to the client apps.
 
 This API is essentially a mirrored AUTOSAR Time Synchronization API as defined in chapter 8 of the Specification of Time Synchronization AUTOSAR AP.
-Although it has some differences:
+Although, it has some differences:
 * The API namespace is `score::time`.
-* All `ara::core`-based types are replaced by C++17 std-types or S-CORE baselib types.
+* All `ara::core`-based types are replaced either by C++17 std-types or by S-CORE baselib types.
 
 ---
