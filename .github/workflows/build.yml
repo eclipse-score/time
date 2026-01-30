@@ -22,7 +22,8 @@ on:
     types: [checks_requested]
 jobs:
     build:
-      runs-on: ubuntu-latest
+      runs-on:
+        labels: LargeRunner_8cores_32GB_RAM_300GB_SSD
       steps:
         - name: Checkout repository
           uses: actions/checkout@v4.2.2
