@@ -95,7 +95,7 @@ The basic architecture/high level design of the S-CORE time related components i
 <img src="docs/architecture/deployment.drawio.svg" style="width:90%">
 </figure>
 
-* S-CORE time can handle multiple different time bases/time domains.
+* S-CORE time can handle up to 16 different time bases/time domains.
 * Syncing of the "clocks" of those time bases between different devices/exeution environments is done via gPTP or AUTOSAR Tsync Protocol (see below)
 * A modified ptpd2 implementation is used to achive that on the S-CORE domain:
    * It syncs a single time base with its related master clock
@@ -114,7 +114,7 @@ The basic architecture/high level design of the S-CORE time related components i
    * determining timed out sync data
 
 Supported protocols:
-* IEEE 802.1AS-2011 - aka gPTP (w/o AUTOSAR extensions)
+* IEEE 802.1AS-2011 - aka gPTP (without AUTOSAR extensions)
 * AUTOSAR Time Synchronization Protocol
 
 "Plain PTPv2" (IEEE 1588) seems not be supported at the moment (setting ptpd cmdline arg `--ptpengine:dot1as=0` seems not to have any effect)
