@@ -97,12 +97,12 @@ The basic architecture/high level design of the S-CORE time related components i
 
 * S-CORE time can handle up to 16 different time bases/time domains.
 * Syncing of the "clocks" of those time bases between different devices/exeution environments is done via gPTP or AUTOSAR Tsync Protocol (see below)
-* A modified ptpd2 implementation is used to achive that on the S-CORE domain:
+* A modified ptpd implementation is used to achive that on the S-CORE domain:
    * It syncs a single time base with its related master clock
    * For each time base a separate ptpd instance is required
    * It stores the determined master time and the related local clock in a shared memory area related to the time base
    * It typically does *not* sync the local clock time!
-   * The modifications of ptpd2 are done for
+   * The modifications of ptpd are done for
      * supporting the AUTOSAR Time Synchronization Protocol
      * interfacing to the shared memory for the local exchange time base data
 * Applications use the tsync-lib to get the current time of the desired time base. The tsync-lib
@@ -115,7 +115,7 @@ The basic architecture/high level design of the S-CORE time related components i
 
 Supported protocols:
 * IEEE 802.1AS-2011 - aka gPTP (without AUTOSAR extensions)
-* AUTOSAR Time Synchronization Protocol
+* AUTOSAR Time Synchronization Protocol (R21-11)
 
 "Plain PTPv2" (IEEE 1588) seems not be supported at the moment (setting ptpd cmdline arg `--ptpengine:dot1as=0` seems not to have any effect)
 
@@ -124,7 +124,7 @@ Supported protocols:
 Client apps use the S-CORE Time API (`score::time`) to either consume or provide data of the different time bases.
 It is defined in folder `src/tsync-lib/include/` and provided via the `tsync` library to the client apps.
 
-This API is essentially a mirrored AUTOSAR Time Synchronization API as defined in chapter 8 of the Specification of Time Synchronization AUTOSAR AP.
+This API is essentially a mirrored AUTOSAR Time Synchronization API as defined in chapter 8 of the Specification of Time Synchronization AUTOSAR AP R24-11.
 Although, it has some differences:
 * The API namespace is `score::time`.
 * All `ara::core`-based types are replaced either by C++17 std-types or by S-CORE baselib types.

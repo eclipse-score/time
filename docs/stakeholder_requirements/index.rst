@@ -24,11 +24,11 @@ Time synchronization
 +-------------------------------------------+-----------------------------------------------------+
 | Feature Requirement ID                    | Informal status                                     |
 +===========================================+=====================================================+
-| feat_req__time__vehicle_time_sync         | Implemented via modified ptpd2                      |
+| feat_req__time__vehicle_time_sync         | Implemented via modified ptpd                       |
 +-------------------------------------------+-----------------------------------------------------+
-| feat_req__time__vehicle_time_sync_prec    | Syncing of local clock possible (via ptpd2)         |
+| feat_req__time__vehicle_time_sync_prec    | Syncing of local clock possible (via ptpd)          |
 +-------------------------------------------+-----------------------------------------------------+
-| feat_req__time__vehicle_time_time_api     | API present - equal/similar to AUTOSAR API          |
+| feat_req__time__vehicle_time_time_api     | API present - corresponds to AUTOSAR API R24-11     |
 +-------------------------------------------+-----------------------------------------------------+
 | feat_req__time__vehicle_time_acc_qual_api | Sync status and leap jump info available            |
 +-------------------------------------------+-----------------------------------------------------+
@@ -46,7 +46,7 @@ Time Synchronization to absolute external sources
 +-------------------------------------+-----------------------------------------------------------+
 | Feature Requirement ID              | Informal status                                           |
 +=====================================+===========================================================+
-| feat_req__time__abs_sync            | Via ptpd2                                                 |
+| feat_req__time__abs_sync            | Via ptpd                                                  |
 +-------------------------------------+-----------------------------------------------------------+
 | feat_req__time__abs_base_api        | Time of a time base can be read via                       |
 |                                     | `SynchronizedTimeBaseConsumer`                            |
@@ -64,11 +64,11 @@ Local Clock
 +-------------------------------------+-----------------------------------------------------------+
 | Feature Requirement ID              | Informal status                                           |
 +=====================================+===========================================================+
-| feat_req__time__high_prec_clock_api | No special score interface defined yet, local high prec.  |
-|                                     | clock can be read via C++ std lib                         |
+| feat_req__time__high_prec_clock_api | No special score interface defined,                       |
+|                                     | use C++ `std::chrono::high_resolution_clock`              |
 +-------------------------------------+-----------------------------------------------------------+
-| feat_req__time__monotonic_clock_api | No special score interface defined yet,                   |
-|                                     | local monotonic clock can be read via C++ std lib         |
+| feat_req__time__monotonic_clock_api | No special score interface defined,                       |
+|                                     | use C++ `std::chrono::steady_clock`                       |
 +-------------------------------------+-----------------------------------------------------------+
 
 Testability
