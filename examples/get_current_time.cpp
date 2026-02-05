@@ -2,6 +2,7 @@
  * (c) 2025 ETAS GmbH. All rights reserved.
  ********************************************************************************/
 
+#include <iomanip>
 #include <iostream>
 
 // For S-Core Time
@@ -20,6 +21,17 @@ void signal_handler(int signum) {
 }
 
 using nanoseconds = std::chrono::nanoseconds;
+
+std::string format_time(uint64_t time_ns) {
+    std::ostringstream os;
+    os << std::setfill('0')
+       << time_ns/(24ull*3600ull*1000000000ull) << "d "
+       << std::setw(2) << (time_ns%(24ull*3600ull*1000000000ull))/(3600ull*1000000000ull) << ":"
+       << std::setw(2) << (time_ns%(3600ull*1000000000ull))/(60ull*1000000000ull) << ":"
+       << std::setw(2) << (time_ns%(60ull*1000000000ull))/(1000000000ull) << "."
+       << std::setw(9) << (time_ns%1000000000ull);
+    return os.str();
+}
 
 int main() {
     std::signal(SIGINT, signal_handler);
@@ -65,14 +77,14 @@ int main() {
 
         std::cout
             << "OS="
-            << os_ns
-            << " PTP="
-            << stbc_ns
-            << " OS Elapsed="
+            << format_time(os_ns)
+            << "  PTP="
+            << format_time(stbc_ns)
+            << "  OS Elapsed="
             << elapsed_ns
-            << " PTP Elapsed="
+            << "  PTP Elapsed="
             << stbc_elapsed_ns
-            << " Status="
+            << "  Status="
             << status
             << std::endl;
 
