@@ -6,7 +6,7 @@ APP_DIR="$(pwd)"
 
 # --- Step 1: Build all applications with Bazel ---
 echo "Building all applications with Bazel..."
-bazel build ///...
+bazel build //src/...
 
 if [ $? -ne 0 ]; then
     echo "Bazel build failed. Exiting."
@@ -63,14 +63,14 @@ tmux split-window -h -t $SESSION_NAME:0.2
 tmux select-pane -t $SESSION_NAME:0.0 -T "get_current_time.cpp"
 tmux send-keys -t $SESSION_NAME:0.0 "echo '--- get_current_time (Application) ---'" C-m
 tmux send-keys -t $SESSION_NAME:0.0 "cd $APP_DIR && sleep 2" C-m
-tmux send-keys -t $SESSION_NAME:0.0 "sudo -E bazel-bin/examples/get_current_time" C-m
+tmux send-keys -t $SESSION_NAME:0.0 "bazel-bin/examples/get_current_time" C-m
 
 # Pane 1: tsync-daemon
 tmux select-pane -t $SESSION_NAME:0.1 -T "TSYNC-DAEMON"
 tmux send-keys -t $SESSION_NAME:0.1 "echo '--- tsync-daemon ---'" C-m
 tmux send-keys -t $SESSION_NAME:0.1 "cd $APP_DIR" C-m
-tmux send-keys -t $SESSION_NAME:0.1 "export ECUCFG_ENV_VAR_ROOTFOLDER=$APP_DIR/bazel-out/k8-fastbuild/bin/src/tsync-daemon/src/score/time/daemon/" C-m
-tmux send-keys -t $SESSION_NAME:0.1 "sudo -E bazel-bin/src/tsync-daemon/tsync_daemon" C-m
+tmux send-keys -t $SESSION_NAME:0.1 "export ECUCFG_ENV_VAR_ROOTFOLDER=$APP_DIR/bazel-out/k8-fastbuild/bin/src/tsync-daemon/src/" C-m
+tmux send-keys -t $SESSION_NAME:0.1 "bazel-bin/src/tsync-daemon/tsync_daemon" C-m
 
 # Pane 2: ptpd_master
 tmux select-pane -t $SESSION_NAME:0.2 -T "PTP MASTER (e.g. on µC Classic domain)"

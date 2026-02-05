@@ -37,7 +37,7 @@ Navigation:
 First, build TSYNC-DAEMON as user and start using sudo:
 ```
 bazel build //src/tsync-daemon:tsync_daemon
-export ECUCFG_ENV_VAR_ROOTFOLDER=$(pwd)/bazel-out/k8-fastbuild/bin/src/tsync-daemon/src/score/time/daemon/
+export ECUCFG_ENV_VAR_ROOTFOLDER=$(pwd)/bazel-out/k8-fastbuild/bin/src/tsync-daemon/src/
 sudo -E bazel-bin/src/tsync-daemon/tsync_daemon
 ```
 
