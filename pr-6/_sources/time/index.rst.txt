@@ -888,12 +888,41 @@ The extended data flow with Qualified Vehicle Time integration is shown below:
 Example based on Absolute Time integration
 ''''''''''''''''''''''''''''''''''''''''''
 
+Another example of the ``TimeDaemon`` extension is the integration of an ``Absolute Time`` source, such as GNSS, to provide absolute time information alongside the relative Vehicle Time from PTP.
+
 The ``Absolute Time`` integration extends the standard ``TimeDaemon`` architecture with:
 
 1. An ``SDatMachine`` component that retrieves absolute time from GNSS via SOMEIP or other sources and provide new topics: ``absolute_time_data``
 2. A dedicated verification stage in the ``VerificationMachine`` for Absolute Time qualification
 3. A dedicated IPC channel for Absolute Time data
-4. A ``score::time::absolute`` library for applications requiring absolute time on Clients side.
+4. A ``score::time::abs`` library for applications requiring absolute time on Clients side.
+
+The way how it is integrated is presented below.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/examples/abs_time/abs_time_deployment.puml
+   :alt: Data flow
+
+.. raw:: html
+
+   </div>
+
+
+The control and data flow with Absolute Time integration is shown below.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/examples/abs_time/abs_time_data_control_flow.puml
+   :alt: Data flow
+
+.. raw:: html
+
+   </div>
 
 Using in test environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

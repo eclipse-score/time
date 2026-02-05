@@ -1031,14 +1031,21 @@ All communication with the ptp stack ight use <code class="docutils literal notr
 </div></section>
 <section id="example-based-on-absolute-time-integration">
 <h5>Example based on Absolute Time integration<a class="headerlink" href="#example-based-on-absolute-time-integration" title="Link to this heading">#</a></h5>
+<p>Another example of the <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> extension is the integration of an <code class="docutils literal notranslate"><span class="pre">Absolute</span> <span class="pre">Time</span></code> source, such as GNSS, to provide absolute time information alongside the relative Vehicle Time from PTP.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">Absolute</span> <span class="pre">Time</span></code> integration extends the standard <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> architecture with:</p>
 <ol class="arabic simple">
 <li><p>An <code class="docutils literal notranslate"><span class="pre">SDatMachine</span></code> component that retrieves absolute time from GNSS via SOMEIP or other sources and provide new topics: <code class="docutils literal notranslate"><span class="pre">absolute_time_data</span></code></p></li>
 <li><p>A dedicated verification stage in the <code class="docutils literal notranslate"><span class="pre">VerificationMachine</span></code> for Absolute Time qualification</p></li>
 <li><p>A dedicated IPC channel for Absolute Time data</p></li>
-<li><p>A <code class="docutils literal notranslate"><span class="pre">score::time::absolute</span></code> library for applications requiring absolute time on Clients side.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">score::time::abs</span></code> library for applications requiring absolute time on Clients side.</p></li>
 </ol>
-</section>
+<p>The way how it is integrated is presented below.</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-ff1fdd56de8fb235965ba62379d8b00feed0fb17.svg" type="image/svg+xml" style="width:777px;height:1088px;background:#FFFFFF;"></object></p>
+</div><p>The control and data flow with Absolute Time integration is shown below.</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-b449429f3555955fc948e6e23ee2010404a880fe.svg" type="image/svg+xml" style="width:1435px;height:751px;background:#FFFFFF;"></object></p>
+</div></section>
 </section>
 </section>
 <section id="using-in-test-environment">
