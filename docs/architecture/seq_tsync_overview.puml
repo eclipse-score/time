@@ -11,11 +11,11 @@ box "HPC (S-CORE based)" #f0f5f5
     participant ": score::time::Synchronized-\nTimeBaseConsumer" as cons #LightGreen
   end box
   box "\nShared Memory" #f9f9f9
-    participant "Time base <->\ndomain mapping" as map #LightGrey
+    participant "Consomer/provider\n-> Time base/\ndomain mapping" as map #LightGrey
     collections "Shared ressource of\ntime bases/domains 0..n" as sh #LightGrey
   end box
   participant "<<process>>\ntsync-daemon" as tsyncd #LightBlue
-  participant "<<OS>>\nSysClock" as os #LightBlue
+  participant "<<OS>>\nMonotonic Clock" as os #LightBlue
   collections "<<process>>\nPTP daemon\nfor domains 0..n" as ptpd #LightBlue
 end box
 participant "Ethernet" as eth #LightGrey
@@ -60,7 +60,7 @@ else
     app -> cons : GetTimeWithStatus()
     cons -> sh : Read time base data
     cons <-- sh : (t0, rd) valid at lt0
-    cons -> os : get current local time
+    cons -> os : get current local (monotonic) time
     cons <-- os : lt1
     cons -> cons : calculate current time:\nt1 = (lt1 - lt0)*rd + t0
     note right
