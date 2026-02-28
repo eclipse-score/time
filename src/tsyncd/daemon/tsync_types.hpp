@@ -173,6 +173,9 @@ struct PTPMessage
     tmv_t recvHardwareTS{0};
 };
 
+// Ensure PTPMessage fits within Ethernet frame size constraint
+static_assert(sizeof(PTPMessage) <= 1600, "PTPMessage exceeds maximum Ethernet frame size");
+
 struct PTPMessageQueue
 {
     PTPMessage save_message[MAX_MSG_QUEUE_SIZE];

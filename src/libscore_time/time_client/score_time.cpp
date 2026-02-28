@@ -13,6 +13,7 @@
 #include "score_time/score_time.hpp"
 
 #include "score_time/ipc/shm_region.hpp"
+#include "score_time/utils/time_utils.hpp"
 
 #include <time.h>
 #include <atomic>
@@ -22,19 +23,12 @@
 namespace score_time
 {
 
-    inline std::int64_t ReadClockNs(clockid_t clk)
-    {
-        ::timespec ts{};
-        ::clock_gettime(clk, &ts);
-        return static_cast<std::int64_t>(ts.tv_sec) * 1'000'000'000LL + ts.tv_nsec;
-    }
-
     class MonotonicClockImpl final : public IMonotonicClock
     {
     public:
         TimePoint<MonotonicClockTag> Now() const override
         {
-            return TimePoint<MonotonicClockTag>(ReadClockNs(CLOCK_MONOTONIC));
+            return TimePoint<MonotonicClockTag>(utils::ClockNs(CLOCK_MONOTONIC));
         }
     };
 
@@ -49,7 +43,7 @@ namespace score_time
 #else
             const clockid_t clk = CLOCK_REALTIME;
 #endif
-            return TimePoint<HighPrecisionClockTag>(ReadClockNs(clk));
+            return TimePoint<HighPrecisionClockTag>(utils::ClockNs(clk));
         }
 
     private:
@@ -78,7 +72,7 @@ namespace score_time
             {
                 return TimePoint<VehicleClockTag>(0);
             }
-            const auto mono_now = ReadClockNs(CLOCK_MONOTONIC);
+            const auto mono_now = utils::ClockNs(CLOCK_MONOTONIC);
             return TimePoint<VehicleClockTag>(base_vehicle + (mono_now - base_mono));
         }
 
@@ -119,7 +113,7 @@ namespace score_time
             {
                 return TimePoint<AbsoluteClockTag>(0);
             }
-            const auto mono_now = ReadClockNs(CLOCK_MONOTONIC);
+            const auto mono_now = utils::ClockNs(CLOCK_MONOTONIC);
             return TimePoint<AbsoluteClockTag>(base_utc + (mono_now - base_mono));
         }
 
@@ -161,7 +155,26 @@ namespace score_time
             const std::uint32_t idx = head - 1u - static_cast<std::uint32_t>(i);
             const std::size_t r = static_cast<std::size_t>(idx % capacity);
             const auto &e = ring[r];
-            out[i] = SyncLogEntry{e.monotonic_ns, static_cast<SyncLogEvent>(e.type), e.v1, e.v2};
+
+            // Seqlock read with retry - increased to 1000 for consistency with WriteVehicle/WriteAbsolute
+            for (int retry = 0; retry < 1000; ++retry)
+            {
+                const auto seq_before = e.seq.load(std::memory_order_acquire);
+                if (seq_before & 1U)
+                    continue; // Writer in progress
+
+                const std::int64_t mono = e.monotonic_ns.load(std::memory_order_relaxed);
+                const std::uint16_t type = e.type.load(std::memory_order_relaxed);
+                const std::int64_t v1 = e.v1.load(std::memory_order_relaxed);
+                const std::int64_t v2 = e.v2.load(std::memory_order_relaxed);
+
+                const auto seq_after = e.seq.load(std::memory_order_acquire);
+                if (seq_before == seq_after)
+                {
+                    out[i] = SyncLogEntry{mono, static_cast<SyncLogEvent>(type), v1, v2};
+                    break;
+                }
+            }
         }
         return n;
     }

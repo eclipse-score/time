@@ -44,6 +44,13 @@ copyright_checker(
 # Add target for formatting checks
 use_format_targets()
 
+# Documentation generation tool
+alias(
+    name = "doc-gen",
+    actual = "//tools:doc_gen",
+    visibility = ["//visibility:public"],
+)
+
 docs(
     source_dir = "docs",
 )

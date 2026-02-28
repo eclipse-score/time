@@ -11,6 +11,7 @@
 * SPDX-License-Identifier: Apache-2.0
 ********************************************************************************/
 #include "ntp_client.hpp"
+#include "score_time/utils/time_utils.hpp"
 
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -45,13 +46,6 @@ namespace tsyncd::ntp
             std::uint64_t tx_ts;
         };
 #pragma pack(pop)
-
-        inline std::int64_t ClockNs(clockid_t clk)
-        {
-            ::timespec ts{};
-            ::clock_gettime(clk, &ts);
-            return static_cast<std::int64_t>(ts.tv_sec) * 1'000'000'000LL + ts.tv_nsec;
-        }
 
         inline std::uint64_t HostToNtp(std::int64_t unix_ns)
         {
@@ -124,10 +118,9 @@ namespace tsyncd::ntp
             (void)::setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 
             NtpPacket req{};
-            std::memset(&req, 0, sizeof(req));
             req.li_vn_mode = static_cast<std::uint8_t>((0 << 6) | (4 << 3) | 3); // LI=0, VN=4, MODE=3(client)
 
-            const std::int64_t t1 = ClockNs(CLOCK_REALTIME);
+            const std::int64_t t1 = score_time::utils::ClockNs(CLOCK_REALTIME);
             req.tx_ts = htobe64(HostToNtp(t1));
 
             const ssize_t sent = ::sendto(fd, &req, sizeof(req), 0, reinterpret_cast<const ::sockaddr *>(&addr), addrlen);
@@ -141,8 +134,8 @@ namespace tsyncd::ntp
             ::sockaddr_storage peer{};
             socklen_t peerlen = sizeof(peer);
             const ssize_t recvd = ::recvfrom(fd, &resp, sizeof(resp), 0, reinterpret_cast<::sockaddr *>(&peer), &peerlen);
-            const std::int64_t t4 = ClockNs(CLOCK_REALTIME);
-            const std::int64_t mono_rx = ClockNs(CLOCK_MONOTONIC);
+            const std::int64_t t4 = score_time::utils::ClockNs(CLOCK_REALTIME);
+            const std::int64_t mono_rx = score_time::utils::ClockNs(CLOCK_MONOTONIC);
             ::close(fd);
             if (recvd < static_cast<ssize_t>(sizeof(resp)))
                 continue;

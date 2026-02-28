@@ -13,6 +13,7 @@
 #include "score_time/ipc/shm_region.hpp"
 
 #include <cerrno>
+#include <cstdio>
 #include <cstring>
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -61,8 +62,16 @@ bool ShmRegion::Open(const std::string& name, std::size_t size, bool create_or_o
   } else {
     // If open only, we can still accept a larger actual size. Read current size.
     struct stat st{};
-    if (::fstat(fd_, &st) == 0 && st.st_size > 0) {
-      size_ = static_cast<std::size_t>(st.st_size);
+    if (::fstat(fd_, &st) == 0) {
+      constexpr std::size_t MAX_SHM_SIZE = 1024 * 1024 * 1024;  // 1GB
+      if (st.st_size < 0 || static_cast<std::size_t>(st.st_size) > MAX_SHM_SIZE) {
+        std::fprintf(stderr, "shm_region: invalid size %ld\n", static_cast<long>(st.st_size));
+        Close();
+        return false;
+      }
+      if (st.st_size > 0) {
+        size_ = static_cast<std::size_t>(st.st_size);
+      }
     }
   }
 

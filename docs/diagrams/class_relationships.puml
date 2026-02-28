@@ -1,0 +1,99 @@
+@startuml
+!theme plain
+
+package "score_time::ipc" {
+    class SharedState {
+        +kMagic: uint32_t {static}
+        +kVersion: uint16_t {static}
+        --
+        +magic: atomic<uint32_t>
+        +version: atomic<uint16_t>
+        +vehicle_seq: atomic<uint64_t>
+        +vehicle_base_ns: atomic<int64_t>
+        +vehicle_base_mono_ns: atomic<int64_t>
+        +vehicle_acc: atomic<AccuracyQualifier>
+        +vehicle_tpq: atomic<TimePointQualifier>
+        --
+        +vehicle_log[256]: SyncLogEntry
+        +abs_log[256]: SyncLogEntry
+    }
+
+    class SyncLogEntry {
+        +seq: atomic<uint64_t>
+        +monotonic_ns: atomic<int64_t>
+        +type: atomic<uint16_t>
+        +flags: atomic<uint16_t>
+        +v1: atomic<int64_t>
+        +v2: atomic<int64_t>
+    }
+
+    class ShmRegion {
+        -fd_: int
+        -addr_: void*
+        -size_: size_t
+        --
+        +Open(name): bool
+        +Close(): void
+        +Addr(): void*
+        +Size(): size_t
+    }
+
+    SharedState *-- "512" SyncLogEntry : contains
+    ShmRegion ..> SharedState : "maps to"
+}
+
+package "score_time::utils" {
+    class PthreadLockGuard {
+        -mtx_: pthread_mutex_t*
+        --
+        +PthreadLockGuard(mtx)
+        +~PthreadLockGuard()
+        --
+        {method} Deleted: copy, move
+    }
+
+    class "ParseInteger<T>" as ParseInt {
+        +ParseInteger(str, out): bool {static}
+    }
+
+    class ParseDouble {
+        +ParseDouble(str, out): bool {static}
+    }
+
+    class ClockNs {
+        +ClockNsSafe(clk): optional<int64_t> {static}
+        +ClockNs(clk): int64_t {static}
+    }
+}
+
+package "tsyncd" {
+    class TimeSyncEngine {
+        -ctx_: Context
+        -shared_: SharedState*
+        -shm_: ShmRegion
+        --
+        +Start(): bool
+        +Stop(): void
+        -RxLoop(): void
+        -PdelayLoop(): void
+        -AbsLoop(): void
+    }
+}
+
+TimeSyncEngine --> SharedState : writes to
+TimeSyncEngine --> ShmRegion : owns
+TimeSyncEngine ..> PthreadLockGuard : uses
+TimeSyncEngine ..> ClockNs : uses
+
+note right of SharedState
+  Seqlock protocol:
+  seq odd = writing
+  seq even = readable
+end note
+
+note right of PthreadLockGuard
+  RAII lock wrapper
+  Aborts on error
+end note
+
+@enduml

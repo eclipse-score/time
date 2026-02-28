@@ -16,6 +16,8 @@
 #include "gptp_protocol.hpp"
 #include "raw_socket.hpp"
 #include "net_identity.hpp"
+#include "score_time/utils/pthread_lock_guard.hpp"
+#include "score_time/utils/time_utils.hpp"
 
 #include <iostream>
 #include <arpa/inet.h>
@@ -44,25 +46,30 @@ namespace tsyncd
     namespace
     {
 
-        inline std::int64_t ClockNs(clockid_t clk)
-        {
-            ::timespec ts{};
-            ::clock_gettime(clk, &ts);
-            return static_cast<std::int64_t>(ts.tv_sec) * 1'000'000'000LL + ts.tv_nsec;
-        }
-
         static void *rx_entry(void *arg)
         {
+            if (!arg)
+            {
+                return nullptr;  // Defensive: should never happen in correct usage
+            }
             reinterpret_cast<TimeSyncEngine *>(arg)->RxLoop();
             return nullptr;
         }
         static void *pdelay_entry(void *arg)
         {
+            if (!arg)
+            {
+                return nullptr;  // Defensive: should never happen in correct usage
+            }
             reinterpret_cast<TimeSyncEngine *>(arg)->PdelayLoop();
             return nullptr;
         }
         static void *abs_entry(void *arg)
         {
+            if (!arg)
+            {
+                return nullptr;  // Defensive: should never happen in correct usage
+            }
             reinterpret_cast<TimeSyncEngine *>(arg)->AbsLoop();
             return nullptr;
         }
@@ -83,13 +90,20 @@ namespace tsyncd
 
     } // namespace
 
-    TimeSyncEngine::TimeSyncEngine(const EngineOptions &opt) : opt_(opt)
+    TimeSyncEngine::TimeSyncEngine(const EngineOptions &opt) : opt_(opt), ctx_{}
     {
-        std::memset(&ctx_, 0, sizeof(ctx_));
         ctx_.raw_fd = -1;
         ctx_.phc_fd = -1;
         ctx_.state = TsyncState::kEmpty;
-        pthread_mutex_init(&ctx_.pdelay_lock, nullptr);
+
+        // Initialize mutex with error checking
+        const int mutex_ret = pthread_mutex_init(&ctx_.pdelay_lock, nullptr);
+        if (mutex_ret != 0)
+        {
+            std::fprintf(stderr, "tsyncd: pthread_mutex_init failed: %s (errno=%d)\n",
+                         std::strerror(mutex_ret), mutex_ret);
+            std::abort();  // Critical failure in safety-critical system
+        }
 
         ntp::Client::Options copt;
         copt.servers = opt_.ntp_servers;
@@ -113,6 +127,9 @@ namespace tsyncd
     bool TimeSyncEngine::Start()
     {
         std::cout << "[DEBUG] Start() called" << std::endl;
+
+        // Initialize stop flag FIRST, before any initialization that might check it
+        stop_.store(false, std::memory_order_seq_cst);
 
         if (!InitShm())
         {
@@ -145,8 +162,6 @@ namespace tsyncd
         (void)InitAbsSourceSocket();
         std::cout << "[DEBUG] InitAbsSourceSocket() OK (optional)" << std::endl;
 
-        stop_.store(false, std::memory_order_release);
-
         if (pthread_create(&rx_th_, nullptr, &rx_entry, this) != 0)
         {
             std::cout << "[DEBUG] RX thread creation FAILED" << std::endl;
@@ -158,6 +173,7 @@ namespace tsyncd
         if (pthread_create(&pdelay_th_, nullptr, &pdelay_entry, this) != 0)
         {
             std::cout << "[DEBUG] PDelay thread creation FAILED" << std::endl;
+            Stop();
             return false;
         }
         pdelay_started_ = true;
@@ -166,6 +182,7 @@ namespace tsyncd
         if (pthread_create(&abs_th_, nullptr, &abs_entry, this) != 0)
         {
             std::cout << "[DEBUG] Abs thread creation FAILED" << std::endl;
+            Stop();
             return false;
         }
         abs_started_ = true;
@@ -177,7 +194,7 @@ namespace tsyncd
 
     void TimeSyncEngine::Stop()
     {
-        stop_.store(true, std::memory_order_release);
+        stop_.store(true, std::memory_order_seq_cst);
 
         if (rx_started_)
         {
@@ -223,7 +240,26 @@ namespace tsyncd
             std::fprintf(stderr, "tsyncd: shm open failed (%s)\n", opt_.shm_name.c_str());
             return false;
         }
-        shared_ = reinterpret_cast<score_time::ipc::SharedState *>(shm_.Addr());
+
+        void *raw_addr = shm_.Addr();
+        const std::size_t shm_size = shm_.Size();
+
+        // Validate alignment
+        if (reinterpret_cast<std::uintptr_t>(raw_addr) % alignof(score_time::ipc::SharedState) != 0)
+        {
+            std::fprintf(stderr, "tsyncd: shared memory not aligned\n");
+            return false;
+        }
+
+        // Validate size
+        if (shm_size < sizeof(score_time::ipc::SharedState))
+        {
+            std::fprintf(stderr, "tsyncd: shared memory too small: %zu < %zu\n",
+                         shm_size, sizeof(score_time::ipc::SharedState));
+            return false;
+        }
+
+        shared_ = reinterpret_cast<score_time::ipc::SharedState *>(raw_addr);
 
         const auto magic = shared_->magic.load(std::memory_order_acquire);
         const auto ver = shared_->version.load(std::memory_order_acquire);
@@ -280,7 +316,7 @@ namespace tsyncd
         ctx_.clk_id = CLOCK_MONOTONIC;
 #else
         ctx_.phc_fd = ::open(opt_.phc_device.c_str(), O_RDWR);
-        while (ctx_.phc_fd < 0 && !stop_.load(std::memory_order_acquire))
+        while (ctx_.phc_fd < 0 && !stop_.load(std::memory_order_seq_cst))
         {
             std::fprintf(stderr, "tsyncd: failed to open PHC %s (%d), retry...\n", opt_.phc_device.c_str(), errno);
             ::sleep(1);
@@ -337,15 +373,14 @@ namespace tsyncd
 
     void TimeSyncEngine::RxLoop()
     {
-        unsigned char buf[2048]{};
         ::timespec hwts{};
 
-        while (!stop_.load(std::memory_order_acquire))
+        while (!stop_.load(std::memory_order_seq_cst))
         {
-            const int n = raw_recvMsg(ctx_.raw_fd, buf, &hwts, /*flag=*/0);
+            const int n = raw_recvMsg(ctx_.raw_fd, rx_buffer_.data(), &hwts, /*flag=*/0);
             if (n <= 0)
                 continue;
-            HandlePacket(buf, n, hwts);
+            HandlePacket(rx_buffer_.data(), n, hwts);
         }
     }
 
@@ -361,23 +396,22 @@ namespace tsyncd
                  ? static_cast<std::int64_t>(opt_.pdelay_req_interval_ms) * 1'000'000LL
                  : 1'000'000'000LL);
 
-        while (!stop_.load(std::memory_order_acquire))
+        while (!stop_.load(std::memory_order_seq_cst))
         {
-            ::timespec now{};
-            ::clock_gettime(CLOCK_MONOTONIC, &now);
-            const std::int64_t now_ns = timespec_to_tmv(now).ns;
-            const std::int64_t next_ns = timespec_to_tmv(next).ns;
-            if (now_ns >= next_ns)
-            {
-                pthread_mutex_lock(&ctx_.pdelay_lock);
-                (void)SendPdelayRequest();
-                pthread_mutex_unlock(&ctx_.pdelay_lock);
+            ::clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &next, nullptr);
 
-                const std::int64_t new_next_ns = now_ns + interval_ns;
-                next.tv_sec = static_cast<time_t>(new_next_ns / 1'000'000'000LL);
-                next.tv_nsec = static_cast<long>(new_next_ns % 1'000'000'000LL);
+            if (stop_.load(std::memory_order_seq_cst))
+                break;
+
+            {
+                score_time::utils::PthreadLockGuard lock(&ctx_.pdelay_lock);
+                (void)SendPdelayRequest();
             }
-            ::usleep(1000);
+
+            // Calculate next wake time
+            const std::int64_t next_ns = timespec_to_tmv(next).ns + interval_ns;
+            next.tv_sec = static_cast<time_t>(next_ns / 1'000'000'000LL);
+            next.tv_nsec = static_cast<long>(next_ns % 1'000'000'000LL);
         }
     }
 
@@ -385,9 +419,13 @@ namespace tsyncd
     {
         std::int64_t last_state_hash = 0;
 
-        while (!stop_.load(std::memory_order_acquire))
+        ::timespec next{};
+        ::clock_gettime(CLOCK_MONOTONIC, &next);
+        const std::int64_t interval_ns = static_cast<std::int64_t>(opt_.abs_publish_interval_ms) * 1'000'000LL;
+
+        while (!stop_.load(std::memory_order_seq_cst))
         {
-            const std::int64_t mono_now = ClockNs(CLOCK_MONOTONIC);
+            const std::int64_t mono_now = score_time::utils::ClockNs(CLOCK_MONOTONIC);
             if (opt_.sync_timeout_ms > 0)
             {
                 const std::int64_t last_sync = last_sync_event_mono_ns_.load(std::memory_order_acquire);
@@ -464,7 +502,7 @@ namespace tsyncd
                     abs_ext_.utc_ns = msg.utc_ns;
                     abs_ext_.inaccuracy_ns = msg.inaccuracy_ns;
                     abs_ext_.sec = static_cast<score_time::AbsoluteSecurityQualifier>(msg.sec_qual);
-                    abs_ext_.mono_rx_ns = ClockNs(CLOCK_MONOTONIC);
+                    abs_ext_.mono_rx_ns = score_time::utils::ClockNs(CLOCK_MONOTONIC);
                     abs_ext_.valid = true;
                 }
             }
@@ -519,7 +557,12 @@ namespace tsyncd
                 }
             }
 
-            ::usleep(static_cast<useconds_t>(opt_.abs_publish_interval_ms * 1000));
+            // Calculate next wake time
+            const std::int64_t next_ns = timespec_to_tmv(next).ns + interval_ns;
+            next.tv_sec = static_cast<time_t>(next_ns / 1'000'000'000LL);
+            next.tv_nsec = static_cast<long>(next_ns % 1'000'000'000LL);
+
+            ::clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &next, nullptr);
         }
     }
 
@@ -560,7 +603,7 @@ namespace tsyncd
     {
         if (!shared_)
             return;
-        const std::int64_t mono_now = ClockNs(CLOCK_MONOTONIC);
+        const std::int64_t mono_now = score_time::utils::ClockNs(CLOCK_MONOTONIC);
         const std::int64_t utc = abs_ext_.utc_ns;
         const std::int64_t inacc = abs_ext_.inaccuracy_ns;
         const auto acc = MapInaccuracyToQual(inacc);
@@ -578,7 +621,7 @@ namespace tsyncd
         if (!shared_)
             return;
 
-        const std::int64_t mono_now = ClockNs(CLOCK_MONOTONIC);
+        const std::int64_t mono_now = score_time::utils::ClockNs(CLOCK_MONOTONIC);
         const auto est = ntp_estimator_.Snapshot();
 
         if (!est.locked)
@@ -591,7 +634,7 @@ namespace tsyncd
             return;
         }
 
-        const std::int64_t rt_now = ClockNs(CLOCK_REALTIME);
+        const std::int64_t rt_now = score_time::utils::ClockNs(CLOCK_REALTIME);
         const std::int64_t utc_est = rt_now + est.offset_ns;
 
         const auto acc = MapInaccuracyToQual(est.inaccuracy_ns);
@@ -640,9 +683,10 @@ namespace tsyncd
             SyncFupStateMachine(TsyncEvent::kRecvFup, msg);
             break;
         case PTP_MSGTYPE_PDELAY_REQ:
-            pthread_mutex_lock(&ctx_.pdelay_lock);
-            (void)SendPdelayRespAndFup(msg);
-            pthread_mutex_unlock(&ctx_.pdelay_lock);
+            {
+                score_time::utils::PthreadLockGuard lock(&ctx_.pdelay_lock);
+                (void)SendPdelayRespAndFup(msg);
+            }
             break;
         case PTP_MSGTYPE_PDELAY_RESP:
             msg.recvHardwareTS = timespec_to_tmv(hwts);
@@ -652,9 +696,10 @@ namespace tsyncd
         case PTP_MSGTYPE_PDELAY_RESP_FOLLOW_UP:
             msg.parseMessageTs = Timestamp_to_tmv(msg.pdelay_resp_fup.responseOriginReceiptTimestamp);
             ctx_.peer_delay_fup = msg;
-            pthread_mutex_lock(&ctx_.pdelay_lock);
-            ComputePeerDelay();
-            pthread_mutex_unlock(&ctx_.pdelay_lock);
+            {
+                score_time::utils::PthreadLockGuard lock(&ctx_.pdelay_lock);
+                ComputePeerDelay();
+            }
             break;
         default:
             break;
@@ -743,7 +788,7 @@ namespace tsyncd
         const int r = raw_sendMsg(ctx_.raw_fd, &req, static_cast<int>(len), &hwts);
         ctx_.peer_delay_req.sendHardwareTS = timespec_to_tmv(hwts);
 
-        const std::int64_t mono_now = ClockNs(CLOCK_MONOTONIC);
+        const std::int64_t mono_now = score_time::utils::ClockNs(CLOCK_MONOTONIC);
         last_pdelay_req_mono_ns_.store(mono_now, std::memory_order_release);
         pdelay_waiting_resp_.store(true, std::memory_order_release);
 
@@ -842,7 +887,7 @@ namespace tsyncd
                   << " t4=" << t4.ns
                   << " path_delay=" << ctx_.path_delay << std::endl;
 
-        const std::int64_t mono_now = ClockNs(CLOCK_MONOTONIC);
+        const std::int64_t mono_now = score_time::utils::ClockNs(CLOCK_MONOTONIC);
         last_pdelay_event_mono_ns_.store(mono_now, std::memory_order_release);
         pdelay_waiting_resp_.store(false, std::memory_order_release);
         pdelay_consecutive_loss_count_.store(0, std::memory_order_release);
@@ -897,7 +942,11 @@ namespace tsyncd
             {
                 ts.tv_nsec -= offset;
                 normalize_timespec(ts);
-                (void)::clock_settime(ctx_.clk_id, &ts);
+                if (::clock_settime(ctx_.clk_id, &ts) != 0)
+                {
+                    std::fprintf(stderr, "tsyncd: clock_settime failed: %s\n", std::strerror(errno));
+                    acc = score_time::AccuracyQualifier::kNotSynchronized;
+                }
             }
         }
 #else
@@ -911,7 +960,7 @@ namespace tsyncd
                 ? score_time::TimePointQualifier::kASIL_B
                 : score_time::TimePointQualifier::kQM;
 
-        const std::int64_t mono_ns = ClockNs(CLOCK_MONOTONIC);
+        const std::int64_t mono_ns = score_time::utils::ClockNs(CLOCK_MONOTONIC);
 
         last_sync_event_mono_ns_.store(mono_ns, std::memory_order_release);
 

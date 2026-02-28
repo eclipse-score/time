@@ -11,6 +11,7 @@
 * SPDX-License-Identifier: Apache-2.0
 ********************************************************************************/
 #include "config_loader.hpp"
+#include "score_time/utils/string_parser.hpp"
 
 #include <cctype>
 #include <cstdlib>
@@ -130,7 +131,11 @@ namespace tsyncd
 
             if (is_num)
             {
-                int v = std::atoi(val.c_str());
+                int v = 0;
+                if (!score_time::utils::ParseInteger(val, v))
+                {
+                    return false;
+                }
                 if (v == 0)
                 {
                     out = EngineOptions::AbsMode::kPublishOnly;
@@ -162,112 +167,188 @@ namespace tsyncd
 
         static void apply_kv(const std::string &key, const std::string &val, EngineOptions &opt)
         {
-            try
+            if (key == "iface_name")
             {
-                if (key == "iface_name")
-                {
-                    opt.iface_name = val;
-                }
-                else if (key == "phc_device")
-                {
-                    opt.phc_device = val;
-                }
-                else if (key == "shm_name")
-                {
-                    opt.shm_name = val;
-                }
-                else if (key == "shm_size")
-                {
-                    opt.shm_size = static_cast<std::size_t>(std::stoull(val));
-                }
-                else if (key == "abs_mode")
-                {
-                    EngineOptions::AbsMode m;
-                    if (parse_abs_mode(val, m))
-                        opt.abs_mode = m;
-                    else
-                        std::cerr << "[WARN] invalid abs_mode: " << val << std::endl;
-                }
-                else if (key == "ntp_servers")
-                {
-                    std::vector<std::string> v;
-                    split_by_comma(val, v);
-                    if (!v.empty())
-                        opt.ntp_servers = v;
-                }
-                else if (key == "ntp_port")
-                {
-                    opt.ntp_port = std::stoi(val);
-                }
-                else if (key == "ntp_query_interval_ms")
-                {
-                    opt.ntp_query_interval_ms = std::stoi(val);
-                }
-                else if (key == "ntp_request_timeout_ms" || key == "ntp_timeout_ms")
-                {
-                    opt.ntp_request_timeout_ms = std::stoi(val);
-                }
-                else if (key == "ntp_samples_to_lock")
-                {
-                    opt.ntp_samples_to_lock = std::stoi(val);
-                }
-                else if (key == "ntp_offset_ewma_alpha")
-                {
-                    opt.ntp_offset_ewma_alpha = std::stod(val);
-                }
-                else if (key == "ntp_jitter_ewma_alpha")
-                {
-                    opt.ntp_jitter_ewma_alpha = std::stod(val);
-                }
-                else if (key == "abs_publish_interval_ms")
-                {
-                    opt.abs_publish_interval_ms = std::stoi(val);
-                }
-                else if (key == "abs_external_enable")
-                {
-                    bool b{};
-                    if (parse_bool(val, b))
-                        opt.abs_external_enable = b;
-                    else
-                        std::cerr << "[WARN] invalid abs_external_enable: " << val << std::endl;
-                }
-                else if (key == "abs_source_socket")
-                {
-                    opt.abs_source_socket = val;
-                }
-                else if (key == "abs_source_timeout_ms" || key == "abs_timeout_ms")
-                {
-                    opt.abs_source_timeout_ms = std::stoi(val);
-                }
-                else if (key == "pdelay_req_interval_ms" || key == "pdelay_cycle")
-                {
-                    opt.pdelay_req_interval_ms = std::stoi(val);
-                }
-                else if (key == "pdelay_timeout_ms")
-                {
-                    opt.pdelay_timeout_ms = std::stoi(val);
-                }
-                else if (key == "sync_timeout_ms")
-                {
-                    opt.sync_timeout_ms = std::stoi(val);
-                }
-                else if (key == "unstable_offset_threshold_ns")
-                {
-                    opt.unstable_offset_threshold_ns = std::stoll(val);
-                }
-                else if (key == "jump_future_threshold_ns")
-                {
-                    opt.jump_future_threshold_ns = std::stoll(val);
-                }
-                else
-                {
-                    std::cerr << "[INFO] ignore unknown config key: " << key << std::endl;
-                }
+                opt.iface_name = val;
             }
-            catch (const std::exception &e)
+            else if (key == "phc_device")
             {
-                std::cerr << "[WARN] failed to parse config key=" << key
-                          << " val=" << val << " err=" << e.what() << std::endl;
+                opt.phc_device = val;
+            }
+            else if (key == "shm_name")
+            {
+                opt.shm_name = val;
+            }
+            else if (key == "shm_size")
+            {
+                std::uint64_t size_val;
+                if (!score_time::utils::ParseInteger(val, size_val))
+                {
+                    std::cerr << "[WARN] invalid shm_size: " << val << std::endl;
+                    return;
+                }
+                opt.shm_size = static_cast<std::size_t>(size_val);
+            }
+            else if (key == "abs_mode")
+            {
+                EngineOptions::AbsMode m;
+                if (parse_abs_mode(val, m))
+                    opt.abs_mode = m;
+                else
+                    std::cerr << "[WARN] invalid abs_mode: " << val << std::endl;
+            }
+            else if (key == "ntp_servers")
+            {
+                std::vector<std::string> v;
+                split_by_comma(val, v);
+                if (!v.empty())
+                    opt.ntp_servers = v;
+            }
+            else if (key == "ntp_port")
+            {
+                int port_val;
+                if (!score_time::utils::ParseInteger(val, port_val) || port_val < 0 || port_val > 65535)
+                {
+                    std::cerr << "[WARN] invalid ntp_port: " << val << std::endl;
+                    return;
+                }
+                opt.ntp_port = port_val;
+            }
+            else if (key == "ntp_query_interval_ms")
+            {
+                int interval_val;
+                if (!score_time::utils::ParseInteger(val, interval_val) || interval_val < 0)
+                {
+                    std::cerr << "[WARN] invalid ntp_query_interval_ms: " << val << std::endl;
+                    return;
+                }
+                opt.ntp_query_interval_ms = interval_val;
+            }
+            else if (key == "ntp_request_timeout_ms" || key == "ntp_timeout_ms")
+            {
+                int timeout_val;
+                if (!score_time::utils::ParseInteger(val, timeout_val) || timeout_val < 0)
+                {
+                    std::cerr << "[WARN] invalid ntp_request_timeout_ms: " << val << std::endl;
+                    return;
+                }
+                opt.ntp_request_timeout_ms = timeout_val;
+            }
+            else if (key == "ntp_samples_to_lock")
+            {
+                int samples_val;
+                if (!score_time::utils::ParseInteger(val, samples_val) || samples_val < 0)
+                {
+                    std::cerr << "[WARN] invalid ntp_samples_to_lock: " << val << std::endl;
+                    return;
+                }
+                opt.ntp_samples_to_lock = samples_val;
+            }
+            else if (key == "ntp_offset_ewma_alpha")
+            {
+                double alpha_val;
+                if (!score_time::utils::ParseDouble(val, alpha_val) || alpha_val < 0.0 || alpha_val > 1.0)
+                {
+                    std::cerr << "[WARN] invalid ntp_offset_ewma_alpha: " << val << std::endl;
+                    return;
+                }
+                opt.ntp_offset_ewma_alpha = alpha_val;
+            }
+            else if (key == "ntp_jitter_ewma_alpha")
+            {
+                double alpha_val;
+                if (!score_time::utils::ParseDouble(val, alpha_val) || alpha_val < 0.0 || alpha_val > 1.0)
+                {
+                    std::cerr << "[WARN] invalid ntp_jitter_ewma_alpha: " << val << std::endl;
+                    return;
+                }
+                opt.ntp_jitter_ewma_alpha = alpha_val;
+            }
+            else if (key == "abs_publish_interval_ms")
+            {
+                int interval_val;
+                if (!score_time::utils::ParseInteger(val, interval_val) || interval_val < 0)
+                {
+                    std::cerr << "[WARN] invalid abs_publish_interval_ms: " << val << std::endl;
+                    return;
+                }
+                opt.abs_publish_interval_ms = interval_val;
+            }
+            else if (key == "abs_external_enable")
+            {
+                bool b{};
+                if (parse_bool(val, b))
+                    opt.abs_external_enable = b;
+                else
+                    std::cerr << "[WARN] invalid abs_external_enable: " << val << std::endl;
+            }
+            else if (key == "abs_source_socket")
+            {
+                opt.abs_source_socket = val;
+            }
+            else if (key == "abs_source_timeout_ms" || key == "abs_timeout_ms")
+            {
+                int timeout_val;
+                if (!score_time::utils::ParseInteger(val, timeout_val) || timeout_val < 0)
+                {
+                    std::cerr << "[WARN] invalid abs_source_timeout_ms: " << val << std::endl;
+                    return;
+                }
+                opt.abs_source_timeout_ms = timeout_val;
+            }
+            else if (key == "pdelay_req_interval_ms" || key == "pdelay_cycle")
+            {
+                int interval_val;
+                if (!score_time::utils::ParseInteger(val, interval_val) || interval_val < 0)
+                {
+                    std::cerr << "[WARN] invalid pdelay_req_interval_ms: " << val << std::endl;
+                    return;
+                }
+                opt.pdelay_req_interval_ms = interval_val;
+            }
+            else if (key == "pdelay_timeout_ms")
+            {
+                int timeout_val;
+                if (!score_time::utils::ParseInteger(val, timeout_val) || timeout_val < 0)
+                {
+                    std::cerr << "[WARN] invalid pdelay_timeout_ms: " << val << std::endl;
+                    return;
+                }
+                opt.pdelay_timeout_ms = timeout_val;
+            }
+            else if (key == "sync_timeout_ms")
+            {
+                int timeout_val;
+                if (!score_time::utils::ParseInteger(val, timeout_val) || timeout_val < 0)
+                {
+                    std::cerr << "[WARN] invalid sync_timeout_ms: " << val << std::endl;
+                    return;
+                }
+                opt.sync_timeout_ms = timeout_val;
+            }
+            else if (key == "unstable_offset_threshold_ns")
+            {
+                std::int64_t threshold_val;
+                if (!score_time::utils::ParseInteger(val, threshold_val))
+                {
+                    std::cerr << "[WARN] invalid unstable_offset_threshold_ns: " << val << std::endl;
+                    return;
+                }
+                opt.unstable_offset_threshold_ns = threshold_val;
+            }
+            else if (key == "jump_future_threshold_ns")
+            {
+                std::int64_t threshold_val;
+                if (!score_time::utils::ParseInteger(val, threshold_val))
+                {
+                    std::cerr << "[WARN] invalid jump_future_threshold_ns: " << val << std::endl;
+                    return;
+                }
+                opt.jump_future_threshold_ns = threshold_val;
+            }
+            else
+            {
+                std::cerr << "[INFO] ignore unknown config key: " << key << std::endl;
             }
         }
 

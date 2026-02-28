@@ -1,0 +1,41 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+
+package "SCORE Time Synchronization" {
+    component [tsyncd Daemon] as daemon
+    component [libscore_time] as lib
+    database "Shared Memory" as shm
+
+    package "Common Utilities" {
+        component [ClockNs] as clock
+        component [PthreadLockGuard] as lock
+        component [ParseInteger/Double] as parser
+    }
+}
+
+cloud "Network" {
+    component [gPTP Master] as gptp
+    component [NTP Server] as ntp
+}
+
+actor "Application" as app
+
+daemon --> gptp : "Sync via\nEthernet/PTP"
+daemon --> ntp : "Query via\nUDP/123"
+daemon --> shm : "Writes time\n(seqlock)"
+lib --> shm : "Reads time\n(seqlock)"
+app --> lib : "GetVehicleTime()\nGetAbsoluteTime()"
+daemon ..> clock : uses
+daemon ..> lock : uses
+daemon ..> parser : uses
+lib ..> clock : uses
+
+note right of shm
+  Lock-free IPC
+  Seqlock pattern
+  Atomic operations
+  Version: 4
+end note
+
+@enduml
