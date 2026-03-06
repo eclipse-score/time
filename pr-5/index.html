@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>SCORE Time Synchronization Documentation &#8212; Module Template Project  documentation</title>
+    <title>score_inc_time — Time Sync Module &#8212; score_inc_time  documentation</title>
   
   
   
@@ -72,10 +72,10 @@
         </script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Reference" href="api/index.html" />
+    <link rel="next" title="Overview" href="overview/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="1.0" />
   </head>
   
   
@@ -152,15 +152,36 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
-    API Reference
+  <a class="nav-link nav-internal" href="overview/index.html">
+    Overview
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="diagrams/index.html">
-    Architecture Diagrams
+  <a class="nav-link nav-internal" href="architecture/index.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="requirements/index.html">
+    Requirements
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="detailed_design/index.html">
+    Detailed Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide/index.html">
+    User Guide
   </a>
 </li>
 
@@ -276,15 +297,36 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="api/index.html">
-    API Reference
+  <a class="nav-link nav-internal" href="overview/index.html">
+    Overview
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="diagrams/index.html">
-    Architecture Diagrams
+  <a class="nav-link nav-internal" href="architecture/index.html">
+    Architecture
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="requirements/index.html">
+    Requirements
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="detailed_design/index.html">
+    Detailed Design
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide/index.html">
+    User Guide
   </a>
 </li>
 
@@ -374,151 +416,93 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="score-time-synchronization-documentation">
-<h1>SCORE Time Synchronization Documentation<a class="headerlink" href="#score-time-synchronization-documentation" title="Link to this heading">#</a></h1>
-<p>This documentation describes the SCORE (Scalable Core for Automotive Real-time Environments) Time Synchronization system, which provides high-precision time synchronization for automotive applications using gPTP (IEEE 802.1AS) and NTP.</p>
-<nav class="contents local" id="table-of-contents">
-<p class="topic-title">Table of Contents</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p></li>
-<li><p><a class="reference internal" href="#key-features" id="id2">Key Features</a></p></li>
-<li><p><a class="reference internal" href="#project-layout" id="id3">Project Layout</a></p></li>
-<li><p><a class="reference internal" href="#quick-start" id="id4">Quick Start</a></p></li>
-<li><p><a class="reference internal" href="#configuration" id="id5">Configuration</a></p></li>
-<li><p><a class="reference internal" href="#api-reference" id="id6">API Reference</a></p></li>
-<li><p><a class="reference internal" href="#architecture-diagrams" id="id7">Architecture Diagrams</a></p></li>
-</ul>
-</nav>
-<section id="overview">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p>SCORE Time Synchronization is a safety-critical time synchronization daemon (<strong>tsyncd</strong>) and client library (<strong>libscore_time</strong>) designed for automotive systems. It provides:</p>
-<ul class="simple">
-<li><p><strong>Vehicle Time</strong>: High-precision synchronized time using gPTP (IEEE 802.1AS) over Ethernet</p></li>
-<li><p><strong>Absolute Time</strong>: UTC/wall-clock time from GNSS, NTP, or kernel RTC</p></li>
-<li><p><strong>Lock-free IPC</strong>: Shared memory communication using seqlock protocol for zero-copy reads</p></li>
-<li><p><strong>AUTOSAR Compliance</strong>: Designed for ASIL QM level with safety qualifiers</p></li>
-<li><p><strong>Multi-platform</strong>: Supports Linux and QNX operating systems</p></li>
-</ul>
-</section>
-<section id="key-features">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Key Features</a><a class="headerlink" href="#key-features" title="Link to this heading">#</a></h2>
-<p><strong>Time Synchronization</strong></p>
-<ul class="simple">
-<li><p>gPTP (IEEE 802.1AS) slave implementation for vehicle time</p></li>
-<li><p>NTP client for absolute time synchronization</p></li>
-<li><p>Support for external time sources (GNSS)</p></li>
-<li><p>Automatic fallback and error recovery</p></li>
-</ul>
-<p><strong>Performance &amp; Safety</strong></p>
-<ul class="simple">
-<li><p>Lock-free shared memory IPC using seqlock protocol</p></li>
-<li><p>Zero-copy time reads for clients</p></li>
-<li><p>ASIL QM compliance with safety qualifiers</p></li>
-<li><p>Sub-microsecond precision for vehicle time</p></li>
-</ul>
-<p><strong>Platform Support</strong></p>
-<ul class="simple">
-<li><p>Linux with PTP Hardware Clock (PHC) support</p></li>
-<li><p>QNX with BPF packet capture</p></li>
-<li><p>Bazel build system for reproducible builds</p></li>
-</ul>
-</section>
-<section id="project-layout">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">Project Layout</a><a class="headerlink" href="#project-layout" title="Link to this heading">#</a></h2>
-<p>The SCORE Time Synchronization project includes the following structure:</p>
-<ul class="simple">
-<li><p><cite>src/common/</cite>: Shared IPC and utility code
-- <cite>include/score_time/ipc/</cite>: Shared memory structures (SharedState, ShmRegion)
-- <cite>include/score_time/utils/</cite>: Utilities (PthreadLockGuard, time functions, parsers)</p></li>
-<li><p><cite>src/tsyncd/</cite>: Time synchronization daemon implementation
-- <cite>engine/</cite>: Core synchronization engine and state machine
-- <cite>platform/</cite>: Platform-specific code (Linux, QNX)
-- <cite>protocol/</cite>: gPTP and NTP protocol implementations</p></li>
-<li><p><cite>src/libscore_time/</cite>: Client library for reading synchronized time</p></li>
-<li><p><cite>tests/</cite>: Unit and integration tests</p></li>
-<li><p><cite>docs/</cite>: API documentation and architecture diagrams</p></li>
-</ul>
-</section>
-<section id="quick-start">
-<h2><a class="toc-backref" href="#id4" role="doc-backlink">Quick Start</a><a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
-<p><strong>Building the Project</strong></p>
-<p>To build all components:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build all components</span>
-bazel<span class="w"> </span>build<span class="w"> </span>//src/...
-
-<span class="c1"># Build tsyncd daemon only</span>
-bazel<span class="w"> </span>build<span class="w"> </span>//src/tsyncd:tsyncd
-
-<span class="c1"># Build client library</span>
-bazel<span class="w"> </span>build<span class="w"> </span>//src/libscore_time:score_time
-
-<span class="c1"># Run all tests</span>
-bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>//tests/...
-</pre></div>
+  <section id="score-inc-time-time-sync-module">
+<span id="inc-time-docs"></span><h1>score_inc_time — Time Sync Module<a class="headerlink" href="#score-inc-time-time-sync-module" title="Link to this heading">#</a></h1>
+<div class="need_container docutils container" id="SNCB-10c7cf10">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__inc_time">
+<tbody>
+<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
+<div class="line"><span><span class="needs_title"><span class="needs_data">score_inc_time Time Synchronization Module</span></span></span></div>
 </div>
-<p><strong>Running tsyncd Daemon</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run with default configuration</span>
-sudo<span class="w"> </span>bazel<span class="w"> </span>run<span class="w"> </span>//src/tsyncd:tsyncd<span class="w"> </span>--<span class="w"> </span>--iface<span class="w"> </span>eth0
-
-<span class="c1"># Run with custom configuration file</span>
-sudo<span class="w"> </span>bazel<span class="w"> </span>run<span class="w"> </span>//src/tsyncd:tsyncd<span class="w"> </span>--<span class="w"> </span>--config<span class="w"> </span>/path/to/config.ini
-</pre></div>
+</td>
+<td class="head_center" colspan="2"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
+<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
 </div>
-<p><strong>Using Client Library</strong></p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score_time/ipc/shared_state.hpp&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score_time/ipc/shm_region.hpp&quot;</span>
-
-<span class="c1">// Open shared memory</span>
-<span class="n">score_time</span><span class="o">::</span><span class="n">ipc</span><span class="o">::</span><span class="n">ShmRegion</span><span class="w"> </span><span class="n">shm</span><span class="p">;</span>
-<span class="n">shm</span><span class="p">.</span><span class="n">Open</span><span class="p">(</span><span class="s">&quot;/score_time_vehicle_time&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="n">score_time</span><span class="o">::</span><span class="n">ipc</span><span class="o">::</span><span class="n">SharedState</span><span class="p">),</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span>
-
-<span class="k">auto</span><span class="o">*</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="n">score_time</span><span class="o">::</span><span class="n">ipc</span><span class="o">::</span><span class="n">SharedState</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">shm</span><span class="p">.</span><span class="n">Addr</span><span class="p">());</span>
-
-<span class="c1">// Read vehicle time</span>
-<span class="n">std</span><span class="o">::</span><span class="kt">int64_t</span><span class="w"> </span><span class="n">base_ns</span><span class="p">,</span><span class="w"> </span><span class="n">mono_ns</span><span class="p">;</span>
-<span class="n">score_time</span><span class="o">::</span><span class="n">AccuracyQualifier</span><span class="w"> </span><span class="n">acc</span><span class="p">;</span>
-<span class="n">score_time</span><span class="o">::</span><span class="n">TimePointQualifier</span><span class="w"> </span><span class="n">tpq</span><span class="p">;</span>
-
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">score_time</span><span class="o">::</span><span class="n">ipc</span><span class="o">::</span><span class="n">ReadVehicle</span><span class="p">(</span><span class="o">*</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">base_ns</span><span class="p">,</span><span class="w"> </span><span class="n">mono_ns</span><span class="p">,</span><span class="w"> </span><span class="n">acc</span><span class="p">,</span><span class="w"> </span><span class="n">tpq</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="c1">// Use synchronized time</span>
-<span class="p">}</span>
-</pre></div>
+</td>
+<td class="head_right" colspan="2"><div class="needs_head_right line-block">
+<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
 </div>
-</section>
-<section id="configuration">
-<h2><a class="toc-backref" href="#id5" role="doc-backlink">Configuration</a><a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
-<p>The daemon can be configured via command-line arguments or a configuration file (<cite>config.ini</cite>).</p>
-<p><strong>Key Configuration Parameters:</strong></p>
-<ul class="simple">
-<li><p><cite>iface_name</cite>: Network interface for gPTP (e.g., “eth0”)</p></li>
-<li><p><cite>phc_device</cite>: PTP Hardware Clock device (e.g., “/dev/ptp0”)</p></li>
-<li><p><cite>shm_name</cite>: Shared memory object name (default: “/score_time_vehicle_time”)</p></li>
-<li><p><cite>ntp_servers</cite>: List of NTP servers for absolute time</p></li>
-<li><p><cite>abs_mode</cite>: Publish-only or discipline system clock</p></li>
-</ul>
-<p>See <cite>docs/configuration.md</cite> for full configuration options.</p>
-</section>
-<section id="api-reference">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink">API Reference</a><a class="headerlink" href="#api-reference" title="Link to this heading">#</a></h2>
+</td>
+</tr>
+<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
+<div class="line"><span><span></span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+<td class="meta" colspan="3"></td>
+</tr>
+<tr class="content row-odd"><td class="content" colspan="6"></td>
+</tr>
+<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__inc_time" title="doc__inc_time">doc__inc_time</a></span></span></div>
+</div>
+</td>
+<td class="footer" colspan="2"><div class="needs_footer line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Generic Document</span></span></span></div>
+</div>
+</td>
+<td class="footer_right" colspan="2"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/core_types.html">Core Types API Reference</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/ipc.html">IPC API Reference</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/utilities.html">Utilities API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview/index.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html#purpose">Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html#scope">Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html#project-layout">Project Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html#client-api-example">Client API Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview/index.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture/index.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture/index.html#high-level-architecture">High-Level Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/index.html#components">Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/index.html#thread-architecture">Thread Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/index.html#shared-memory-ipc">Shared Memory IPC</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/index.html#protocol-stack">Protocol Stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture/index.html#platform-abstraction">Platform Abstraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="requirements/index.html">Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="requirements/stakeholder/index.html">Stakeholder Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements/feature/index.html">Feature Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements/component/index.html">Component Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="detailed_design/index.html">Detailed Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="detailed_design/tsyncd/index.html">tsyncd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detailed_design/libscore_time/index.html">libscore_time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="detailed_design/ipc/index.html">ipc</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/index.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/index.html#running-tsyncd">Running tsyncd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/index.html#configuration-reference">Configuration Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/index.html#using-libscore-time">Using libscore_time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/index.html#running-the-tests">Running the Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/index.html#building-the-documentation">Building the Documentation</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</section>
-<section id="architecture-diagrams">
-<h2><a class="toc-backref" href="#id7" role="doc-backlink">Architecture Diagrams</a><a class="headerlink" href="#architecture-diagrams" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="diagrams/index.html">Architecture Diagrams</a></li>
-</ul>
-</div>
-</section>
 </section>
 
 
@@ -532,11 +516,11 @@ sudo<span class="w"> </span>bazel<span class="w"> </span>run<span class="w"> </s
                   
 <div class="prev-next-area">
     <a class="right-next"
-       href="api/index.html"
+       href="overview/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">API Reference</p>
+        <p class="prev-next-title">Overview</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -550,24 +534,6 @@ sudo<span class="w"> </span>bazel<span class="w"> </span>run<span class="w"> </s
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key Features</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#project-layout">Project Layout</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-reference">API Reference</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture-diagrams">Architecture Diagrams</a></li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
 
