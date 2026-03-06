@@ -24,14 +24,22 @@
 #include <fcntl.h>
 
 #include <sys/ioctl.h>
-#include <devctl.h>
 
 #include <net/if.h>
 #include <net/bpf.h>
 #include <arpa/inet.h>
 #include <netinet/if_ether.h>
 
-#include <netdrvr/ptp.h>
+// QNX SDP 8.0: PTP API moved to io-sock/ptp.h. We cannot include that header
+// directly because it redefines struct PortIdentity (also in tsync_types.hpp).
+// Only the constants and struct ptp_time are used here; define them inline.
+// Source: target/qnx/usr/include/io-sock/ptp.h (QNX SDP 8.0)
+#define PTP_GET_TIME  0x102
+#define PTP_SET_TIME  0x103
+struct ptp_time {
+    int64_t sec;
+    int32_t nsec;
+};
 
 // BPF buffer size: use static buffer to avoid malloc/free in thread_local
 // Typical BPF buffer size is 32KB-64KB; we use 64KB as safe maximum
@@ -62,63 +70,12 @@ struct QnxRawContext
 
 thread_local QnxRawContext g_qnx_ctx;
 
-static int get_hwts_tx_rx(const char *ifname, int dir, const PTPHeader *ptp_hdr, timespec *ts)
+// Hardware PTP timestamping via netdrvr API is not available in QNX SDP 8.0.
+// Always returns -1 so callers fall back to software (CLOCK_REALTIME) timestamps.
+static int get_hwts_tx_rx(const char * /*ifname*/, int /*dir*/, const PTPHeader * /*ptp_hdr*/, timespec * /*ts*/)
 {
-    if (!ifname || !ptp_hdr || !ts)
-    {
-        errno = EINVAL;
-        return -1;
-    }
-
-    int s = socket(AF_INET, SOCK_DGRAM, 0);
-    if (s < 0)
-    {
-        return -1;
-    }
-
-    struct
-    {
-        struct ifdrv ifd;
-        ptp_extts_t extts;
-    } cmd_time_stamp;
-
-    std::memset(&cmd_time_stamp, 0, sizeof(cmd_time_stamp));
-
-    std::strncpy(cmd_time_stamp.ifd.ifd_name, ifname, sizeof(cmd_time_stamp.ifd.ifd_name) - 1);
-    cmd_time_stamp.ifd.ifd_name[sizeof(cmd_time_stamp.ifd.ifd_name) - 1] = '\0';
-
-    cmd_time_stamp.ifd.ifd_cmd = (dir ? PTP_GET_RX_TIMESTAMP : PTP_GET_TX_TIMESTAMP);
-    cmd_time_stamp.ifd.ifd_len = sizeof(ptp_extts_t);
-    cmd_time_stamp.ifd.ifd_data = &cmd_time_stamp.extts;
-
-    cmd_time_stamp.extts.msg_type = ptp_hdr->tsmt & 0x0f;
-    cmd_time_stamp.extts.sport_id = ntohs(ptp_hdr->sourcePortIdentity.portNumber);
-    cmd_time_stamp.extts.sequence_id = ntohs(ptp_hdr->sequenceId);
-
-    std::memcpy(cmd_time_stamp.extts.clock_identity,
-                ptp_hdr->sourcePortIdentity.clockIdentity.id,
-                sizeof(cmd_time_stamp.extts.clock_identity));
-
-    cmd_time_stamp.extts.ts.sec = 0;
-    cmd_time_stamp.extts.ts.nsec = 0;
-
-    if (devctl(s, SIOCGDRVSPEC, &cmd_time_stamp, sizeof(cmd_time_stamp), nullptr) == -1)
-    {
-        close(s);
-        return -1;
-    }
-
-    close(s);
-
-    if (cmd_time_stamp.extts.ts.sec == 0 && cmd_time_stamp.extts.ts.nsec == 0)
-    {
-        errno = EAGAIN;
-        return -1;
-    }
-
-    ts->tv_sec = static_cast<time_t>(cmd_time_stamp.extts.ts.sec);
-    ts->tv_nsec = static_cast<long>(cmd_time_stamp.extts.ts.nsec);
-    return 0;
+    errno = ENOTSUP;
+    return -1;
 }
 
 extern "C" int qnx_raw_open(const char *ifname)
@@ -384,85 +341,53 @@ extern "C" int qnx_phc_open(const char *phc_dev)
     return 0;
 }
 
+// QNX SDP 8.0: use io-sock/ptp.h API (struct ptp_time, PTP_GET/SET_TIME via ioctl).
 extern "C" int qnx_phc_adjtime_step(int phc_fd, long long offset_ns)
 {
     (void)phc_fd;
 
     if (offset_ns == 0)
-    {
-        std::cout << "[DEBUG] qnx_phc_adjtime_step: offset_ns == 0, no-op" << std::endl;
         return 0;
-    }
 
-    int s = socket(AF_INET, SOCK_DGRAM, 0);
+    const int s = ::socket(AF_INET, SOCK_DGRAM, 0);
     if (s < 0)
-    {
-        std::cout << "[DEBUG] qnx_phc_adjtime_step: socket() FAILED: "
-                  << std::strerror(errno) << std::endl;
         return -1;
-    }
 
     struct
     {
-        ifdrv ifd;
-        ptp_time_t tm;
+        struct ifdrv     ifd;
+        struct ptp_time  tm;
     } cmd;
 
     std::memset(&cmd, 0, sizeof(cmd));
-
     std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1);
-    cmd.ifd.ifd_name[sizeof(cmd.ifd.ifd_name) - 1] = '\0';
-    cmd.ifd.ifd_len = sizeof(cmd.tm);
+    cmd.ifd.ifd_len  = sizeof(cmd.tm);
     cmd.ifd.ifd_data = &cmd.tm;
 
     cmd.ifd.ifd_cmd = PTP_GET_TIME;
-    if (devctl(s, SIOCGDRVSPEC, &cmd, sizeof(cmd), nullptr) == -1)
+    if (::ioctl(s, SIOCGDRVSPEC, &cmd) == -1)
     {
-        std::cout << "[DEBUG] qnx_phc_adjtime_step: GET_TIME FAILED on " << cmd.ifd.ifd_name
-                  << ": " << std::strerror(errno) << std::endl;
-        close(s);
+        ::close(s);
         return -1;
     }
 
-    int64_t cur_ns = static_cast<int64_t>(cmd.tm.sec) * NS_PER_SEC +
-                     static_cast<int64_t>(cmd.tm.nsec);
+    // ptp_time.sec is int64_t in QNX SDP 8.0
+    const int64_t cur_ns = cmd.tm.sec * static_cast<int64_t>(NS_PER_SEC) +
+                           static_cast<int64_t>(cmd.tm.nsec);
+    const int64_t new_ns = cur_ns + offset_ns;
 
-    int64_t new_ns = cur_ns + offset_ns;
-
-    if (new_ns < static_cast<int64_t>(INT32_MIN) * NS_PER_SEC)
+    cmd.tm.sec  = new_ns / static_cast<int64_t>(NS_PER_SEC);
+    cmd.tm.nsec = static_cast<int32_t>(new_ns % static_cast<int64_t>(NS_PER_SEC));
+    if (cmd.tm.nsec < 0)
     {
-        new_ns = static_cast<int64_t>(INT32_MIN) * NS_PER_SEC;
+        cmd.tm.nsec += static_cast<int32_t>(NS_PER_SEC);
+        cmd.tm.sec  -= 1;
     }
-    if (new_ns > static_cast<int64_t>(INT32_MAX) * NS_PER_SEC)
-    {
-        new_ns = static_cast<int64_t>(INT32_MAX) * NS_PER_SEC;
-    }
-
-    int32_t new_sec = static_cast<int32_t>(new_ns / NS_PER_SEC);
-    int32_t new_nsec = static_cast<int32_t>(new_ns % NS_PER_SEC);
-    if (new_nsec < 0)
-    {
-        new_nsec += NS_PER_SEC;
-        new_sec -= 1;
-    }
-
-    cmd.tm.sec = new_sec;
-    cmd.tm.nsec = new_nsec;
 
     cmd.ifd.ifd_cmd = PTP_SET_TIME;
-    if (devctl(s, SIOCGDRVSPEC, &cmd, sizeof(cmd), nullptr) == -1)
-    {
-        std::cout << "[DEBUG] qnx_phc_adjtime_step: SET_TIME FAILED on " << cmd.ifd.ifd_name
-                  << ": " << std::strerror(errno) << std::endl;
-        close(s);
-        return -1;
-    }
-
-    std::cout << "[DEBUG] qnx_phc_adjtime_step: SUCCESS, sec=" << new_sec
-              << ", nsec=" << new_nsec << std::endl;
-
-    close(s);
-    return 0;
+    const int r = ::ioctl(s, SIOCSDRVSPEC, &cmd);
+    ::close(s);
+    return r;
 }
 
 extern "C" int qnx_phc_adjfreq_ppb(int phc_fd, long long freq_ppb)

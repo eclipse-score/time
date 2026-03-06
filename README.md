@@ -39,36 +39,111 @@ git clone https://github.com/eclipse-score/YOUR_PROJECT.git
 cd YOUR_PROJECT
 ```
 
-### 2️⃣ Build the Examples of module
+### 2️⃣ Build
 
-> DISCLAIMER: Depending what module implements, it's possible that different
-> configuration flags needs to be set on command line.
+This project supports cross-compilation for two target platforms. Use the
+`--config` flag to select the target:
 
-To build all targets of the module the following command can be used:
+| Config flag         | Target platform                  |
+| ------------------- | -------------------------------- |
+| `--config=arm64-linux` | AArch64 Linux (GCC 12.2.0)    |
+| `--config=arm64-qnx`   | AArch64 QNX SDP 8.0.0         |
 
-```sh
-bazel build //src/...
-```
-
-This command will instruct Bazel to build all targets that are under Bazel
-package `src/`. The ideal solution is to provide single target that builds
-artifacts, for example:
+**Build for Linux AArch64:**
 
 ```sh
-bazel build //src/<module_name>:release_artifacts
+bazel build //src/... --config=arm64-linux
 ```
 
-where `:release_artifacts` is filegroup target that collects all release
-artifacts of the module.
+**Build for QNX AArch64:**
 
-> NOTE: This is just proposal, the final decision is on module maintainer how
-> the module code needs to be built.
+```sh
+bazel build //src/... --config=arm64-qnx
+```
 
 ### 3️⃣ Run Tests
 
 ```sh
 bazel test //tests/...
 ```
+
+---
+
+## 🔧 Cross-Compilation Setup
+
+### Linux AArch64
+
+No special setup required beyond Bazel itself. The GCC 12.2.0 cross-toolchain
+is downloaded automatically by Bazel on first use.
+
+### QNX AArch64 — Prerequisites
+
+Building for QNX requires a valid QNX SDP 8.0 license and a registered QNX
+developer account. Three items must be configured before building.
+
+#### 1. QNX Account Credentials
+
+The build system uses a credential helper (`scripts/internal/qnx_creds.py`) to
+authenticate with `software.qnx.com` when downloading the QNX SDP toolchain.
+
+**Option A — Environment variables (recommended for CI):**
+
+```sh
+export SCORE_QNX_USER=your@email.com
+export SCORE_QNX_PASSWORD=yourpassword
+```
+
+**Option B — `~/.netrc` (recommended for local development):**
+
+Add the following line to `~/.netrc`:
+
+```
+machine qnx.com login your@email.com password yourpassword
+```
+
+Then restrict file permissions:
+
+```sh
+chmod 600 ~/.netrc
+```
+
+#### 2. QNX License File
+
+A valid QNX floating or node-locked license file must be present on the build
+machine. The default expected path is:
+
+```
+/opt/score_qnx/license/licenses
+```
+
+This path is configured via the `license_path` parameter in `MODULE.bazel`:
+
+```python
+gcc.toolchain(
+    name = "score_qcc_aarch64_qnx_toolchain",
+    target_cpu = "aarch64",
+    target_os = "qnx",
+    use_default_package = True,
+    sdp_version = "8.0.0",
+    license_path = "/opt/score_qnx/license/licenses",  # <-- update this if needed
+)
+```
+
+The `license_path` must point to the **license file itself**, not the directory.
+Adjust this value to match the actual path on your machine.
+
+After changing `MODULE.bazel`, run:
+
+```sh
+bazel sync --configure
+```
+
+to re-fetch the toolchain with the updated configuration.
+
+#### 3. QNX Configuration Directory
+
+The toolchain writes temporary license data to `/var/tmp/.qnx`. This directory
+is created automatically; no manual setup is required.
 
 ---
 

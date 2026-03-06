@@ -20,7 +20,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#ifdef _QNX710_
+#ifdef _QNX_PLAT
 #include <net/if.h>
 #include <sys/types.h>
 #include <ifaddrs.h>
@@ -34,7 +34,7 @@ namespace tsyncd
 {
     namespace
     {
-    #ifdef _QNX710_
+    #ifdef _QNX_PLAT
         int iface_mac(const char *name, unsigned char *out_mac, int &out_len)
         {
             if (!name || !out_mac)

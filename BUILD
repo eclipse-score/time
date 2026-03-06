@@ -33,23 +33,15 @@ copyright_checker(
     visibility = ["//visibility:public"],
 )
 
-# dash_license_checker only supports rust and python
-# dash_license_checker(
-#     src = "//examples:cargo_lock",
-#     file_type = "",  # let it auto-detect based on project_config
-#     project_config = PROJECT_CONFIG,
-#     visibility = ["//visibility:public"],
-# )
+dash_license_checker(
+    src = "//examples:cargo_lock",
+    file_type = "",  # let it auto-detect based on project_config
+    project_config = PROJECT_CONFIG,
+    visibility = ["//visibility:public"],
+)
 
 # Add target for formatting checks
 use_format_targets()
-
-# Documentation generation tool
-alias(
-    name = "doc-gen",
-    actual = "//tools:doc_gen",
-    visibility = ["//visibility:public"],
-)
 
 docs(
     source_dir = "docs",

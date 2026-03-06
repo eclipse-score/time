@@ -14,7 +14,7 @@
 #include <arpa/inet.h>
 #include <cstring>
 
-#ifndef _QNX710_
+#ifndef _QNX_PLAT
 #include <byteswap.h>
 #endif
 

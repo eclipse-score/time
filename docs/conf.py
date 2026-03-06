@@ -20,11 +20,11 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Module Template Project"
-project_url = "https://eclipse-score.github.io/module_template/"
-project_prefix = "MODULE_TEMPLATE_"
+project = "score_inc_time"
+project_url = "https://eclipse-score.github.io/inc_time/"
+project_prefix = "INC_TIME_"
 author = "S-CORE"
-version = "0.1"
+version = "1.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

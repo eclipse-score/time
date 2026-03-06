@@ -1,0 +1,83 @@
+@startuml thread_architecture
+!theme plain
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam defaultFontSize 11
+skinparam componentStyle rectangle
+skinparam ArrowColor #555555
+skinparam ArrowFontSize 10
+
+skinparam package {
+    BackgroundColor #EBF5FB
+    BorderColor #2E86C1
+    FontColor #1A5276
+    FontStyle bold
+}
+skinparam component {
+    BackgroundColor #FEF9E7
+    BorderColor #D4AC0D
+    FontColor #2C3E50
+}
+skinparam database {
+    BackgroundColor #E8F8F5
+    BorderColor #1E8449
+    FontColor #1E8449
+}
+
+title tsyncd — Thread Architecture
+
+package "tsyncd Process" {
+    component "main()\nload config, init engine\nwait SIGTERM/SIGINT" as Main
+
+    package "Thread 1 — RxLoop" {
+        component "recv raw frame\n+ HW timestamp" as Recv
+        component "parse Ethernet\n+ gPTP header" as Parse
+        component "Sync/FUP\nstate machine\n(kEmpty / kHaveSync)" as StateMachine
+        component "PortSynchronize()\nstep PHC, publish SHM" as Sync
+        Recv --> Parse
+        Parse --> StateMachine
+        StateMachine --> Sync : FUP matched
+    }
+
+    package "Thread 2 — PdelayLoop" {
+        component "send Pdelay_Req\ncapture t1" as PdSend
+        component "recv Pdelay_Resp\n+ Pdelay_Resp_FUP" as PdRecv
+        component "compute path_delay\n= ((t2-t1)+(t4-t3)) / 2" as PdCalc
+        PdSend --> PdRecv
+        PdRecv --> PdCalc
+    }
+
+    package "Thread 3 — AbsLoop" {
+        component "query NTP\nEWMA filter" as NtpClient
+        component "recv external\ntime source" as ExtSrc
+        component "publish abs time\nmonitor timeouts" as AbsPublish
+        NtpClient --> AbsPublish
+        ExtSrc --> AbsPublish
+    }
+}
+
+database "POSIX Shared Memory\n(SharedState)" as SHM
+
+cloud "gPTP Network" {
+    component "Time Master\n(IEEE 802.1AS)" as Master
+}
+
+component "NTP Servers" as NTP
+component "GNSS / External\n(Unix socket)" as GNSS
+
+Master --> Recv : Sync + Follow_Up\n(EtherType 0x88F7)
+Master <-- PdSend : Pdelay_Req
+Master --> PdRecv : Pdelay_Resp / FUP
+
+Main --> StateMachine : spawns
+Main --> PdSend : spawns
+Main --> NtpClient : spawns
+
+Sync --> SHM : WriteVehicle()\nvehicle_seq seqlock
+PdCalc --> SHM : vehicle_path_delay_ns
+AbsPublish --> SHM : WriteAbsolute()\nabs_seq seqlock
+
+NTP --> NtpClient : UDP 123
+GNSS --> ExtSrc : Unix socket
+
+@enduml

@@ -12,24 +12,13 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _inc_time_docs:
+.. _inc_time_feature_requirements:
 
-####################################
-score\_inc\_time — Time Sync Module
-####################################
-
-.. document:: score_inc_time Time Synchronization Module
-   :id: doc__inc_time
-   :status: valid
-   :safety: QM
-   :security: NO
+####################
+Feature Requirements
+####################
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
 
-   overview/index
-   architecture/index
-   requirements/index
-   detailed_design/index
-   user_guide/index
+   time/index

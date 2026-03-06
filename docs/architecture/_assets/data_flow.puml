@@ -1,0 +1,44 @@
+@startuml data_flow
+!theme plain
+skinparam backgroundColor white
+skinparam defaultFontSize 11
+
+title gPTP Vehicle Time Synchronization — Data Flow
+
+participant "Time Master\n(gPTP)" as Master
+participant "NIC / PHY" as NIC
+participant "RxLoop\n(tsyncd)" as Rx
+participant "TimeSyncEngine" as Engine
+participant "Shared Memory\n(seqlock)" as SHM
+participant "Client App\n(libscore_time)" as Client
+
+== Sync / Follow_Up (vehicle time) ==
+
+Master -> NIC : Sync frame\n(EtherType 0x88F7)
+NIC -> Rx : raw frame + t_rx_hw (HW timestamp)
+Rx -> Rx : parse PTP header\nstore (seq, t_rx_hw)
+
+Master -> NIC : Follow_Up frame\n(precise t_tx + correction)
+NIC -> Rx : raw frame
+Rx -> Rx : match sequenceId\noffset = t_rx_hw - (t_tx_fup + corr_sync + corr_fup)
+Rx -> Engine : PortSynchronize(offset, path_delay)
+Engine -> Engine : step PHC by offset
+Engine -> SHM : WriteVehicle(\n  base_vehicle_ns,\n  base_mono_ns,\n  acc=kSynchronized,\n  tpq=kASIL_B)
+
+== Seqlock Write Protocol ==
+
+SHM -> SHM : vehicle_seq.fetch_add(1)  // odd → writing
+SHM -> SHM : store all fields (memory_order_release)
+SHM -> SHM : vehicle_seq.fetch_add(1)  // even → complete
+
+== Client Read (lock-free) ==
+
+Client -> SHM : ReadVehicle()
+SHM -> Client : seq_a = vehicle_seq.load()
+note right: retry if seq_a is odd\n(write in progress)
+SHM -> Client : load base_vehicle_ns, base_mono_ns, acc, tpq
+SHM -> Client : seq_b = vehicle_seq.load()
+note right: retry if seq_a ≠ seq_b\n(torn read)
+Client -> Client : vehicle_time = base_vehicle_ns\n  + (mono_now - base_mono_ns)
+
+@enduml

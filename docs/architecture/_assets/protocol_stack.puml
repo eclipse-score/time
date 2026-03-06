@@ -1,0 +1,59 @@
+@startuml protocol_stack
+!theme plain
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam defaultFontSize 11
+skinparam componentStyle rectangle
+skinparam ArrowColor #555555
+skinparam ArrowFontSize 10
+
+skinparam package {
+    BackgroundColor #EBF5FB
+    BorderColor #2E86C1
+    FontColor #1A5276
+    FontStyle bold
+}
+skinparam component {
+    BackgroundColor #FEF9E7
+    BorderColor #D4AC0D
+    FontColor #2C3E50
+}
+
+title gPTP Protocol Stack
+
+package "Application Layer" {
+    component "TimeSyncEngine\nPortSynchronize()" as Engine
+}
+
+package "gPTP Layer (IEEE 802.1AS)" {
+    component "gptp_protocol\nSYNC / FOLLOW_UP\nPDELAY_REQ / RESP / RESP_FUP" as GPTP
+}
+
+package "Ethernet Layer (IEEE 802.3)" {
+    component "eth_protocol\nEtherType 0x88F7\nOptional VLAN 0x8100" as ETH
+}
+
+package "Platform Shim" {
+    component "linux_raw_shim\nSO_TIMESTAMPING\nclock_settime(phc)" as Linux
+    component "qnx_raw_shim\nNPM timestamping\nqnx_phc_adjtime_step()" as QNX
+}
+
+package "Hardware" {
+    component "NIC / PHY\nHW timestamps t1..t4" as NIC
+}
+
+Engine -down-> GPTP : encode PTPHeader\ncorrectionField
+GPTP -down-> ETH : raw PTP payload
+ETH -down-> Linux : frame bytes\n[!_QNX_PLAT]
+ETH -down-> QNX : frame bytes\n[_QNX_PLAT]
+Linux -down-> NIC
+QNX -down-> NIC
+
+NIC -up-> Linux : frame + HW ts
+NIC -up-> QNX : frame + HW ts
+Linux -up-> ETH
+QNX -up-> ETH
+ETH -up-> GPTP : parsed frame
+GPTP -up-> Engine : PTPHeader\nTimestamp\noffset
+
+@enduml

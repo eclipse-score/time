@@ -18,7 +18,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 
-#ifndef _QNX710_
+#ifndef _QNX_PLAT
 #include <linux/if_arp.h>
 #include <linux/if_packet.h>
 #else

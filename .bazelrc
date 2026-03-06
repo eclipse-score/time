@@ -8,10 +8,12 @@ test --test_output=errors
 common --registry=https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/
 common --registry=https://bcr.bazel.build
 
-build:linux_aarch64 --platforms=//platforms:linux_aarch64
-build:qnx_aarch64 --platforms=//platforms:qnx_aarch64
+# QNX credential helper: reads SCORE_QNX_USER / SCORE_QNX_PASSWORD env vars
+# or falls back to ~/.netrc entry for qnx.com
+build --credential_helper=*.qnx.com=%workspace%/scripts/internal/qnx_creds.py
 
-build:qnx_aarch64 --action_env=QNX_HOST=/work/toolchains/qnx710/qnx710/host/linux/x86_64
-build:qnx_aarch64 --action_env=QNX_TARGET=/work/toolchains/qnx710/qnx710/target/qnx7
-build:qnx_aarch64 --action_env=PATH=/work/toolchains/qnx710/qnx710/host/linux/x86_64/usr/bin:/usr/bin:/bin
-build:qnx_aarch64 --action_env=COMPILER_PATH=/work/toolchains/qnx710/qnx710/host/linux/x86_64/usr/bin/aarch64-unknown-nto-qnx7.1.0/8.3.0:/work/toolchains/qnx710/qnx710/host/linux/x86_64/usr/bin:/work/toolchains/qnx710/qnx710/host/linux/x86_64/usr/lib/gcc/aarch64-unknown-nto-qnx7.1.0/8.3.0:/work/toolchains/qnx710/qnx710/host/linux/x86_64/usr/lib/gcc/aarch64-unknown-nto-qnx7.1.0:/work/toolchains/qnx710/qnx710/host/linux/x86_64/usr/lib/gcc/aarch64-unknown-nto-qnx7.1.0/8.3.0/../../../../aarch64-unknown-nto-qnx7.1.0/bin/aarch64-unknown-nto-qnx7.1.0/8.3.0:/work/toolchains/qnx710/qnx710/host/linux/x86_64/usr/lib/gcc/aarch64-unknown-nto-qnx7.1.0/8.3.0/../../../../aarch64-unknown-nto-qnx7.1.0/bin
+# Target configuration for CPU:AArch64 | OS:Linux
+build:arm64-linux --platforms=@score_bazel_platforms//:aarch64-linux-gcc_12.2.0-posix
+
+# Target configuration for CPU:AArch64 | OS:QNX 8.0
+build:arm64-qnx --platforms=@score_bazel_platforms//:aarch64-qnx-sdp_8.0.0-posix

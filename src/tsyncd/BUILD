@@ -14,14 +14,32 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-config_setting(
-    name = "is_qnx",
-    constraint_values = ["//platforms:qnx"],
-)
-
-config_setting(
-    name = "is_linux",
-    constraint_values = ["@platforms//os:linux"],
+cc_library(
+    name = "config_loader_lib",
+    srcs = ["config/config_loader.cpp"],
+    hdrs = [
+        "config/config_loader.hpp",
+        "daemon/tsync_types.hpp",
+        "engine/time_sync_engine.hpp",
+        "protocol/ntp_client.hpp",
+    ],
+    copts =
+        ["-std=c++17"] +
+        select({
+            "@platforms//os:qnx": [
+                "-D_QNX_PLAT",
+                "-D_QNX_SOURCE",
+                "-D__EXTENSIONS__",
+            ],
+            "//conditions:default": [],
+        }),
+    includes = [
+        "config",
+        "daemon",
+        "engine",
+        "protocol",
+    ],
+    deps = ["//src/common:common_ipc"],
 )
 
 cc_binary(
@@ -39,11 +57,11 @@ cc_binary(
         ] +
         # QNX-only
         select({
-            ":is_qnx": ["platform/qnx/qnx_raw_shim.cpp"],
+            "@platforms//os:qnx": ["platform/qnx/qnx_raw_shim.cpp"],
             "//conditions:default": [],
         }) +
         select({
-            ":is_linux": ["platform/linux/linux_raw_shim.cpp"],
+            "@platforms//os:linux": ["platform/linux/linux_raw_shim.cpp"],
             "//conditions:default": [],
         }) + glob([
             "daemon/*.hpp",
@@ -56,8 +74,8 @@ cc_binary(
     copts =
         ["-std=c++17"] +
         select({
-            ":is_qnx": [
-                "-D_QNX710_",
+            "@platforms//os:qnx": [
+                "-D_QNX_PLAT",
                 "-D_QNX_SOURCE",
                 "-D__EXTENSIONS__",
             ],
@@ -75,7 +93,7 @@ cc_binary(
         "protocol",
     ],
     linkopts = select({
-        ":is_qnx": [
+        "@platforms//os:qnx": [
             "-lsocket",
             "-lc",
             "-lc++",

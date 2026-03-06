@@ -15,7 +15,7 @@
 #include <netinet/in.h>
 #include "tsync_types.hpp"
 
-#ifdef _QNX710_
+#ifdef _QNX_PLAT
 struct ethhdr {
     unsigned char h_dest[MAC_ADDR_LEN];
     unsigned char h_source[MAC_ADDR_LEN];

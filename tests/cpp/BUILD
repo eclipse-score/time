@@ -17,3 +17,57 @@ cc_test(
         "@googletest//:gtest_main",  # GoogleTest dependency via Bazel Modules
     ],
 )
+
+cc_test(
+    name = "test_shared_state",
+    srcs = ["test_shared_state.cpp"],
+    copts = ["-std=c++17"],
+    linkopts = ["-lpthread"],
+    deps = [
+        "//src/common:common_ipc",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_string_parser",
+    srcs = ["test_string_parser.cpp"],
+    copts = ["-std=c++17"],
+    deps = [
+        "//src/common:common_ipc",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_time_utils",
+    srcs = ["test_time_utils.cpp"],
+    copts = ["-std=c++17"],
+    linkopts = ["-lrt"],
+    deps = [
+        "//src/common:common_ipc",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_pthread_lock_guard",
+    srcs = ["test_pthread_lock_guard.cpp"],
+    copts = ["-std=c++17"],
+    linkopts = ["-lpthread"],
+    deps = [
+        "//src/common:common_ipc",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "test_config_loader",
+    srcs = ["test_config_loader.cpp"],
+    copts = ["-std=c++17"],
+    linkopts = ["-lpthread"],
+    deps = [
+        "//src/tsyncd:config_loader_lib",
+        "@googletest//:gtest_main",
+    ],
+)

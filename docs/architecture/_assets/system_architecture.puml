@@ -1,0 +1,81 @@
+@startuml system_architecture
+!theme plain
+!pragma layout smetana
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam defaultFontSize 11
+skinparam ArrowColor #555555
+skinparam ArrowFontColor #555555
+skinparam ArrowFontSize 10
+
+skinparam cloud {
+    BackgroundColor #D6EAF8
+    BorderColor #2E86C1
+    FontColor #1A5276
+    FontStyle bold
+}
+
+skinparam package {
+    BackgroundColor #EBF5FB
+    BorderColor #2E86C1
+    FontColor #1A5276
+    FontStyle bold
+}
+
+skinparam component {
+    BackgroundColor #FEF9E7
+    BorderColor #D4AC0D
+    FontColor #2C3E50
+}
+
+skinparam database {
+    BackgroundColor #E8F8F5
+    BorderColor #1E8449
+    FontColor #1E8449
+}
+
+' ── External sources (top row) ──────────────────────────────
+
+cloud "gPTP Network" as GptpNet {
+    component "Time Master\n(IEEE 802.1AS)" as Master
+}
+
+component "NTP Servers" as NTP
+component "GNSS / External\n(Unix socket)" as GNSS
+
+' ── ECU boundary ─────────────────────────────────────────────
+
+package "ECU" {
+
+    package "tsyncd daemon" {
+        component "RxLoop\n(gPTP Sync/FUP)" as RxLoop
+        component "PdelayLoop\n(Peer Delay)" as PdelayLoop
+        component "AbsLoop\n(NTP / External)" as AbsLoop
+        component "TimeSyncEngine" as Engine
+    }
+
+    database "Shared Memory\n/score_time_vehicle_time" as SHM
+
+    package "Client Applications" {
+        component "libscore_time App A" as Client1
+        component "libscore_time App B" as Client2
+    }
+}
+
+' ── Connections ───────────────────────────────────────────────
+
+Master      -down->  RxLoop      : Sync + Follow_Up\n(EtherType 0x88F7)
+Master      <-down-> PdelayLoop  : Pdelay_Req/Resp
+NTP         -down->  AbsLoop     : NTP (UDP 123)
+GNSS        -down->  AbsLoop     : UTC offset
+
+RxLoop      -down->  Engine      : clock offset
+PdelayLoop  -down->  Engine      : path delay
+AbsLoop     -down->  Engine      : UTC / inaccuracy
+
+Engine      -down->  SHM         : WriteVehicle()\nWriteAbsolute()
+
+SHM         -down->  Client1     : ReadVehicle()\nReadAbsolute()
+SHM         -down->  Client2     : ReadVehicle()\nReadAbsolute()
+
+@enduml

@@ -16,7 +16,7 @@
 #include <cstring>
 #include <unistd.h>
 
-#ifdef _QNX710_
+#ifdef _QNX_PLAT
 #include "qnx_raw_shim.hpp"
 #else
 #include "linux_raw_shim.hpp"
@@ -25,7 +25,7 @@
 namespace tsyncd
 {
 
-#ifdef _QNX710_
+#ifdef _QNX_PLAT
 
 int setup_raw_socket(int &sockFd, const char *interface_name)
 {

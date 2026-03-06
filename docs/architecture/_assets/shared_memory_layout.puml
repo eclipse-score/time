@@ -1,0 +1,98 @@
+@startuml shared_memory_layout
+!theme plain
+!pragma layout smetana
+skinparam backgroundColor white
+skinparam defaultFontSize 10
+skinparam ArrowColor #555555
+
+skinparam class {
+    BackgroundColor #EBF5FB
+    BorderColor #2E86C1
+    HeaderBackgroundColor #2E86C1
+    FontColor #2C3E50
+    AttributeFontColor #2C3E50
+}
+skinparam enum {
+    BackgroundColor #E8F8F5
+    BorderColor #1E8449
+    HeaderBackgroundColor #1E8449
+    FontColor #2C3E50
+}
+
+title SharedState — Shared Memory Layout
+
+class SharedState {
+    .. Header ..
+    + magic : uint32_t_atomic = 0x53434F52
+    + version : uint32_t_atomic = 4
+    + size : uint32_t_atomic
+    .. Vehicle Time Block ..
+    + vehicle_seq : uint64_t_atomic
+    + vehicle_base_ns : int64_t
+    + vehicle_base_mono_ns : int64_t
+    + vehicle_acc : AccuracyQualifier_atomic
+    + vehicle_tpq : TimePointQualifier_atomic
+    + vehicle_last_offset_ns : int64_t
+    + vehicle_path_delay_ns : int64_t
+    + vehicle_log_head : uint64_t_atomic
+    + vehicle_log : SyncLogEntry[256]
+    .. Absolute Time Block ..
+    + abs_seq : uint64_t_atomic
+    + abs_base_utc_ns : int64_t
+    + abs_base_mono_ns : int64_t
+    + abs_acc : AbsAccuracyQualifier_atomic
+    + abs_sec : AbsSecurityQualifier_atomic
+    + abs_inaccuracy_ns : int64_t
+    + abs_offset_ns_est : int64_t
+    + abs_jitter_ns_est : int64_t
+    + abs_last_update_mono_ns : int64_t
+    + abs_source : uint8_t
+    + abs_log_head : uint64_t_atomic
+    + abs_log : SyncLogEntry[256]
+}
+
+class SyncLogEntry {
+    + seq : uint32_t_atomic
+    + event : SyncLogEvent
+    + mono_ns : int64_t
+    + value1 : int64_t
+    + value2 : int64_t
+}
+
+enum AccuracyQualifier {
+    kNoTime
+    kNotSynchronized
+    kSynchronized
+    kUnstable
+    kTimeJumpDetected
+}
+
+enum TimePointQualifier {
+    kQM
+    kASIL_B
+}
+
+enum AbsAccuracyQualifier {
+    kInaccGreaterThan24h
+    kInaccLessThan24h
+    kInaccLessThan1h
+    kInaccLessThan1min
+    kInaccLessThan1s
+    kInaccLessThan100ms
+    kInaccLessThan10ms
+}
+
+enum AbsSecurityQualifier {
+    kNoTimeAvailable
+    kNotTrustworthy
+    kTrustworthy
+    kVeryTrustworthy
+}
+
+SharedState "1" *-- "512" SyncLogEntry
+SharedState --> AccuracyQualifier
+SharedState --> TimePointQualifier
+SharedState --> AbsAccuracyQualifier
+SharedState --> AbsSecurityQualifier
+
+@enduml

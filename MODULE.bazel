@@ -33,11 +33,46 @@ bazel_dep(name = "googletest", version = "1.17.0")
 bazel_dep(name = "rules_rust", version = "0.63.0")
 
 # C/C++ rules for Bazel
-bazel_dep(name = "rules_cc", version = "0.2.1")
+bazel_dep(name = "rules_cc", version = "0.2.14")
+
+# Platform definitions
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "score_bazel_platforms", version = "0.1.1")
+
+# C++ Toolchains for cross-compilation
+bazel_dep(name = "score_bazel_cpp_toolchains", version = "0.3.0", dev_dependency = True)
+
+gcc = use_extension("@score_bazel_cpp_toolchains//extensions:gcc.bzl", "gcc", dev_dependency = True)
+gcc.toolchain(
+    name = "score_gcc_aarch64_linux_toolchain",
+    target_cpu = "aarch64",
+    target_os = "linux",
+    use_default_package = True,
+    version = "12.2.0",
+)
+gcc.toolchain(
+    name = "score_qcc_aarch64_qnx_toolchain",
+    license_path = "/opt/score_qnx/license/licenses",
+    sdp_version = "8.0.0",
+    target_cpu = "aarch64",
+    target_os = "qnx",
+    use_default_package = True,
+)
+use_repo(gcc, "score_gcc_aarch64_linux_toolchain")
+use_repo(gcc, "score_qcc_aarch64_qnx_toolchain")
+
+register_toolchains(
+    "@score_gcc_aarch64_linux_toolchain//:aarch64-linux-gcc_12.2.0",
+    dev_dependency = True,
+)
+
+register_toolchains(
+    "@score_qcc_aarch64_qnx_toolchain//:aarch64-qnx-sdp_8.0.0",
+    dev_dependency = True,
+)
 
 # LLVM Toolchains Rules - host configuration
 bazel_dep(name = "toolchains_llvm", version = "1.4.0")
-bazel_dep(name = "platforms", version = "0.0.11")
 
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
 llvm.toolchain(
@@ -49,15 +84,10 @@ use_repo(llvm, "llvm_toolchain_llvm")
 
 register_toolchains("@llvm_toolchain//:all")
 
-register_toolchains(
-    "//toolchains:linux_aarch64_toolchain",
-    "//toolchains:qnx_aarch64_toolchain",
-)
-
 # tooling
 bazel_dep(name = "score_tooling", version = "1.0.1")
 bazel_dep(name = "aspect_rules_lint", version = "1.5.3")
 bazel_dep(name = "buildifier_prebuilt", version = "8.2.0.2")
 
-#docs-as-code
+# docs-as-code
 bazel_dep(name = "score_docs_as_code", version = "1.1.0")

@@ -31,7 +31,7 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-#ifndef _QNX710_
+#ifndef _QNX_PLAT
 #include <linux/net_tstamp.h>
 #include <linux/sockios.h>
 #include <linux/if.h>
@@ -311,7 +311,7 @@ namespace tsyncd
 
     bool TimeSyncEngine::InitPhc()
     {
-#ifdef _QNX710_
+#ifdef _QNX_PLAT
         ctx_.phc_fd = qnx_phc_open(opt_.phc_device.c_str());
         ctx_.clk_id = CLOCK_MONOTONIC;
 #else
@@ -337,7 +337,7 @@ namespace tsyncd
 
     bool TimeSyncEngine::InitHwTimestamping()
     {
-#ifdef _QNX710_
+#ifdef _QNX_PLAT
         return true;
 #else
         struct ifreq ifr{};
@@ -934,7 +934,7 @@ namespace tsyncd
             acc = score_time::AccuracyQualifier::kUnstable;
         }
 
-#ifndef _QNX710_
+#ifndef _QNX_PLAT
         if (ctx_.phc_fd >= 0)
         {
             ::timespec ts{};

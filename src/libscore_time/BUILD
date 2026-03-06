@@ -14,11 +14,6 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-config_setting(
-    name = "is_qnx",
-    constraint_values = ["//platforms:qnx"],
-)
-
 cc_library(
     name = "score_time",
     srcs = [
@@ -28,8 +23,8 @@ cc_library(
     copts =
         ["-std=c++17"] +
         select({
-            ":is_qnx": [
-                "-D_QNX710_",
+            "@platforms//os:qnx": [
+                "-D_QNX_PLAT",
                 "-D_QNX_SOURCE",
                 "-D__EXTENSIONS__",
             ],
@@ -37,7 +32,7 @@ cc_library(
         }),
     include_prefix = "score_time",
     linkopts = select({
-        ":is_qnx": [
+        "@platforms//os:qnx": [
             "-lsocket",
             "-lc",
             "-lc++",
