@@ -12,10 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Module Template Documentation
-=============================
+TimeDaemon Documentation
+========================
 
-This documentation describes the structure, usage and configuration of the Bazel-based C++/Rust module template.
+This documentation describes the **TimeDaemon** and the **score::time** module.
 
 .. contents:: Table of Contents
    :depth: 2
@@ -24,20 +24,25 @@ This documentation describes the structure, usage and configuration of the Bazel
 Overview
 --------
 
-This repository provides a standardized setup for projects using **C++** or **Rust** and **Bazel** as a build system.
-It integrates best practices for build, test, CI/CD and documentation.
+**TimeDaemon** is a non-AUTOSAR adaptive process designed to provide synchronized vehicle time to client applications.
+It supports multiple time bases including **in-vehicle synchronized time** (PTP - Precision Time Protocol) and
+**external synchronized time** (absolute time base). The daemon retrieves time information from the respective time sources,
+verifies and validates the timepoints, and distributes this time information across multiple clients through efficient IPC mechanisms.
 
-Requirements
-------------
+The main responsibilities of TimeDaemon include:
 
-.. stkh_req:: Example Functional Requirement
-   :id: stkh_req__docgen_enabled__example
-   :status: valid
-   :safety: QM
-   :security: YES
-   :reqtype: Functional
-   :rationale: Ensure documentation builds are possible for all modules
+- **Providing current Vehicle time** to different applications
+- **Setting synchronization qualifiers** (e.g., Synchronized, Timeout, etc.)
+- **Providing diagnostic information** for system monitoring
+- **Supporting additional verification mechanisms** such as QualifiedVehicleTime (QVT) for safety-critical applications
 
+For a detailed concept and architectural design, please refer to the :doc:`TimeDaemon Concept Documentation <time/index>`.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   time/index
 
 Project Layout
 --------------
@@ -64,6 +69,12 @@ To run tests:
 .. code-block:: bash
 
    bazel test //tests/...
+
+To build the documentation:
+
+.. code-block:: bash
+
+   bazel run //:docs
 
 Configuration
 -------------
