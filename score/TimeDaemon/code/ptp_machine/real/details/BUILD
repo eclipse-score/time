@@ -15,34 +15,40 @@ load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
 cc_library(
-    name = "ptp_time_info",
-    srcs = ["ptp_time_info.cpp"],
+    name = "real_ptp_engine",
+    srcs = [
+        "real_ptp_engine.cpp",
+    ],
     hdrs = [
-        "ptp_time_info.h",
+        "real_ptp_engine.h",
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
-    visibility = ["//score:__subpackages__"],
-    deps = ["//score/time/HighPrecisionLocalSteadyClock:interface"],
+    visibility = ["//score/TimeDaemon:__subpackages__"],
+    deps = [
+        "//score/TimeDaemon/code/common:logging_contexts",
+        "//score/TimeDaemon/code/common/data_types:ptp_time_info",
+        "//score/libTSClient:gptp_ipc",
+        "@score_baselibs//score/mw/log:frontend",
+    ],
 )
 
 cc_test(
-    name = "ptp_time_info_test",
-    srcs = [
-        "ptp_time_info_test.cpp",
-    ],
+    name = "real_ptp_engine_test",
+    srcs = ["real_ptp_engine_test.cpp"],
     tags = ["unit"],
     deps = [
-        ":ptp_time_info",
+        ":real_ptp_engine",
+        "//score/libTSClient:gptp_ipc",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
 
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    cc_unit_tests = [
-        ":ptp_time_info_test",
-    ],
-    visibility = ["//score/TimeDaemon/code/common:__pkg__"],
+    cc_unit_tests = [":real_ptp_engine_test"],
+    test_suites_from_sub_packages = [],
+    visibility = ["//score/TimeDaemon:__subpackages__"],
 )

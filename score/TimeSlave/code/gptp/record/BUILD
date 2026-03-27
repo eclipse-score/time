@@ -12,19 +12,31 @@
 # *******************************************************************************
 
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
+load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
-alias(
-    name = "stub_ptp_machine",
-    actual = "//score/TimeDaemon/code/ptp_machine/stub:gptp_stub_machine",
-    visibility = ["//score/TimeDaemon:__subpackages__"],
+cc_library(
+    name = "recorder",
+    srcs = ["recorder.cpp"],
+    hdrs = ["recorder.h"],
+    features = COMPILER_WARNING_FEATURES,
+    tags = ["QM"],
+    visibility = ["//score:__subpackages__"],
+)
+
+cc_test(
+    name = "recorder_test",
+    srcs = ["recorder_test.cpp"],
+    tags = ["unit"],
+    deps = [
+        ":recorder",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
 )
 
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    test_suites_from_sub_packages = [
-        "//score/TimeDaemon/code/ptp_machine/core:unit_test_suite",
-        "//score/TimeDaemon/code/ptp_machine/real:unit_test_suite",
-        "//score/TimeDaemon/code/ptp_machine/stub:unit_test_suite",
-    ],
-    visibility = ["//score/TimeDaemon:__subpackages__"],
+    cc_unit_tests = [":recorder_test"],
+    test_suites_from_sub_packages = [],
+    visibility = ["//score:__subpackages__"],
 )
