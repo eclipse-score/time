@@ -5,26 +5,26 @@ title TimeSlave Deployment View
 
 node "ECU" {
     package "TimeSlave Process" as TSP {
-        component [GptpEngine] as GE
-        component [GptpIpcPublisher] as PUB
+        component [GptpEngine] as GE #LightSalmon
+        component [GptpIpcPublisher] as PUB #LightPink
 
         package "RxThread" as RXT {
-            component [FrameCodec] as FC
-            component [MessageParser] as MP
-            component [SyncStateMachine] as SSM
+            component [FrameCodec] as FC #Wheat
+            component [MessageParser] as MP #Wheat
+            component [SyncStateMachine] as SSM #Wheat
         }
 
         package "PdelayThread" as PDT {
-            component [PeerDelayMeasurer] as PDM
+            component [PeerDelayMeasurer] as PDM #Wheat
         }
 
-        component [PhcAdjuster] as PHC
-        component [ProbeManager] as PM
-        component [Recorder] as REC
+        component [PhcAdjuster] as PHC #Lavender
+        component [ProbeManager] as PM #Beige
+        component [Recorder] as REC #Beige
     }
 
     package "TimeDaemon Process" as TDP {
-        component [GptpIpcReceiver] as RCV
+        component [GptpIpcReceiver] as RCV #LightPink
     }
 
     database "Shared Memory\n/gptp_ptp_info" as SHM
@@ -44,15 +44,15 @@ FC --> MP
 MP --> SSM
 MP --> PDM
 
-PUB --> SHM : seqlock write
-RCV --> SHM : seqlock read
+PUB -[#green]-> SHM : seqlock write
+RCV -[#green]-> SHM : seqlock read
 
-RXT --> SOCK : recv
-PDT --> SOCK : send/recv
+RXT -[#blue]-> SOCK : recv
+PDT -[#blue]-> SOCK : send/recv
 
-PHC --> PHCDEV : clock_adjtime
+PHC -[#orange]-> PHCDEV : clock_adjtime
 
-SOCK --> NET : gPTP frames\nEtherType 0x88F7
+SOCK -[#blue]-> NET : gPTP frames\nEtherType 0x88F7
 
 PM --> REC : probe events
 

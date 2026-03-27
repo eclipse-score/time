@@ -1,0 +1,52 @@
+@startuml
+!theme plain
+
+title libTSClient Shared Memory IPC
+
+legend top left
+    |= Color          |= Description              |
+    | <#LightPink>    | IPC components             |
+    | <#LightCyan>    | Shared memory region       |
+endlegend
+
+package "TimeSlave Process" {
+    class GptpIpcPublisher #LightPink {
+        - region_ : GptpIpcRegion*
+        - fd_ : int
+        + Init(name) : bool
+        + Publish(info) : void
+        + Destroy() : void
+    }
+}
+
+package "Shared Memory" {
+    class GptpIpcRegion <<aligned(64)>> #LightCyan {
+        + magic : uint32_t = 0x47505440
+        + seq : std::atomic<uint32_t>
+        + data : PtpTimeInfo
+        --
+        64-byte aligned for\ncache line efficiency
+    }
+}
+
+package "TimeDaemon Process" {
+    class GptpIpcReceiver #LightPink {
+        - region_ : const GptpIpcRegion*
+        - fd_ : int
+        + Init(name) : bool
+        + Receive() : std::optional<PtpTimeInfo>
+        + Close() : void
+    }
+}
+
+GptpIpcPublisher --> GptpIpcRegion : "shm_open(O_CREAT)\nmmap(PROT_WRITE)"
+GptpIpcReceiver --> GptpIpcRegion : "shm_open(O_RDONLY)\nmmap(PROT_READ)"
+
+note right of GptpIpcRegion
+  **Seqlock Protocol:**
+  Writer: seq++ → memcpy → seq++
+  Reader: read seq (even) → memcpy → check seq
+  Retry up to 20 times on torn read
+end note
+
+@enduml

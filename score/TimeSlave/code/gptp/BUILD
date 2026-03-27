@@ -20,7 +20,10 @@ cc_library(
     hdrs = ["gptp_engine.h"],
     features = COMPILER_WARNING_FEATURES,
     linkopts = select({
-        "@platforms//os:qnx": ["-lsocket", "-lc"],
+        "@platforms//os:qnx": [
+            "-lsocket",
+            "-lc",
+        ],
         "//conditions:default": ["-lpthread"],
     }),
     tags = ["QM"],

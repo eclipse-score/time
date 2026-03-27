@@ -3,16 +3,16 @@
 
 title TimeSlave Data Flow
 
-participant "Network\n(gPTP Master)" as NET
-participant "RawSocket" as SOCK
-participant "FrameCodec" as FC
-participant "MessageParser" as MP
-participant "SyncStateMachine" as SSM
-participant "PeerDelayMeasurer" as PDM
-participant "PhcAdjuster" as PHC
-participant "GptpEngine" as GE
-participant "GptpIpcPublisher" as PUB
-participant "SharedMemory" as SHM
+participant "Network\n(gPTP Master)" as NET #Beige
+participant "RawSocket" as SOCK #LightSkyBlue
+participant "FrameCodec" as FC #Wheat
+participant "MessageParser" as MP #Wheat
+participant "SyncStateMachine" as SSM #Wheat
+participant "PeerDelayMeasurer" as PDM #Wheat
+participant "PhcAdjuster" as PHC #Lavender
+participant "GptpEngine" as GE #LightSalmon
+participant "GptpIpcPublisher" as PUB #LightPink
+participant "SharedMemory" as SHM #LightPink
 
 == RxThread — Sync/FollowUp Processing ==
 

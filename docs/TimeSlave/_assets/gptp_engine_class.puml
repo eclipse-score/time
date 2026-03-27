@@ -1,0 +1,104 @@
+@startuml
+!theme plain
+
+title gPTP Engine Internal Class Diagram
+
+legend top left
+    |= Color          |= Description              |
+    | <#LightSalmon>  | gPTP Engine core           |
+    | <#Wheat>        | Protocol processing        |
+    | <#Lavender>     | PHC adjustment             |
+    | <#LightSkyBlue> | Platform abstraction       |
+    | <#Beige>        | Instrumentation            |
+endlegend
+
+package "score::ts::gptp" {
+
+    class GptpEngine #LightSalmon {
+        - options_ : GptpEngineOptions
+        - rx_thread_ : std::thread
+        - pdelay_thread_ : std::thread
+        - socket_ : std::unique_ptr<IRawSocket>
+        - codec_ : FrameCodec
+        - parser_ : MessageParser
+        - sync_sm_ : SyncStateMachine
+        - pdelay_ : PeerDelayMeasurer
+        - phc_ : PhcAdjuster
+        - probe_mgr_ : ProbeManager
+        - recorder_ : Recorder
+        - snapshot_mutex_ : std::mutex
+        - latest_snapshot_ : PtpTimeInfo
+        + Initialize() : bool
+        + Deinitialize() : void
+        + ReadPTPSnapshot() : PtpTimeInfo
+    }
+
+    interface IRawSocket #LightSkyBlue {
+        + Open(iface) : bool
+        + EnableHwTimestamping() : bool
+        + Recv(buf, timeout_ms) : RecvResult
+        + Send(buf, hw_ts) : bool
+        + GetFd() : int
+        + Close() : void
+    }
+
+    class "RawSocket\n<<Linux>>" as LinuxSocket #LightSkyBlue {
+        AF_PACKET + SO_TIMESTAMPING
+    }
+
+    class "RawSocket\n<<QNX>>" as QnxSocket #LightSkyBlue {
+        QNX raw-socket shim
+    }
+
+    interface INetworkIdentity #LightSkyBlue {
+        + Resolve(iface) : bool
+        + GetClockIdentity() : ClockIdentity
+    }
+
+    class NetworkIdentity #LightSkyBlue {
+        Derives EUI-64 from MAC\n(inserts 0xFF 0xFE)
+    }
+
+    IRawSocket <|.. LinuxSocket
+    IRawSocket <|.. QnxSocket
+    INetworkIdentity <|.. NetworkIdentity
+
+    GptpEngine *-- IRawSocket
+    GptpEngine *-- INetworkIdentity
+}
+
+package "score::ts::gptp::details" {
+    class FrameCodec #Wheat
+    class MessageParser #Wheat
+    class SyncStateMachine #Wheat
+    class PeerDelayMeasurer #Wheat
+}
+
+package "score::ts::gptp::phc" {
+    class PhcAdjuster #Lavender
+}
+
+package "score::ts::gptp::instrument" {
+    class ProbeManager #Beige {
+        + {static} Instance() : ProbeManager&
+        + Record(point, data) : void
+        + SetRecorder(recorder) : void
+    }
+
+    class Recorder #Beige {
+        - file_ : std::ofstream
+        - mutex_ : std::mutex
+        + Record(entry) : void
+    }
+
+    ProbeManager --> Recorder
+}
+
+GptpEngine *-- FrameCodec
+GptpEngine *-- MessageParser
+GptpEngine *-- SyncStateMachine
+GptpEngine *-- PeerDelayMeasurer
+GptpEngine *-- PhcAdjuster
+GptpEngine *-- ProbeManager
+
+@enduml

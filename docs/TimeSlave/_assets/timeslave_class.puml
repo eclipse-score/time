@@ -3,9 +3,19 @@
 
 title TimeSlave Class Diagram
 
+legend top left
+    |= Color          |= Description              |
+    | <#LightCyan>    | TimeSlave application      |
+    | <#LightSalmon>  | gPTP Engine core           |
+    | <#Wheat>        | Protocol processing        |
+    | <#Lavender>     | PHC adjustment             |
+    | <#LightPink>    | IPC components             |
+    | <#Beige>        | Data structures            |
+endlegend
+
 package "score::ts" {
 
-    class TimeSlave {
+    class TimeSlave #LightCyan {
         - engine_ : GptpEngine
         - publisher_ : GptpIpcPublisher
         - clock_ : HighPrecisionLocalSteadyClock
@@ -14,7 +24,7 @@ package "score::ts" {
         + Deinitialize() : score::cpp::expected<void>
     }
 
-    class GptpEngine {
+    class GptpEngine #LightSalmon {
         - options_ : GptpEngineOptions
         - rx_thread_ : std::thread
         - pdelay_thread_ : std::thread
@@ -33,7 +43,7 @@ package "score::ts" {
         - PdelayThreadFunc(stop_token) : void
     }
 
-    struct GptpEngineOptions {
+    struct GptpEngineOptions #Beige {
         + interface_name : std::string
         + pdelay_interval_ms : uint32_t
         + sync_timeout_ms : uint32_t
@@ -47,16 +57,16 @@ package "score::ts" {
 }
 
 package "score::ts::gptp::details" {
-    class FrameCodec {
+    class FrameCodec #Wheat {
         + ParseEthernetHeader(buf) : EthernetHeader
         + AddEthernetHeader(buf, dst_mac, src_mac) : void
     }
 
-    class MessageParser {
+    class MessageParser #Wheat {
         + Parse(payload, hw_ts) : std::optional<PTPMessage>
     }
 
-    class SyncStateMachine {
+    class SyncStateMachine #Wheat {
         - last_sync_ : PTPMessage
         - last_offset_ns_ : int64_t
         - neighbor_rate_ratio_ : double
@@ -67,7 +77,7 @@ package "score::ts::gptp::details" {
         + GetNeighborRateRatio() : double
     }
 
-    class PeerDelayMeasurer {
+    class PeerDelayMeasurer #Wheat {
         - mutex_ : std::mutex
         - result_ : PDelayResult
         + SendRequest(socket) : void
@@ -76,7 +86,7 @@ package "score::ts::gptp::details" {
         + GetResult() : PDelayResult
     }
 
-    struct SyncResult {
+    struct SyncResult #Beige {
         + master_ns : int64_t
         + offset_ns : int64_t
         + sync_fup_data : SyncFupData
@@ -84,14 +94,14 @@ package "score::ts::gptp::details" {
         + time_jump_backward : bool
     }
 
-    struct PDelayResult {
+    struct PDelayResult #Beige {
         + path_delay_ns : int64_t
         + valid : bool
     }
 }
 
 package "score::ts::gptp::phc" {
-    class PhcAdjuster {
+    class PhcAdjuster #Lavender {
         - config_ : PhcConfig
         - fd_ : int
         + IsEnabled() : bool
@@ -99,7 +109,7 @@ package "score::ts::gptp::phc" {
         + AdjustFrequency(ppb) : void
     }
 
-    struct PhcConfig {
+    struct PhcConfig #Beige {
         + enabled : bool
         + device_path : std::string
         + step_threshold_ns : int64_t

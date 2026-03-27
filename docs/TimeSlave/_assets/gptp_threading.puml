@@ -1,0 +1,51 @@
+@startuml gptp_threading_model
+
+title gPTP Engine Threading Model
+
+legend top left
+    |= Color          |= Description              |
+    | <#LightSalmon>  | RxThread                   |
+    | <#LightSkyBlue> | PdelayThread               |
+    | <#LightCyan>    | Main Thread (TimeSlave)    |
+endlegend
+
+|#LightCyan| Main Thread
+start
+:Initialize GptpEngine;
+:Start RxThread;
+:Start PdelayThread;
+
+fork
+    |#LightSalmon| RxThread
+    repeat
+        :Wait for gPTP frame;
+        :Recv Sync frame;
+        :Parse + SyncStateMachine\nstore Sync timestamp;
+        :Recv FollowUp frame;
+        :Parse + SyncStateMachine\ncompute offset & rate ratio;
+        :Update latest_snapshot_\n(mutex protected);
+    repeat while (stop_token?)
+    stop
+
+fork again
+    |#LightSkyBlue| PdelayThread
+    repeat
+        :Sleep(pdelay_interval_ms);
+        :Send PDelayReq;
+        :Recv PDelayResp;
+        :Recv PDelayRespFollowUp\ncompute path delay;
+        :Update PDelayResult;
+    repeat while (stop_token?)
+    stop
+
+fork again
+    |#LightCyan| Main Thread
+    repeat
+        :ReadPTPSnapshot();
+        :Publish PtpTimeInfo\nvia GptpIpcPublisher;
+    repeat while (stop_token?)
+    stop
+
+end fork
+
+@enduml
