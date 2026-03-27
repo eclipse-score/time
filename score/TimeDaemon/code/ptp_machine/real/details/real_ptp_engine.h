@@ -34,10 +34,10 @@ class RealPTPEngine final
     explicit RealPTPEngine(std::string ipc_name = score::ts::details::kGptpIpcName) noexcept;
     ~RealPTPEngine() noexcept = default;
 
-    RealPTPEngine(const RealPTPEngine&)            = delete;
+    RealPTPEngine(const RealPTPEngine&) = delete;
     RealPTPEngine& operator=(const RealPTPEngine&) = delete;
-    RealPTPEngine(RealPTPEngine&&)                 = delete;
-    RealPTPEngine& operator=(RealPTPEngine&&)      = delete;
+    RealPTPEngine(RealPTPEngine&&) = delete;
+    RealPTPEngine& operator=(RealPTPEngine&&) = delete;
 
     /// Open and map the IPC channel.
     /// @return true on success.
@@ -57,10 +57,10 @@ class RealPTPEngine final
     bool ReadSyncMeasurementData(PtpTimeInfo& info) const noexcept;
 
   private:
-    std::string                         ipc_name_;
+    std::string ipc_name_;
     score::ts::details::GptpIpcReceiver receiver_;
-    bool                                initialized_{false};
-    PtpTimeInfo                         cached_{};
+    bool initialized_{false};
+    PtpTimeInfo cached_{};
 };
 
 }  // namespace details

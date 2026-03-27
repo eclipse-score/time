@@ -41,33 +41,33 @@ PtpTimeInfo MakeTestInfo()
 {
     PtpTimeInfo info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{9'876'543'210LL};
-    info.rate_deviation   = -0.25;
+    info.rate_deviation = -0.25;
 
-    info.status.is_synchronized     = true;
-    info.status.is_correct          = true;
-    info.status.is_timeout          = false;
+    info.status.is_synchronized = true;
+    info.status.is_correct = true;
+    info.status.is_timeout = false;
     info.status.is_time_jump_future = false;
-    info.status.is_time_jump_past   = false;
+    info.status.is_time_jump_past = false;
 
-    info.sync_fup_data.precise_origin_timestamp   = 100'000'000'000ULL;
+    info.sync_fup_data.precise_origin_timestamp = 100'000'000'000ULL;
     info.sync_fup_data.reference_global_timestamp = 100'000'000'500ULL;
-    info.sync_fup_data.reference_local_timestamp  = 100'000'001'000ULL;
-    info.sync_fup_data.sync_ingress_timestamp     = 100'000'001'000ULL;
-    info.sync_fup_data.correction_field           = 8U;
-    info.sync_fup_data.sequence_id                = 55;
-    info.sync_fup_data.pdelay                     = 4'000U;
-    info.sync_fup_data.port_number                = 1;
-    info.sync_fup_data.clock_identity             = 0xCAFEBABEDEAD0001ULL;
+    info.sync_fup_data.reference_local_timestamp = 100'000'001'000ULL;
+    info.sync_fup_data.sync_ingress_timestamp = 100'000'001'000ULL;
+    info.sync_fup_data.correction_field = 8U;
+    info.sync_fup_data.sequence_id = 55;
+    info.sync_fup_data.pdelay = 4'000U;
+    info.sync_fup_data.port_number = 1;
+    info.sync_fup_data.clock_identity = 0xCAFEBABEDEAD0001ULL;
 
-    info.pdelay_data.request_origin_timestamp   = 200'000'000'000ULL;
-    info.pdelay_data.request_receipt_timestamp  = 200'000'001'000ULL;
-    info.pdelay_data.response_origin_timestamp  = 200'000'001'000ULL;
+    info.pdelay_data.request_origin_timestamp = 200'000'000'000ULL;
+    info.pdelay_data.request_receipt_timestamp = 200'000'001'000ULL;
+    info.pdelay_data.response_origin_timestamp = 200'000'001'000ULL;
     info.pdelay_data.response_receipt_timestamp = 200'000'002'000ULL;
-    info.pdelay_data.pdelay                     = 1'000U;
-    info.pdelay_data.req_port_number            = 2;
-    info.pdelay_data.resp_port_number           = 3;
-    info.pdelay_data.req_clock_identity         = 0x0102030405060708ULL;
-    info.pdelay_data.resp_clock_identity        = 0x0807060504030201ULL;
+    info.pdelay_data.pdelay = 1'000U;
+    info.pdelay_data.req_port_number = 2;
+    info.pdelay_data.resp_port_number = 3;
+    info.pdelay_data.req_clock_identity = 0x0102030405060708ULL;
+    info.pdelay_data.resp_clock_identity = 0x0807060504030201ULL;
     return info;
 }
 
@@ -78,7 +78,7 @@ class RealPTPEngineTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        name_   = UniqueShmName();
+        name_ = UniqueShmName();
         engine_ = std::make_unique<RealPTPEngine>(name_);
     }
 
@@ -88,7 +88,7 @@ class RealPTPEngineTest : public ::testing::Test
         pub_.Destroy();
     }
 
-    std::string                   name_;
+    std::string name_;
     score::ts::details::GptpIpcPublisher pub_;
     std::unique_ptr<RealPTPEngine> engine_;
 };
@@ -187,10 +187,8 @@ TEST_F(RealPTPEngineTest, ReadPTPSnapshot_CopiesSyncFupDataCorrectly)
     PtpTimeInfo result{};
     ASSERT_TRUE(engine_->ReadPTPSnapshot(result));
 
-    EXPECT_EQ(result.sync_fup_data.precise_origin_timestamp,
-              expected.sync_fup_data.precise_origin_timestamp);
-    EXPECT_EQ(result.sync_fup_data.reference_global_timestamp,
-              expected.sync_fup_data.reference_global_timestamp);
+    EXPECT_EQ(result.sync_fup_data.precise_origin_timestamp, expected.sync_fup_data.precise_origin_timestamp);
+    EXPECT_EQ(result.sync_fup_data.reference_global_timestamp, expected.sync_fup_data.reference_global_timestamp);
     EXPECT_EQ(result.sync_fup_data.sequence_id, expected.sync_fup_data.sequence_id);
     EXPECT_EQ(result.sync_fup_data.pdelay, expected.sync_fup_data.pdelay);
     EXPECT_EQ(result.sync_fup_data.clock_identity, expected.sync_fup_data.clock_identity);
@@ -209,10 +207,8 @@ TEST_F(RealPTPEngineTest, ReadPTPSnapshot_CopiesPDelayDataCorrectly)
     EXPECT_EQ(result.pdelay_data.pdelay, expected.pdelay_data.pdelay);
     EXPECT_EQ(result.pdelay_data.req_port_number, expected.pdelay_data.req_port_number);
     EXPECT_EQ(result.pdelay_data.resp_port_number, expected.pdelay_data.resp_port_number);
-    EXPECT_EQ(result.pdelay_data.req_clock_identity,
-              expected.pdelay_data.req_clock_identity);
-    EXPECT_EQ(result.pdelay_data.resp_clock_identity,
-              expected.pdelay_data.resp_clock_identity);
+    EXPECT_EQ(result.pdelay_data.req_clock_identity, expected.pdelay_data.req_clock_identity);
+    EXPECT_EQ(result.pdelay_data.resp_clock_identity, expected.pdelay_data.resp_clock_identity);
 }
 
 // ── Individual sub-methods (called after ReadPTPSnapshot populates cache) ─────

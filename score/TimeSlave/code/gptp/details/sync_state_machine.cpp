@@ -33,8 +33,7 @@ std::int64_t MonoNs() noexcept
 
 }  // namespace
 
-SyncStateMachine::SyncStateMachine(
-    std::int64_t jump_future_threshold_ns) noexcept
+SyncStateMachine::SyncStateMachine(std::int64_t jump_future_threshold_ns) noexcept
     : jump_future_threshold_ns_{jump_future_threshold_ns}
 {
 }
@@ -45,7 +44,7 @@ void SyncStateMachine::OnSync(const PTPMessage& msg)
     {
         case SyncState::kEmpty:
             last_sync_ = msg;
-            state_     = SyncState::kHaveSync;
+            state_ = SyncState::kHaveSync;
             break;
 
         case SyncState::kHaveSync:
@@ -56,20 +55,19 @@ void SyncStateMachine::OnSync(const PTPMessage& msg)
         case SyncState::kHaveFup:
             // Buffered FUP is now stale; start fresh with the new Sync
             last_sync_ = msg;
-            state_     = SyncState::kHaveSync;
+            state_ = SyncState::kHaveSync;
             break;
     }
 }
 
-std::optional<SyncResult> SyncStateMachine::OnFollowUp(
-    const PTPMessage& msg)
+std::optional<SyncResult> SyncStateMachine::OnFollowUp(const PTPMessage& msg)
 {
     switch (state_)
     {
         case SyncState::kEmpty:
             // FUP arrived before its Sync — buffer it and wait
             last_fup_ = msg;
-            state_    = SyncState::kHaveFup;
+            state_ = SyncState::kHaveFup;
             return std::nullopt;
 
         case SyncState::kHaveFup:
@@ -82,7 +80,7 @@ std::optional<SyncResult> SyncStateMachine::OnFollowUp(
             {
                 // Sequence-ID mismatch: buffer the FUP and wait for matching Sync
                 last_fup_ = msg;
-                state_    = SyncState::kHaveFup;
+                state_ = SyncState::kHaveFup;
                 return std::nullopt;
             }
 
@@ -96,24 +94,21 @@ std::optional<SyncResult> SyncStateMachine::OnFollowUp(
     return std::nullopt;
 }
 
-bool SyncStateMachine::IsTimeout(std::int64_t mono_now_ns,
-                                        std::int64_t timeout_ns) const
+bool SyncStateMachine::IsTimeout(std::int64_t mono_now_ns, std::int64_t timeout_ns) const
 {
     if (timeout_ns <= 0)
         return false;
     const std::int64_t last = last_sync_mono_ns_.load(std::memory_order_acquire);
     if (last == 0)
-        return false;   // never synchronized yet — not a "timeout"
+        return false;  // never synchronized yet — not a "timeout"
     return (mono_now_ns - last) > timeout_ns;
 }
 
-SyncResult SyncStateMachine::BuildResult(
-    const PTPMessage& sync,
-    const PTPMessage& fup) noexcept
+SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessage& fup) noexcept
 {
     const TmvT sync_corr = CorrectionToTmv(sync.ptpHdr.correctionField);
-    const TmvT fup_corr  = CorrectionToTmv(fup.ptpHdr.correctionField);
-    const TmvT fup_ts    = TimestampToTmv(fup.follow_up.preciseOriginTimestamp);
+    const TmvT fup_corr = CorrectionToTmv(fup.ptpHdr.correctionField);
+    const TmvT fup_ts = TimestampToTmv(fup.follow_up.preciseOriginTimestamp);
 
     const std::int64_t master_ns = fup_ts.ns + sync_corr.ns + fup_corr.ns;
     const std::int64_t offset_ns = sync.recvHardwareTS.ns - master_ns;
@@ -131,35 +126,28 @@ SyncResult SyncStateMachine::BuildResult(
             r.is_time_jump_future = true;
     }
 
-    score::td::SyncFupData& d  = r.sync_fup_data;
-    d.precise_origin_timestamp =
-        static_cast<std::uint64_t>(fup_ts.ns);
-    d.reference_global_timestamp =
-        static_cast<std::uint64_t>(master_ns);
-    d.reference_local_timestamp =
-        static_cast<std::uint64_t>(sync.recvHardwareTS.ns);
-    d.sync_ingress_timestamp =
-        static_cast<std::uint64_t>(sync.recvHardwareTS.ns);
-    d.correction_field =
-        static_cast<std::uint64_t>(sync.ptpHdr.correctionField);
-    d.sequence_id  = fup.ptpHdr.sequenceId;
-    d.pdelay       = 0U;  // filled by GptpEngine from IPeerDelayMeasurer
-    d.port_number  = sync.ptpHdr.sourcePortIdentity.portNumber;
-    d.clock_identity =
-        ClockIdentityToU64(sync.ptpHdr.sourcePortIdentity.clockIdentity);
+    score::td::SyncFupData& d = r.sync_fup_data;
+    d.precise_origin_timestamp = static_cast<std::uint64_t>(fup_ts.ns);
+    d.reference_global_timestamp = static_cast<std::uint64_t>(master_ns);
+    d.reference_local_timestamp = static_cast<std::uint64_t>(sync.recvHardwareTS.ns);
+    d.sync_ingress_timestamp = static_cast<std::uint64_t>(sync.recvHardwareTS.ns);
+    d.correction_field = static_cast<std::uint64_t>(sync.ptpHdr.correctionField);
+    d.sequence_id = fup.ptpHdr.sequenceId;
+    d.pdelay = 0U;  // filled by GptpEngine from IPeerDelayMeasurer
+    d.port_number = sync.ptpHdr.sourcePortIdentity.portNumber;
+    d.clock_identity = ClockIdentityToU64(sync.ptpHdr.sourcePortIdentity.clockIdentity);
 
     // IEEE 802.1AS Clause 11.4.1
     if (prev_slave_rx_ns_ != 0 && prev_master_origin_ns_ != 0)
     {
-        const std::int64_t slave_interval  = sync.recvHardwareTS.ns - prev_slave_rx_ns_;
+        const std::int64_t slave_interval = sync.recvHardwareTS.ns - prev_slave_rx_ns_;
         const std::int64_t master_interval = master_ns - prev_master_origin_ns_;
         if (master_interval > 0)
         {
-            neighbor_rate_ratio_ =
-                static_cast<double>(slave_interval) / static_cast<double>(master_interval);
+            neighbor_rate_ratio_ = static_cast<double>(slave_interval) / static_cast<double>(master_interval);
         }
     }
-    prev_slave_rx_ns_      = sync.recvHardwareTS.ns;
+    prev_slave_rx_ns_ = sync.recvHardwareTS.ns;
     prev_master_origin_ns_ = master_ns;
 
     last_master_ns_ = master_ns;

@@ -22,12 +22,12 @@
 #include "score/TimeSlave/code/gptp/details/ptp_types.h"
 #include "score/TimeSlave/code/gptp/details/sync_state_machine.h"
 
+#include <pthread.h>
 #include <atomic>
 #include <cstdint>
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <pthread.h>
 #include <string>
 
 namespace score
@@ -40,11 +40,11 @@ namespace details
 /// Configuration for GptpEngine.
 struct GptpEngineOptions
 {
-    std::string  iface_name = "eth0";                             ///< Network interface for gPTP
-    int          pdelay_interval_ms  = 1000;                      ///< Period between Pdelay_Req transmissions (ms)
-    int          pdelay_warmup_ms    = 2000;                      ///< Delay before first Pdelay_Req (ms)
-    int          sync_timeout_ms     = 3300;                      ///< Declare timeout after this many ms without Sync
-    std::int64_t jump_future_threshold_ns = 500'000'000LL;        ///< 500 ms
+    std::string iface_name = "eth0";                        ///< Network interface for gPTP
+    int pdelay_interval_ms = 1000;                          ///< Period between Pdelay_Req transmissions (ms)
+    int pdelay_warmup_ms = 2000;                            ///< Delay before first Pdelay_Req (ms)
+    int sync_timeout_ms = 3300;                             ///< Declare timeout after this many ms without Sync
+    std::int64_t jump_future_threshold_ns = 500'000'000LL;  ///< 500 ms
 };
 
 /**
@@ -58,23 +58,21 @@ struct GptpEngineOptions
 class GptpEngine final
 {
   public:
-    explicit GptpEngine(
-        GptpEngineOptions                                        opts,
-        std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock>  local_clock) noexcept;
+    explicit GptpEngine(GptpEngineOptions opts,
+                        std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock) noexcept;
 
     /// Constructor for testing: inject fake socket and identity.
-    GptpEngine(
-        GptpEngineOptions                                        opts,
-        std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock>  local_clock,
-        std::unique_ptr<IRawSocket>                              socket,
-        std::unique_ptr<INetworkIdentity>                        identity) noexcept;
+    GptpEngine(GptpEngineOptions opts,
+               std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock,
+               std::unique_ptr<IRawSocket> socket,
+               std::unique_ptr<INetworkIdentity> identity) noexcept;
 
     ~GptpEngine() noexcept;
 
-    GptpEngine(const GptpEngine&)            = delete;
+    GptpEngine(const GptpEngine&) = delete;
     GptpEngine& operator=(const GptpEngine&) = delete;
-    GptpEngine(GptpEngine&&)                 = delete;
-    GptpEngine& operator=(GptpEngine&&)      = delete;
+    GptpEngine(GptpEngine&&) = delete;
+    GptpEngine& operator=(GptpEngine&&) = delete;
 
     /// Open the raw socket, enable HW timestamping, resolve the ClockIdentity,
     /// and start the Rx and Pdelay background threads.
@@ -95,29 +93,27 @@ class GptpEngine final
     void RxLoop() noexcept;
     void PdelayLoop() noexcept;
 
-    void HandlePacket(const std::uint8_t* frame, int len,
-                      const ::timespec& hwts) noexcept;
-    void UpdateSnapshot(const SyncResult& sync,
-                        const PDelayResult& pdelay) noexcept;
+    void HandlePacket(const std::uint8_t* frame, int len, const ::timespec& hwts) noexcept;
+    void UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdelay) noexcept;
 
     GptpEngineOptions opts_;
 
     std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock_;
-    std::unique_ptr<IRawSocket>                  socket_;
-    std::unique_ptr<INetworkIdentity>            identity_;
-    FrameCodec                                   codec_;
-    GptpMessageParser                            parser_;
-    SyncStateMachine                             sync_sm_;
-    std::unique_ptr<PeerDelayMeasurer>           pdelay_;
+    std::unique_ptr<IRawSocket> socket_;
+    std::unique_ptr<INetworkIdentity> identity_;
+    FrameCodec codec_;
+    GptpMessageParser parser_;
+    SyncStateMachine sync_sm_;
+    std::unique_ptr<PeerDelayMeasurer> pdelay_;
 
     mutable std::mutex snapshot_mutex_;
-    score::td::PtpTimeInfo        snapshot_{};
+    score::td::PtpTimeInfo snapshot_{};
 
     std::atomic<bool> running_{false};
-    pthread_t         rx_thread_{};
-    pthread_t         pdelay_thread_{};
-    bool              rx_started_{false};
-    bool              pdelay_started_{false};
+    pthread_t rx_thread_{};
+    pthread_t pdelay_thread_{};
+    bool rx_started_{false};
+    bool pdelay_started_{false};
 };
 
 }  // namespace details

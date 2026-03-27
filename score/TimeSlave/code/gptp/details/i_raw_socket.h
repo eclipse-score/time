@@ -13,10 +13,10 @@
 #ifndef SCORE_TIMESLAVE_CODE_GPTP_DETAILS_I_RAW_SOCKET_H
 #define SCORE_TIMESLAVE_CODE_GPTP_DETAILS_I_RAW_SOCKET_H
 
+#include <time.h>
 #include <cstddef>
 #include <cstdint>
 #include <string>
-#include <time.h>
 
 namespace score
 {
@@ -42,8 +42,7 @@ class IRawSocket
 
     /// Receive one frame.
     /// @return Number of bytes received, 0 on timeout, -1 on error.
-    virtual int Recv(std::uint8_t* buf, std::size_t buf_len,
-                     ::timespec& hwts, int timeout_ms) = 0;
+    virtual int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) = 0;
 
     /// Send one frame.
     /// @return Number of bytes sent, or -1 on error.

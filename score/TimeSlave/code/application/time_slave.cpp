@@ -1,11 +1,3 @@
-/*
- * @Author: chenhao.gao chenhao.gao@ecarxgroup.com
- * @Date: 2026-03-25 10:20:36
- * @LastEditors: chenhao.gao chenhao.gao@ecarxgroup.com
- * @LastEditTime: 2026-03-25 16:03:13
- * @FilePath: /score_inc_time/score/TimeSlave/code/application/time_slave.cpp
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
 /********************************************************************************
  * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
@@ -33,8 +25,7 @@ namespace ts
 
 TimeSlave::TimeSlave() = default;
 
-std::int32_t TimeSlave::Initialize(
-    const score::mw::lifecycle::ApplicationContext& /*context*/)
+std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContext& /*context*/)
 {
     // Create the high-precision local clock for the gPTP engine
     score::time::HighPrecisionLocalSteadyClock::FactoryImpl clock_factory{};
@@ -44,15 +35,13 @@ std::int32_t TimeSlave::Initialize(
 
     if (!engine_->Initialize())
     {
-        score::mw::log::LogError(kGPtpMachineContext)
-            << "TimeSlave: GptpEngine initialization failed";
+        score::mw::log::LogError(kGPtpMachineContext) << "TimeSlave: GptpEngine initialization failed";
         return -1;
     }
 
     if (!publisher_.Init())
     {
-        score::mw::log::LogError(kGPtpMachineContext)
-            << "TimeSlave: shared memory publisher initialization failed";
+        score::mw::log::LogError(kGPtpMachineContext) << "TimeSlave: shared memory publisher initialization failed";
         return -1;
     }
 

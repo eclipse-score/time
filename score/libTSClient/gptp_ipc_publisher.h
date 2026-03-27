@@ -51,8 +51,8 @@ class GptpIpcPublisher final
 
   private:
     GptpIpcRegion* region_{nullptr};
-    int            shm_fd_{-1};
-    std::string    ipc_name_;
+    int shm_fd_{-1};
+    std::string ipc_name_;
 };
 
 }  // namespace details

@@ -28,22 +28,22 @@ namespace details
 /// Event types that can be recorded.
 enum class RecordEvent : std::uint8_t
 {
-    kSyncReceived    = 0,
+    kSyncReceived = 0,
     kPdelayCompleted = 1,
-    kClockJump       = 2,
+    kClockJump = 2,
     kOffsetThreshold = 3,
-    kProbe           = 4,
+    kProbe = 4,
 };
 
 /// A single record entry written to the log file.
 struct RecordEntry
 {
     std::int64_t mono_ns{0};
-    RecordEvent  event{RecordEvent::kSyncReceived};
+    RecordEvent event{RecordEvent::kSyncReceived};
     std::int64_t offset_ns{0};
     std::int64_t pdelay_ns{0};
     std::uint16_t seq_id{0};
-    std::uint8_t  status_flags{0};
+    std::uint8_t status_flags{0};
 };
 
 /**
@@ -57,8 +57,8 @@ class Recorder final
   public:
     struct Config
     {
-        bool        enabled             = false;
-        std::string file_path           = "/var/log/gptp_record.csv";
+        bool enabled = false;
+        std::string file_path = "/var/log/gptp_record.csv";
         std::int64_t offset_threshold_ns = 1'000'000LL;  ///< 1 ms
     };
 
@@ -68,15 +68,18 @@ class Recorder final
     Recorder(const Recorder&) = delete;
     Recorder& operator=(const Recorder&) = delete;
 
-    bool IsEnabled() const { return cfg_.enabled && file_.is_open(); }
+    bool IsEnabled() const
+    {
+        return cfg_.enabled && file_.is_open();
+    }
 
     /// Record an entry. Thread-safe.
     void Record(const RecordEntry& entry);
 
   private:
-    Config         cfg_;
-    std::mutex     mutex_;
-    std::ofstream  file_;
+    Config cfg_;
+    std::mutex mutex_;
+    std::ofstream file_;
 };
 
 }  // namespace details

@@ -12,10 +12,10 @@
  ********************************************************************************/
 #include "score/libTSClient/gptp_ipc_receiver.h"
 
-#include <cstring>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <cstring>
 
 namespace score
 {
@@ -37,8 +37,7 @@ bool GptpIpcReceiver::Init(const std::string& ipc_name)
     if (shm_fd_ < 0)
         return false;
 
-    void* ptr = ::mmap(nullptr, sizeof(GptpIpcRegion),
-                       PROT_READ, MAP_SHARED, shm_fd_, 0);
+    void* ptr = ::mmap(nullptr, sizeof(GptpIpcRegion), PROT_READ, MAP_SHARED, shm_fd_, 0);
     if (ptr == MAP_FAILED)
     {
         ::close(shm_fd_);

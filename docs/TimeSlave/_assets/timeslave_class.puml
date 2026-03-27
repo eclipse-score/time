@@ -1,0 +1,115 @@
+@startuml
+!theme plain
+
+title TimeSlave Class Diagram
+
+package "score::ts" {
+
+    class TimeSlave {
+        - engine_ : GptpEngine
+        - publisher_ : GptpIpcPublisher
+        - clock_ : HighPrecisionLocalSteadyClock
+        + Initialize() : score::cpp::expected<void>
+        + Run(stop_token) : score::cpp::expected<void>
+        + Deinitialize() : score::cpp::expected<void>
+    }
+
+    class GptpEngine {
+        - options_ : GptpEngineOptions
+        - rx_thread_ : std::thread
+        - pdelay_thread_ : std::thread
+        - sync_sm_ : SyncStateMachine
+        - pdelay_ : PeerDelayMeasurer
+        - socket_ : IRawSocket
+        - codec_ : FrameCodec
+        - parser_ : MessageParser
+        - phc_ : PhcAdjuster
+        - snapshot_mutex_ : std::mutex
+        - latest_snapshot_ : PtpTimeInfo
+        + Initialize() : bool
+        + Deinitialize() : void
+        + ReadPTPSnapshot() : PtpTimeInfo
+        - RxThreadFunc(stop_token) : void
+        - PdelayThreadFunc(stop_token) : void
+    }
+
+    struct GptpEngineOptions {
+        + interface_name : std::string
+        + pdelay_interval_ms : uint32_t
+        + sync_timeout_ms : uint32_t
+        + time_jump_forward_ns : int64_t
+        + time_jump_backward_ns : int64_t
+        + phc_config : PhcConfig
+    }
+
+    TimeSlave *-- GptpEngine
+    TimeSlave *-- "1" GptpIpcPublisher
+}
+
+package "score::ts::gptp::details" {
+    class FrameCodec {
+        + ParseEthernetHeader(buf) : EthernetHeader
+        + AddEthernetHeader(buf, dst_mac, src_mac) : void
+    }
+
+    class MessageParser {
+        + Parse(payload, hw_ts) : std::optional<PTPMessage>
+    }
+
+    class SyncStateMachine {
+        - last_sync_ : PTPMessage
+        - last_offset_ns_ : int64_t
+        - neighbor_rate_ratio_ : double
+        - timeout_ : std::atomic<bool>
+        + OnSync(msg) : void
+        + OnFollowUp(msg) : std::optional<SyncResult>
+        + IsTimeout() : bool
+        + GetNeighborRateRatio() : double
+    }
+
+    class PeerDelayMeasurer {
+        - mutex_ : std::mutex
+        - result_ : PDelayResult
+        + SendRequest(socket) : void
+        + OnResponse(msg) : void
+        + OnResponseFollowUp(msg) : void
+        + GetResult() : PDelayResult
+    }
+
+    struct SyncResult {
+        + master_ns : int64_t
+        + offset_ns : int64_t
+        + sync_fup_data : SyncFupData
+        + time_jump_forward : bool
+        + time_jump_backward : bool
+    }
+
+    struct PDelayResult {
+        + path_delay_ns : int64_t
+        + valid : bool
+    }
+}
+
+package "score::ts::gptp::phc" {
+    class PhcAdjuster {
+        - config_ : PhcConfig
+        - fd_ : int
+        + IsEnabled() : bool
+        + AdjustOffset(offset_ns) : void
+        + AdjustFrequency(ppb) : void
+    }
+
+    struct PhcConfig {
+        + enabled : bool
+        + device_path : std::string
+        + step_threshold_ns : int64_t
+    }
+}
+
+GptpEngine *-- FrameCodec
+GptpEngine *-- MessageParser
+GptpEngine *-- SyncStateMachine
+GptpEngine *-- PeerDelayMeasurer
+GptpEngine *-- PhcAdjuster
+
+@enduml

@@ -15,11 +15,11 @@
 
 #include "score/TimeSlave/code/gptp/details/i_raw_socket.h"
 
+#include <time.h>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <time.h>
 
 namespace score
 {
@@ -40,10 +40,10 @@ class RawSocket : public IRawSocket
     RawSocket() noexcept = default;
     ~RawSocket() override;
 
-    RawSocket(const RawSocket&)            = delete;
+    RawSocket(const RawSocket&) = delete;
     RawSocket& operator=(const RawSocket&) = delete;
-    RawSocket(RawSocket&&)                 = delete;
-    RawSocket& operator=(RawSocket&&)      = delete;
+    RawSocket(RawSocket&&) = delete;
+    RawSocket& operator=(RawSocket&&) = delete;
 
     /// Open the socket bound to @p iface. Returns false on failure.
     bool Open(const std::string& iface) override;
@@ -62,8 +62,7 @@ class RawSocket : public IRawSocket
     /// @param hwts      Output: hardware receive timestamp (zeroed if unavailable).
     /// @param timeout_ms  <0 block indefinitely, 0 non-blocking, >0 timeout in ms.
     /// @return Number of bytes received, 0 on timeout, -1 on error.
-    int Recv(std::uint8_t* buf, std::size_t buf_len,
-             ::timespec& hwts, int timeout_ms) override;
+    int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) override;
 
     /// Send one frame.
     ///
@@ -74,10 +73,13 @@ class RawSocket : public IRawSocket
     int Send(const void* buf, int len, ::timespec& hwts) override;
 
     /// Return the underlying file descriptor (for advanced use / polling).
-    int GetFd() const override { return fd_; }
+    int GetFd() const override
+    {
+        return fd_;
+    }
 
   private:
-    int         fd_{-1};
+    int fd_{-1};
     std::string iface_{};
 };
 

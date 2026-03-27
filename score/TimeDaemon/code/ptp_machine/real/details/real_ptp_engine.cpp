@@ -22,10 +22,7 @@ namespace td
 namespace details
 {
 
-RealPTPEngine::RealPTPEngine(std::string ipc_name) noexcept
-    : ipc_name_{std::move(ipc_name)}
-{
-}
+RealPTPEngine::RealPTPEngine(std::string ipc_name) noexcept : ipc_name_{std::move(ipc_name)} {}
 
 bool RealPTPEngine::Initialize()
 {
@@ -35,13 +32,11 @@ bool RealPTPEngine::Initialize()
     initialized_ = receiver_.Init(ipc_name_);
     if (initialized_)
     {
-        score::mw::log::LogInfo(kGPtpMachineContext)
-            << "RealPTPEngine: connected to IPC channel " << ipc_name_;
+        score::mw::log::LogInfo(kGPtpMachineContext) << "RealPTPEngine: connected to IPC channel " << ipc_name_;
     }
     else
     {
-        score::mw::log::LogError(kGPtpMachineContext)
-            << "RealPTPEngine: failed to open IPC channel " << ipc_name_;
+        score::mw::log::LogError(kGPtpMachineContext) << "RealPTPEngine: failed to open IPC channel " << ipc_name_;
     }
     return initialized_;
 }
@@ -67,18 +62,18 @@ bool RealPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 
     cached_ = result.value();
 
-    const bool time_ok   = ReadTimeValueAndStatus(info);
+    const bool time_ok = ReadTimeValueAndStatus(info);
     const bool pdelay_ok = ReadPDelayMeasurementData(info);
-    const bool sync_ok   = ReadSyncMeasurementData(info);
+    const bool sync_ok = ReadSyncMeasurementData(info);
     return time_ok && pdelay_ok && sync_ok;
 }
 
 bool RealPTPEngine::ReadTimeValueAndStatus(PtpTimeInfo& info) noexcept
 {
-    info.local_time       = cached_.local_time;
+    info.local_time = cached_.local_time;
     info.ptp_assumed_time = cached_.ptp_assumed_time;
-    info.rate_deviation   = cached_.rate_deviation;
-    info.status           = cached_.status;
+    info.rate_deviation = cached_.rate_deviation;
+    info.status = cached_.status;
     return true;
 }
 

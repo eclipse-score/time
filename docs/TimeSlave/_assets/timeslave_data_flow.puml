@@ -1,0 +1,61 @@
+@startuml
+!theme plain
+
+title TimeSlave Data Flow
+
+participant "Network\n(gPTP Master)" as NET
+participant "RawSocket" as SOCK
+participant "FrameCodec" as FC
+participant "MessageParser" as MP
+participant "SyncStateMachine" as SSM
+participant "PeerDelayMeasurer" as PDM
+participant "PhcAdjuster" as PHC
+participant "GptpEngine" as GE
+participant "GptpIpcPublisher" as PUB
+participant "SharedMemory" as SHM
+
+== RxThread — Sync/FollowUp Processing ==
+
+NET -> SOCK : gPTP Sync frame\n(EtherType 0x88F7)
+SOCK -> FC : raw buffer + HW timestamp
+FC -> MP : Ethernet payload
+MP -> SSM : OnSync(PTPMessage)
+SSM -> SSM : store Sync timestamp
+
+NET -> SOCK : gPTP FollowUp frame
+SOCK -> FC : raw buffer + HW timestamp
+FC -> MP : Ethernet payload
+MP -> SSM : OnFollowUp(PTPMessage)
+SSM -> SSM : compute offset & neighborRateRatio
+SSM --> MP : SyncResult{master_ns, offset_ns,\ntime_jump_flags}
+
+MP --> GE : update latest_snapshot_\n(mutex protected)
+
+== PdelayThread — Peer Delay Measurement ==
+
+GE -> PDM : SendRequest()
+PDM -> SOCK : PDelayReq frame
+NET --> SOCK : PDelayResp frame
+SOCK -> FC : raw buffer + HW timestamp
+FC -> MP : Ethernet payload
+MP -> PDM : OnResponse(msg)
+NET --> SOCK : PDelayRespFollowUp frame
+SOCK -> FC : raw buffer + HW timestamp
+FC -> MP : Ethernet payload
+MP -> PDM : OnResponseFollowUp(msg)
+PDM -> PDM : path_delay = ((t2-t1)+(t4-t3c))/2
+
+PDM --> GE : update PDelayResult
+
+== PHC Adjustment ==
+
+GE -> PHC : AdjustOffset(offset_ns)
+PHC -> PHC : step or frequency slew
+
+== Periodic Publish to Shared Memory ==
+
+GE -> GE : ReadPTPSnapshot()
+GE -> PUB : Publish(PtpTimeInfo)
+PUB -> SHM : seqlock write\n(atomic seq++, memcpy, seq++)
+
+@enduml

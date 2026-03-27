@@ -1,0 +1,95 @@
+@startuml
+!theme plain
+
+title gPTP Engine Internal Class Diagram
+
+package "score::ts::gptp" {
+
+    class GptpEngine {
+        - options_ : GptpEngineOptions
+        - rx_thread_ : std::thread
+        - pdelay_thread_ : std::thread
+        - socket_ : std::unique_ptr<IRawSocket>
+        - codec_ : FrameCodec
+        - parser_ : MessageParser
+        - sync_sm_ : SyncStateMachine
+        - pdelay_ : PeerDelayMeasurer
+        - phc_ : PhcAdjuster
+        - probe_mgr_ : ProbeManager
+        - recorder_ : Recorder
+        - snapshot_mutex_ : std::mutex
+        - latest_snapshot_ : PtpTimeInfo
+        + Initialize() : bool
+        + Deinitialize() : void
+        + ReadPTPSnapshot() : PtpTimeInfo
+    }
+
+    interface IRawSocket {
+        + Open(iface) : bool
+        + EnableHwTimestamping() : bool
+        + Recv(buf, timeout_ms) : RecvResult
+        + Send(buf, hw_ts) : bool
+        + GetFd() : int
+        + Close() : void
+    }
+
+    class "RawSocket\n<<Linux>>" as LinuxSocket {
+        AF_PACKET + SO_TIMESTAMPING
+    }
+
+    class "RawSocket\n<<QNX>>" as QnxSocket {
+        QNX raw-socket shim
+    }
+
+    interface INetworkIdentity {
+        + Resolve(iface) : bool
+        + GetClockIdentity() : ClockIdentity
+    }
+
+    class NetworkIdentity {
+        Derives EUI-64 from MAC\n(inserts 0xFF 0xFE)
+    }
+
+    IRawSocket <|.. LinuxSocket
+    IRawSocket <|.. QnxSocket
+    INetworkIdentity <|.. NetworkIdentity
+
+    GptpEngine *-- IRawSocket
+    GptpEngine *-- INetworkIdentity
+}
+
+package "score::ts::gptp::details" {
+    class FrameCodec
+    class MessageParser
+    class SyncStateMachine
+    class PeerDelayMeasurer
+}
+
+package "score::ts::gptp::phc" {
+    class PhcAdjuster
+}
+
+package "score::ts::gptp::instrument" {
+    class ProbeManager {
+        + {static} Instance() : ProbeManager&
+        + Record(point, data) : void
+        + SetRecorder(recorder) : void
+    }
+
+    class Recorder {
+        - file_ : std::ofstream
+        - mutex_ : std::mutex
+        + Record(entry) : void
+    }
+
+    ProbeManager --> Recorder
+}
+
+GptpEngine *-- FrameCodec
+GptpEngine *-- MessageParser
+GptpEngine *-- SyncStateMachine
+GptpEngine *-- PeerDelayMeasurer
+GptpEngine *-- PhcAdjuster
+GptpEngine *-- ProbeManager
+
+@enduml

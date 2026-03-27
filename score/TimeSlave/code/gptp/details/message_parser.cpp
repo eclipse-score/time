@@ -63,25 +63,23 @@ Timestamp LoadTimestamp(const std::uint8_t* p) noexcept
 
 }  // namespace
 
-bool GptpMessageParser::Parse(const std::uint8_t* payload,
-                                     std::size_t         payload_len,
-                                     PTPMessage&         msg) const
+bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_len, PTPMessage& msg) const
 {
     if (payload == nullptr || payload_len < sizeof(PTPHeader))
         return false;
 
-    msg.ptpHdr.tsmt            = payload[0];
-    msg.ptpHdr.version         = payload[1];
-    msg.ptpHdr.messageLength   = LoadU16(payload + 2);
-    msg.ptpHdr.domainNumber    = payload[4];
-    msg.ptpHdr.reserved1       = payload[5];
+    msg.ptpHdr.tsmt = payload[0];
+    msg.ptpHdr.version = payload[1];
+    msg.ptpHdr.messageLength = LoadU16(payload + 2);
+    msg.ptpHdr.domainNumber = payload[4];
+    msg.ptpHdr.reserved1 = payload[5];
     std::memcpy(msg.ptpHdr.flagField, payload + 6, 2);
     msg.ptpHdr.correctionField = static_cast<std::int64_t>(LoadBe64(payload + 8));
-    msg.ptpHdr.reserved2       = LoadU32(payload + 16);
+    msg.ptpHdr.reserved2 = LoadU32(payload + 16);
     std::memcpy(msg.ptpHdr.sourcePortIdentity.clockIdentity.id, payload + 20, 8);
     msg.ptpHdr.sourcePortIdentity.portNumber = LoadU16(payload + 28);
-    msg.ptpHdr.sequenceId      = LoadU16(payload + 30);
-    msg.ptpHdr.controlField    = payload[32];
+    msg.ptpHdr.sequenceId = LoadU16(payload + 30);
+    msg.ptpHdr.controlField = payload[32];
     msg.ptpHdr.logMessageInterval = static_cast<std::int8_t>(payload[33]);
 
     msg.msgtype = msg.ptpHdr.tsmt & 0x0FU;
@@ -102,8 +100,7 @@ bool GptpMessageParser::Parse(const std::uint8_t* payload,
 
         case kPtpMsgtypePdelayRespFollowUp:
             if (payload_len >= kBodyOffset + sizeof(Timestamp))
-                msg.pdelay_resp_fup.responseOriginReceiptTimestamp =
-                    LoadTimestamp(payload + kBodyOffset);
+                msg.pdelay_resp_fup.responseOriginReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
             break;
 
         default:

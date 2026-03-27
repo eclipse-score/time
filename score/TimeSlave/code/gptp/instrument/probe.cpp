@@ -24,7 +24,6 @@ namespace ts
 namespace details
 {
 
-
 ProbeManager& ProbeManager::Instance()
 {
     static ProbeManager instance;
@@ -34,9 +33,7 @@ ProbeManager& ProbeManager::Instance()
 void ProbeManager::Trace(ProbePoint point, const ProbeData& data)
 {
     score::mw::log::LogDebug(score::td::kGPtpMachineContext)
-        << "PROBE point=" << static_cast<int>(point)
-        << " ts=" << data.ts_mono_ns
-        << " val=" << data.value_ns
+        << "PROBE point=" << static_cast<int>(point) << " ts=" << data.ts_mono_ns << " val=" << data.value_ns
         << " seq=" << data.seq_id;
 
     if (recorder_ != nullptr && recorder_->IsEnabled())

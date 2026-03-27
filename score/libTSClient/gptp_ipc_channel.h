@@ -43,9 +43,9 @@ static constexpr std::uint32_t kGptpIpcMagic = 0x47505450U;
  */
 struct alignas(64) GptpIpcRegion
 {
-    std::uint32_t              magic{kGptpIpcMagic};
+    std::uint32_t magic{kGptpIpcMagic};
     std::atomic<std::uint32_t> seq{0};
-    score::td::PtpTimeInfo     data{};
+    score::td::PtpTimeInfo data{};
     std::atomic<std::uint32_t> seq_confirm{0};
 };
 

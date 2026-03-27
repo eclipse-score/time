@@ -58,7 +58,7 @@ TEST(RecorderTest, Disabled_RecordDoesNotCrash)
 TEST(RecorderTest, Enabled_BadPath_IsEnabledReturnsFalse)
 {
     Recorder::Config cfg;
-    cfg.enabled   = true;
+    cfg.enabled = true;
     cfg.file_path = "/no/such/dir/recorder_test.csv";
     Recorder r{cfg};
     EXPECT_FALSE(r.IsEnabled());
@@ -67,7 +67,7 @@ TEST(RecorderTest, Enabled_BadPath_IsEnabledReturnsFalse)
 TEST(RecorderTest, Enabled_BadPath_RecordDoesNotCrash)
 {
     Recorder::Config cfg;
-    cfg.enabled   = true;
+    cfg.enabled = true;
     cfg.file_path = "/no/such/dir/recorder_test.csv";
     Recorder r{cfg};
     EXPECT_NO_THROW(r.Record(RecordEntry{}));
@@ -78,13 +78,19 @@ TEST(RecorderTest, Enabled_BadPath_RecordDoesNotCrash)
 class RecorderFileTest : public ::testing::Test
 {
   protected:
-    void SetUp() override    { path_ = TempPath(); }
-    void TearDown() override { std::remove(path_.c_str()); }
+    void SetUp() override
+    {
+        path_ = TempPath();
+    }
+    void TearDown() override
+    {
+        std::remove(path_.c_str());
+    }
 
     Recorder MakeRecorder()
     {
         Recorder::Config cfg;
-        cfg.enabled   = true;
+        cfg.enabled = true;
         cfg.file_path = path_;
         return Recorder{cfg};
     }
@@ -100,10 +106,12 @@ TEST_F(RecorderFileTest, IsEnabled_ReturnsTrue)
 
 TEST_F(RecorderFileTest, NewFile_ContainsCsvHeader)
 {
-    { auto r = MakeRecorder(); }  // destructor closes file
+    {
+        auto r = MakeRecorder();
+    }  // destructor closes file
 
     std::ifstream f(path_);
-    std::string   line;
+    std::string line;
     ASSERT_TRUE(std::getline(f, line));
     EXPECT_EQ(line, "mono_ns,event,offset_ns,pdelay_ns,seq_id,status_flags");
 }
@@ -113,11 +121,11 @@ TEST_F(RecorderFileTest, Record_WritesOneDataLine)
     auto r = MakeRecorder();
 
     RecordEntry e{};
-    e.mono_ns      = 123456789LL;
-    e.event        = RecordEvent::kSyncReceived;
-    e.offset_ns    = -500LL;
-    e.pdelay_ns    = 1000LL;
-    e.seq_id       = 42U;
+    e.mono_ns = 123456789LL;
+    e.event = RecordEvent::kSyncReceived;
+    e.offset_ns = -500LL;
+    e.pdelay_ns = 1000LL;
+    e.seq_id = 42U;
     e.status_flags = 0x03U;
     r.Record(e);
 
@@ -132,9 +140,9 @@ TEST_F(RecorderFileTest, Record_MultipleEntries_AllFlushedToFile)
         for (int i = 0; i < 5; ++i)
         {
             RecordEntry e{};
-            e.mono_ns   = static_cast<std::int64_t>(i) * 1'000'000LL;
-            e.event     = RecordEvent::kPdelayCompleted;
-            e.seq_id    = static_cast<std::uint16_t>(i);
+            e.mono_ns = static_cast<std::int64_t>(i) * 1'000'000LL;
+            e.event = RecordEvent::kPdelayCompleted;
+            e.seq_id = static_cast<std::uint16_t>(i);
             r.Record(e);
         }
     }
@@ -153,11 +161,11 @@ TEST_F(RecorderFileTest, Record_FieldsWrittenCorrectly)
     {
         auto r = MakeRecorder();
         RecordEntry e{};
-        e.mono_ns      = 9'000'000'000LL;
-        e.event        = RecordEvent::kClockJump;
-        e.offset_ns    = 12345LL;
-        e.pdelay_ns    = 999LL;
-        e.seq_id       = 7U;
+        e.mono_ns = 9'000'000'000LL;
+        e.event = RecordEvent::kClockJump;
+        e.offset_ns = 12345LL;
+        e.pdelay_ns = 999LL;
+        e.seq_id = 7U;
         e.status_flags = 0x01U;
         r.Record(e);
     }

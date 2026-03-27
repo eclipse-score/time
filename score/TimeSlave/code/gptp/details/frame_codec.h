@@ -44,9 +44,7 @@ class FrameCodec final
      * @param ptp_offset Output: byte offset where the PTP message starts.
      * @return true if @p frame contains a PTP/1588 Ethertype, false otherwise.
      */
-    bool ParseEthernetHeader(const std::uint8_t* frame,
-                             int                 frame_len,
-                             int&                ptp_offset) const;
+    bool ParseEthernetHeader(const std::uint8_t* frame, int frame_len, int& ptp_offset) const;
 
     /**
      * @brief Prepend an Ethernet header for PTP multicast transmission.

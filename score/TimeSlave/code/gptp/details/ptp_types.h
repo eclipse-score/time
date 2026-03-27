@@ -13,9 +13,9 @@
 #ifndef SCORE_TIMESLAVE_CODE_GPTP_DETAILS_PTP_TYPES_H
 #define SCORE_TIMESLAVE_CODE_GPTP_DETAILS_PTP_TYPES_H
 
+#include <netinet/in.h>
 #include <cstdint>
 #include <cstring>
-#include <netinet/in.h>
 
 #ifndef _QNX_PLAT
 #include <linux/if_ether.h>
@@ -25,7 +25,7 @@ struct ethhdr
 {
     unsigned char h_dest[6];
     unsigned char h_source[6];
-    uint16_t      h_proto;
+    uint16_t h_proto;
 };
 #endif
 
@@ -41,23 +41,23 @@ namespace details
 {
 
 // ─── EtherType constants ────────────────────────────────────────────────────
-constexpr int kEthP1588  = 0x88F7;
+constexpr int kEthP1588 = 0x88F7;
 constexpr int kEthP8021Q = 0x8100;
 
 // ─── MAC / buffer sizes ─────────────────────────────────────────────────────
-constexpr int kMacAddrLen  = 6;
-constexpr int kVlanTagLen  = 4;
+constexpr int kMacAddrLen = 6;
+constexpr int kVlanTagLen = 4;
 
 // ─── PTP message-type codes ─────────────────────────────────────────────────
-constexpr std::uint8_t kPtpMsgtypeSync              = 0x0;
-constexpr std::uint8_t kPtpMsgtypePdelayReq         = 0x2;
-constexpr std::uint8_t kPtpMsgtypePdelayResp        = 0x3;
-constexpr std::uint8_t kPtpMsgtypeFollowUp          = 0x8;
+constexpr std::uint8_t kPtpMsgtypeSync = 0x0;
+constexpr std::uint8_t kPtpMsgtypePdelayReq = 0x2;
+constexpr std::uint8_t kPtpMsgtypePdelayResp = 0x3;
+constexpr std::uint8_t kPtpMsgtypeFollowUp = 0x8;
 constexpr std::uint8_t kPtpMsgtypePdelayRespFollowUp = 0xA;
 
 // ─── PTP header constants ────────────────────────────────────────────────────
 constexpr std::uint8_t kPtpTransportSpecific = (1U << 4U);
-constexpr std::uint8_t kPtpVersion          = 2U;
+constexpr std::uint8_t kPtpVersion = 2U;
 
 constexpr std::int64_t kNsPerSec = 1'000'000'000LL;
 
@@ -68,12 +68,12 @@ constexpr const char* kPtpDstMac = "01:80:C2:00:00:0E";
 // ─── Control field ───────────────────────────────────────────────────────────
 enum ControlField : std::uint8_t
 {
-    kCtlSync     = 0,
+    kCtlSync = 0,
     kCtlDelayReq = 1,
     kCtlFollowUp = 2,
     kCtlDelayResp = 3,
     kCtlManagement = 4,
-    kCtlOther    = 5
+    kCtlOther = 5
 };
 
 // ─── State machine states ────────────────────────────────────────────────────
@@ -111,18 +111,18 @@ struct PACKED Timestamp
 
 struct PACKED PTPHeader
 {
-    std::uint8_t   tsmt{0};
-    std::uint8_t   version{0};
-    std::uint16_t  messageLength{0};
-    std::uint8_t   domainNumber{0};
-    std::uint8_t   reserved1{0};
-    std::uint8_t   flagField[2]{};
-    std::int64_t   correctionField{0};
-    std::uint32_t  reserved2{0};
-    PortIdentity   sourcePortIdentity{};
-    std::uint16_t  sequenceId{0};
-    std::uint8_t   controlField{0};
-    std::int8_t    logMessageInterval{0};
+    std::uint8_t tsmt{0};
+    std::uint8_t version{0};
+    std::uint16_t messageLength{0};
+    std::uint8_t domainNumber{0};
+    std::uint8_t reserved1{0};
+    std::uint8_t flagField[2]{};
+    std::int64_t correctionField{0};
+    std::uint32_t reserved2{0};
+    PortIdentity sourcePortIdentity{};
+    std::uint16_t sequenceId{0};
+    std::uint8_t controlField{0};
+    std::int8_t logMessageInterval{0};
 };
 
 struct PACKED SyncBody
@@ -139,22 +139,22 @@ struct PACKED FollowUpBody
 
 struct PACKED PdelayReqBody
 {
-    PTPHeader  ptpHdr{};
-    Timestamp  requestReceiptTimestamp{};
+    PTPHeader ptpHdr{};
+    Timestamp requestReceiptTimestamp{};
     PortIdentity reserved{};
 };
 
 struct PACKED PdelayRespBody
 {
-    PTPHeader    ptpHdr{};
-    Timestamp    responseOriginTimestamp{};
+    PTPHeader ptpHdr{};
+    Timestamp responseOriginTimestamp{};
     PortIdentity requestingPortIdentity{};
 };
 
 struct PACKED PdelayRespFollowUpBody
 {
-    PTPHeader    ptpHdr{};
-    Timestamp    responseOriginReceiptTimestamp{};
+    PTPHeader ptpHdr{};
+    Timestamp responseOriginReceiptTimestamp{};
     PortIdentity requestingPortIdentity{};
 };
 
@@ -167,19 +167,19 @@ struct PTPMessage
 {
     union PACKED
     {
-        PTPHeader              ptpHdr;
-        SyncBody               sync;
-        FollowUpBody           follow_up;
-        PdelayReqBody          pdelay_req;
-        PdelayRespBody         pdelay_resp;
+        PTPHeader ptpHdr;
+        SyncBody sync;
+        FollowUpBody follow_up;
+        PdelayReqBody pdelay_req;
+        PdelayRespBody pdelay_resp;
         PdelayRespFollowUpBody pdelay_resp_fup;
-        RawMessageData         data;
+        RawMessageData data;
     };
 
     std::uint8_t msgtype{0};
-    TmvT         sendHardwareTS{};
-    TmvT         parseMessageTs{};
-    TmvT         recvHardwareTS{};
+    TmvT sendHardwareTS{};
+    TmvT parseMessageTs{};
+    TmvT recvHardwareTS{};
 };
 
 static_assert(sizeof(PTPMessage) <= 1600, "PTPMessage too large");
@@ -187,16 +187,15 @@ static_assert(sizeof(PTPMessage) <= 1600, "PTPMessage too large");
 // ─── Timestamp conversion helpers ────────────────────────────────────────────
 inline TmvT TimestampToTmv(const Timestamp& ts) noexcept
 {
-    const std::uint64_t sec = (static_cast<std::uint64_t>(ts.seconds_msb) << 32U) |
-                               static_cast<std::uint64_t>(ts.seconds_lsb);
-    return TmvT{static_cast<std::int64_t>(sec * static_cast<std::uint64_t>(kNsPerSec) +
-                                           ts.nanoseconds)};
+    const std::uint64_t sec =
+        (static_cast<std::uint64_t>(ts.seconds_msb) << 32U) | static_cast<std::uint64_t>(ts.seconds_lsb);
+    return TmvT{static_cast<std::int64_t>(sec * static_cast<std::uint64_t>(kNsPerSec) + ts.nanoseconds)};
 }
 
 inline Timestamp TmvToTimestamp(const TmvT& x) noexcept
 {
     Timestamp t{};
-    const std::uint64_t sec  = static_cast<std::uint64_t>(x.ns) / 1'000'000'000ULL;
+    const std::uint64_t sec = static_cast<std::uint64_t>(x.ns) / 1'000'000'000ULL;
     const std::uint64_t nsec = static_cast<std::uint64_t>(x.ns) % 1'000'000'000ULL;
     t.seconds_lsb = static_cast<std::uint32_t>(sec & 0xFFFFFFFFULL);
     t.seconds_msb = static_cast<std::uint16_t>((sec >> 32U) & 0xFFFFULL);

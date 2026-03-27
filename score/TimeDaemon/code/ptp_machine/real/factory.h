@@ -35,9 +35,8 @@ namespace td
  * @param ipc_name  IPC channel name (default: kGptpIpcName).
  * @return          A fully configured GPTPRealMachine instance.
  */
-std::shared_ptr<GPTPRealMachine> CreateGPTPRealMachine(
-    const std::string& name,
-    const std::string& ipc_name = score::ts::details::kGptpIpcName);
+std::shared_ptr<GPTPRealMachine> CreateGPTPRealMachine(const std::string& name,
+                                                       const std::string& ipc_name = score::ts::details::kGptpIpcName);
 
 }  // namespace td
 }  // namespace score

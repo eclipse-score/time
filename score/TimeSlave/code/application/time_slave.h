@@ -48,9 +48,9 @@ class TimeSlave final : public score::mw::lifecycle::Application
     std::int32_t Run(const score::cpp::stop_token& token) override;
 
   private:
-    details::GptpEngineOptions              opts_;
-    std::unique_ptr<details::GptpEngine>    engine_;
-    details::GptpIpcPublisher               publisher_;
+    details::GptpEngineOptions opts_;
+    std::unique_ptr<details::GptpEngine> engine_;
+    details::GptpIpcPublisher publisher_;
 };
 
 }  // namespace ts

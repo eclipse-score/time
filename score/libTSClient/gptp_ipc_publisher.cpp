@@ -12,10 +12,10 @@
  ********************************************************************************/
 #include "score/libTSClient/gptp_ipc_publisher.h"
 
-#include <cstring>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <cstring>
 
 namespace score
 {
@@ -39,18 +39,17 @@ bool GptpIpcPublisher::Init(const std::string& ipc_name)
 
     if (::ftruncate(shm_fd_, static_cast<off_t>(sizeof(GptpIpcRegion))) != 0)
     {
-        ::close(shm_fd_);          // LCOV_EXCL_LINE
-        shm_fd_ = -1;              // LCOV_EXCL_LINE
-        return false;              // LCOV_EXCL_LINE
+        ::close(shm_fd_);  // LCOV_EXCL_LINE
+        shm_fd_ = -1;      // LCOV_EXCL_LINE
+        return false;      // LCOV_EXCL_LINE
     }
 
-    void* ptr = ::mmap(nullptr, sizeof(GptpIpcRegion),
-                       PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd_, 0);
+    void* ptr = ::mmap(nullptr, sizeof(GptpIpcRegion), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd_, 0);
     if (ptr == MAP_FAILED)
     {
-        ::close(shm_fd_);          // LCOV_EXCL_LINE
-        shm_fd_ = -1;              // LCOV_EXCL_LINE
-        return false;              // LCOV_EXCL_LINE
+        ::close(shm_fd_);  // LCOV_EXCL_LINE
+        shm_fd_ = -1;      // LCOV_EXCL_LINE
+        return false;      // LCOV_EXCL_LINE
     }
 
     region_ = new (ptr) GptpIpcRegion{};

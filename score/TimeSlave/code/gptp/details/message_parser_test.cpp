@@ -29,9 +29,9 @@ namespace
 {
 
 // PTP header occupies exactly 34 bytes on the wire.
-constexpr std::size_t kHdrSize  = 34U;
+constexpr std::size_t kHdrSize = 34U;
 // Timestamp body = 10 bytes (u16 + u32 + u32).
-constexpr std::size_t kTsSize   = 10U;
+constexpr std::size_t kTsSize = 10U;
 
 // Store a 16-bit big-endian value at buf[off].
 void PutU16Be(std::uint8_t* buf, std::size_t off, std::uint16_t val)
@@ -58,13 +58,13 @@ void PutU64Be(std::uint8_t* buf, std::size_t off, std::uint64_t val)
 
 // Build a minimal PTP payload of type `msgtype` with the given header fields.
 // Optionally appends a 10-byte Timestamp body (seconds_lsb + nanoseconds).
-std::vector<std::uint8_t> BuildPayload(std::uint8_t  msgtype,
+std::vector<std::uint8_t> BuildPayload(std::uint8_t msgtype,
                                        std::uint16_t seqId,
-                                       std::int64_t  correction  = 0,
+                                       std::int64_t correction = 0,
                                        std::uint16_t port_number = 0,
-                                       std::uint64_t clock_id    = 0,
-                                       std::uint32_t ts_sec_lsb  = 0,
-                                       std::uint32_t ts_ns       = 0)
+                                       std::uint64_t clock_id = 0,
+                                       std::uint32_t ts_sec_lsb = 0,
+                                       std::uint32_t ts_ns = 0)
 {
     const std::size_t total = kHdrSize + kTsSize;
     std::vector<std::uint8_t> buf(total, 0);
@@ -81,7 +81,7 @@ std::vector<std::uint8_t> BuildPayload(std::uint8_t  msgtype,
     buf[32] = kCtlFollowUp;
 
     // Timestamp body at offset 34: seconds_msb(u16) + seconds_lsb(u32) + nanoseconds(u32)
-    PutU16Be(buf.data(), kHdrSize,     0U);           // seconds_msb = 0
+    PutU16Be(buf.data(), kHdrSize, 0U);  // seconds_msb = 0
     PutU32Be(buf.data(), kHdrSize + 2, ts_sec_lsb);
     PutU32Be(buf.data(), kHdrSize + 6, ts_ns);
 
@@ -143,7 +143,7 @@ TEST_F(MessageParserTest, Header_CorrectionField_DecodedCorrectly)
 TEST_F(MessageParserTest, Header_SourcePortIdentity_DecodedCorrectly)
 {
     const std::uint64_t kClockId = 0xCAFEBABEDEAD0001ULL;
-    const std::uint16_t kPort    = 3U;
+    const std::uint16_t kPort = 3U;
     auto buf = BuildPayload(kPtpMsgtypeSync, 1U, 0, kPort, kClockId);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
@@ -157,7 +157,7 @@ TEST_F(MessageParserTest, FollowUp_Body_TimestampDecodedCorrectly)
 {
     // precise_origin = 2 seconds + 500_000_000 ns
     const std::uint32_t kSecLsb = 2U;
-    const std::uint32_t kNs     = 500'000'000U;
+    const std::uint32_t kNs = 500'000'000U;
     auto buf = BuildPayload(kPtpMsgtypeFollowUp, 99U, 0, 0, 0, kSecLsb, kNs);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
@@ -171,7 +171,7 @@ TEST_F(MessageParserTest, FollowUp_Body_TimestampDecodedCorrectly)
 TEST_F(MessageParserTest, PdelayResp_Body_TimestampDecodedCorrectly)
 {
     const std::uint32_t kSecLsb = 3U;
-    const std::uint32_t kNs     = 123'456'789U;
+    const std::uint32_t kNs = 123'456'789U;
     auto buf = BuildPayload(kPtpMsgtypePdelayResp, 5U, 0, 0, 0, kSecLsb, kNs);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
@@ -185,7 +185,7 @@ TEST_F(MessageParserTest, PdelayResp_Body_TimestampDecodedCorrectly)
 TEST_F(MessageParserTest, PdelayRespFollowUp_Body_TimestampDecodedCorrectly)
 {
     const std::uint32_t kSecLsb = 7U;
-    const std::uint32_t kNs     = 999'000'000U;
+    const std::uint32_t kNs = 999'000'000U;
     auto buf = BuildPayload(kPtpMsgtypePdelayRespFollowUp, 11U, 0, 0, 0, kSecLsb, kNs);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));

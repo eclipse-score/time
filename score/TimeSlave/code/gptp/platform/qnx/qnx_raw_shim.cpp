@@ -16,15 +16,15 @@
 // declared in raw_socket.cpp (extern "C").
 
 #include <arpa/inet.h>
-#include <cerrno>
-#include <cstdio>
-#include <cstring>
 #include <fcntl.h>
 #include <net/bpf.h>
 #include <net/if.h>
 #include <netinet/if_ether.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 
 // QNX SDP 8.0: PTP API constants (from io-sock/ptp.h, inlined to avoid
 // struct PortIdentity redefinition conflict with details/ptp_types.h).
@@ -57,17 +57,16 @@ struct GptpEthHdr
 {
     unsigned char h_dest[6];
     unsigned char h_source[6];
-    uint16_t      h_proto;
+    uint16_t h_proto;
 };
 
-static constexpr int64_t     kNsPerSec       = 1'000'000'000LL;
-static constexpr std::size_t kMaxBpfBufSz    = 65536U;
-static constexpr int         kMaxTxScanTries = 8;
+static constexpr int64_t kNsPerSec = 1'000'000'000LL;
+static constexpr std::size_t kMaxBpfBufSz = 65536U;
+static constexpr int kMaxTxScanTries = 8;
 
 // Caplen of a BPF TX loopback frame injected by the PTP driver:
 //   Ethernet header (14 B) + ptp_tstmp payload (4 + 12 = 16 B) = 30 B
-static constexpr int kTxLoopbackCaplen =
-    static_cast<int>(sizeof(GptpEthHdr) + sizeof(PtpTstmp));
+static constexpr int kTxLoopbackCaplen = static_cast<int>(sizeof(GptpEthHdr) + sizeof(PtpTstmp));
 
 // ── BPF kernel filter: pass only IEEE 802.1AS (ETH_P_1588) frames ────────────
 //   BPF_LD  H ABS 12   — load EtherType (bytes 12-13)
@@ -81,25 +80,24 @@ static struct bpf_insn kPtp1588FilterInsns[] = {
     BPF_STMT(BPF_RET + BPF_K, static_cast<u_int>(-1)),
     BPF_STMT(BPF_RET + BPF_K, 0),
 };
-static const u_int kPtp1588FilterLen =
-    static_cast<u_int>(sizeof(kPtp1588FilterInsns) / sizeof(kPtp1588FilterInsns[0]));
+static const u_int kPtp1588FilterLen = static_cast<u_int>(sizeof(kPtp1588FilterInsns) / sizeof(kPtp1588FilterInsns[0]));
 
 // ── Per-thread BPF context ───────────────────────────────────────────────────
 struct QnxRawContext
 {
-    int           bpf_fd        = -1;
-    u_int         bpf_buflen    = 0;
-    char          iface_name[IFNAMSIZ]{};
+    int bpf_fd = -1;
+    u_int bpf_buflen = 0;
+    char iface_name[IFNAMSIZ]{};
     unsigned char bpf_buf[kMaxBpfBufSz]{};
-    ssize_t       bpf_n         = 0;
-    ssize_t       bpf_off       = 0;
-    bool          initialized   = false;
+    ssize_t bpf_n = 0;
+    ssize_t bpf_off = 0;
+    bool initialized = false;
     unsigned char tx_frame[ETHER_HDR_LEN + 1500]{};
 
     // Secondary BPF fd with BIOCSSEESENT=1 for reading TX loopback timestamps.
     // Lazily opened on first qnx_raw_send() call.
-    int           tx_loopback_fd      = -1;
-    u_int         tx_loopback_buflen  = 0;
+    int tx_loopback_fd = -1;
+    u_int tx_loopback_buflen = 0;
     unsigned char tx_loopback_buf[kMaxBpfBufSz]{};
 
     ~QnxRawContext()
@@ -128,9 +126,9 @@ thread_local QnxRawContext g_qnx_ctx;
 // This is equivalent to bintime2timespec() from <sys/time.h>.
 static void bpf_ts_to_timespec(const bpf_xhdr* bh, struct timespec* ts) noexcept
 {
-    ts->tv_sec       = static_cast<time_t>(bh->bh_tstamp.bt_sec);
+    ts->tv_sec = static_cast<time_t>(bh->bh_tstamp.bt_sec);
     const uint64_t top32 = bh->bh_tstamp.bt_frac >> 32U;
-    ts->tv_nsec      = static_cast<long>((top32 * 1'000'000'000ULL) >> 32U);
+    ts->tv_nsec = static_cast<long>((top32 * 1'000'000'000ULL) >> 32U);
 }
 
 // Parse an Ethernet/VLAN frame; return byte offset of PTP payload or -1.
@@ -142,7 +140,7 @@ static int ptp_payload_offset(const unsigned char* frame, int caplen)
     GptpEthHdr eth{};
     std::memcpy(&eth, frame, sizeof(GptpEthHdr));
     uint16_t etype = ntohs(eth.h_proto);
-    int      offset = static_cast<int>(sizeof(GptpEthHdr));
+    int offset = static_cast<int>(sizeof(GptpEthHdr));
 
     if (etype == ETH_P_8021Q)
     {
@@ -150,7 +148,7 @@ static int ptp_payload_offset(const unsigned char* frame, int caplen)
             return -1;
         uint16_t inner{};
         std::memcpy(&inner, frame + offset + 2, sizeof(uint16_t));
-        etype   = ntohs(inner);
+        etype = ntohs(inner);
         offset += 4;
     }
 
@@ -195,7 +193,10 @@ static int open_tx_loopback_fd(int main_fd) noexcept
     (void)::ioctl(lfd, BIOCSTSTAMP, &bpf_ts);
 
     // Apply the same ETH_P_1588 kernel filter.
-    struct bpf_program prog{kPtp1588FilterLen, kPtp1588FilterInsns};
+    struct bpf_program prog
+    {
+        kPtp1588FilterLen, kPtp1588FilterInsns
+    };
     (void)::ioctl(lfd, BIOCSETF, &prog);
 
     u_int buflen = 0U;
@@ -254,7 +255,10 @@ extern "C" int qnx_raw_open(const char* ifname)
     (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
 
     // Install kernel BPF filter: discard all non-ETH_P_1588 frames early.
-    struct bpf_program prog{kPtp1588FilterLen, kPtp1588FilterInsns};
+    struct bpf_program prog
+    {
+        kPtp1588FilterLen, kPtp1588FilterInsns
+    };
     (void)::ioctl(fd, BIOCSETF, &prog);  // best-effort; userspace filter still runs
 
     if (::ioctl(fd, BIOCGBLEN, &g_qnx_ctx.bpf_buflen) < 0)
@@ -269,7 +273,7 @@ extern "C" int qnx_raw_open(const char* ifname)
         return -1;
     }
 
-    g_qnx_ctx.bpf_fd      = fd;
+    g_qnx_ctx.bpf_fd = fd;
     g_qnx_ctx.initialized = true;
     return fd;
 }
@@ -311,7 +315,7 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
                 }
                 continue;
             }
-            g_qnx_ctx.bpf_n   = n;
+            g_qnx_ctx.bpf_n = n;
             g_qnx_ctx.bpf_off = 0;
         }
 
@@ -323,33 +327,28 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
         }
 
         // Verify 8-byte alignment required by bpf_xhdr.
-        const auto ptr_val =
-            reinterpret_cast<std::uintptr_t>(g_qnx_ctx.bpf_buf + g_qnx_ctx.bpf_off);
+        const auto ptr_val = reinterpret_cast<std::uintptr_t>(g_qnx_ctx.bpf_buf + g_qnx_ctx.bpf_off);
         if (ptr_val % alignof(bpf_xhdr) != 0U)
         {
             g_qnx_ctx.bpf_off = g_qnx_ctx.bpf_n;
             continue;
         }
 
-        const auto* bh =
-            reinterpret_cast<const bpf_xhdr*>(g_qnx_ctx.bpf_buf + g_qnx_ctx.bpf_off);
+        const auto* bh = reinterpret_cast<const bpf_xhdr*>(g_qnx_ctx.bpf_buf + g_qnx_ctx.bpf_off);
 
         // Bounds checks.
         if (bh->bh_hdrlen < static_cast<u_short>(sizeof(bpf_xhdr)) ||
             bh->bh_caplen > static_cast<bpf_u_int32>(g_qnx_ctx.bpf_n) ||
-            g_qnx_ctx.bpf_off + static_cast<ssize_t>(bh->bh_hdrlen) +
-                    static_cast<ssize_t>(bh->bh_caplen) >
+            g_qnx_ctx.bpf_off + static_cast<ssize_t>(bh->bh_hdrlen) + static_cast<ssize_t>(bh->bh_caplen) >
                 g_qnx_ctx.bpf_n)
         {
             g_qnx_ctx.bpf_off = g_qnx_ctx.bpf_n;
             continue;
         }
 
-        const unsigned char* pkt    = reinterpret_cast<const unsigned char*>(bh) + bh->bh_hdrlen;
-        const int            caplen = static_cast<int>(bh->bh_caplen);
-        const ssize_t        next_off =
-            g_qnx_ctx.bpf_off +
-            static_cast<ssize_t>(BPF_WORDALIGN(bh->bh_hdrlen + bh->bh_caplen));
+        const unsigned char* pkt = reinterpret_cast<const unsigned char*>(bh) + bh->bh_hdrlen;
+        const int caplen = static_cast<int>(bh->bh_caplen);
+        const ssize_t next_off = g_qnx_ctx.bpf_off + static_cast<ssize_t>(BPF_WORDALIGN(bh->bh_hdrlen + bh->bh_caplen));
 
         // Skip TX loopback frames (BIOCSSEESENT=0 should prevent them on the
         // main fd, but guard defensively: a loopback frame has a fixed small
@@ -427,43 +426,35 @@ extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
 
             for (int tries = 0; tries < kMaxTxScanTries; ++tries)
             {
-                ssize_t nr = ::read(lfd, g_qnx_ctx.tx_loopback_buf,
-                                    g_qnx_ctx.tx_loopback_buflen);
+                ssize_t nr = ::read(lfd, g_qnx_ctx.tx_loopback_buf, g_qnx_ctx.tx_loopback_buflen);
                 if (nr <= 0)
                     break;
 
                 ssize_t off = 0;
                 while (off + static_cast<ssize_t>(sizeof(bpf_xhdr)) <= nr)
                 {
-                    const auto pv = reinterpret_cast<std::uintptr_t>(
-                        g_qnx_ctx.tx_loopback_buf + off);
+                    const auto pv = reinterpret_cast<std::uintptr_t>(g_qnx_ctx.tx_loopback_buf + off);
                     if (pv % alignof(bpf_xhdr) != 0U)
                         break;
 
-                    const auto* bh = reinterpret_cast<const bpf_xhdr*>(
-                        g_qnx_ctx.tx_loopback_buf + off);
+                    const auto* bh = reinterpret_cast<const bpf_xhdr*>(g_qnx_ctx.tx_loopback_buf + off);
 
                     if (bh->bh_hdrlen < static_cast<u_short>(sizeof(bpf_xhdr)) ||
-                        off + static_cast<ssize_t>(bh->bh_hdrlen) +
-                                static_cast<ssize_t>(bh->bh_caplen) >
-                            nr)
+                        off + static_cast<ssize_t>(bh->bh_hdrlen) + static_cast<ssize_t>(bh->bh_caplen) > nr)
                         break;
 
-                    const unsigned char* pkt =
-                        reinterpret_cast<const unsigned char*>(bh) + bh->bh_hdrlen;
-                    const int     caplen = static_cast<int>(bh->bh_caplen);
-                    const ssize_t next   = off + static_cast<ssize_t>(
-                        BPF_WORDALIGN(bh->bh_hdrlen + bh->bh_caplen));
+                    const unsigned char* pkt = reinterpret_cast<const unsigned char*>(bh) + bh->bh_hdrlen;
+                    const int caplen = static_cast<int>(bh->bh_caplen);
+                    const ssize_t next = off + static_cast<ssize_t>(BPF_WORDALIGN(bh->bh_hdrlen + bh->bh_caplen));
 
                     // A TX loopback record has a fixed caplen and contains a
                     // ptp_tstmp payload right after the Ethernet header.
                     if (caplen == kTxLoopbackCaplen)
                     {
-                        const auto* tstmp = reinterpret_cast<const PtpTstmp*>(
-                            pkt + sizeof(GptpEthHdr));
+                        const auto* tstmp = reinterpret_cast<const PtpTstmp*>(pkt + sizeof(GptpEthHdr));
                         if (tstmp->uid == tx_uid)
                         {
-                            hwts->tv_sec  = static_cast<time_t>(tstmp->time.sec);
+                            hwts->tv_sec = static_cast<time_t>(tstmp->time.sec);
                             hwts->tv_nsec = static_cast<long>(tstmp->time.nsec);
                             return static_cast<int>(len);
                         }
@@ -499,14 +490,14 @@ extern "C" int qnx_phc_adjtime_step(int /*phc_fd*/, long long offset_ns)
 
     struct
     {
-        struct ifdrv    ifd;
+        struct ifdrv ifd;
         struct ptp_time tm;
     } cmd{};
 
     std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1U);
-    cmd.ifd.ifd_len  = sizeof(cmd.tm);
+    cmd.ifd.ifd_len = sizeof(cmd.tm);
     cmd.ifd.ifd_data = &cmd.tm;
-    cmd.ifd.ifd_cmd  = PTP_GET_TIME;
+    cmd.ifd.ifd_cmd = PTP_GET_TIME;
 
     if (::ioctl(s, SIOCGDRVSPEC, &cmd) == -1)
     {
@@ -517,16 +508,16 @@ extern "C" int qnx_phc_adjtime_step(int /*phc_fd*/, long long offset_ns)
     const int64_t cur_ns = cmd.tm.sec * kNsPerSec + static_cast<int64_t>(cmd.tm.nsec);
     const int64_t new_ns = cur_ns + static_cast<int64_t>(offset_ns);
 
-    cmd.tm.sec  = new_ns / kNsPerSec;
+    cmd.tm.sec = new_ns / kNsPerSec;
     cmd.tm.nsec = static_cast<int32_t>(new_ns % kNsPerSec);
     if (cmd.tm.nsec < 0)
     {
         cmd.tm.nsec += static_cast<int32_t>(kNsPerSec);
-        cmd.tm.sec  -= 1;
+        cmd.tm.sec -= 1;
     }
 
     cmd.ifd.ifd_cmd = PTP_SET_TIME;
-    const int r     = ::ioctl(s, SIOCSDRVSPEC, &cmd);
+    const int r = ::ioctl(s, SIOCSDRVSPEC, &cmd);
     ::close(s);
     return r;
 }
@@ -546,14 +537,14 @@ extern "C" int qnx_phc_adjfreq_ppb(int /*phc_fd*/, long long freq_ppb)
     struct
     {
         struct ifdrv ifd;
-        int          adj_ppm;
+        int adj_ppm;
     } cmd{};
 
     std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1U);
-    cmd.ifd.ifd_len  = sizeof(cmd.adj_ppm);
+    cmd.ifd.ifd_len = sizeof(cmd.adj_ppm);
     cmd.ifd.ifd_data = &cmd.adj_ppm;
-    cmd.ifd.ifd_cmd  = 0x200;  // EMAC_PTP_ADJ_FREQ_PPM
-    cmd.adj_ppm      = ppm;
+    cmd.ifd.ifd_cmd = 0x200;  // EMAC_PTP_ADJ_FREQ_PPM
+    cmd.adj_ppm = ppm;
 
     const int r = ::ioctl(s, SIOCGDRVSPEC, &cmd);
     ::close(s);

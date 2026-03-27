@@ -1,0 +1,59 @@
+@startuml
+!theme plain
+
+title TimeSlave Deployment View
+
+node "ECU" {
+    package "TimeSlave Process" as TSP {
+        component [GptpEngine] as GE
+        component [GptpIpcPublisher] as PUB
+
+        package "RxThread" as RXT {
+            component [FrameCodec] as FC
+            component [MessageParser] as MP
+            component [SyncStateMachine] as SSM
+        }
+
+        package "PdelayThread" as PDT {
+            component [PeerDelayMeasurer] as PDM
+        }
+
+        component [PhcAdjuster] as PHC
+        component [ProbeManager] as PM
+        component [Recorder] as REC
+    }
+
+    package "TimeDaemon Process" as TDP {
+        component [GptpIpcReceiver] as RCV
+    }
+
+    database "Shared Memory\n/gptp_ptp_info" as SHM
+
+    interface "Raw Socket\n(AF_PACKET)" as SOCK
+    interface "PHC Device\n(/dev/ptpN)" as PHCDEV
+}
+
+cloud "Network" as NET
+
+GE --> RXT
+GE --> PDT
+GE --> PHC
+GE --> PUB
+
+FC --> MP
+MP --> SSM
+MP --> PDM
+
+PUB --> SHM : seqlock write
+RCV --> SHM : seqlock read
+
+RXT --> SOCK : recv
+PDT --> SOCK : send/recv
+
+PHC --> PHCDEV : clock_adjtime
+
+SOCK --> NET : gPTP frames\nEtherType 0x88F7
+
+PM --> REC : probe events
+
+@enduml

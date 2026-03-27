@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/TimeDaemon/code/ptp_machine/real/factory.h"
 #include "score/TimeDaemon/code/ptp_machine/real/gptp_real_machine.h"
+#include "score/TimeDaemon/code/ptp_machine/real/factory.h"
 #include "score/libTSClient/gptp_ipc_publisher.h"
 
 #include <gtest/gtest.h>
@@ -39,12 +39,12 @@ std::string UniqueShmName()
 score::td::PtpTimeInfo MakePublishedInfo()
 {
     score::td::PtpTimeInfo info{};
-    info.ptp_assumed_time         = std::chrono::nanoseconds{5'000'000'000LL};
-    info.rate_deviation           = 0.5;
-    info.status.is_synchronized   = true;
-    info.status.is_correct        = true;
+    info.ptp_assumed_time = std::chrono::nanoseconds{5'000'000'000LL};
+    info.rate_deviation = 0.5;
+    info.status.is_synchronized = true;
+    info.status.is_correct = true;
     info.sync_fup_data.sequence_id = 7U;
-    info.sync_fup_data.pdelay      = 1'000U;
+    info.sync_fup_data.pdelay = 1'000U;
     return info;
 }
 
@@ -76,12 +76,12 @@ class GPTPRealMachineIntegrationTest : public ::testing::Test
         pub_.Destroy();
     }
 
-    std::string                                  name_;
-    score::ts::details::GptpIpcPublisher         pub_;
-    std::shared_ptr<GPTPRealMachine>             machine_;
-    std::promise<void>                           promise_;
-    PtpTimeInfo                                  published_{};
-    std::mutex                                   mu_;
+    std::string name_;
+    score::ts::details::GptpIpcPublisher pub_;
+    std::shared_ptr<GPTPRealMachine> machine_;
+    std::promise<void> promise_;
+    PtpTimeInfo published_{};
+    std::mutex mu_;
 };
 
 TEST_F(GPTPRealMachineIntegrationTest, GetName_ReturnsConstructionName)

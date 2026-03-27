@@ -13,9 +13,9 @@
 #ifndef SCORE_TIMESLAVE_CODE_GPTP_DETAILS_PDELAY_MEASURER_H
 #define SCORE_TIMESLAVE_CODE_GPTP_DETAILS_PDELAY_MEASURER_H
 
+#include "score/TimeDaemon/code/common/data_types/ptp_time_info.h"
 #include "score/TimeSlave/code/gptp/details/i_raw_socket.h"
 #include "score/TimeSlave/code/gptp/details/ptp_types.h"
-#include "score/TimeDaemon/code/common/data_types/ptp_time_info.h"
 
 #include <cstdint>
 #include <mutex>
@@ -30,9 +30,9 @@ namespace details
 /// Result produced by a completed Pdelay measurement cycle.
 struct PDelayResult
 {
-    std::int64_t       path_delay_ns{0};
+    std::int64_t path_delay_ns{0};
     score::td::PDelayData pdelay_data{};
-    bool               valid{false};
+    bool valid{false};
 };
 
 /**
@@ -71,11 +71,11 @@ class PeerDelayMeasurer final
 
     mutable std::mutex mutex_;
 
-    int           seqnum_{0};
-    PTPMessage    req_{};
-    PTPMessage    resp_{};
-    PTPMessage    resp_fup_{};
-    PDelayResult  result_{};
+    int seqnum_{0};
+    PTPMessage req_{};
+    PTPMessage resp_{};
+    PTPMessage resp_fup_{};
+    PDelayResult result_{};
 };
 
 }  // namespace details

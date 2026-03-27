@@ -45,9 +45,7 @@ class GptpMessageParser final
      *
      * @return true if the payload contains a valid IEEE 1588 / 802.1AS header.
      */
-    bool Parse(const std::uint8_t* payload,
-               std::size_t         payload_len,
-               PTPMessage&         msg) const;
+    bool Parse(const std::uint8_t* payload, std::size_t payload_len, PTPMessage& msg) const;
 };
 
 }  // namespace details

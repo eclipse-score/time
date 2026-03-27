@@ -26,9 +26,9 @@ namespace details
 /// Configuration for PHC hardware clock synchronization.
 struct PhcConfig
 {
-    bool        enabled           = false;
-    std::string device            = "";               ///< QNX: "emac0", Linux: "/dev/ptp0"
-    std::int64_t step_threshold_ns = 100'000'000LL;   ///< >100ms = step, else slew
+    bool enabled = false;
+    std::string device = "";                         ///< QNX: "emac0", Linux: "/dev/ptp0"
+    std::int64_t step_threshold_ns = 100'000'000LL;  ///< >100ms = step, else slew
 };
 
 /**
@@ -49,7 +49,10 @@ class PhcAdjuster final
     PhcAdjuster& operator=(const PhcAdjuster&) = delete;
 
     /// @return true if hardware clock adjustment is enabled.
-    bool IsEnabled() const { return cfg_.enabled; }
+    bool IsEnabled() const
+    {
+        return cfg_.enabled;
+    }
 
     /// Apply a time step or slew based on offset magnitude.
     /// If |offset_ns| > step_threshold_ns, a step correction is applied;
@@ -62,7 +65,7 @@ class PhcAdjuster final
 
   private:
     PhcConfig cfg_;
-    int       phc_fd_{-1};
+    int phc_fd_{-1};
 };
 
 }  // namespace details

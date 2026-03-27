@@ -66,10 +66,9 @@ TEST_F(ProbeManagerTest, Trace_WhenDisabled_DoesNotCrash)
 {
     ProbeData d{};
     d.ts_mono_ns = 1'000'000LL;
-    d.value_ns   = 500LL;
-    d.seq_id     = 1U;
-    EXPECT_NO_THROW(
-        ProbeManager::Instance().Trace(ProbePoint::kSyncFrameParsed, d));
+    d.value_ns = 500LL;
+    d.seq_id = 1U;
+    EXPECT_NO_THROW(ProbeManager::Instance().Trace(ProbePoint::kSyncFrameParsed, d));
 }
 
 // ── Trace when enabled without recorder ───────────────────────────────────────
@@ -79,10 +78,9 @@ TEST_F(ProbeManagerTest, Trace_WhenEnabled_NoRecorder_DoesNotCrash)
     ProbeManager::Instance().SetEnabled(true);
     ProbeData d{};
     d.ts_mono_ns = 2'000'000LL;
-    d.value_ns   = -100LL;
-    d.seq_id     = 2U;
-    EXPECT_NO_THROW(
-        ProbeManager::Instance().Trace(ProbePoint::kFollowUpProcessed, d));
+    d.value_ns = -100LL;
+    d.seq_id = 2U;
+    EXPECT_NO_THROW(ProbeManager::Instance().Trace(ProbePoint::kFollowUpProcessed, d));
 }
 
 // ── Trace with recorder attached ─────────────────────────────────────────────
@@ -94,9 +92,9 @@ class ProbeManagerWithRecorderTest : public ::testing::Test
     {
         path_ = "/tmp/probe_test_" + std::to_string(::getpid()) + ".csv";
         Recorder::Config cfg;
-        cfg.enabled   = true;
+        cfg.enabled = true;
         cfg.file_path = path_;
-        recorder_     = std::make_unique<Recorder>(cfg);
+        recorder_ = std::make_unique<Recorder>(cfg);
 
         ProbeManager::Instance().SetEnabled(true);
         ProbeManager::Instance().SetRecorder(recorder_.get());
@@ -109,7 +107,7 @@ class ProbeManagerWithRecorderTest : public ::testing::Test
         std::remove(path_.c_str());
     }
 
-    std::string              path_;
+    std::string path_;
     std::unique_ptr<Recorder> recorder_;
 };
 
@@ -117,8 +115,8 @@ TEST_F(ProbeManagerWithRecorderTest, Trace_WritesToRecorder)
 {
     ProbeData d{};
     d.ts_mono_ns = 3'000'000LL;
-    d.value_ns   = 42LL;
-    d.seq_id     = 3U;
+    d.value_ns = 42LL;
+    d.seq_id = 3U;
     ProbeManager::Instance().Trace(ProbePoint::kPdelayCompleted, d);
 
     // Flush by replacing recorder (which closes file in destructor)

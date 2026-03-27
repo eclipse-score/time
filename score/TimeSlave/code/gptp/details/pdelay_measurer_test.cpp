@@ -28,15 +28,15 @@ namespace
 // seqId must be 0 to match the default-constructed req_ inside PeerDelayMeasurer
 // (req_.ptpHdr.sequenceId == 0 before SendRequest is ever called).
 PTPMessage MakeResp(std::uint16_t seqId,
-                    std::int64_t  parse_ts_ns,   // t2 or t3
-                    std::int64_t  recv_hw_ns = 0, // t4 (only used in Resp, not FUP)
-                    std::int64_t  corr_ns    = 0) noexcept
+                    std::int64_t parse_ts_ns,     // t2 or t3
+                    std::int64_t recv_hw_ns = 0,  // t4 (only used in Resp, not FUP)
+                    std::int64_t corr_ns = 0) noexcept
 {
     PTPMessage msg{};
-    msg.ptpHdr.sequenceId      = seqId;
+    msg.ptpHdr.sequenceId = seqId;
     msg.ptpHdr.correctionField = corr_ns << 16;  // CorrectionToTmv does >> 16
-    msg.parseMessageTs.ns      = parse_ts_ns;
-    msg.recvHardwareTS.ns      = recv_hw_ns;
+    msg.parseMessageTs.ns = parse_ts_ns;
+    msg.recvHardwareTS.ns = recv_hw_ns;
     return msg;
 }
 
@@ -135,11 +135,11 @@ TEST_F(PeerDelayMeasurerTest, PDelayData_TimestampFields_PopulatedCorrectly)
     measurer_.OnResponseFollowUp(MakeResp(0U, /*t3=*/80LL));
 
     const score::td::PDelayData& d = measurer_.GetResult().pdelay_data;
-    EXPECT_EQ(d.request_origin_timestamp,   0ULL);    // t1
-    EXPECT_EQ(d.request_receipt_timestamp,  100ULL);  // t2
-    EXPECT_EQ(d.response_origin_timestamp,  80ULL);   // t3
+    EXPECT_EQ(d.request_origin_timestamp, 0ULL);      // t1
+    EXPECT_EQ(d.request_receipt_timestamp, 100ULL);   // t2
+    EXPECT_EQ(d.response_origin_timestamp, 80ULL);    // t3
     EXPECT_EQ(d.response_receipt_timestamp, 180ULL);  // t4
-    EXPECT_EQ(d.pdelay,                     100ULL);  // computed delay
+    EXPECT_EQ(d.pdelay, 100ULL);                      // computed delay
 }
 
 // ── Multiple cycles: result updated on each valid completion ──────────────────

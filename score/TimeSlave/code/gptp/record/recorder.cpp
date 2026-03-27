@@ -42,12 +42,8 @@ void Recorder::Record(const RecordEntry& entry)
         return;
 
     std::lock_guard<std::mutex> lk(mutex_);
-    file_ << entry.mono_ns << ','
-          << static_cast<int>(entry.event) << ','
-          << entry.offset_ns << ','
-          << entry.pdelay_ns << ','
-          << entry.seq_id << ','
-          << static_cast<int>(entry.status_flags) << '\n';
+    file_ << entry.mono_ns << ',' << static_cast<int>(entry.event) << ',' << entry.offset_ns << ',' << entry.pdelay_ns
+          << ',' << entry.seq_id << ',' << static_cast<int>(entry.status_flags) << '\n';
     file_.flush();
 }
 

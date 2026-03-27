@@ -28,20 +28,20 @@ namespace details
 /// Measurement probe points within the gPTP pipeline.
 enum class ProbePoint : std::uint8_t
 {
-    kRxPacketReceived  = 0,
-    kSyncFrameParsed   = 1,
+    kRxPacketReceived = 0,
+    kSyncFrameParsed = 1,
     kFollowUpProcessed = 2,
-    kOffsetComputed    = 3,
-    kPdelayReqSent     = 4,
-    kPdelayCompleted   = 5,
-    kPhcAdjusted       = 6,
+    kOffsetComputed = 3,
+    kPdelayReqSent = 4,
+    kPdelayCompleted = 5,
+    kPhcAdjusted = 6,
 };
 
 /// Data payload for a single probe event.
 struct ProbeData
 {
-    std::int64_t  ts_mono_ns{0};
-    std::int64_t  value_ns{0};
+    std::int64_t ts_mono_ns{0};
+    std::int64_t value_ns{0};
     std::uint32_t seq_id{0};
 };
 
@@ -56,11 +56,20 @@ class ProbeManager final
   public:
     static ProbeManager& Instance();
 
-    void SetEnabled(bool enabled) { enabled_.store(enabled, std::memory_order_release); }
-    bool IsEnabled() const { return enabled_.load(std::memory_order_acquire); }
+    void SetEnabled(bool enabled)
+    {
+        enabled_.store(enabled, std::memory_order_release);
+    }
+    bool IsEnabled() const
+    {
+        return enabled_.load(std::memory_order_acquire);
+    }
 
     /// Optional: link to a Recorder for persistent probe output.
-    void SetRecorder(Recorder* recorder) { recorder_ = recorder; }
+    void SetRecorder(Recorder* recorder)
+    {
+        recorder_ = recorder;
+    }
 
     /// Record a probe event. Thread-safe.
     void Trace(ProbePoint point, const ProbeData& data);
@@ -68,7 +77,7 @@ class ProbeManager final
   private:
     ProbeManager() = default;
     std::atomic<bool> enabled_{false};
-    Recorder*         recorder_{nullptr};
+    Recorder* recorder_{nullptr};
 };
 
 /// Returns the current monotonic timestamp in nanoseconds.
@@ -80,14 +89,13 @@ std::int64_t ProbeMonoNs() noexcept;
 
 // Convenience macro: zero overhead when probing is disabled.
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
-#define GPTP_PROBE(point, ...)                                                 \
-    do                                                                         \
-    {                                                                          \
-    if (::score::ts::details::ProbeManager::Instance().IsEnabled())        \
-    {                                                                          \
-        ::score::ts::details::ProbeManager::Instance().Trace(              \
-                point, {__VA_ARGS__});                                         \
-        }                                                                      \
+#define GPTP_PROBE(point, ...)                                                          \
+    do                                                                                  \
+    {                                                                                   \
+        if (::score::ts::details::ProbeManager::Instance().IsEnabled())                 \
+        {                                                                               \
+            ::score::ts::details::ProbeManager::Instance().Trace(point, {__VA_ARGS__}); \
+        }                                                                               \
     } while (0)
 
 #endif  // SCORE_TIMESLAVE_CODE_GPTP_INSTRUMENT_PROBE_H

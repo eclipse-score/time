@@ -44,8 +44,7 @@ class FakeClock final : public score::time::HighPrecisionLocalSteadyClock
   public:
     score::time::HighPrecisionLocalSteadyClock::time_point Now() noexcept override
     {
-        return score::time::HighPrecisionLocalSteadyClock::time_point{
-            std::chrono::nanoseconds{42'000'000'000LL}};
+        return score::time::HighPrecisionLocalSteadyClock::time_point{std::chrono::nanoseconds{42'000'000'000LL}};
     }
 };
 
@@ -63,8 +62,14 @@ class FakeSocket final : public IRawSocket
         cv_.notify_one();
     }
 
-    bool Open(const std::string&) override { return true; }
-    bool EnableHwTimestamping() override { return hw_ts_ok_; }
+    bool Open(const std::string&) override
+    {
+        return true;
+    }
+    bool EnableHwTimestamping() override
+    {
+        return hw_ts_ok_;
+    }
 
     void Close() override
     {
@@ -75,13 +80,13 @@ class FakeSocket final : public IRawSocket
         cv_.notify_all();
     }
 
-    int Recv(std::uint8_t* buf, std::size_t buf_len,
-             ::timespec& hwts, int timeout_ms) override
+    int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) override
     {
         std::unique_lock<std::mutex> lk(mtx_);
         const auto timeout = std::chrono::milliseconds(timeout_ms > 0 ? timeout_ms : 100);
-        cv_.wait_for(lk, timeout,
-                     [this] { return closed_ || !frames_.empty(); });
+        cv_.wait_for(lk, timeout, [this] {
+            return closed_ || !frames_.empty();
+        });
         if (closed_)
             return -1;
         if (frames_.empty())
@@ -94,17 +99,26 @@ class FakeSocket final : public IRawSocket
         return static_cast<int>(n);
     }
 
-    int Send(const void*, int len, ::timespec&) override { return len; }
-    int GetFd() const override { return -1; }
+    int Send(const void*, int len, ::timespec&) override
+    {
+        return len;
+    }
+    int GetFd() const override
+    {
+        return -1;
+    }
 
-    void SetHwTsOk(bool v) { hw_ts_ok_ = v; }
+    void SetHwTsOk(bool v)
+    {
+        hw_ts_ok_ = v;
+    }
 
   private:
     std::deque<std::pair<std::vector<std::uint8_t>, ::timespec>> frames_;
-    std::mutex              mtx_;
+    std::mutex mtx_;
     std::condition_variable cv_;
-    bool                    closed_{false};
-    bool                    hw_ts_ok_{true};
+    bool closed_{false};
+    bool hw_ts_ok_{true};
 };
 
 // ── FakeIdentity ──────────────────────────────────────────────────────────────
@@ -114,7 +128,10 @@ class FakeIdentity final : public INetworkIdentity
   public:
     explicit FakeIdentity(bool resolve_ok = true) : resolve_ok_{resolve_ok} {}
 
-    bool Resolve(const std::string&) override { return resolve_ok_; }
+    bool Resolve(const std::string&) override
+    {
+        return resolve_ok_;
+    }
 
     ClockIdentity GetClockIdentity() const override
     {
@@ -145,14 +162,15 @@ void AppendEthHeader(std::vector<std::uint8_t>& buf)
 
 // Build a 34-byte PTP header at the back of buf.
 void AppendPtpHeader(std::vector<std::uint8_t>& buf,
-                     std::uint8_t msgtype, std::uint16_t seqId,
+                     std::uint8_t msgtype,
+                     std::uint16_t seqId,
                      std::uint8_t ctlField = 0)
 {
     const std::size_t start = buf.size();
     buf.resize(start + 34, 0);
     std::uint8_t* p = buf.data() + start;
-    p[0]  = static_cast<std::uint8_t>(0x10U | (msgtype & 0x0FU)); // tsmt
-    p[1]  = 0x02;                                                  // version
+    p[0] = static_cast<std::uint8_t>(0x10U | (msgtype & 0x0FU));  // tsmt
+    p[1] = 0x02;                                                  // version
     const std::uint16_t len = htons(static_cast<std::uint16_t>(buf.size() - 14));
     std::memcpy(p + 2, &len, 2);
     const std::uint16_t seq = htons(seqId);
@@ -161,12 +179,11 @@ void AppendPtpHeader(std::vector<std::uint8_t>& buf,
 }
 
 // Append a 10-byte Timestamp body (sec_msb=0, sec_lsb, ns).
-void AppendTimestamp(std::vector<std::uint8_t>& buf,
-                     std::uint32_t sec_lsb, std::uint32_t ns)
+void AppendTimestamp(std::vector<std::uint8_t>& buf, std::uint32_t sec_lsb, std::uint32_t ns)
 {
     const std::uint16_t msb = htons(0U);
-    const std::uint32_t sl  = htonl(sec_lsb);
-    const std::uint32_t n   = htonl(ns);
+    const std::uint32_t sl = htonl(sec_lsb);
+    const std::uint32_t n = htonl(ns);
     const std::uint8_t* p;
     p = reinterpret_cast<const std::uint8_t*>(&msb);
     buf.insert(buf.end(), p, p + 2);
@@ -181,13 +198,11 @@ std::vector<std::uint8_t> MakeSyncFrame(std::uint16_t seqId)
     std::vector<std::uint8_t> f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypeSync, seqId, /*ctl=*/0);
-    AppendTimestamp(f, 0, 0);   // Sync body (origin timestamp, unused)
+    AppendTimestamp(f, 0, 0);  // Sync body (origin timestamp, unused)
     return f;
 }
 
-std::vector<std::uint8_t> MakeFollowUpFrame(std::uint16_t seqId,
-                                             std::uint32_t sec_lsb,
-                                             std::uint32_t ns)
+std::vector<std::uint8_t> MakeFollowUpFrame(std::uint16_t seqId, std::uint32_t sec_lsb, std::uint32_t ns)
 {
     std::vector<std::uint8_t> f;
     AppendEthHeader(f);
@@ -201,7 +216,7 @@ std::vector<std::uint8_t> MakePdelayRespFrame(std::uint16_t seqId)
     std::vector<std::uint8_t> f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayResp, seqId, /*ctl=*/5);
-    AppendTimestamp(f, 1, 0);   // responseOriginTimestamp
+    AppendTimestamp(f, 1, 0);  // responseOriginTimestamp
     // requesting port identity (10 bytes)
     f.resize(f.size() + 10, 0);
     return f;
@@ -212,8 +227,8 @@ std::vector<std::uint8_t> MakePdelayRespFupFrame(std::uint16_t seqId)
     std::vector<std::uint8_t> f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayRespFollowUp, seqId, /*ctl=*/5);
-    AppendTimestamp(f, 2, 0);   // responseOriginReceiptTimestamp
-    f.resize(f.size() + 10, 0); // requesting port identity
+    AppendTimestamp(f, 2, 0);    // responseOriginReceiptTimestamp
+    f.resize(f.size() + 10, 0);  // requesting port identity
     return f;
 }
 
@@ -230,10 +245,10 @@ std::vector<std::uint8_t> MakeUnknownFrame()
 GptpEngineOptions FastOptions()
 {
     GptpEngineOptions o;
-    o.iface_name              = "lo";
-    o.pdelay_warmup_ms        = 0;    // no warmup — first Pdelay_Req fires immediately
-    o.pdelay_interval_ms      = 10;   // 10 ms cycle
-    o.sync_timeout_ms         = 3300;
+    o.iface_name = "lo";
+    o.pdelay_warmup_ms = 0;     // no warmup — first Pdelay_Req fires immediately
+    o.pdelay_interval_ms = 10;  // 10 ms cycle
+    o.sync_timeout_ms = 3300;
     o.jump_future_threshold_ns = 500'000'000LL;
     return o;
 }
@@ -260,11 +275,13 @@ class GptpEngineTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        engine_ = std::make_unique<GptpEngine>(
-            FastOptions(), std::make_unique<FakeClock>());
+        engine_ = std::make_unique<GptpEngine>(FastOptions(), std::make_unique<FakeClock>());
     }
 
-    void TearDown() override { engine_->Deinitialize(); }
+    void TearDown() override
+    {
+        engine_->Deinitialize();
+    }
 
     std::unique_ptr<GptpEngine> engine_;
 };
@@ -275,19 +292,19 @@ class GptpEngineFakeTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        auto sock     = std::make_unique<FakeSocket>();
+        auto sock = std::make_unique<FakeSocket>();
         auto identity = std::make_unique<FakeIdentity>();
-        socket_raw_   = sock.get();
+        socket_raw_ = sock.get();
         engine_ = std::make_unique<GptpEngine>(
-            FastOptions(),
-            std::make_unique<FakeClock>(),
-            std::move(sock),
-            std::move(identity));
+            FastOptions(), std::make_unique<FakeClock>(), std::move(sock), std::move(identity));
     }
 
-    void TearDown() override { engine_->Deinitialize(); }
+    void TearDown() override
+    {
+        engine_->Deinitialize();
+    }
 
-    FakeSocket*                 socket_raw_{nullptr};
+    FakeSocket* socket_raw_{nullptr};
     std::unique_ptr<GptpEngine> engine_;
 };
 
@@ -330,7 +347,7 @@ TEST_F(GptpEngineFakeTest, Initialize_WithFakeSocket_ReturnsTrue)
 TEST_F(GptpEngineFakeTest, Initialize_CalledTwice_ReturnsTrueOnSecondCall)
 {
     EXPECT_TRUE(engine_->Initialize());
-    EXPECT_TRUE(engine_->Initialize());   // already running → returns true
+    EXPECT_TRUE(engine_->Initialize());  // already running → returns true
 }
 
 TEST_F(GptpEngineFakeTest, Deinitialize_AfterInitialize_ReturnsTrue)
@@ -358,10 +375,9 @@ TEST_F(GptpEngineFakeTest, ReadPTPSnapshot_NotSynchronized_BeforeAnySync)
 
 TEST(GptpEngineIdentityFailTest, Initialize_IdentityResolveFails_ReturnsFalse)
 {
-    auto sock     = std::make_unique<FakeSocket>();
+    auto sock = std::make_unique<FakeSocket>();
     auto identity = std::make_unique<FakeIdentity>(/*resolve_ok=*/false);
-    GptpEngine eng{FastOptions(), std::make_unique<FakeClock>(),
-                   std::move(sock), std::move(identity)};
+    GptpEngine eng{FastOptions(), std::make_unique<FakeClock>(), std::move(sock), std::move(identity)};
     EXPECT_FALSE(eng.Initialize());
     EXPECT_TRUE(eng.Deinitialize());
 }
@@ -382,7 +398,7 @@ TEST_F(GptpEngineFakeTest, HandlePacket_SyncFollowUp_SnapshotBecomesSync)
 
     // Send Sync then FollowUp with the same seqId.
     ::timespec hwts{};
-    hwts.tv_sec  = 1;
+    hwts.tv_sec = 1;
     hwts.tv_nsec = 500'000'000L;
     socket_raw_->Push(MakeSyncFrame(1U), hwts);
     socket_raw_->Push(MakeFollowUpFrame(1U, /*sec=*/2, /*ns=*/0));
@@ -434,7 +450,7 @@ TEST_F(GptpEngineFakeTest, HandlePacket_UnknownMsgtype_DefaultBranchNocrash)
 TEST_F(GptpEngineFakeTest, HandlePacket_TooShortFrame_EarlyReturn)
 {
     ASSERT_TRUE(engine_->Initialize());
-    socket_raw_->Push({0x01, 0x02, 0x03});   // < 14 bytes, ParseEthernetHeader returns false
+    socket_raw_->Push({0x01, 0x02, 0x03});  // < 14 bytes, ParseEthernetHeader returns false
     std::this_thread::sleep_for(std::chrono::milliseconds(30));
 }
 
@@ -444,14 +460,13 @@ TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutPath_IsTimeoutSet)
 {
     // Use a very short timeout (50 ms) so we can trigger it quickly.
     GptpEngineOptions opts = FastOptions();
-    opts.sync_timeout_ms   = 50;
+    opts.sync_timeout_ms = 50;
 
-    auto sock     = std::make_unique<FakeSocket>();
+    auto sock = std::make_unique<FakeSocket>();
     auto identity = std::make_unique<FakeIdentity>();
     FakeSocket* raw_sock = sock.get();
 
-    GptpEngine eng{opts, std::make_unique<FakeClock>(),
-                   std::move(sock), std::move(identity)};
+    GptpEngine eng{opts, std::make_unique<FakeClock>(), std::move(sock), std::move(identity)};
     ASSERT_TRUE(eng.Initialize());
 
     // First receive a Sync+FUP so the state machine records a timestamp.
@@ -466,7 +481,11 @@ TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutPath_IsTimeoutSet)
     {
         score::td::PtpTimeInfo tmp{};
         eng.ReadPTPSnapshot(tmp);
-        if (tmp.status.is_synchronized) { got_sync = true; break; }
+        if (tmp.status.is_synchronized)
+        {
+            got_sync = true;
+            break;
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
     ASSERT_TRUE(got_sync) << "engine never became synchronized";
@@ -486,7 +505,7 @@ TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutPath_IsTimeoutSet)
 TEST(GptpEngineRealSocketTest, Initialize_NonExistentInterface_ReturnsFalse)
 {
     GptpEngineOptions opts;
-    opts.iface_name      = "nonexistent_iface_xyz";
+    opts.iface_name = "nonexistent_iface_xyz";
     opts.pdelay_warmup_ms = 0;
     GptpEngine eng{opts, std::make_unique<FakeClock>()};
     EXPECT_FALSE(eng.Initialize());

@@ -12,13 +12,13 @@
  ********************************************************************************/
 #include "score/TimeSlave/code/gptp/details/raw_socket.h"
 
-#include <cerrno>
-#include <cstring>
+#include <net/bpf.h>
 #include <net/if.h>
 #include <net/if_dl.h>
-#include <net/bpf.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <cerrno>
+#include <cstring>
 
 // QNX raw shim C linkage (provided by existing qnx_raw_shim target)
 extern "C" {
@@ -65,8 +65,7 @@ void RawSocket::Close()
     iface_.clear();
 }
 
-int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len,
-                    ::timespec& hwts, int timeout_ms)
+int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms)
 {
     if (fd_ < 0 || buf == nullptr || buf_len == 0)
         return -1;

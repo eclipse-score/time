@@ -29,27 +29,23 @@ namespace
 
 // Build a Sync PTPMessage with the given sequence ID and hardware RX timestamp.
 // The correctionField encodes correction in sub-ns units (<<16 so >>16 == 0).
-PTPMessage MakeSync(std::uint16_t seqId,
-                    std::int64_t  recv_hw_ns,
-                    std::int64_t  corr_ns = 0LL) noexcept
+PTPMessage MakeSync(std::uint16_t seqId, std::int64_t recv_hw_ns, std::int64_t corr_ns = 0LL) noexcept
 {
     PTPMessage msg{};
-    msg.msgtype                 = kPtpMsgtypeSync;
-    msg.ptpHdr.sequenceId       = seqId;
-    msg.ptpHdr.correctionField  = corr_ns << 16;  // CorrectionToTmv does >> 16
-    msg.recvHardwareTS.ns       = recv_hw_ns;
+    msg.msgtype = kPtpMsgtypeSync;
+    msg.ptpHdr.sequenceId = seqId;
+    msg.ptpHdr.correctionField = corr_ns << 16;  // CorrectionToTmv does >> 16
+    msg.recvHardwareTS.ns = recv_hw_ns;
     return msg;
 }
 
 // Build a FollowUp PTPMessage with the given sequence ID and precise origin
 // timestamp (in nanoseconds since epoch).
-PTPMessage MakeFollowUp(std::uint16_t seqId,
-                        std::int64_t  origin_ns,
-                        std::int64_t  corr_ns = 0LL) noexcept
+PTPMessage MakeFollowUp(std::uint16_t seqId, std::int64_t origin_ns, std::int64_t corr_ns = 0LL) noexcept
 {
     PTPMessage msg{};
-    msg.msgtype                = kPtpMsgtypeFollowUp;
-    msg.ptpHdr.sequenceId      = seqId;
+    msg.msgtype = kPtpMsgtypeFollowUp;
+    msg.ptpHdr.sequenceId = seqId;
     msg.ptpHdr.correctionField = corr_ns << 16;
     // Encode origin_ns into the preciseOriginTimestamp wire field.
     msg.follow_up.preciseOriginTimestamp = TmvToTimestamp(TmvT{origin_ns});
@@ -58,10 +54,7 @@ PTPMessage MakeFollowUp(std::uint16_t seqId,
 
 // Helper: deliver a matching Sync+FollowUp pair and return the SyncResult.
 // Aborts the test if the pair does not produce a result.
-SyncResult DeliverPair(SyncStateMachine& ssm,
-                       std::uint16_t     seqId,
-                       std::int64_t      recv_hw_ns,
-                       std::int64_t      origin_ns)
+SyncResult DeliverPair(SyncStateMachine& ssm, std::uint16_t seqId, std::int64_t recv_hw_ns, std::int64_t origin_ns)
 {
     ssm.OnSync(MakeSync(seqId, recv_hw_ns));
     auto result = ssm.OnFollowUp(MakeFollowUp(seqId, origin_ns));
@@ -141,8 +134,7 @@ TEST_F(SyncStateMachineTest, SyncFupData_PreciseOriginTimestamp_MatchesInput)
     ssm_.OnSync(MakeSync(1U, 6'000'000'000LL));
     auto result = ssm_.OnFollowUp(MakeFollowUp(1U, kOrigin));
     ASSERT_TRUE(result.has_value());
-    EXPECT_EQ(static_cast<std::int64_t>(result->sync_fup_data.precise_origin_timestamp),
-              kOrigin);
+    EXPECT_EQ(static_cast<std::int64_t>(result->sync_fup_data.precise_origin_timestamp), kOrigin);
 }
 
 // ── Jump detection ────────────────────────────────────────────────────────────
@@ -153,8 +145,7 @@ TEST_F(SyncStateMachineTest, JumpPast_Detected_OnSecondPair)
     DeliverPair(ssm_, 1U, 2'100'000'000LL, 2'000'000'000LL);
 
     // Second pair: master_ns goes backward → is_time_jump_past
-    auto result = ssm_.OnFollowUp(
-        MakeFollowUp(2U, 1'000'000'000LL));  // no Sync preceding this on new seqId
+    auto result = ssm_.OnFollowUp(MakeFollowUp(2U, 1'000'000'000LL));  // no Sync preceding this on new seqId
 
     ssm_.OnSync(MakeSync(2U, 3'000'000'000LL));
     auto r2 = ssm_.OnFollowUp(MakeFollowUp(2U, 1'000'000'000LL));
@@ -218,8 +209,7 @@ TEST_F(SyncStateMachineTest, IsTimeout_AfterSuccessfulPair_WithLargeNow_ReturnsT
 {
     DeliverPair(ssm_, 1U, 1'000'000'000LL, 900'000'000LL);
     // Provide a mono_now far in the future; timeout = 1 s
-    EXPECT_TRUE(ssm_.IsTimeout(std::numeric_limits<std::int64_t>::max(),
-                               1'000'000'000LL));
+    EXPECT_TRUE(ssm_.IsTimeout(std::numeric_limits<std::int64_t>::max(), 1'000'000'000LL));
 }
 
 TEST_F(SyncStateMachineTest, IsTimeout_AfterSuccessfulPair_WithSmallDelta_ReturnsFalse)

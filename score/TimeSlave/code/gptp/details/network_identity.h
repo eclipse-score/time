@@ -40,7 +40,10 @@ class NetworkIdentity : public INetworkIdentity
     bool Resolve(const std::string& iface_name) override;
 
     /// Return the resolved identity.  Valid only after a successful Resolve().
-    ClockIdentity GetClockIdentity() const override { return identity_; }
+    ClockIdentity GetClockIdentity() const override
+    {
+        return identity_;
+    }
 
   private:
     ClockIdentity identity_{};

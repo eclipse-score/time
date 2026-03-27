@@ -13,11 +13,11 @@
 #include "score/TimeSlave/code/gptp/details/network_identity.h"
 
 #include <arpa/inet.h>
-#include <cstring>
 #include <ifaddrs.h>
 #include <net/if.h>
 #include <net/if_dl.h>
 #include <sys/types.h>
+#include <cstring>
 
 namespace score
 {
@@ -52,7 +52,7 @@ int ReadMac(const char* iface_name, unsigned char out_mac[8]) noexcept
 
         const auto* sdl = reinterpret_cast<const ::sockaddr_dl*>(ifa->ifa_addr);
         const auto* mac = reinterpret_cast<const unsigned char*>(LLADDR(sdl));
-        const int   len = static_cast<int>(sdl->sdl_alen);
+        const int len = static_cast<int>(sdl->sdl_alen);
         if (len == 6 || len == 8)
         {
             std::memcpy(out_mac, mac, static_cast<std::size_t>(len));

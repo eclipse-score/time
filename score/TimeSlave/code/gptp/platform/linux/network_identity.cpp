@@ -13,12 +13,12 @@
 #include "score/TimeSlave/code/gptp/details/network_identity.h"
 
 #include <arpa/inet.h>
-#include <cstring>
 #include <linux/if.h>
 #include <linux/if_arp.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <cstring>
 
 namespace score
 {

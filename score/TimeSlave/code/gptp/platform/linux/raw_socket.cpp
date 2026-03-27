@@ -13,17 +13,17 @@
 #include "score/TimeSlave/code/gptp/details/raw_socket.h"
 
 #include <arpa/inet.h>
-#include <cerrno>
-#include <cstring>
+#include <linux/if_ether.h>
+#include <linux/net_tstamp.h>
+#include <linux/sockios.h>
 #include <net/if.h>
 #include <netpacket/packet.h>
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <linux/if_ether.h>
-#include <linux/net_tstamp.h>
-#include <linux/sockios.h>
+#include <cerrno>
+#include <cstring>
 
 namespace score
 {
@@ -37,13 +37,13 @@ namespace
 
 void DrainErrQueue(int fd) noexcept
 {
-    char      buf[2048];
-    ::iovec   iov{buf, sizeof(buf)};
-    char      ctrl[2048];
-    ::msghdr  msg{};
-    msg.msg_iov        = &iov;
-    msg.msg_iovlen     = 1;
-    msg.msg_control    = ctrl;
+    char buf[2048];
+    ::iovec iov{buf, sizeof(buf)};
+    char ctrl[2048];
+    ::msghdr msg{};
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = ctrl;
     msg.msg_controllen = sizeof(ctrl);
 
     while (::recvmsg(fd, &msg, MSG_ERRQUEUE) > 0)
@@ -75,9 +75,9 @@ bool RawSocket::Open(const std::string& iface)
     }
 
     ::sockaddr_ll sa{};
-    sa.sll_family   = AF_PACKET;
+    sa.sll_family = AF_PACKET;
     sa.sll_protocol = htons(ETH_P_1588);
-    sa.sll_ifindex  = ifr.ifr_ifindex;
+    sa.sll_ifindex = ifr.ifr_ifindex;
     if (::bind(fd, reinterpret_cast<::sockaddr*>(&sa), sizeof(sa)) < 0)
     {
         ::close(fd);
@@ -85,10 +85,9 @@ bool RawSocket::Open(const std::string& iface)
     }
 
     // SO_BINDTODEVICE: best-effort, don't fail if it doesn't work
-    (void)::setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE,
-                       iface.c_str(), static_cast<socklen_t>(iface.size()));
+    (void)::setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, iface.c_str(), static_cast<socklen_t>(iface.size()));
 
-    fd_    = fd;
+    fd_ = fd;
     iface_ = iface;
     return true;
 }
@@ -98,12 +97,12 @@ bool RawSocket::EnableHwTimestamping()
     if (fd_ < 0)
         return false;
 
-    ::ifreq         ifr{};
+    ::ifreq ifr{};
     ::hwtstamp_config cfg{};
     std::strncpy(ifr.ifr_name, iface_.c_str(), IFNAMSIZ - 1);
     ifr.ifr_data = reinterpret_cast<char*>(&cfg);
 
-    cfg.tx_type   = HWTSTAMP_TX_ON;
+    cfg.tx_type = HWTSTAMP_TX_ON;
     cfg.rx_filter = HWTSTAMP_FILTER_ALL;
 
     if (::ioctl(fd_, SIOCSHWTSTAMP, &ifr) < 0)
@@ -113,11 +112,8 @@ bool RawSocket::EnableHwTimestamping()
         (void)::ioctl(fd_, SIOCSHWTSTAMP, &ifr);
     }
 
-    const int ts_opts = SOF_TIMESTAMPING_TX_HARDWARE |
-                        SOF_TIMESTAMPING_RX_HARDWARE |
-                        SOF_TIMESTAMPING_RAW_HARDWARE;
-    if (::setsockopt(fd_, SOL_SOCKET, SO_TIMESTAMPING,
-                     &ts_opts, sizeof(ts_opts)) < 0)
+    const int ts_opts = SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE;
+    if (::setsockopt(fd_, SOL_SOCKET, SO_TIMESTAMPING, &ts_opts, sizeof(ts_opts)) < 0)
     {
         return false;
     }
@@ -134,8 +130,7 @@ void RawSocket::Close()
     iface_.clear();
 }
 
-int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len,
-                    ::timespec& hwts, int timeout_ms)
+int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms)
 {
     if (fd_ < 0 || buf == nullptr || buf_len == 0)
         return -1;
@@ -144,16 +139,16 @@ int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len,
     ::pollfd pfd{fd_, POLLIN, 0};
     const int pr = ::poll(&pfd, 1, timeout_ms);
     if (pr == 0)
-        return 0;   // timeout
+        return 0;  // timeout
     if (pr < 0)
         return -1;
 
-    char     ctrl[1024];
-    ::iovec  iov{buf, buf_len};
+    char ctrl[1024];
+    ::iovec iov{buf, buf_len};
     ::msghdr msg{};
-    msg.msg_iov        = &iov;
-    msg.msg_iovlen     = 1;
-    msg.msg_control    = ctrl;
+    msg.msg_iov = &iov;
+    msg.msg_iovlen = 1;
+    msg.msg_control = ctrl;
     msg.msg_controllen = sizeof(ctrl);
 
     const int len = static_cast<int>(::recvmsg(fd_, &msg, 0));
@@ -161,8 +156,7 @@ int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len,
         return -1;
 
     std::memset(&hwts, 0, sizeof(hwts));
-    for (::cmsghdr* cm = CMSG_FIRSTHDR(&msg); cm != nullptr;
-         cm             = CMSG_NXTHDR(&msg, cm))
+    for (::cmsghdr* cm = CMSG_FIRSTHDR(&msg); cm != nullptr; cm = CMSG_NXTHDR(&msg, cm))
     {
         if (cm->cmsg_level == SOL_SOCKET && cm->cmsg_type == SO_TIMESTAMPING)
         {
@@ -190,7 +184,7 @@ int RawSocket::Send(const void* buf, int len, ::timespec& hwts)
     if (::poll(&pfd, 1, -1) > 0 && (pfd.revents & POLLERR) != 0)
     {
         std::uint8_t tmp[2048];
-        ::timespec   tx_hwts{};
+        ::timespec tx_hwts{};
         (void)Recv(tmp, sizeof(tmp), tx_hwts, 0);
         hwts = tx_hwts;
     }

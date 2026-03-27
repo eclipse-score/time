@@ -16,11 +16,11 @@
 
 #include <gtest/gtest.h>
 
-#include <atomic>
-#include <cstring>
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <unistd.h>
+#include <atomic>
+#include <cstring>
 
 namespace score
 {
@@ -44,9 +44,9 @@ std::string UniqueShmName()
 // testing; cleans up in destructor.
 struct ManualShm
 {
-    std::string    name;
-    void*          ptr   = MAP_FAILED;
-    std::size_t    size  = sizeof(GptpIpcRegion);
+    std::string name;
+    void* ptr = MAP_FAILED;
+    std::size_t size = sizeof(GptpIpcRegion);
 
     explicit ManualShm(const std::string& n) : name{n}
     {
@@ -69,8 +69,14 @@ struct ManualShm
         ::shm_unlink(name.c_str());
     }
 
-    bool Valid() const { return ptr != MAP_FAILED; }
-    GptpIpcRegion* Region() { return static_cast<GptpIpcRegion*>(ptr); }
+    bool Valid() const
+    {
+        return ptr != MAP_FAILED;
+    }
+    GptpIpcRegion* Region()
+    {
+        return static_cast<GptpIpcRegion*>(ptr);
+    }
 };
 
 }  // namespace
@@ -80,7 +86,10 @@ struct ManualShm
 class GptpIpcPublisherTest : public ::testing::Test
 {
   protected:
-    void TearDown() override { pub_.Destroy(); }
+    void TearDown() override
+    {
+        pub_.Destroy();
+    }
 
     GptpIpcPublisher pub_;
 };
@@ -89,7 +98,6 @@ TEST_F(GptpIpcPublisherTest, Init_ValidName_ReturnsTrue)
 {
     EXPECT_TRUE(pub_.Init(UniqueShmName()));
 }
-
 
 TEST_F(GptpIpcPublisherTest, Publish_WithoutInit_DoesNotCrash)
 {
@@ -115,7 +123,10 @@ TEST_F(GptpIpcPublisherTest, Destroy_WithoutInit_DoesNotCrash)
 class GptpIpcReceiverTest : public ::testing::Test
 {
   protected:
-    void TearDown() override { rx_.Close(); }
+    void TearDown() override
+    {
+        rx_.Close();
+    }
 
     GptpIpcReceiver rx_;
 };
@@ -146,16 +157,19 @@ TEST_F(GptpIpcReceiverTest, Receive_WithoutInit_ReturnsNullopt)
 class GptpIpcRoundtripTest : public ::testing::Test
 {
   protected:
-    void SetUp() override { name_ = UniqueShmName(); }
+    void SetUp() override
+    {
+        name_ = UniqueShmName();
+    }
     void TearDown() override
     {
         rx_.Close();
         pub_.Destroy();
     }
 
-    std::string      name_;
+    std::string name_;
     GptpIpcPublisher pub_;
-    GptpIpcReceiver  rx_;
+    GptpIpcReceiver rx_;
 };
 
 TEST_F(GptpIpcRoundtripTest, ReceiverInit_AfterPublisherInit_ReturnsTrue)
@@ -180,10 +194,10 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_BasicFields_RoundtripCorrectly)
     ASSERT_TRUE(rx_.Init(name_));
 
     score::td::PtpTimeInfo info{};
-    info.ptp_assumed_time     = std::chrono::nanoseconds{1'234'567'890LL};
-    info.rate_deviation       = 0.75;
+    info.ptp_assumed_time = std::chrono::nanoseconds{1'234'567'890LL};
+    info.rate_deviation = 0.75;
     info.status.is_synchronized = true;
-    info.status.is_correct      = true;
+    info.status.is_correct = true;
 
     pub_.Publish(info);
 
@@ -204,11 +218,11 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_StatusFlags_RoundtripCorrectly)
     ASSERT_TRUE(rx_.Init(name_));
 
     score::td::PtpTimeInfo info{};
-    info.status.is_timeout          = true;
+    info.status.is_timeout = true;
     info.status.is_time_jump_future = true;
-    info.status.is_time_jump_past   = false;
-    info.status.is_synchronized     = false;
-    info.status.is_correct          = false;
+    info.status.is_time_jump_past = false;
+    info.status.is_synchronized = false;
+    info.status.is_correct = false;
 
     pub_.Publish(info);
 
@@ -226,15 +240,15 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_SyncFupData_RoundtripCorrectly)
     ASSERT_TRUE(rx_.Init(name_));
 
     score::td::PtpTimeInfo info{};
-    info.sync_fup_data.precise_origin_timestamp   = 100'000'000'000ULL;
+    info.sync_fup_data.precise_origin_timestamp = 100'000'000'000ULL;
     info.sync_fup_data.reference_global_timestamp = 100'000'001'000ULL;
-    info.sync_fup_data.reference_local_timestamp  = 100'000'001'500ULL;
-    info.sync_fup_data.sync_ingress_timestamp     = 100'000'001'500ULL;
-    info.sync_fup_data.correction_field           = 42U;
-    info.sync_fup_data.sequence_id                = 77;
-    info.sync_fup_data.pdelay                     = 3'000U;
-    info.sync_fup_data.port_number                = 1;
-    info.sync_fup_data.clock_identity             = 0xAABBCCDDEEFF0011ULL;
+    info.sync_fup_data.reference_local_timestamp = 100'000'001'500ULL;
+    info.sync_fup_data.sync_ingress_timestamp = 100'000'001'500ULL;
+    info.sync_fup_data.correction_field = 42U;
+    info.sync_fup_data.sequence_id = 77;
+    info.sync_fup_data.pdelay = 3'000U;
+    info.sync_fup_data.port_number = 1;
+    info.sync_fup_data.clock_identity = 0xAABBCCDDEEFF0011ULL;
 
     pub_.Publish(info);
 
@@ -253,14 +267,14 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_PDelayData_RoundtripCorrectly)
     ASSERT_TRUE(rx_.Init(name_));
 
     score::td::PtpTimeInfo info{};
-    info.pdelay_data.request_origin_timestamp   = 1'000'000'000ULL;
-    info.pdelay_data.request_receipt_timestamp  = 1'000'001'000ULL;
-    info.pdelay_data.response_origin_timestamp  = 1'000'001'000ULL;
+    info.pdelay_data.request_origin_timestamp = 1'000'000'000ULL;
+    info.pdelay_data.request_receipt_timestamp = 1'000'001'000ULL;
+    info.pdelay_data.response_origin_timestamp = 1'000'001'000ULL;
     info.pdelay_data.response_receipt_timestamp = 1'000'002'000ULL;
-    info.pdelay_data.pdelay                     = 1'000U;
-    info.pdelay_data.req_port_number            = 1;
-    info.pdelay_data.resp_port_number           = 2;
-    info.pdelay_data.req_clock_identity         = 0x1122334455667788ULL;
+    info.pdelay_data.pdelay = 1'000U;
+    info.pdelay_data.req_port_number = 1;
+    info.pdelay_data.resp_port_number = 2;
+    info.pdelay_data.req_clock_identity = 0x1122334455667788ULL;
 
     pub_.Publish(info);
 
@@ -281,8 +295,7 @@ TEST_F(GptpIpcRoundtripTest, MultiplePublish_LastValueIsVisible)
     for (int i = 1; i <= 5; ++i)
     {
         score::td::PtpTimeInfo info{};
-        info.ptp_assumed_time =
-            std::chrono::nanoseconds{static_cast<std::int64_t>(i) * 1'000'000'000LL};
+        info.ptp_assumed_time = std::chrono::nanoseconds{static_cast<std::int64_t>(i) * 1'000'000'000LL};
         pub_.Publish(info);
     }
 

@@ -53,7 +53,7 @@ class GptpIpcReceiver final
 
   private:
     const GptpIpcRegion* region_{nullptr};
-    int                  shm_fd_{-1};
+    int shm_fd_{-1};
 };
 
 }  // namespace details
