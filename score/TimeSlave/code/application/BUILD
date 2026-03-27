@@ -23,7 +23,7 @@ cc_binary(
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     deps = [
-        "//score/TimeDaemon/code/common:logging_contexts",
+        "//score/TimeSlave/code/common:logging_contexts",
         "//score/TimeSlave/code/gptp:gptp_engine",
         "//score/libTSClient:gptp_ipc",
         "//score/time/HighPrecisionLocalSteadyClock",

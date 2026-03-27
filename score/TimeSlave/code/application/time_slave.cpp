@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/TimeSlave/code/application/time_slave.h"
 
-#include "score/TimeDaemon/code/common/logging_contexts.h"
+#include "score/TimeSlave/code/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
 #include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
 
@@ -57,7 +57,7 @@ std::int32_t TimeSlave::Run(const score::cpp::stop_token& token)
 
     while (!token.stop_requested())
     {
-        PtpTimeInfo info{};
+        score::td::PtpTimeInfo info{};
         if (engine_->ReadPTPSnapshot(info))
         {
             publisher_.Publish(info);
