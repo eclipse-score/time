@@ -1,0 +1,1061 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Concept for TimeSlave &#8212; S-CORE Time  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/score.css?v=6e51530f" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/score_needs.css?v=e97392eb" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/score_design.css?v=d9fd870c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/modern.css?v=803738c0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'TimeSlave/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/inc_time/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="gPTP Engine Design" href="gptp_engine/index.html" />
+    <link rel="prev" title="Concept for TimeDaemon" href="../time/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.1" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Eclipse S-CORE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../time/index.html">
+    Concept for TimeDaemon
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Concept for TimeSlave
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../time/index.html">
+    Concept for TimeDaemon
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Concept for TimeSlave
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="gptp_engine/index.html">gPTP Engine Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libTSClient/index.html">libTSClient Design</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Concept for TimeSlave</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="concept-for-timeslave">
+<h1>Concept for TimeSlave<a class="headerlink" href="#concept-for-timeslave" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#timeslave-concept" id="id13">TimeSlave concept</a></p>
+<ul>
+<li><p><a class="reference internal" href="#use-cases" id="id14">Use Cases</a></p></li>
+<li><p><a class="reference internal" href="#components-decomposition" id="id15">Components decomposition</a></p></li>
+<li><p><a class="reference internal" href="#class-view" id="id16">Class view</a></p></li>
+<li><p><a class="reference internal" href="#data-and-control-flow" id="id17">Data and control flow</a></p>
+<ul>
+<li><p><a class="reference internal" href="#control-flows" id="id18">Control flows</a></p></li>
+<li><p><a class="reference internal" href="#data-types-or-events" id="id19">Data types or events</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#sw-components-decomposition" id="id20">SW Components decomposition</a></p>
+<ul>
+<li><p><a class="reference internal" href="#timeslave-application-sw-component" id="id21">TimeSlave Application SW component</a></p></li>
+<li><p><a class="reference internal" href="#gptpengine-sw-component" id="id22">GptpEngine SW component</a></p></li>
+<li><p><a class="reference internal" href="#framecodec-sw-component" id="id23">FrameCodec SW component</a></p></li>
+<li><p><a class="reference internal" href="#messageparser-sw-component" id="id24">MessageParser SW component</a></p></li>
+<li><p><a class="reference internal" href="#syncstatemachine-sw-component" id="id25">SyncStateMachine SW component</a></p></li>
+<li><p><a class="reference internal" href="#peerdelaymeasurer-sw-component" id="id26">PeerDelayMeasurer SW component</a></p></li>
+<li><p><a class="reference internal" href="#phcadjuster-sw-component" id="id27">PhcAdjuster SW component</a></p></li>
+<li><p><a class="reference internal" href="#libtsclient-sw-component" id="id28">libTSClient SW component</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#platform-support" id="id29">Platform support</a></p></li>
+<li><p><a class="reference internal" href="#instrumentation" id="id30">Instrumentation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#probemanager" id="id31">ProbeManager</a></p></li>
+<li><p><a class="reference internal" href="#recorder" id="id32">Recorder</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#variability" id="id33">Variability</a></p>
+<ul>
+<li><p><a class="reference internal" href="#configuration" id="id34">Configuration</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="timeslave-concept">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">TimeSlave concept</a><a class="headerlink" href="#timeslave-concept" title="Link to this heading">#</a></h2>
+<section id="use-cases">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Use Cases</a><a class="headerlink" href="#use-cases" title="Link to this heading">#</a></h3>
+<p>TimeSlave is a standalone gPTP (IEEE 802.1AS) slave endpoint process that implements the low-level time synchronization protocol for the Eclipse SCORE time system. It is deployed as a separate process from the TimeDaemon to isolate real-time network I/O from the higher-level time validation and distribution logic.</p>
+<p>More precisely we can specify the following use cases for the TimeSlave:</p>
+<ol class="arabic simple">
+<li><p>Receiving gPTP Sync/FollowUp messages from a Time Master on the Ethernet network</p></li>
+<li><p>Measuring peer delay via the IEEE 802.1AS PDelayReq/PDelayResp exchange</p></li>
+<li><p>Optionally adjusting the PTP Hardware Clock (PHC) on the NIC</p></li>
+<li><p>Publishing the resulting <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> to shared memory for consumption by the TimeDaemon</p></li>
+</ol>
+<p>The raw architectural diagram is represented below.</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-235aba5cb1bdb47f205c6397ee3acb604b6d6c70.svg" type="image/svg+xml" style="width:1397px;height:1037px;background:#FFFFFF;"></object></p>
+</div></section>
+<section id="components-decomposition">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Components decomposition</a><a class="headerlink" href="#components-decomposition" title="Link to this heading">#</a></h3>
+<p>The design consists of several sw components:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="#timeslave-application-sw-component">TimeSlave Application</a></p></li>
+<li><p><a class="reference external" href="#gptpengine-sw-component">GptpEngine</a></p></li>
+<li><p><a class="reference external" href="#framecodec-sw-component">FrameCodec</a></p></li>
+<li><p><a class="reference external" href="#messageparser-sw-component">MessageParser</a></p></li>
+<li><p><a class="reference external" href="#syncstatemachine-sw-component">SyncStateMachine</a></p></li>
+<li><p><a class="reference external" href="#peerdelaymeasurer-sw-component">PeerDelayMeasurer</a></p></li>
+<li><p><a class="reference external" href="#phcadjuster-sw-component">PhcAdjuster</a></p></li>
+<li><p><a class="reference external" href="#libtsclient-sw-component">libTSClient</a></p></li>
+</ol>
+</section>
+<section id="class-view">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Class view</a><a class="headerlink" href="#class-view" title="Link to this heading">#</a></h3>
+<p>Main classes and components are presented on this diagram:</p>
+<div style="overflow-x: auto; max-width: 100%;"><figure class="align-center">
+<p class="plantuml">
+<object data="../_images/plantuml-2f76a875a5e39c4d4cc3f908ea2bf64d7a6df1ee.svg" type="image/svg+xml" style="width:2547px;height:1010px;background:#FFFFFF;"></object></p>
+</figure>
+</div></section>
+<section id="data-and-control-flow">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Data and control flow</a><a class="headerlink" href="#data-and-control-flow" title="Link to this heading">#</a></h3>
+<p>The Data and Control flow are presented in the following diagram:</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-5766bee3e46058a6f354c13856e935f19811cfa8.svg" type="image/svg+xml" style="width:2009px;height:1313px;background:#FFFFFF;"></object></p>
+</div><p>On this view you could see several “workers” scopes:</p>
+<ol class="arabic simple">
+<li><p>RxThread scope</p></li>
+<li><p>PdelayThread scope</p></li>
+<li><p>Main thread (periodic publish) scope</p></li>
+</ol>
+<p>Each control flow is implemented with the dedicated thread and is independent from another ones.</p>
+<section id="control-flows">
+<h4><a class="toc-backref" href="#id18" role="doc-backlink">Control flows</a><a class="headerlink" href="#control-flows" title="Link to this heading">#</a></h4>
+<section id="rxthread-scope">
+<h5>RxThread scope<a class="headerlink" href="#rxthread-scope" title="Link to this heading">#</a></h5>
+<p>This control flow is responsible for the:</p>
+<ol class="arabic simple">
+<li><p>receive raw gPTP Ethernet frames with hardware timestamps from the NIC via raw sockets</p></li>
+<li><p>decode and parse the PTP messages (Sync, FollowUp, PdelayResp, PdelayRespFollowUp)</p></li>
+<li><p>correlate Sync/FollowUp pairs and compute clock offset and neighborRateRatio</p></li>
+<li><p>update the shared <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> snapshot under mutex protection</p></li>
+</ol>
+</section>
+<section id="pdelaythread-scope">
+<h5>PdelayThread scope<a class="headerlink" href="#pdelaythread-scope" title="Link to this heading">#</a></h5>
+<p>This control flow is responsible for the:</p>
+<ol class="arabic simple">
+<li><p>periodically transmit PDelayReq frames and capture hardware transmit timestamps</p></li>
+<li><p>coordinate with the RxThread to receive PDelayResp and PDelayRespFollowUp messages</p></li>
+<li><p>compute the peer delay using the IEEE 802.1AS formula: <code class="docutils literal notranslate"><span class="pre">path_delay</span> <span class="pre">=</span> <span class="pre">((t2</span> <span class="pre">-</span> <span class="pre">t1)</span> <span class="pre">+</span> <span class="pre">(t4</span> <span class="pre">-</span> <span class="pre">t3c))</span> <span class="pre">/</span> <span class="pre">2</span></code></p></li>
+</ol>
+</section>
+<section id="main-thread-periodic-publish-scope">
+<h5>Main thread (periodic publish) scope<a class="headerlink" href="#main-thread-periodic-publish-scope" title="Link to this heading">#</a></h5>
+<p>This control flow is responsible for the:</p>
+<ol class="arabic simple">
+<li><p>periodically call <code class="docutils literal notranslate"><span class="pre">GptpEngine::ReadPTPSnapshot()</span></code> to get the latest time measurement</p></li>
+<li><p>enrich the snapshot with the local clock timestamp from <code class="docutils literal notranslate"><span class="pre">HighPrecisionLocalSteadyClock</span></code></p></li>
+<li><p>publish to shared memory via <code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher::Publish()</span></code></p></li>
+</ol>
+</section>
+</section>
+<section id="data-types-or-events">
+<h4><a class="toc-backref" href="#id19" role="doc-backlink">Data types or events</a><a class="headerlink" href="#data-types-or-events" title="Link to this heading">#</a></h4>
+<p>There are several data types, which components are communicating to each other:</p>
+<section id="ptpmessage">
+<h5>PTPMessage<a class="headerlink" href="#ptpmessage" title="Link to this heading">#</a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">PTPMessage</span></code> is a union-based container for decoded gPTP messages including the hardware receive timestamp. It is produced by <code class="docutils literal notranslate"><span class="pre">MessageParser</span></code> and consumed by <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> and <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code>.</p>
+</section>
+<section id="syncresult">
+<h5>SyncResult<a class="headerlink" href="#syncresult" title="Link to this heading">#</a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">SyncResult</span></code> is produced by <code class="docutils literal notranslate"><span class="pre">SyncStateMachine::OnFollowUp()</span></code> and contains the computed master timestamp, clock offset, Sync/FollowUp data, and time jump flags (forward/backward).</p>
+</section>
+<section id="pdelayresult">
+<h5>PDelayResult<a class="headerlink" href="#pdelayresult" title="Link to this heading">#</a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">PDelayResult</span></code> is produced by <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> and contains the computed path delay in nanoseconds and a validity flag.</p>
+</section>
+<section id="ptptimeinfo">
+<h5>PtpTimeInfo<a class="headerlink" href="#ptptimeinfo" title="Link to this heading">#</a></h5>
+<p><code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> is the aggregated snapshot that combines PTP status flags, Sync/FollowUp data, peer delay data, and a local clock reference. This is the data published to shared memory for the TimeDaemon.</p>
+</section>
+</section>
+</section>
+<section id="sw-components-decomposition">
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">SW Components decomposition</a><a class="headerlink" href="#sw-components-decomposition" title="Link to this heading">#</a></h3>
+<section id="timeslave-application-sw-component">
+<h4><a class="toc-backref" href="#id21" role="doc-backlink">TimeSlave Application SW component</a><a class="headerlink" href="#timeslave-application-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">Application</span></code> component is the main entry point for the TimeSlave process. It extends <code class="docutils literal notranslate"><span class="pre">score::mw::lifecycle::Application</span></code> and is responsible for orchestrating the overall lifecycle of the GptpEngine and the IPC publisher.</p>
+<section id="component-requirements">
+<h5>Component requirements<a class="headerlink" href="#component-requirements" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">Application</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">Application</span></code> shall implement the <code class="docutils literal notranslate"><span class="pre">Initialize()</span></code> method to create the <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> with configured options, initialize the <code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher</span></code> (creates the shared memory segment), and prepare the <code class="docutils literal notranslate"><span class="pre">HighPrecisionLocalSteadyClock</span></code> for local time reference</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">Application</span></code> shall implement the <code class="docutils literal notranslate"><span class="pre">Run()</span></code> method to start the GptpEngine, enter a periodic publish loop, and monitor the <code class="docutils literal notranslate"><span class="pre">stop_token</span></code> for graceful shutdown</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">Application</span></code> shall implement the <code class="docutils literal notranslate"><span class="pre">Deinitialize()</span></code> method to stop the GptpEngine threads and destroy the shared memory segment</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">Application</span></code> shall periodically read the latest <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> snapshot, enrich it with the local clock timestamp, and publish it via <code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="gptpengine-sw-component">
+<h4><a class="toc-backref" href="#id22" role="doc-backlink">GptpEngine SW component</a><a class="headerlink" href="#gptpengine-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> component is the core gPTP protocol engine. It manages two background threads (RxThread and PdelayThread) for network I/O and peer delay measurement, and exposes a thread-safe <code class="docutils literal notranslate"><span class="pre">ReadPTPSnapshot()</span></code> method for the main thread to read the latest time measurement.</p>
+<section id="id1">
+<h5>Component requirements<a class="headerlink" href="#id1" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> shall manage an RxThread for receiving and parsing gPTP frames from raw Ethernet sockets</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> shall manage a PdelayThread for periodic peer delay measurement</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> shall provide a thread-safe <code class="docutils literal notranslate"><span class="pre">ReadPTPSnapshot()</span></code> method that returns the latest <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> shall support configurable parameters via <code class="docutils literal notranslate"><span class="pre">GptpEngineOptions</span></code> (interface name, PDelay interval, sync timeout, time jump thresholds, PHC configuration)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> shall support exchangeability of the raw socket implementation for different platforms (Linux, QNX)</p></li>
+</ul>
+</section>
+<section id="id2">
+<h5>Class view<a class="headerlink" href="#id2" title="Link to this heading">#</a></h5>
+<p>The Class Diagram is presented below:</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-532fe7ca479f3d4259e8eb2226f7a835d3683745.svg" type="image/svg+xml" style="width:1928px;height:898px;background:#FFFFFF;"></object></p>
+</div></section>
+<section id="threading-model">
+<h5>Threading model<a class="headerlink" href="#threading-model" title="Link to this heading">#</a></h5>
+<p>The GptpEngine operates with two background threads. The threading model is represented below:</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-3af035d04cdb1ccc848a3330e037ecda3df01eed.svg" type="image/svg+xml" style="width:819px;height:1042px;background:#FFFFFF;"></object></p>
+</div></section>
+<section id="concurrency-aspects">
+<h5>Concurrency aspects<a class="headerlink" href="#concurrency-aspects" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> uses the following synchronization mechanisms:</p>
+<ul class="simple">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">std::mutex</span></code> protects the <code class="docutils literal notranslate"><span class="pre">latest_snapshot_</span></code> field, shared between the RxThread (writer) and the main thread (reader via <code class="docutils literal notranslate"><span class="pre">ReadPTPSnapshot()</span></code>)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> uses its own <code class="docutils literal notranslate"><span class="pre">std::mutex</span></code> to synchronize between the PdelayThread (<code class="docutils literal notranslate"><span class="pre">SendRequest()</span></code>) and the RxThread (<code class="docutils literal notranslate"><span class="pre">OnResponse()</span></code>, <code class="docutils literal notranslate"><span class="pre">OnResponseFollowUp()</span></code>)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> uses <code class="docutils literal notranslate"><span class="pre">std::atomic&lt;bool&gt;</span></code> for the timeout flag, which is read from the main thread and written from the RxThread</p></li>
+</ul>
+</section>
+</section>
+<section id="framecodec-sw-component">
+<h4><a class="toc-backref" href="#id23" role="doc-backlink">FrameCodec SW component</a><a class="headerlink" href="#framecodec-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">FrameCodec</span></code> component handles raw Ethernet frame encoding and decoding for gPTP communication.</p>
+<section id="id3">
+<h5>Component requirements<a class="headerlink" href="#id3" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">FrameCodec</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">FrameCodec</span></code> shall parse incoming Ethernet frames, extracting source/destination MAC addresses, handling 802.1Q VLAN tags, and validating the EtherType (<code class="docutils literal notranslate"><span class="pre">0x88F7</span></code>)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">FrameCodec</span></code> shall construct outgoing Ethernet headers for PDelayReq frames using the standard PTP multicast destination MAC (<code class="docutils literal notranslate"><span class="pre">01:80:C2:00:00:0E</span></code>)</p></li>
+</ul>
+</section>
+</section>
+<section id="messageparser-sw-component">
+<h4><a class="toc-backref" href="#id24" role="doc-backlink">MessageParser SW component</a><a class="headerlink" href="#messageparser-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">MessageParser</span></code> component parses the PTP wire format (IEEE 1588-v2) from raw payload bytes.</p>
+<section id="id4">
+<h5>Component requirements<a class="headerlink" href="#id4" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">MessageParser</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">MessageParser</span></code> shall validate the PTP header (version, domain, message length)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">MessageParser</span></code> shall decode all relevant message types: Sync, FollowUp, PdelayReq, PdelayResp, PdelayRespFollowUp</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">MessageParser</span></code> shall use packed wire structures (<code class="docutils literal notranslate"><span class="pre">__attribute__((packed))</span></code>) for direct memory mapping of PTP messages</p></li>
+</ul>
+</section>
+</section>
+<section id="syncstatemachine-sw-component">
+<h4><a class="toc-backref" href="#id25" role="doc-backlink">SyncStateMachine SW component</a><a class="headerlink" href="#syncstatemachine-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> component implements the two-step Sync/FollowUp correlation logic. It correlates incoming Sync and FollowUp messages by sequence ID, computes the clock offset and neighbor rate ratio, and detects time jumps.</p>
+<section id="id5">
+<h5>Component requirements<a class="headerlink" href="#id5" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> shall store Sync messages and correlate them with subsequent FollowUp messages by sequence ID</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> shall compute the clock offset: <code class="docutils literal notranslate"><span class="pre">offset_ns</span> <span class="pre">=</span> <span class="pre">master_time</span> <span class="pre">-</span> <span class="pre">slave_receive_time</span> <span class="pre">-</span> <span class="pre">path_delay</span></code></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> shall compute the <code class="docutils literal notranslate"><span class="pre">neighborRateRatio</span></code> from successive Sync intervals (master vs. slave clock progression)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> shall detect forward and backward time jumps against configurable thresholds</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> shall provide thread-safe timeout detection via <code class="docutils literal notranslate"><span class="pre">std::atomic&lt;bool&gt;</span></code>, set when no Sync is received within the configured timeout</p></li>
+</ul>
+</section>
+</section>
+<section id="peerdelaymeasurer-sw-component">
+<h4><a class="toc-backref" href="#id26" role="doc-backlink">PeerDelayMeasurer SW component</a><a class="headerlink" href="#peerdelaymeasurer-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> component implements the IEEE 802.1AS two-step peer delay measurement protocol. It manages the four timestamps (<code class="docutils literal notranslate"><span class="pre">t1</span></code>, <code class="docutils literal notranslate"><span class="pre">t2</span></code>, <code class="docutils literal notranslate"><span class="pre">t3c</span></code>, <code class="docutils literal notranslate"><span class="pre">t4</span></code>) across two threads.</p>
+<section id="id6">
+<h5>Component requirements<a class="headerlink" href="#id6" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall transmit PDelayReq frames and capture the hardware transmit timestamp (<code class="docutils literal notranslate"><span class="pre">t1</span></code>)</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall receive PDelayResp (providing <code class="docutils literal notranslate"><span class="pre">t2</span></code>, <code class="docutils literal notranslate"><span class="pre">t4</span></code>) and PDelayRespFollowUp (providing <code class="docutils literal notranslate"><span class="pre">t3c</span></code>) messages</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall compute the peer delay using the IEEE 802.1AS formula: <code class="docutils literal notranslate"><span class="pre">path_delay</span> <span class="pre">=</span> <span class="pre">((t2</span> <span class="pre">-</span> <span class="pre">t1)</span> <span class="pre">+</span> <span class="pre">(t4</span> <span class="pre">-</span> <span class="pre">t3c))</span> <span class="pre">/</span> <span class="pre">2</span></code></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall provide thread-safe access to the <code class="docutils literal notranslate"><span class="pre">PDelayResult</span></code> via a mutex, as <code class="docutils literal notranslate"><span class="pre">SendRequest()</span></code> runs on the PdelayThread while response handlers are called from the RxThread</p></li>
+</ul>
+</section>
+</section>
+<section id="phcadjuster-sw-component">
+<h4><a class="toc-backref" href="#id27" role="doc-backlink">PhcAdjuster SW component</a><a class="headerlink" href="#phcadjuster-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">PhcAdjuster</span></code> component synchronizes the PTP Hardware Clock (PHC) on the NIC. It applies step corrections for large offsets and frequency slew for smooth convergence of small offsets.</p>
+<section id="id7">
+<h5>Component requirements<a class="headerlink" href="#id7" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">PhcAdjuster</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PhcAdjuster</span></code> shall apply an immediate time step correction for offsets exceeding <code class="docutils literal notranslate"><span class="pre">step_threshold_ns</span></code></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PhcAdjuster</span></code> shall apply frequency slew (in ppb) for offsets below the step threshold</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PhcAdjuster</span></code> shall support platform-specific implementations: <code class="docutils literal notranslate"><span class="pre">clock_adjtime()</span></code> on Linux, EMAC PTP ioctls on QNX</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PhcAdjuster</span></code> shall be configurable via <code class="docutils literal notranslate"><span class="pre">PhcConfig</span></code> (device path, step threshold, enable/disable flag)</p></li>
+</ul>
+</section>
+</section>
+<section id="libtsclient-sw-component">
+<h4><a class="toc-backref" href="#id28" role="doc-backlink">libTSClient SW component</a><a class="headerlink" href="#libtsclient-sw-component" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> component is the shared memory IPC library that connects the TimeSlave process to the TimeDaemon process. It provides a lock-free, single-writer/multi-reader communication channel using a seqlock protocol over POSIX shared memory.</p>
+<p>The component provides two sub components: publisher and receiver to be deployed on the TimeSlave and TimeDaemon sides accordingly.</p>
+<section id="id8">
+<h5>Component requirements<a class="headerlink" href="#id8" title="Link to this heading">#</a></h5>
+<p>The <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> has the following requirements:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> shall define a shared memory layout (<code class="docutils literal notranslate"><span class="pre">GptpIpcRegion</span></code>) with a magic number for validation, an atomic seqlock counter, and a <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> data payload</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> shall align the shared memory region to 64 bytes (cache line size) to prevent false sharing</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> shall provide a <code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher</span></code> component that creates and manages the POSIX shared memory segment and writes <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> using the seqlock protocol</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> shall provide a <code class="docutils literal notranslate"><span class="pre">GptpIpcReceiver</span></code> component that opens the shared memory segment read-only and reads <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> with up to 20 seqlock retries</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> shall use the POSIX shared memory name <code class="docutils literal notranslate"><span class="pre">/gptp_ptp_info</span></code> by default</p></li>
+</ul>
+</section>
+<section id="id9">
+<h5>Class view<a class="headerlink" href="#id9" title="Link to this heading">#</a></h5>
+<p>The Class Diagram is presented below:</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-b4afc5b0d8255ce92bd74ec559093b00b7feea3e.svg" type="image/svg+xml" style="width:726px;height:567px;background:#FFFFFF;"></object></p>
+</div></section>
+<section id="publish-new-data">
+<h5>Publish new data<a class="headerlink" href="#publish-new-data" title="Link to this heading">#</a></h5>
+<p>When <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">Application</span></code> has a new <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> snapshot, it publishes to the shared memory via the seqlock protocol:</p>
+<ol class="arabic simple">
+<li><p>Increment <code class="docutils literal notranslate"><span class="pre">seq</span></code> (becomes odd — signals write in progress)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memcpy</span></code> the data</p></li>
+<li><p>Increment <code class="docutils literal notranslate"><span class="pre">seq</span></code> (becomes even — signals write complete)</p></li>
+</ol>
+</section>
+<section id="receive-data">
+<h5>Receive data<a class="headerlink" href="#receive-data" title="Link to this heading">#</a></h5>
+<p>From TimeDaemon side, the receiver reads from the shared memory using the seqlock protocol with bounded retry:</p>
+<ol class="arabic simple">
+<li><p>Read <code class="docutils literal notranslate"><span class="pre">seq</span></code> (must be even, otherwise retry)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memcpy</span></code> the data</p></li>
+<li><p>Read <code class="docutils literal notranslate"><span class="pre">seq</span></code> again (must match step 1, otherwise retry — torn read detected)</p></li>
+<li><p>Return <code class="docutils literal notranslate"><span class="pre">std::optional&lt;PtpTimeInfo&gt;</span></code> (empty if all 20 retries exhausted)</p></li>
+</ol>
+<p>The seqlock protocol workflow is presented in the following sequence diagram:</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-322e193c1ad1406eb5d4b68c23f2aaa33408d101.svg" type="image/svg+xml" style="width:900px;height:956px;background:#FFFFFF;"></object></p>
+</div></section>
+</section>
+</section>
+<section id="platform-support">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Platform support</a><a class="headerlink" href="#platform-support" title="Link to this heading">#</a></h3>
+<p>TimeSlave supports two target platforms with platform-specific implementations selected at compile time via Bazel <code class="docutils literal notranslate"><span class="pre">select()</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id10">
+<caption><span class="caption-number">Table 2 </span><span class="caption-text">Platform Implementations</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 35.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Linux</p></th>
+<th class="head"><p>QNX</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Raw Socket</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AF_PACKET</span></code> with <code class="docutils literal notranslate"><span class="pre">SO_TIMESTAMPING</span></code></p></td>
+<td><p>QNX raw-socket shim</p></td>
+</tr>
+<tr class="row-odd"><td><p>Network Identity</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ioctl(SIOCGIFHWADDR)</span></code></p></td>
+<td><p>QNX-specific MAC resolution</p></td>
+</tr>
+<tr class="row-even"><td><p>PHC Adjuster</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">clock_adjtime()</span></code></p></td>
+<td><p>EMAC PTP ioctls</p></td>
+</tr>
+<tr class="row-odd"><td><p>HighPrecisionLocalSteadyClock</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std::chrono</span></code> system clock</p></td>
+<td><p>QTIME clock API</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">IRawSocket</span></code> and <code class="docutils literal notranslate"><span class="pre">INetworkIdentity</span></code> interfaces provide the abstraction boundary. Platform-specific source files are organized under <code class="docutils literal notranslate"><span class="pre">score/TimeSlave/code/gptp/platform/linux/</span></code> and <code class="docutils literal notranslate"><span class="pre">score/TimeSlave/code/gptp/platform/qnx/</span></code>.</p>
+</section>
+<section id="instrumentation">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Instrumentation</a><a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h3>
+<section id="probemanager">
+<h4><a class="toc-backref" href="#id31" role="doc-backlink">ProbeManager</a><a class="headerlink" href="#probemanager" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">ProbeManager</span></code> is a singleton that records probe events at key processing points in the gPTP engine. Probe points include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">RxPacketReceived</span></code> — Raw frame received from socket</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SyncFrameParsed</span></code> — Sync message successfully parsed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FollowUpProcessed</span></code> — Offset computed from Sync/FollowUp pair</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">OffsetComputed</span></code> — Final offset value available</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PdelayReqSent</span></code> — PDelayReq frame transmitted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PdelayCompleted</span></code> — Peer delay measurement completed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PhcAdjusted</span></code> — PHC adjustment applied</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">GPTP_PROBE()</span></code> macro provides zero-overhead when probing is disabled.</p>
+</section>
+<section id="recorder">
+<h4><a class="toc-backref" href="#id32" role="doc-backlink">Recorder</a><a class="headerlink" href="#recorder" title="Link to this heading">#</a></h4>
+<p>Thread-safe CSV file writer that persists probe events and other diagnostic data. Each <code class="docutils literal notranslate"><span class="pre">RecordEntry</span></code> contains a timestamp, event type, offset, peer delay, sequence ID, and status flags.</p>
+</section>
+</section>
+<section id="variability">
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Variability</a><a class="headerlink" href="#variability" title="Link to this heading">#</a></h3>
+<section id="configuration">
+<h4><a class="toc-backref" href="#id34" role="doc-backlink">Configuration</a><a class="headerlink" href="#configuration" title="Link to this heading">#</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">GptpEngineOptions</span></code> struct provides all configurable parameters for the gPTP engine:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id11">
+<caption><span class="caption-number">Table 3 </span><span class="caption-text">GptpEngine Configuration</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">interface_name</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Network interface for gPTP frames (e.g., <code class="docutils literal notranslate"><span class="pre">eth0</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pdelay_interval_ms</span></code></p></td>
+<td><p>uint32_t</p></td>
+<td><p>Interval between PDelayReq transmissions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sync_timeout_ms</span></code></p></td>
+<td><p>uint32_t</p></td>
+<td><p>Timeout for Sync message reception before declaring timeout state</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">time_jump_forward_ns</span></code></p></td>
+<td><p>int64_t</p></td>
+<td><p>Threshold for forward time jump detection</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">time_jump_backward_ns</span></code></p></td>
+<td><p>int64_t</p></td>
+<td><p>Threshold for backward time jump detection</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">phc_config</span></code></p></td>
+<td><p>PhcConfig</p></td>
+<td><p>PHC device path, step threshold, and enable flag</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">PhcConfig</span></code> struct additionally contains:</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id12">
+<caption><span class="caption-number">Table 4 </span><span class="caption-text">PhcAdjuster Configuration</span><a class="headerlink" href="#id12" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">enabled</span></code></p></td>
+<td><p>bool</p></td>
+<td><p>Enable or disable PHC adjustment</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">device_path</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Path to the PHC device (e.g., <code class="docutils literal notranslate"><span class="pre">/dev/ptp0</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">step_threshold_ns</span></code></p></td>
+<td><p>int64_t</p></td>
+<td><p>Offset threshold above which a step correction is applied instead of frequency slew</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../time/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Concept for TimeDaemon</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="gptp_engine/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">gPTP Engine Design</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#timeslave-concept">TimeSlave concept</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#components-decomposition">Components decomposition</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#class-view">Class view</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-and-control-flow">Data and control flow</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#control-flows">Control flows</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#rxthread-scope">RxThread scope</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#pdelaythread-scope">PdelayThread scope</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#main-thread-periodic-publish-scope">Main thread (periodic publish) scope</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#data-types-or-events">Data types or events</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#ptpmessage">PTPMessage</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#syncresult">SyncResult</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#pdelayresult">PDelayResult</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#ptptimeinfo">PtpTimeInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sw-components-decomposition">SW Components decomposition</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#timeslave-application-sw-component">TimeSlave Application SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#component-requirements">Component requirements</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#gptpengine-sw-component">GptpEngine SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Component requirements</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Class view</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#threading-model">Threading model</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#concurrency-aspects">Concurrency aspects</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#framecodec-sw-component">FrameCodec SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Component requirements</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#messageparser-sw-component">MessageParser SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Component requirements</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#syncstatemachine-sw-component">SyncStateMachine SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Component requirements</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#peerdelaymeasurer-sw-component">PeerDelayMeasurer SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Component requirements</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#phcadjuster-sw-component">PhcAdjuster SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Component requirements</a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#libtsclient-sw-component">libTSClient SW component</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Component requirements</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Class view</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#publish-new-data">Publish new data</a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#receive-data">Receive data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#platform-support">Platform support</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#instrumentation">Instrumentation</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#probemanager">ProbeManager</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#recorder">Recorder</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#variability">Variability</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/eclipse-score/inc_time/edit/main/docs/TimeSlave/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/TimeSlave/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

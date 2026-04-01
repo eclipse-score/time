@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>libTSClient Design &#8212; S-CORE Time  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=6e51530f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=e97392eb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=d9fd870c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/modern.css?v=803738c0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'TimeSlave/libTSClient/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/inc_time/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="gPTP Engine Design" href="../gptp_engine/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.1" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Eclipse S-CORE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../time/index.html">
+    Concept for TimeDaemon
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Concept for TimeSlave
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../time/index.html">
+    Concept for TimeDaemon
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Concept for TimeSlave
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../gptp_engine/index.html">gPTP Engine Design</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">libTSClient Design</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Concept for TimeSlave</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">libTSClient Design</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="libtsclient-design">
+<span id="id1"></span><h1>libTSClient Design<a class="headerlink" href="#libtsclient-design" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
+<li><p><a class="reference internal" href="#architecture" id="id3">Architecture</a></p></li>
+<li><p><a class="reference internal" href="#components" id="id4">Components</a></p>
+<ul>
+<li><p><a class="reference internal" href="#gptpipcchannel" id="id5">GptpIpcChannel</a></p></li>
+<li><p><a class="reference internal" href="#gptpipcpublisher" id="id6">GptpIpcPublisher</a></p></li>
+<li><p><a class="reference internal" href="#gptpipcreceiver" id="id7">GptpIpcReceiver</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#seqlock-protocol" id="id8">Seqlock protocol</a></p></li>
+<li><p><a class="reference internal" href="#data-type" id="id9">Data type</a></p></li>
+<li><p><a class="reference internal" href="#build-integration" id="id10">Build integration</a></p></li>
+</ul>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p><strong>libTSClient</strong> is the shared memory IPC library that connects the TimeSlave process to the
+TimeDaemon process. It provides a lock-free, single-writer/multi-reader communication
+channel using a <strong>seqlock protocol</strong> over POSIX shared memory.</p>
+<p>The library is intentionally minimal — it consists of three headers and two source files —
+to keep the IPC boundary simple, auditable, and suitable for safety-critical deployments.</p>
+</section>
+<section id="architecture">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Architecture</a><a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../../_images/plantuml-799e93942a847d5aaaa5b77e45a2c35793134a17.svg" type="image/svg+xml" style="width:726px;height:493px;background:#FFFFFF;"></object></p>
+</div></section>
+<section id="components">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Components</a><a class="headerlink" href="#components" title="Link to this heading">#</a></h2>
+<section id="gptpipcchannel">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">GptpIpcChannel</a><a class="headerlink" href="#gptpipcchannel" title="Link to this heading">#</a></h3>
+<p>Defines the shared memory layout as the <code class="docutils literal notranslate"><span class="pre">GptpIpcRegion</span></code> structure:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">magic</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">uint32_t</span></code></p></td>
+<td><p>Validation constant (<code class="docutils literal notranslate"><span class="pre">0x47505440</span></code>). Used by the receiver to confirm the shared
+memory segment is valid and initialized.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">seq</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std::atomic&lt;uint32_t&gt;</span></code></p></td>
+<td><p>Seqlock counter. Odd values indicate a write in progress; even values indicate
+a consistent state.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">data</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code></p></td>
+<td><p>The actual time synchronization payload (PTP status, Sync/FollowUp data,
+peer delay data, local clock reference).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The structure is aligned to 64 bytes (cache line size) to prevent false sharing between
+the writer and reader processes.</p>
+<p>The default POSIX shared memory name is <code class="docutils literal notranslate"><span class="pre">/gptp_ptp_info</span></code> (defined as <code class="docutils literal notranslate"><span class="pre">kGptpIpcName</span></code>).</p>
+</section>
+<section id="gptpipcpublisher">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">GptpIpcPublisher</a><a class="headerlink" href="#gptpipcpublisher" title="Link to this heading">#</a></h3>
+<p>The <strong>single-writer</strong> component, used by TimeSlave:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Init(name)</span></code> — Creates the POSIX shared memory segment via <code class="docutils literal notranslate"><span class="pre">shm_open(O_CREAT</span> <span class="pre">|</span> <span class="pre">O_RDWR)</span></code>,
+sizes it with <code class="docutils literal notranslate"><span class="pre">ftruncate()</span></code>, maps it with <code class="docutils literal notranslate"><span class="pre">mmap(PROT_READ</span> <span class="pre">|</span> <span class="pre">PROT_WRITE)</span></code>, and writes
+the magic number.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Publish(info)</span></code> — Writes a <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> using the seqlock protocol:</p>
+<ol class="arabic simple">
+<li><p>Increment <code class="docutils literal notranslate"><span class="pre">seq</span></code> (becomes odd — signals write in progress)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memcpy</span></code> the data</p></li>
+<li><p>Increment <code class="docutils literal notranslate"><span class="pre">seq</span></code> (becomes even — signals write complete)</p></li>
+</ol>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Destroy()</span></code> — Unmaps and unlinks the shared memory segment.</p></li>
+</ul>
+</section>
+<section id="gptpipcreceiver">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">GptpIpcReceiver</a><a class="headerlink" href="#gptpipcreceiver" title="Link to this heading">#</a></h3>
+<p>The <strong>multi-reader</strong> component, used by the TimeDaemon (via <code class="docutils literal notranslate"><span class="pre">RealPTPEngine</span></code>):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Init(name)</span></code> — Opens the existing shared memory segment via <code class="docutils literal notranslate"><span class="pre">shm_open(O_RDONLY)</span></code> and
+maps it with <code class="docutils literal notranslate"><span class="pre">mmap(PROT_READ)</span></code>. Validates the magic number.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Receive()</span></code> — Reads <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> using the seqlock protocol with up to 20 retries:</p>
+<ol class="arabic simple">
+<li><p>Read <code class="docutils literal notranslate"><span class="pre">seq</span></code> (must be even, otherwise retry)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memcpy</span></code> the data</p></li>
+<li><p>Read <code class="docutils literal notranslate"><span class="pre">seq</span></code> again (must match step 1, otherwise retry — torn read detected)</p></li>
+<li><p>Return <code class="docutils literal notranslate"><span class="pre">std::optional&lt;PtpTimeInfo&gt;</span></code> (empty if all retries exhausted)</p></li>
+</ol>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Close()</span></code> — Unmaps the shared memory.</p></li>
+</ul>
+</section>
+</section>
+<section id="seqlock-protocol">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Seqlock protocol</a><a class="headerlink" href="#seqlock-protocol" title="Link to this heading">#</a></h2>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../../_images/plantuml-2ede96346765d63119769d3ef8b9897d0943378f.svg" type="image/svg+xml" style="width:900px;height:956px;background:#FFFFFF;"></object></p>
+</div><p>The seqlock provides the following properties:</p>
+<ul class="simple">
+<li><p><strong>Lock-free for readers</strong> — Readers never block the writer. A torn read is detected and
+retried transparently.</p></li>
+<li><p><strong>Single writer</strong> — Only one process (TimeSlave) writes to the shared memory. No
+writer-writer contention.</p></li>
+<li><p><strong>Bounded retry</strong> — The receiver retries up to 20 times. Under normal operation,
+retries are rare because the write is a single <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> of a small struct.</p></li>
+<li><p><strong>Cache-line alignment</strong> — The 64-byte alignment of <code class="docutils literal notranslate"><span class="pre">GptpIpcRegion</span></code> prevents false
+sharing, which is critical for cross-process shared memory performance.</p></li>
+</ul>
+</section>
+<section id="data-type">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Data type</a><a class="headerlink" href="#data-type" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> structure (defined in <code class="docutils literal notranslate"><span class="pre">score/TimeDaemon/code/common/data_types/ptp_time_info.h</span></code>)
+is the payload transferred through the IPC channel. It contains:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Content</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PtpStatus</span></code></p></td>
+<td><p>Synchronization flags (synchronized, timeout, time leap indicators)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SyncFupData</span></code></p></td>
+<td><p>Sync and FollowUp message timestamps and correction fields</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PDelayData</span></code></p></td>
+<td><p>Peer delay measurement results</p></td>
+</tr>
+<tr class="row-odd"><td><p>Local clock value</p></td>
+<td><p>Reference timestamp from <code class="docutils literal notranslate"><span class="pre">HighPrecisionLocalSteadyClock</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="build-integration">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Build integration</a><a class="headerlink" href="#build-integration" title="Link to this heading">#</a></h2>
+<p>The library is built as a Bazel <code class="docutils literal notranslate"><span class="pre">cc_library</span></code> target:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>//score/libTSClient:gptp_ipc
+</pre></div>
+</div>
+<p>It links against <code class="docutils literal notranslate"><span class="pre">-lrt</span></code> for POSIX shared memory (<code class="docutils literal notranslate"><span class="pre">shm_open</span></code>, <code class="docutils literal notranslate"><span class="pre">shm_unlink</span></code>) and
+depends on the <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> data type from the TimeDaemon common module.</p>
+<p>Both TimeSlave and TimeDaemon link against <code class="docutils literal notranslate"><span class="pre">libTSClient</span></code> — the publisher side in
+TimeSlave, the receiver side in TimeDaemon.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../gptp_engine/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">gPTP Engine Design</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#components">Components</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gptpipcchannel">GptpIpcChannel</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gptpipcpublisher">GptpIpcPublisher</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#gptpipcreceiver">GptpIpcReceiver</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#seqlock-protocol">Seqlock protocol</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-type">Data type</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-integration">Build integration</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/eclipse-score/inc_time/edit/main/docs/TimeSlave/libTSClient/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/TimeSlave/libTSClient/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
