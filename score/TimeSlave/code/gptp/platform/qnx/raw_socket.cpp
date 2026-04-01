@@ -34,6 +34,8 @@ namespace ts
 namespace details
 {
 
+RawSocket::RawSocket(IOsSyscalls* /*sys*/) noexcept {}
+
 RawSocket::~RawSocket()
 {
     Close();

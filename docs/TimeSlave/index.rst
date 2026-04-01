@@ -461,3 +461,10 @@ The ``PhcConfig`` struct additionally contains:
    * - ``step_threshold_ns``
      - int64_t
      - Offset threshold above which a step correction is applied instead of frequency slew
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   gptp_engine/index
+   libTSClient/index

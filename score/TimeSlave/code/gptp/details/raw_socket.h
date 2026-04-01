@@ -13,6 +13,7 @@
 #ifndef SCORE_TIMESLAVE_CODE_GPTP_DETAILS_RAW_SOCKET_H
 #define SCORE_TIMESLAVE_CODE_GPTP_DETAILS_RAW_SOCKET_H
 
+#include "score/TimeSlave/code/gptp/details/i_os_syscalls.h"
 #include "score/TimeSlave/code/gptp/details/i_raw_socket.h"
 
 #include <time.h>
@@ -38,7 +39,8 @@ namespace details
 class RawSocket : public IRawSocket
 {
   public:
-    RawSocket() noexcept = default;
+    /// @param sys  Optional syscall shim for unit testing.  nullptr → real OS calls.
+    explicit RawSocket(IOsSyscalls* sys = nullptr) noexcept;
     ~RawSocket() override;
 
     RawSocket(const RawSocket&) = delete;
@@ -80,6 +82,7 @@ class RawSocket : public IRawSocket
     }
 
   private:
+    IOsSyscalls* sys_{nullptr};
     std::atomic<int> fd_{-1};
     std::string iface_{};
 };

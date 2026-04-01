@@ -32,6 +32,15 @@ cc_library(
 )
 
 cc_library(
+    name = "i_os_syscalls",
+    hdrs = ["i_os_syscalls.h"],
+    features = COMPILER_WARNING_FEATURES,
+    tags = ["QM"],
+    visibility = ["//score:__subpackages__"],
+    deps = [],
+)
+
+cc_library(
     name = "i_network_identity",
     hdrs = ["i_network_identity.h"],
     features = COMPILER_WARNING_FEATURES,
@@ -55,6 +64,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = [
+        ":i_os_syscalls",
         ":i_raw_socket",
         ":ptp_types",
     ],

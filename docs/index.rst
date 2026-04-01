@@ -43,6 +43,7 @@ For a detailed concept and architectural design, please refer to the :doc:`TimeD
    :caption: Contents:
 
    time/index
+   TimeSlave/index
 
 Project Layout
 --------------

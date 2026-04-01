@@ -35,7 +35,7 @@ namespace details
 namespace
 {
 
-void DrainErrQueue(int fd) noexcept
+void DrainErrQueue(int fd, IOsSyscalls& sys) noexcept
 {
     char buf[2048];
     ::iovec iov{buf, sizeof(buf)};
@@ -46,12 +46,17 @@ void DrainErrQueue(int fd) noexcept
     msg.msg_control = ctrl;
     msg.msg_controllen = sizeof(ctrl);
 
-    while (::recvmsg(fd, &msg, MSG_ERRQUEUE) > 0)
+    while (sys.recvmsg_call(fd, &msg, MSG_ERRQUEUE) > 0)
     {
     }
 }
 
 }  // namespace
+
+RawSocket::RawSocket(IOsSyscalls* sys) noexcept
+    : sys_{sys != nullptr ? sys : &RealOsSyscalls::Instance()}
+{
+}
 
 RawSocket::~RawSocket()
 {
@@ -62,16 +67,16 @@ bool RawSocket::Open(const std::string& iface)
 {
     Close();
 
-    const int fd = ::socket(AF_PACKET, SOCK_RAW, htons(ETH_P_1588));
+    const int fd = sys_->socket_call(AF_PACKET, SOCK_RAW, htons(ETH_P_1588));
     if (fd < 0)
         return false;
 
     ::ifreq ifr{};
     std::strncpy(ifr.ifr_name, iface.c_str(), IFNAMSIZ - 1);
     ifr.ifr_name[IFNAMSIZ - 1] = '\0';
-    if (::ioctl(fd, SIOCGIFINDEX, &ifr) < 0)
+    if (sys_->ioctl_call(fd, SIOCGIFINDEX, &ifr) < 0)
     {
-        ::close(fd);
+        sys_->close_call(fd);
         return false;
     }
 
@@ -79,14 +84,15 @@ bool RawSocket::Open(const std::string& iface)
     sa.sll_family = AF_PACKET;
     sa.sll_protocol = htons(ETH_P_1588);
     sa.sll_ifindex = ifr.ifr_ifindex;
-    if (::bind(fd, reinterpret_cast<::sockaddr*>(&sa), sizeof(sa)) < 0)
+    if (sys_->bind_call(fd, reinterpret_cast<::sockaddr*>(&sa), sizeof(sa)) < 0)
     {
-        ::close(fd);
+        sys_->close_call(fd);
         return false;
     }
 
     // SO_BINDTODEVICE: best-effort, don't fail if it doesn't work
-    (void)::setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE, iface.c_str(), static_cast<socklen_t>(iface.size()));
+    (void)sys_->setsockopt_call(
+        fd, SOL_SOCKET, SO_BINDTODEVICE, iface.c_str(), static_cast<socklen_t>(iface.size()));
 
     fd_.store(fd, std::memory_order_release);
     iface_ = iface;
@@ -108,15 +114,16 @@ bool RawSocket::EnableHwTimestamping()
     cfg.tx_type = HWTSTAMP_TX_ON;
     cfg.rx_filter = HWTSTAMP_FILTER_ALL;
 
-    if (::ioctl(fd, SIOCSHWTSTAMP, &ifr) < 0)
+    if (sys_->ioctl_call(fd, SIOCSHWTSTAMP, &ifr) < 0)
     {
         // Fall back to PTP-only filter
         cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
-        (void)::ioctl(fd, SIOCSHWTSTAMP, &ifr);
+        (void)sys_->ioctl_call(fd, SIOCSHWTSTAMP, &ifr);
     }
 
-    const int ts_opts = SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE;
-    if (::setsockopt(fd, SOL_SOCKET, SO_TIMESTAMPING, &ts_opts, sizeof(ts_opts)) < 0)
+    const int ts_opts =
+        SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE;
+    if (sys_->setsockopt_call(fd, SOL_SOCKET, SO_TIMESTAMPING, &ts_opts, sizeof(ts_opts)) < 0)
     {
         return false;
     }
@@ -127,7 +134,7 @@ void RawSocket::Close()
 {
     const int fd = fd_.exchange(-1, std::memory_order_acq_rel);
     if (fd >= 0)
-        ::close(fd);
+        sys_->close_call(fd);
     iface_.clear();
 }
 
@@ -139,7 +146,7 @@ int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, in
 
     // Poll with caller-specified timeout
     ::pollfd pfd{fd, POLLIN, 0};
-    const int pr = ::poll(&pfd, 1, timeout_ms);
+    const int pr = sys_->poll_call(&pfd, 1, timeout_ms);
     if (pr == 0)
         return 0;  // timeout
     if (pr < 0)
@@ -153,7 +160,7 @@ int RawSocket::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, in
     msg.msg_control = ctrl;
     msg.msg_controllen = sizeof(ctrl);
 
-    const int len = static_cast<int>(::recvmsg(fd, &msg, 0));
+    const int len = static_cast<int>(sys_->recvmsg_call(fd, &msg, 0));
     if (len < 0)
         return -1;
 
@@ -178,16 +185,16 @@ int RawSocket::Send(const void* buf, int len, ::timespec& hwts)
     if (fd < 0 || buf == nullptr || len <= 0)
         return -1;
 
-    DrainErrQueue(fd);
+    DrainErrQueue(fd, *sys_);
 
-    const int sent = static_cast<int>(::send(fd, buf, static_cast<std::size_t>(len), 0));
+    const int sent = static_cast<int>(sys_->send_call(fd, buf, static_cast<std::size_t>(len), 0));
     if (sent < 0)
         return -1;
 
     constexpr int kTxTsTimeoutMs = 50;
     ::pollfd pfd{fd, POLLERR, 0};
     std::memset(&hwts, 0, sizeof(hwts));
-    if (::poll(&pfd, 1, kTxTsTimeoutMs) > 0 && (pfd.revents & POLLERR) != 0)
+    if (sys_->poll_call(&pfd, 1, kTxTsTimeoutMs) > 0 && (pfd.revents & POLLERR) != 0)
     {
         std::uint8_t tmp[2048];
         ::iovec iov{tmp, sizeof(tmp)};
@@ -198,7 +205,7 @@ int RawSocket::Send(const void* buf, int len, ::timespec& hwts)
         msg.msg_control = ctrl;
         msg.msg_controllen = sizeof(ctrl);
 
-        if (::recvmsg(fd, &msg, MSG_ERRQUEUE) >= 0)
+        if (sys_->recvmsg_call(fd, &msg, MSG_ERRQUEUE) >= 0)
         {
             for (::cmsghdr* cm = CMSG_FIRSTHDR(&msg); cm != nullptr; cm = CMSG_NXTHDR(&msg, cm))
             {
