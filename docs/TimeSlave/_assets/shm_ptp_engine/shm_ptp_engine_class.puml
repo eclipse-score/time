@@ -1,0 +1,105 @@
+@startuml shm_ptp_engine_class_diagram
+!theme plain
+
+title ShmPTPEngine: Class Diagram
+
+legend top left
+    |= Color          |= Description              |
+    | <#Beige>        | Base classes / data types  |
+    | <#Wheat>        | PTPMachine / ShmPTPEngine  |
+    | <#LightPink>    | libTSClient IPC            |
+endlegend
+
+package "score::td" {
+    class "GPTPRealMachine" as real_machine #Wheat {
+        type alias for PTPMachine<ShmPTPEngine>
+        --
+        Constructed via CreateGPTPRealMachine()
+    }
+}
+
+package "score::td (base classes)" {
+    abstract class "BaseMachine" as base_machine #Beige {
+        + GetName() : string
+        + Init() : bool
+    }
+
+    abstract class "ProactiveMachine" as proactive_machine #Beige {
+        + Start() : void
+        + Stop() : void
+    }
+
+    abstract class "PeriodicMachine" as periodic_machine #Beige {
+        # PeriodicTask() : void
+    }
+
+    abstract class "Producer<T>" as producer #Beige {
+        + SetPublishCallback(cb) : void
+        # Publish(data : T) : void
+    }
+
+    class "PTPMachine<PTPEngine>" as ptp_machine #Wheat {
+        - engine_ : PTPEngine
+        + Init() : bool
+        + SetPublishCallback(cb) : void
+        # PeriodicTask() : void
+    }
+
+    base_machine <|-- proactive_machine
+    proactive_machine <|-- periodic_machine
+    periodic_machine <|-- ptp_machine
+    producer <|.. ptp_machine
+}
+
+package "score::td::details" {
+    class ShmPTPEngine #Wheat {
+        - ipc_name_ : string
+        - receiver_ : GptpIpcReceiver
+        - initialized_ : bool
+        + ShmPTPEngine(ipc_name : string)
+        + Initialize() : bool
+        + Deinitialize() : bool
+        + ReadPTPSnapshot(info : PtpTimeInfo&) : bool
+    }
+}
+
+package "score::ts::details" {
+    class GptpIpcReceiver #LightPink {
+        + Init(name : string) : bool
+        + Receive() : optional<GptpIpcData>
+        + Close() : void
+    }
+}
+
+package "Data Types" {
+    class GptpIpcData #Beige {
+        + ptp_assumed_time : chrono::nanoseconds
+        + local_time : chrono::nanoseconds
+        + rate_deviation : double
+        + status : GptpIpcStatus
+        + sync_fup_data : GptpIpcSyncFupData
+        + pdelay_data : GptpIpcPDelayData
+    }
+
+    class PtpTimeInfo #Beige {
+        + ptp_assumed_time
+        + local_time
+        + rate_deviation
+        + status
+        + sync_fup_data
+        + pdelay_data
+    }
+}
+
+ptp_machine *-- ShmPTPEngine : PTPEngine = ShmPTPEngine
+ShmPTPEngine *-- GptpIpcReceiver
+ShmPTPEngine ..> GptpIpcData : reads
+ShmPTPEngine ..> PtpTimeInfo : produces
+real_machine --|> ptp_machine : alias
+
+note right of ShmPTPEngine
+  Maps GptpIpcData → PtpTimeInfo
+  on every ReadPTPSnapshot() call.
+end note
+
+@enduml

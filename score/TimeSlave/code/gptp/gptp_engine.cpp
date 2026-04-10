@@ -15,10 +15,11 @@
 #include "score/TimeSlave/code/gptp/details/network_identity.h"
 #include "score/TimeSlave/code/gptp/details/raw_socket.h"
 
-#include "score/TimeDaemon/code/common/logging_contexts.h"
+#include "score/TimeSlave/code/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
 
 #include <cstring>
+#include <string_view>
 
 namespace score
 {
@@ -35,10 +36,8 @@ constexpr int kRxBufferSize = 2048;
 
 }  // namespace
 
-GptpEngine::GptpEngine(GptpEngineOptions opts,
-                       std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock) noexcept
+GptpEngine::GptpEngine(GptpEngineOptions opts) noexcept
     : opts_{std::move(opts)},
-      local_clock_{std::move(local_clock)},
       socket_{std::make_unique<RawSocket>()},
       identity_{std::make_unique<NetworkIdentity>()},
       codec_{},
@@ -49,11 +48,9 @@ GptpEngine::GptpEngine(GptpEngineOptions opts,
 }
 
 GptpEngine::GptpEngine(GptpEngineOptions opts,
-                       std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock,
                        std::unique_ptr<IRawSocket> socket,
                        std::unique_ptr<INetworkIdentity> identity) noexcept
     : opts_{std::move(opts)},
-      local_clock_{std::move(local_clock)},
       socket_{std::move(socket)},
       identity_{std::move(identity)},
       codec_{},
@@ -75,7 +72,7 @@ bool GptpEngine::Initialize()
 
     if (!identity_->Resolve(opts_.iface_name))
     {
-        score::mw::log::LogError(score::td::kGPtpMachineContext)
+        score::mw::log::LogError(kGPtpMachineContext)
             << "GptpEngine: failed to resolve ClockIdentity for " << opts_.iface_name;
         return false;
     }
@@ -84,14 +81,14 @@ bool GptpEngine::Initialize()
 
     if (!socket_->Open(opts_.iface_name))
     {
-        score::mw::log::LogError(score::td::kGPtpMachineContext)
+        score::mw::log::LogError(kGPtpMachineContext)
             << "GptpEngine: failed to open raw socket on " << opts_.iface_name;
         return false;
     }
 
     if (!socket_->EnableHwTimestamping())
     {
-        score::mw::log::LogWarn(score::td::kGPtpMachineContext)
+        score::mw::log::LogWarn(kGPtpMachineContext)
             << "GptpEngine: HW timestamping not available on " << opts_.iface_name << ", falling back to SW timestamps";
     }
 
@@ -99,11 +96,13 @@ bool GptpEngine::Initialize()
 
     try
     {
+        // std::thread constructor throws std::system_error if the OS cannot
+        // create a new thread (e.g. EAGAIN — thread limit reached).
         rx_thread_ = std::thread([this]() noexcept { RxLoop(); });
     }
     catch (const std::system_error& e)
     {
-        score::mw::log::LogError(score::td::kGPtpMachineContext) << "GptpEngine: failed to create RxThread: " << e.what();
+        score::mw::log::LogError(kGPtpMachineContext) << "GptpEngine: failed to create RxThread: " << std::string_view{e.what()};
         running_.store(false, std::memory_order_release);
         socket_->Close();
         return false;
@@ -115,12 +114,12 @@ bool GptpEngine::Initialize()
     }
     catch (const std::system_error& e)
     {
-        score::mw::log::LogError(score::td::kGPtpMachineContext) << "GptpEngine: failed to create PdelayThread: " << e.what();
+        score::mw::log::LogError(kGPtpMachineContext) << "GptpEngine: failed to create PdelayThread: " << std::string_view{e.what()};
         Deinitialize();
         return false;
     }
 
-    score::mw::log::LogInfo(score::td::kGPtpMachineContext) << "GptpEngine initialized on " << opts_.iface_name;
+    score::mw::log::LogInfo(kGPtpMachineContext) << "GptpEngine initialized on " << opts_.iface_name;
     return true;
 }
 
@@ -136,28 +135,36 @@ bool GptpEngine::Deinitialize()
     if (pdelay_thread_.joinable())
         pdelay_thread_.join();
 
-    score::mw::log::LogInfo(score::td::kGPtpMachineContext) << "GptpEngine deinitialized";
+    score::mw::log::LogInfo(kGPtpMachineContext) << "GptpEngine deinitialized";
     return true;
 }
 
-bool GptpEngine::ReadPTPSnapshot(score::td::PtpTimeInfo& info)
+void GptpEngine::FinalizeSnapshot() noexcept
 {
     if (!running_.load(std::memory_order_acquire))
-        return false;
+        return;
 
     const std::int64_t mono_now = MonoNs();
     const std::int64_t timeout_ns = static_cast<std::int64_t>(opts_.sync_timeout_ms) * 1'000'000LL;
 
     std::lock_guard<std::mutex> lk(snapshot_mutex_);
     const bool timed_out = sync_sm_.IsTimeout(mono_now, timeout_ns);
-    snapshot_.local_time = local_clock_->Now();
+    current_snapshot_ = pending_snapshot_;
     if (timed_out)
     {
-        snapshot_.status.is_synchronized = false;
-        snapshot_.status.is_timeout = true;
-        snapshot_.status.is_correct = false;
+        current_snapshot_.status.is_synchronized = false;
+        current_snapshot_.status.is_timeout = true;
+        current_snapshot_.status.is_correct = false;
     }
-    info = snapshot_;
+}
+
+bool GptpEngine::ReadPTPSnapshot(score::ts::GptpIpcData& data) const noexcept
+{
+    if (!running_.load(std::memory_order_acquire))
+        return false;
+
+    std::lock_guard<std::mutex> lk(snapshot_mutex_);
+    data = current_snapshot_;
     return true;
 }
 
@@ -181,7 +188,7 @@ void GptpEngine::PdelayLoop() noexcept
     ::timespec next{};
     if (::clock_gettime(CLOCK_MONOTONIC, &next) != 0)
     {
-        score::mw::log::LogError(score::td::kGPtpMachineContext)
+        score::mw::log::LogError(kGPtpMachineContext)
             << "GptpEngine: clock_gettime failed in PdelayLoop, thread exiting";
         return;
     }
@@ -292,18 +299,19 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
     std::lock_guard<std::mutex> lk(snapshot_mutex_);
 
     const std::int64_t local_rx_ns = static_cast<std::int64_t>(sync.sync_fup_data.reference_local_timestamp);
-    snapshot_.ptp_assumed_time = std::chrono::nanoseconds{local_rx_ns - sync.offset_ns};
-    snapshot_.local_time = local_clock_->Now();
-    snapshot_.rate_deviation = sync_sm_.GetNeighborRateRatio();
+    pending_snapshot_.ptp_assumed_time = std::chrono::nanoseconds{local_rx_ns - sync.offset_ns};
+    // Capture local_time as close as possible to Sync frame handling to minimise jitter.
+    pending_snapshot_.local_time = std::chrono::nanoseconds{MonoNs()};
+    pending_snapshot_.rate_deviation = sync_sm_.GetNeighborRateRatio();
 
-    snapshot_.status.is_synchronized = true;
-    snapshot_.status.is_timeout = false;
-    snapshot_.status.is_time_jump_future = sync.is_time_jump_future;
-    snapshot_.status.is_time_jump_past = sync.is_time_jump_past;
-    snapshot_.status.is_correct = !sync.is_time_jump_future && !sync.is_time_jump_past;
+    pending_snapshot_.status.is_synchronized = true;
+    pending_snapshot_.status.is_timeout = false;
+    pending_snapshot_.status.is_time_jump_future = sync.is_time_jump_future;
+    pending_snapshot_.status.is_time_jump_past = sync.is_time_jump_past;
+    pending_snapshot_.status.is_correct = !sync.is_time_jump_future && !sync.is_time_jump_past;
 
-    snapshot_.sync_fup_data = sync.sync_fup_data;
-    snapshot_.pdelay_data = pdelay.pdelay_data;
+    pending_snapshot_.sync_fup_data = sync.sync_fup_data;
+    pending_snapshot_.pdelay_data = pdelay.pdelay_data;
 }
 
 }  // namespace details

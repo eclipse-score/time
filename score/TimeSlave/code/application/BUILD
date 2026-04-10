@@ -26,7 +26,6 @@ cc_binary(
         "//score/TimeSlave/code/common:logging_contexts",
         "//score/TimeSlave/code/gptp:gptp_engine",
         "//score/libTSClient:gptp_ipc",
-        "//score/time/HighPrecisionLocalSteadyClock",
         "@score_baselibs//score/mw/log:console_only_backend",
         "@score_lifecycle_health//src/lifecycle_client_lib",
     ],

@@ -1,0 +1,73 @@
+@startuml shm_ptp_engine_read_seq
+!theme plain
+
+title ShmPTPEngine: Periodic Read and Publish Workflow
+
+hide footbox
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color           |= Description             |
+    | <#Wheat>         | GPTPRealMachine           |
+    | <#LightPink>     | libTSClient IPC           |
+    | <#LightCyan>     | Shared Memory             |
+    | <#PaleTurquoise> | MessageBroker             |
+    | <#LightBlue>     | ControlFlowDivider        |
+endlegend
+
+participant "PTPMachine\n(PeriodicTask)" as machine #Wheat
+participant "ShmPTPEngine" as engine #Wheat
+participant "GptpIpcReceiver" as receiver #LightPink
+participant "SharedMemory\n(GptpIpcRegion)" as shm #LightCyan
+participant "MessageBroker" as broker #PaleTurquoise
+participant "ControlFlowDivider" as cfd #LightBlue
+
+loop periodic (e.g., every 50 ms)
+    activate machine
+    machine -> machine : PeriodicTask()
+
+    machine -> engine : ReadPTPSnapshot(info)
+    activate engine
+    engine -> receiver : Receive()
+    activate receiver
+    receiver -> shm : seqlock read (up to 20 retries)
+    activate shm
+    note right of shm
+        1. read seq1 (acquire, must be even)
+        2. memcpy GptpIpcData
+        3. fence, read seq_confirm + seq
+        4. verify seq1 == seq2 == seq3
+    end note
+    shm --> receiver : GptpIpcData or contention
+    deactivate shm
+    receiver --> engine : optional<GptpIpcData>
+    deactivate receiver
+
+    alt data available
+        engine -> engine : map GptpIpcData → PtpTimeInfo
+        note right
+            status, ptp_assumed_time,
+            local_time, rate_deviation,
+            sync_fup_data, pdelay_data
+        end note
+        engine --> machine : true (PtpTimeInfo filled)
+    else no data (nullopt)
+        engine --> machine : false
+    end
+    deactivate engine
+
+    alt ReadPTPSnapshot returned true
+        machine -> machine : Publish(PtpTimeInfo)
+        machine -> broker : publish_callback_(PtpTimeInfo)
+        activate broker
+        broker -> cfd : subscription.callback_(PtpTimeInfo)
+        activate cfd
+        cfd --> broker
+        deactivate cfd
+        broker --> machine
+        deactivate broker
+    end
+    deactivate machine
+end
+
+@enduml

@@ -18,7 +18,7 @@ More precisely we can specify the following use cases for the TimeSlave:
 1. Receiving gPTP Sync/FollowUp messages from a Time Master on the Ethernet network
 2. Measuring peer delay via the IEEE 802.1AS PDelayReq/PDelayResp exchange
 3. Optionally adjusting the PTP Hardware Clock (PHC) on the NIC
-4. Publishing the resulting ``PtpTimeInfo`` to shared memory for consumption by the TimeDaemon
+4. Publishing the resulting ``GptpIpcData`` to shared memory for consumption by the TimeDaemon
 
 The raw architectural diagram is represented below.
 
@@ -46,6 +46,7 @@ The design consists of several sw components:
 6. `PeerDelayMeasurer <#peerdelaymeasurer-sw-component>`_
 7. `PhcAdjuster <#phcadjuster-sw-component>`_
 8. `libTSClient <#libtsclient-sw-component>`_
+9. `ShmPTPEngine <#shmptpengine-sw-component>`_
 
 Class view
 ~~~~~~~~~~
@@ -116,9 +117,9 @@ Main thread (periodic publish) scope
 
 This control flow is responsible for the:
 
-1. periodically call ``GptpEngine::ReadPTPSnapshot()`` to get the latest time measurement
-2. enrich the snapshot with the local clock timestamp from ``HighPrecisionLocalSteadyClock``
-3. publish to shared memory via ``GptpIpcPublisher::Publish()``
+1. periodically call ``GptpEngine::FinalizeSnapshot()`` to check timeout and commit the pending snapshot
+2. call ``GptpEngine::ReadPTPSnapshot(data)`` to copy the latest ``GptpIpcData`` into a local variable
+3. publish to shared memory via ``GptpIpcPublisher::Publish(data)``
 
 Data types or events
 ^^^^^^^^^^^^^^^^^^^^
@@ -143,7 +144,7 @@ PDelayResult
 PtpTimeInfo
 ''''''''''''
 
-``PtpTimeInfo`` is the aggregated snapshot that combines PTP status flags, Sync/FollowUp data, peer delay data, and a local clock reference. This is the data published to shared memory for the TimeDaemon.
+``PtpTimeInfo`` is the TimeDaemon-internal aggregated snapshot. It is **not** the shared memory type; it is produced by ``ShmPTPEngine::ReadPTPSnapshot()`` by field-mapping from ``GptpIpcData`` into the format expected by the TimeDaemon pipeline.
 
 SW Components decomposition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -158,10 +159,10 @@ Component requirements
 
 The ``TimeSlave Application`` has the following requirements:
 
-- The ``TimeSlave Application`` shall implement the ``Initialize()`` method to create the ``GptpEngine`` with configured options, initialize the ``GptpIpcPublisher`` (creates the shared memory segment), and prepare the ``HighPrecisionLocalSteadyClock`` for local time reference
-- The ``TimeSlave Application`` shall implement the ``Run()`` method to start the GptpEngine, enter a periodic publish loop, and monitor the ``stop_token`` for graceful shutdown
-- The ``TimeSlave Application`` shall implement the ``Deinitialize()`` method to stop the GptpEngine threads and destroy the shared memory segment
-- The ``TimeSlave Application`` shall periodically read the latest ``PtpTimeInfo`` snapshot, enrich it with the local clock timestamp, and publish it via ``GptpIpcPublisher``
+- The ``TimeSlave Application`` shall implement the ``Initialize()`` method to create the ``GptpEngine`` with configured options, initialize the ``GptpIpcPublisher`` (creates the shared memory segment), and create the ``HighPrecisionLocalSteadyClock`` for the engine
+- The ``TimeSlave Application`` shall implement the ``Run()`` method to enter a periodic publish loop (50 ms interval) and monitor the ``stop_token`` for graceful shutdown
+- On each loop iteration, ``TimeSlave Application`` shall call ``GptpEngine::FinalizeSnapshot()``, then ``GptpEngine::ReadPTPSnapshot(data)``, and publish the resulting ``GptpIpcData`` via ``GptpIpcPublisher::Publish(data)``
+- The ``TimeSlave Application`` shall call ``GptpEngine::Deinitialize()`` and ``GptpIpcPublisher::Destroy()`` after the ``stop_token`` is set
 
 GptpEngine SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -175,8 +176,9 @@ The ``GptpEngine`` has the following requirements:
 
 - The ``GptpEngine`` shall manage an RxThread for receiving and parsing gPTP frames from raw Ethernet sockets
 - The ``GptpEngine`` shall manage a PdelayThread for periodic peer delay measurement
-- The ``GptpEngine`` shall provide a thread-safe ``ReadPTPSnapshot()`` method that returns the latest ``PtpTimeInfo``
-- The ``GptpEngine`` shall support configurable parameters via ``GptpEngineOptions`` (interface name, PDelay interval, sync timeout, time jump thresholds, PHC configuration)
+- The ``GptpEngine`` shall provide a ``FinalizeSnapshot()`` method that checks for sync timeout, applies status flags, and commits the pending snapshot to the current snapshot; this must be called before ``ReadPTPSnapshot()``
+- The ``GptpEngine`` shall provide a ``ReadPTPSnapshot(GptpIpcData&)`` method that copies the latest committed snapshot into the caller's buffer and returns false only if the engine is not initialized
+- The ``GptpEngine`` shall support configurable parameters via ``GptpEngineOptions`` (interface name, PDelay interval, PDelay warmup, sync timeout, time-jump threshold)
 - The ``GptpEngine`` shall support exchangeability of the raw socket implementation for different platforms (Linux, QNX)
 
 Class view
@@ -188,7 +190,7 @@ The Class Diagram is presented below:
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/gptp_engine_class.puml
+.. uml:: _assets/gptp_engine/gptp_engine_class.puml
    :alt: Class Diagram
 
 .. raw:: html
@@ -204,7 +206,7 @@ The GptpEngine operates with two background threads. The threading model is repr
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/gptp_threading.puml
+.. uml:: _assets/gptp_engine/gptp_threading.puml
    :alt: Threading Model
 
 .. raw:: html
@@ -216,9 +218,42 @@ Concurrency aspects
 
 The ``GptpEngine`` uses the following synchronization mechanisms:
 
-- A ``std::mutex`` protects the ``latest_snapshot_`` field, shared between the RxThread (writer) and the main thread (reader via ``ReadPTPSnapshot()``)
+- A ``std::mutex`` protects the ``pending_snapshot_`` and ``current_snapshot_`` fields (both ``GptpIpcData``): the RxThread writes ``pending_snapshot_``; the main thread calls ``FinalizeSnapshot()`` (commits pending to current) and ``ReadPTPSnapshot()`` (reads current)
 - The ``PeerDelayMeasurer`` uses its own ``std::mutex`` to synchronize between the PdelayThread (``SendRequest()``) and the RxThread (``OnResponse()``, ``OnResponseFollowUp()``)
 - The ``SyncStateMachine`` uses ``std::atomic<bool>`` for the timeout flag, which is read from the main thread and written from the RxThread
+
+Hardware timestamping fallback
+'''''''''''''''''''''''''''''''
+
+During ``Initialize()``, ``GptpEngine`` calls ``IRawSocket::EnableHwTimestamping()`` to request NIC-level receive timestamps (``SO_TIMESTAMPING`` on Linux). If the NIC does not support hardware timestamping, the call returns ``false`` and a warning is logged:
+
+.. code-block:: none
+
+   GptpEngine: HW timestamping not available on <iface>, falling back to SW timestamps
+
+The engine continues to run normally. The difference between the two modes:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 35 35
+
+   * - Field
+     - HW timestamping available
+     - SW timestamping fallback
+   * - ``recvHardwareTS`` (Sync receive time)
+     - NIC hardware timestamp (nanosecond precision, captured at wire level)
+     - Software timestamp (captured at socket receive, higher jitter)
+   * - ``sync_fup_data.reference_local_timestamp``
+     - Derived from NIC hardware timestamp
+     - Derived from software timestamp
+   * - ``GptpIpcData.local_time``
+     - Always ``CLOCK_MONOTONIC`` (unaffected)
+     - Always ``CLOCK_MONOTONIC`` (unaffected)
+   * - Clock offset accuracy
+     - High (sub-microsecond typical)
+     - Reduced (jitter depends on OS scheduling latency)
+
+The fallback does not affect protocol correctness — Sync/FollowUp correlation and peer delay measurement continue to work — but the computed clock offset will be less accurate due to higher receive timestamp jitter.
 
 FrameCodec SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -268,6 +303,40 @@ PeerDelayMeasurer SW component
 
 The ``PeerDelayMeasurer`` component implements the IEEE 802.1AS two-step peer delay measurement protocol. It manages the four timestamps (``t1``, ``t2``, ``t3c``, ``t4``) across two threads.
 
+Timestamp definitions
+'''''''''''''''''''''
+
+.. list-table:: Peer Delay Timestamps (IEEE 802.1AS)
+   :header-rows: 1
+   :widths: 10 20 30 40
+
+   * - Symbol
+     - Message
+     - Captured by
+     - Meaning
+   * - ``t1``
+     - PDelayReq (TX)
+     - Slave (PdelayThread)
+     - HW transmit timestamp of the PDelayReq frame leaving the slave NIC
+   * - ``t2``
+     - PDelayResp (RX)
+     - Master → carried in PDelayResp body
+     - HW receive timestamp of the PDelayReq frame arriving at the master NIC
+   * - ``t3c``
+     - PDelayRespFollowUp
+     - Master → carried in PDelayRespFollowUp body
+     - HW transmit timestamp of the PDelayResp frame leaving the master NIC ("corrected" because it includes the master's turnaround correction)
+   * - ``t4``
+     - PDelayResp (RX)
+     - Slave (RxThread)
+     - HW receive timestamp of the PDelayResp frame arriving at the slave NIC
+
+The peer delay formula is: ``path_delay = ((t2 - t1) + (t4 - t3c)) / 2``
+
+- ``(t2 - t1)`` = propagation time from slave → master
+- ``(t4 - t3c)`` = propagation time from master → slave
+- The average of the two gives the one-way link delay
+
 Component requirements
 ''''''''''''''''''''''
 
@@ -293,6 +362,21 @@ The ``PhcAdjuster`` has the following requirements:
 - The ``PhcAdjuster`` shall support platform-specific implementations: ``clock_adjtime()`` on Linux, EMAC PTP ioctls on QNX
 - The ``PhcAdjuster`` shall be configurable via ``PhcConfig`` (device path, step threshold, enable/disable flag)
 
+Fallback behavior when PHC is unavailable
+''''''''''''''''''''''''''''''''''''''''''
+
+The ``PhcAdjuster`` degrades gracefully in two scenarios:
+
+1. **PHC disabled** (``PhcConfig.enabled = false``, the default): ``AdjustOffset()`` and ``AdjustFrequency()`` are no-ops. The gPTP protocol pipeline (Sync/FollowUp reception, peer-delay measurement, ``GptpIpcData`` publishing) is completely unaffected. The hardware clock is not touched.
+
+2. **PHC enabled but device inaccessible** (e.g., ``/dev/ptp0`` does not exist on Linux, or the EMAC interface name is wrong on QNX):
+
+   - **Linux**: the constructor calls ``open(device, O_RDWR)``; on failure ``phc_fd_`` stays at ``-1``. Both ``AdjustOffset()`` and ``AdjustFrequency()`` guard against ``phc_fd_ < 0`` and return immediately — a true silent skip with no system call.
+
+   - **QNX**: ``qnx_phc_open()`` always returns ``0`` and never fails — it only stores the device name in a thread-local context. There is no ``phc_fd_ < 0`` guard. The adjustment methods always call ``qnx_phc_adjtime_step()`` / ``qnx_phc_adjfreq_ppb()``, which internally create a UDP socket and issue ``SIOCGDRVSPEC`` / ``SIOCSDRVSPEC`` ioctls. If the socket or ioctl fails (e.g., wrong interface name, unsupported hardware), the function returns ``-1``, but the caller discards it with a ``(void)`` cast. There is no explicit skip — the call is always attempted and errors are silently absorbed.
+
+In both scenarios TimeSlave continues to track the master clock and publish accurate ``GptpIpcData`` snapshots (including offset and status flags) to shared memory. The downstream TimeDaemon and any applications consuming time are unaffected — only the NIC hardware clock itself will drift relative to PTP time.
+
 libTSClient SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -305,10 +389,10 @@ Component requirements
 
 The ``libTSClient`` has the following requirements:
 
-- The ``libTSClient`` shall define a shared memory layout (``GptpIpcRegion``) with a magic number for validation, an atomic seqlock counter, and a ``PtpTimeInfo`` data payload
+- The ``libTSClient`` shall define a shared memory layout (``GptpIpcRegion``) with a magic number (``0x47505450`` = 'GPTP') for validation, an atomic seqlock counter (``seq``), a confirmation counter (``seq_confirm``), and a ``GptpIpcData`` data payload
 - The ``libTSClient`` shall align the shared memory region to 64 bytes (cache line size) to prevent false sharing
-- The ``libTSClient`` shall provide a ``GptpIpcPublisher`` component that creates and manages the POSIX shared memory segment and writes ``PtpTimeInfo`` using the seqlock protocol
-- The ``libTSClient`` shall provide a ``GptpIpcReceiver`` component that opens the shared memory segment read-only and reads ``PtpTimeInfo`` with up to 20 seqlock retries
+- The ``libTSClient`` shall provide a ``GptpIpcPublisher`` component (in ``score::ts::details``) that creates and manages the POSIX shared memory segment and writes ``GptpIpcData`` using the seqlock protocol
+- The ``libTSClient`` shall provide a ``GptpIpcReceiver`` component (in ``score::ts::details``) that opens the shared memory segment read-only and reads ``GptpIpcData`` with up to 20 seqlock retries
 - The ``libTSClient`` shall use the POSIX shared memory name ``/gptp_ptp_info`` by default
 
 Class view
@@ -320,7 +404,7 @@ The Class Diagram is presented below:
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/ipc_channel.puml
+.. uml:: _assets/libtsclient/ipc_channel.puml
    :alt: Class Diagram
 
 .. raw:: html
@@ -330,21 +414,22 @@ The Class Diagram is presented below:
 Publish new data
 ''''''''''''''''
 
-When ``TimeSlave Application`` has a new ``PtpTimeInfo`` snapshot, it publishes to the shared memory via the seqlock protocol:
+When ``TimeSlave Application`` has a new ``GptpIpcData`` snapshot, it publishes to the shared memory via the seqlock protocol:
 
-1. Increment ``seq`` (becomes odd — signals write in progress)
-2. ``memcpy`` the data
-3. Increment ``seq`` (becomes even — signals write complete)
+1. Increment ``seq`` (becomes odd — signals write in progress); a release fence is applied
+2. ``memcpy`` the ``GptpIpcData``
+3. Store ``seq_confirm = seq + 1`` and increment ``seq`` (both become even — signals write complete)
 
 Receive data
 ''''''''''''
 
 From TimeDaemon side, the receiver reads from the shared memory using the seqlock protocol with bounded retry:
 
-1. Read ``seq`` (must be even, otherwise retry)
-2. ``memcpy`` the data
-3. Read ``seq`` again (must match step 1, otherwise retry — torn read detected)
-4. Return ``std::optional<PtpTimeInfo>`` (empty if all 20 retries exhausted)
+1. Read ``seq1`` with acquire ordering (must be even, otherwise retry — write in progress)
+2. ``memcpy`` the ``GptpIpcData``
+3. Apply an acquire-release fence; read ``seq_confirm`` as ``seq2`` and re-read ``seq`` as ``seq3``
+4. If ``seq1 == seq2 == seq3``, the read is consistent; otherwise retry — torn read detected
+5. Return ``std::optional<GptpIpcData>`` (empty if all 20 retries exhausted)
 
 The seqlock protocol workflow is presented in the following sequence diagram:
 
@@ -352,7 +437,7 @@ The seqlock protocol workflow is presented in the following sequence diagram:
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/ipc_sequence.puml
+.. uml:: _assets/libtsclient/ipc_sequence.puml
    :alt: Seqlock Protocol
 
 .. raw:: html
@@ -366,23 +451,23 @@ TimeSlave supports two target platforms with platform-specific implementations s
 
 .. list-table:: Platform Implementations
    :header-rows: 1
-   :widths: 25 35 40
+   :widths: 25 37 38
 
    * - Component
      - Linux
      - QNX
    * - Raw Socket
-     - ``AF_PACKET`` with ``SO_TIMESTAMPING``
-     - QNX raw-socket shim
+     - ``AF_PACKET`` + ``SO_TIMESTAMPING``; HW RX timestamp via ``recvmsg`` ``SCM_TIMESTAMPING``
+     - BPF (``/dev/bpf``); HW RX timestamp via ``bpf_xhdr.bh_tstamp`` (``BIOCSTSTAMP BPF_T_PTP|BPF_T_BINTIME``); TX timestamp via ``BIOCGTSTAMPID`` + loopback fd (``BIOCSSEESENT``); fallback to ``CLOCK_REALTIME``
    * - Network Identity
-     - ``ioctl(SIOCGIFHWADDR)``
-     - QNX-specific MAC resolution
+     - ``ioctl(SIOCGIFHWADDR)`` → EUI-48 → EUI-64
+     - ``getifaddrs()`` + ``AF_LINK`` / ``sockaddr_dl`` (``LLADDR``) → EUI-48/64
    * - PHC Adjuster
-     - ``clock_adjtime()``
-     - EMAC PTP ioctls
+     - ``clock_adjtime()`` (``SYS_clock_adjtime`` syscall); step via ``ADJ_SETOFFSET|ADJ_NANO``; slew via ``ADJ_FREQUENCY`` (scaled-ppm)
+     - ``SIOCGDRVSPEC`` / ``SIOCSDRVSPEC`` on UDP socket; step via ``PTP_GET_TIME`` (0x102) + ``PTP_SET_TIME`` (0x103); slew via ``EMAC_PTP_ADJ_FREQ_PPM`` (0x200) in ppm
    * - HighPrecisionLocalSteadyClock
-     - ``std::chrono`` system clock
-     - QTIME clock API
+     - ``CLOCK_MONOTONIC`` via ``clock_gettime()``
+     - QNX ``ClockCycles()`` CPU instruction (reads hardware performance counter directly, equivalent to ``RDTSC`` on x86 / ``CNTVCT`` on ARM64), converted to nanoseconds via cycles-per-second calibration. Used instead of ``clock_gettime()`` because QNX ``CLOCK_MONOTONIC`` resolution is limited to microsecond level, whereas ``ClockCycles()`` provides nanosecond-level precision with no syscall overhead.
 
 The ``IRawSocket`` and ``INetworkIdentity`` interfaces provide the abstraction boundary. Platform-specific source files are organized under ``score/TimeSlave/code/gptp/platform/linux/`` and ``score/TimeSlave/code/gptp/platform/qnx/``.
 
@@ -392,22 +477,120 @@ Instrumentation
 ProbeManager
 ^^^^^^^^^^^^
 
-The ``ProbeManager`` is a singleton that records probe events at key processing points in the gPTP engine. Probe points include:
+The ``ProbeManager`` is a singleton that traces probe events at key processing points in the gPTP engine. It emits a ``LogDebug`` entry on every ``Trace()`` call and forwards the event to a linked ``Recorder`` (if set and enabled). Probing is controlled at runtime via ``SetEnabled()``; the ``GPTP_PROBE()`` macro provides zero overhead when disabled.
 
-- ``RxPacketReceived`` — Raw frame received from socket
-- ``SyncFrameParsed`` — Sync message successfully parsed
-- ``FollowUpProcessed`` — Offset computed from Sync/FollowUp pair
-- ``OffsetComputed`` — Final offset value available
-- ``PdelayReqSent`` — PDelayReq frame transmitted
-- ``PdelayCompleted`` — Peer delay measurement completed
-- ``PhcAdjusted`` — PHC adjustment applied
+Supported probe points (``ProbePoint`` enum):
 
-The ``GPTP_PROBE()`` macro provides zero-overhead when probing is disabled.
+.. list-table:: ProbePoint Events
+   :header-rows: 1
+   :widths: 10 30 60
+
+   * - Value
+     - Enumerator
+     - Trigger
+   * - 0
+     - ``kRxPacketReceived``
+     - Raw Ethernet frame received from socket (RxThread)
+   * - 1
+     - ``kSyncFrameParsed``
+     - Sync message successfully decoded by ``GptpMessageParser``
+   * - 2
+     - ``kFollowUpProcessed``
+     - FollowUp received; ``SyncStateMachine::OnFollowUp()`` returned a ``SyncResult``
+   * - 3
+     - ``kOffsetComputed``
+     - Final clock offset value available after Sync/FollowUp correlation
+   * - 4
+     - ``kPdelayReqSent``
+     - PDelayReq frame transmitted by ``PeerDelayMeasurer``
+   * - 5
+     - ``kPdelayCompleted``
+     - Peer delay computation finished (all four timestamps collected)
+   * - 6
+     - ``kPhcAdjusted``
+     - ``PhcAdjuster`` applied a step or frequency correction
+
+When a probe event is forwarded to the ``Recorder``, it is written with ``RecordEvent::kProbe`` and the ``ProbePoint`` value stored in the ``status_flags`` field of the CSV row.
 
 Recorder
 ^^^^^^^^^
 
-Thread-safe CSV file writer that persists probe events and other diagnostic data. Each ``RecordEntry`` contains a timestamp, event type, offset, peer delay, sequence ID, and status flags.
+Thread-safe CSV file writer. When enabled, appends one row per event to the configured file. The file is opened in append mode (``ios::app``); a CSV header is written only if the file is newly created (size == 0).
+
+**Status model:** the ``Recorder`` starts in the state determined by ``Config.enabled``. If a write error occurs (``file_.good()`` fails after a flush), ``enabled_`` is atomically set to ``false`` and all subsequent ``Record()`` calls become no-ops. The file is never re-opened after an error.
+
+Configuration (``Recorder::Config``):
+
+.. list-table:: Recorder Configuration
+   :header-rows: 1
+   :widths: 30 15 55
+
+   * - Parameter
+     - Type
+     - Description
+   * - ``enabled``
+     - bool
+     - Enable or disable recording; default: ``false``
+   * - ``file_path``
+     - string
+     - Output CSV file path; default: ``/var/log/gptp_record.csv``
+   * - ``offset_threshold_ns``
+     - int64_t
+     - Reserved for ``kOffsetThreshold`` events (threshold above which offsets are logged); default: ``1 000 000`` (1 ms)
+   * - ``flush_interval``
+     - uint32_t
+     - Number of rows between explicit ``file_.flush()`` calls; default: ``8``
+
+CSV output format::
+
+   mono_ns,event,offset_ns,pdelay_ns,seq_id,status_flags
+
+Supported ``RecordEvent`` values written to the ``event`` column:
+
+.. list-table:: RecordEvent Values
+   :header-rows: 1
+   :widths: 10 30 60
+
+   * - Value
+     - Enumerator
+     - Description
+   * - 0
+     - ``kSyncReceived``
+     - A Sync message was received and processed
+   * - 1
+     - ``kPdelayCompleted``
+     - A full peer delay measurement cycle completed
+   * - 2
+     - ``kClockJump``
+     - A forward or backward time jump was detected
+   * - 3
+     - ``kOffsetThreshold``
+     - Clock offset exceeded ``offset_threshold_ns``
+   * - 4
+     - ``kProbe``
+     - Forwarded from ``ProbeManager::Trace()``; ``status_flags`` column carries the ``ProbePoint`` value
+
+Logging configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+The TimeSlave and its TimeDaemon-side adapter use the following logging contexts:
+
+.. list-table:: Logging Contexts
+   :header-rows: 1
+   :widths: 35 20 45
+
+   * - Component
+     - Context ID
+     - Comments
+   * - TimeSlave Application
+     - TS_APP
+     - **T**\ ime\ **S**\ lave **App**\ lication lifecycle (Initialize / Run)
+   * - gPTP Engine (RxThread / PdelayThread)
+     - GPTP_SLAVE
+     - **GPTP** **SLAVE** engine — low-level protocol processing
+   * - ShmPTPEngine (TimeDaemon side)
+     - GPTP
+     - TimeDaemon **GPTP** machine adapter (Initialize / ReadPTPSnapshot)
 
 Variability
 ~~~~~~~~~~~
@@ -424,26 +607,23 @@ The ``GptpEngineOptions`` struct provides all configurable parameters for the gP
    * - Parameter
      - Type
      - Description
-   * - ``interface_name``
+   * - ``iface_name``
      - string
-     - Network interface for gPTP frames (e.g., ``eth0``)
+     - Network interface for gPTP frames (e.g., ``eth0``); default: ``"eth0"``
    * - ``pdelay_interval_ms``
-     - uint32_t
-     - Interval between PDelayReq transmissions
+     - int
+     - Interval between PDelayReq transmissions (ms); default: ``1000``
+   * - ``pdelay_warmup_ms``
+     - int
+     - Delay before the first PDelayReq is sent (ms); default: ``2000``
    * - ``sync_timeout_ms``
-     - uint32_t
-     - Timeout for Sync message reception before declaring timeout state
-   * - ``time_jump_forward_ns``
+     - int
+     - Timeout for Sync message reception before declaring timeout state (ms); default: ``3300``
+   * - ``jump_future_threshold_ns``
      - int64_t
-     - Threshold for forward time jump detection
-   * - ``time_jump_backward_ns``
-     - int64_t
-     - Threshold for backward time jump detection
-   * - ``phc_config``
-     - PhcConfig
-     - PHC device path, step threshold, and enable flag
+     - Threshold above which a positive clock offset is flagged as a forward time jump (ns); default: ``500 000 000``
 
-The ``PhcConfig`` struct additionally contains:
+The ``PhcConfig`` struct (used by ``PhcAdjuster``, configured independently) contains:
 
 .. list-table:: PhcAdjuster Configuration
    :header-rows: 1
@@ -454,17 +634,190 @@ The ``PhcConfig`` struct additionally contains:
      - Description
    * - ``enabled``
      - bool
-     - Enable or disable PHC adjustment
-   * - ``device_path``
+     - Enable or disable PHC adjustment; default: ``false``
+   * - ``device``
      - string
-     - Path to the PHC device (e.g., ``/dev/ptp0``)
+     - PHC device identifier: ``/dev/ptp0`` on Linux, ``emac0`` on QNX
    * - ``step_threshold_ns``
      - int64_t
-     - Offset threshold above which a step correction is applied instead of frequency slew
+     - Offset threshold above which a step correction is applied instead of frequency slew (ns); default: ``100 000 000``
 
-.. toctree::
-   :maxdepth: 2
-   :hidden:
+Scalability
+^^^^^^^^^^^
 
-   gptp_engine/index
-   libTSClient/index
+The TimeSlave architecture supports the following extensibility points:
+
+Platform extensibility
+''''''''''''''''''''''
+
+1. New target platforms can be supported by implementing the ``IRawSocket`` and ``INetworkIdentity`` interfaces under a new ``platform/<os>/`` directory and selecting the implementation via ``Bazel select()``
+2. The ``PhcAdjuster`` platform implementations (``clock_adjtime`` on Linux, EMAC ioctls on QNX) can be extended for additional hardware without changing protocol logic
+
+Protocol extensibility
+''''''''''''''''''''''
+
+1. The ``GptpEngine`` accepts injected ``IRawSocket`` and ``INetworkIdentity`` dependencies, making it straightforward to test or replace individual platform abstractions
+2. The shared memory IPC channel name is configurable (``GptpIpcPublisher::Init(name)`` / ``GptpIpcReceiver::Init(name)``), allowing multiple gPTP instances per ECU if needed
+
+TimeDaemon integration extensibility
+''''''''''''''''''''''''''''''''''''''
+
+1. The ``ShmPTPEngine`` implements the same ``PTPEngine`` concept as other ``PTPMachine`` backends, making it transparently exchangeable with any other engine implementation
+2. Alternative IPC mechanisms (e.g., socket-based) can be introduced by implementing a new engine class without modifying the ``PTPMachine`` template or downstream components
+
+ShmPTPEngine SW component
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``ShmPTPEngine`` component (in ``score::td::details``) is the TimeDaemon-side adapter that reads ``GptpIpcData`` from the shared memory channel written by TimeSlave and converts it into the ``PtpTimeInfo`` structure expected by the TimeDaemon pipeline.
+
+It is instantiated as ``GPTPRealMachine`` — a type alias for ``PTPMachine<details::ShmPTPEngine>`` — which connects ``ShmPTPEngine`` to the TimeDaemon's internal ``MessageBroker``.
+
+Component requirements
+''''''''''''''''''''''
+
+The ``ShmPTPEngine`` has the following requirements:
+
+- The ``ShmPTPEngine`` shall call ``GptpIpcReceiver::Init(ipc_name)`` during ``Initialize()`` to open the shared memory channel
+- The ``ShmPTPEngine`` shall call ``GptpIpcReceiver::Receive()`` in ``ReadPTPSnapshot()`` to fetch the latest ``GptpIpcData``
+- The ``ShmPTPEngine`` shall map all fields of ``GptpIpcData`` to the corresponding fields of ``PtpTimeInfo`` (status flags, Sync/FollowUp data, peer-delay data, time references)
+- The ``ShmPTPEngine`` shall call ``GptpIpcReceiver::Close()`` during ``Deinitialize()``
+- The ``ShmPTPEngine`` shall be instantiatable with a configurable IPC channel name (default: ``/gptp_ptp_info``)
+
+Class view
+''''''''''
+
+The Class Diagram is presented below:
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/shm_ptp_engine/shm_ptp_engine_class.puml
+   :alt: Class Diagram
+
+.. raw:: html
+
+   </div>
+
+Component initialization
+''''''''''''''''''''''''
+
+During initialization the ``ShmPTPEngine`` shall open the shared memory channel to be able to read from it.
+
+The initialization workflow is represented in the following sequence diagram:
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/shm_ptp_engine/shm_ptp_engine_init_seq.puml
+   :alt: Initialization workflow
+
+.. raw:: html
+
+   </div>
+
+Read PTP snapshot
+'''''''''''''''''
+
+After ``ShmPTPEngine`` reads the latest ``GptpIpcData`` from shared memory, it maps it to ``PtpTimeInfo`` and publishes via the ``MessageBroker``.
+
+The periodic read and publish workflow is described below:
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/shm_ptp_engine/shm_ptp_engine_read_seq.puml
+   :alt: Periodic read and publish workflow
+
+.. raw:: html
+
+   </div>
+
+Data mapping
+''''''''''''
+
+``ShmPTPEngine::ReadPTPSnapshot()`` performs a field-by-field mapping from ``GptpIpcData`` to ``PtpTimeInfo``:
+
+.. list-table:: GptpIpcData → PtpTimeInfo Mapping
+   :header-rows: 1
+   :widths: 50 50
+
+   * - ``GptpIpcData`` field
+     - ``PtpTimeInfo`` field
+   * - ``ptp_assumed_time``
+     - ``ptp_assumed_time``
+   * - ``local_time``
+     - ``local_time`` (wrapped in ``ReferenceClock::time_point``)
+   * - ``rate_deviation``
+     - ``rate_deviation``
+   * - ``status.is_synchronized``
+     - ``status.is_synchronized``
+   * - ``status.is_timeout``
+     - ``status.is_timeout``
+   * - ``status.is_time_jump_future``
+     - ``status.is_time_jump_future``
+   * - ``status.is_time_jump_past``
+     - ``status.is_time_jump_past``
+   * - ``status.is_correct``
+     - ``status.is_correct``
+   * - ``sync_fup_data.*`` (9 fields)
+     - ``sync_fup_data.*`` (direct copy)
+   * - ``pdelay_data.*`` (12 fields)
+     - ``pdelay_data.*`` (direct copy)
+
+Factory
+'''''''
+
+``CreateGPTPRealMachine(name, ipc_name)`` is a convenience factory function in ``score::td`` that creates a configured ``GPTPRealMachine`` (``shared_ptr``) backed by ``ShmPTPEngine``:
+
+.. code-block:: cpp
+
+   auto machine = CreateGPTPRealMachine("real", "/gptp_ptp_info");
+
+Using in test environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using in ITF
+^^^^^^^^^^^^
+
+Normal behavior is expected. TimeSlave runs as a standalone process, communicates over real Ethernet, and writes to ``/gptp_ptp_info`` shared memory as in production.
+
+Using in Component Tests on the host
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Overview
+''''''''
+
+The ``TimeSlave`` and its constituent components can be tested on an x86 Linux host without PTP hardware or a real network. The key platform-dependent abstractions all have test-injectable counterparts:
+
+.. list-table:: Testable Abstractions
+   :header-rows: 1
+   :widths: 30 35 35
+
+   * - Abstraction
+     - Production implementation
+     - Test replacement
+   * - ``IRawSocket``
+     - ``RawSocket`` (AF_PACKET)
+     - ``FakeSocket`` (push-based frame queue)
+   * - ``INetworkIdentity``
+     - ``NetworkIdentity`` (ioctl)
+     - ``FakeIdentity`` (fixed clock identity)
+   * - ``HighPrecisionLocalSteadyClock``
+     - Platform clock (Linux / QNX)
+     - ``FakeClock`` (returns fixed timestamp)
+
+The ``GptpEngine`` provides a dedicated test constructor that accepts injected implementations:
+
+.. code-block:: cpp
+
+   GptpEngine engine(opts,
+                     std::make_unique<FakeClock>(),
+                     std::make_unique<FakeSocket>(),
+                     std::make_unique<FakeIdentity>());
+
+This allows complete white-box testing of the Sync/FollowUp correlation, peer-delay measurement, timeout detection, and time-jump flagging logic by pushing crafted PTP frames directly into the ``FakeSocket`` queue.
+
+The ``GptpIpcPublisher`` and ``GptpIpcReceiver`` rely on POSIX shared memory (``shm_open``), which works on any Linux host, so ``ShmPTPEngine`` component tests can run end-to-end using real IPC without modification.

@@ -22,7 +22,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = [
-        "//score/TimeDaemon/code/common:logging_contexts",
+        "//score/TimeSlave/code/common:logging_contexts",
         "//score/TimeSlave/code/gptp/record:recorder",
         "@score_baselibs//score/mw/log:frontend",
     ],

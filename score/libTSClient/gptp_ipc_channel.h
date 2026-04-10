@@ -13,7 +13,7 @@
 #ifndef SCORE_LIBTSCLIENT_GPTP_IPC_CHANNEL_H
 #define SCORE_LIBTSCLIENT_GPTP_IPC_CHANNEL_H
 
-#include "score/TimeDaemon/code/common/data_types/ptp_time_info.h"
+#include "score/libTSClient/gptp_ipc_data.h"
 
 #include <atomic>
 #include <cstdint>
@@ -45,7 +45,7 @@ struct alignas(64) GptpIpcRegion
 {
     std::atomic<std::uint32_t> magic{kGptpIpcMagic};
     std::atomic<std::uint32_t> seq{0};
-    score::td::PtpTimeInfo data{};
+    score::ts::GptpIpcData data{};
     std::atomic<std::uint32_t> seq_confirm{1};
 };
 

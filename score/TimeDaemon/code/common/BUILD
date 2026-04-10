@@ -22,7 +22,7 @@ cc_library(
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
-    visibility = ["//score:__subpackages__"],
+    visibility = ["//score/TimeDaemon:__subpackages__"],
     deps = [],
 )
 

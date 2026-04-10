@@ -22,8 +22,11 @@
 #include <netinet/if_ether.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <algorithm>
 #include <cerrno>
+#include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 // QNX SDP 8.0: PTP API constants (from io-sock/ptp.h, inlined to avoid
@@ -219,7 +222,7 @@ extern "C" int qnx_raw_open(const char* ifname)
         return -1;
     }
 
-    std::strlcpy(g_qnx_ctx.iface_name, ifname, sizeof(g_qnx_ctx.iface_name));
+    ::strlcpy(g_qnx_ctx.iface_name, ifname, sizeof(g_qnx_ctx.iface_name));
 
     char devpath[256]{};
     const char* sock_env = std::getenv("SOCK");
@@ -233,7 +236,7 @@ extern "C" int qnx_raw_open(const char* ifname)
         return -1;
 
     ::ifreq ifr{};
-    std::strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+    ::strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
     if (::ioctl(fd, BIOCSETIF, &ifr) < 0)
     {
         ::close(fd);
@@ -475,7 +478,7 @@ extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
 extern "C" int qnx_phc_open(const char* phc_dev)
 {
     if (phc_dev != nullptr && phc_dev[0] != '\0' && phc_dev[0] != '/')
-        std::strlcpy(g_qnx_ctx.iface_name, phc_dev, sizeof(g_qnx_ctx.iface_name));
+        ::strlcpy(g_qnx_ctx.iface_name, phc_dev, sizeof(g_qnx_ctx.iface_name));
     return 0;
 }
 

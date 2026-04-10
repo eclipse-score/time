@@ -13,7 +13,6 @@
 #include "score/TimeSlave/code/gptp/gptp_engine.h"
 #include "score/TimeSlave/code/gptp/details/i_network_identity.h"
 #include "score/TimeSlave/code/gptp/details/i_raw_socket.h"
-#include "score/time/HighPrecisionLocalSteadyClock/high_precision_local_steady_clock.h"
 
 #include <gtest/gtest.h>
 
@@ -36,17 +35,6 @@ namespace details
 
 namespace
 {
-
-// ── FakeClock ─────────────────────────────────────────────────────────────────
-
-class FakeClock final : public score::time::HighPrecisionLocalSteadyClock
-{
-  public:
-    score::time::HighPrecisionLocalSteadyClock::time_point Now() noexcept override
-    {
-        return score::time::HighPrecisionLocalSteadyClock::time_point{std::chrono::nanoseconds{42'000'000'000LL}};
-    }
-};
 
 // ── FakeSocket ────────────────────────────────────────────────────────────────
 
@@ -264,9 +252,10 @@ bool WaitForSync(GptpEngine& eng, int max_ms = 500)
 {
     for (int i = 0; i < max_ms / 10; ++i)
     {
-        score::td::PtpTimeInfo info{};
-        eng.ReadPTPSnapshot(info);
-        if (info.status.is_synchronized)
+        score::ts::GptpIpcData data{};
+        eng.FinalizeSnapshot();
+        eng.ReadPTPSnapshot(data);
+        if (data.status.is_synchronized)
             return true;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -281,7 +270,7 @@ class GptpEngineTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        engine_ = std::make_unique<GptpEngine>(FastOptions(), std::make_unique<FakeClock>());
+        engine_ = std::make_unique<GptpEngine>(FastOptions());
     }
 
     void TearDown() override
@@ -302,7 +291,7 @@ class GptpEngineFakeTest : public ::testing::Test
         auto identity = std::make_unique<FakeIdentity>();
         socket_raw_ = sock.get();
         engine_ = std::make_unique<GptpEngine>(
-            FastOptions(), std::make_unique<FakeClock>(), std::move(sock), std::move(identity));
+            FastOptions(), std::move(sock), std::move(identity));
     }
 
     void TearDown() override
@@ -331,16 +320,16 @@ TEST_F(GptpEngineTest, Deinitialize_CalledTwice_BothReturnTrue)
 
 TEST_F(GptpEngineTest, ReadPTPSnapshot_WhenNotInitialized_ReturnsFalse)
 {
-    score::td::PtpTimeInfo info{};
-    EXPECT_FALSE(engine_->ReadPTPSnapshot(info));
+    score::ts::GptpIpcData data{};
+    EXPECT_FALSE(engine_->ReadPTPSnapshot(data));
 }
 
 TEST_F(GptpEngineTest, ReadPTPSnapshot_InfoUnchanged_WhenNotInitialized)
 {
-    score::td::PtpTimeInfo info{};
-    info.ptp_assumed_time = std::chrono::nanoseconds{999LL};
-    EXPECT_FALSE(engine_->ReadPTPSnapshot(info));
-    EXPECT_EQ(info.ptp_assumed_time, std::chrono::nanoseconds{999LL});
+    score::ts::GptpIpcData data{};
+    data.ptp_assumed_time = std::chrono::nanoseconds{999LL};
+    EXPECT_FALSE(engine_->ReadPTPSnapshot(data));
+    EXPECT_EQ(data.ptp_assumed_time, std::chrono::nanoseconds{999LL});
 }
 
 // ── GptpEngineFakeTest — Initialize / Deinitialize ───────────────────────────
@@ -365,16 +354,18 @@ TEST_F(GptpEngineFakeTest, Deinitialize_AfterInitialize_ReturnsTrue)
 TEST_F(GptpEngineFakeTest, ReadPTPSnapshot_AfterInitialize_ReturnsTrue)
 {
     ASSERT_TRUE(engine_->Initialize());
-    score::td::PtpTimeInfo info{};
-    EXPECT_TRUE(engine_->ReadPTPSnapshot(info));
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    EXPECT_TRUE(engine_->ReadPTPSnapshot(data));
 }
 
 TEST_F(GptpEngineFakeTest, ReadPTPSnapshot_NotSynchronized_BeforeAnySync)
 {
     ASSERT_TRUE(engine_->Initialize());
-    score::td::PtpTimeInfo info{};
-    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
-    EXPECT_FALSE(info.status.is_synchronized);
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_FALSE(data.status.is_synchronized);
 }
 
 // ── GptpEngineFakeTest — identity failure ─────────────────────────────────────
@@ -383,7 +374,7 @@ TEST(GptpEngineIdentityFailTest, Initialize_IdentityResolveFails_ReturnsFalse)
 {
     auto sock = std::make_unique<FakeSocket>();
     auto identity = std::make_unique<FakeIdentity>(/*resolve_ok=*/false);
-    GptpEngine eng{FastOptions(), std::make_unique<FakeClock>(), std::move(sock), std::move(identity)};
+    GptpEngine eng{FastOptions(), std::move(sock), std::move(identity)};
     EXPECT_FALSE(eng.Initialize());
     EXPECT_TRUE(eng.Deinitialize());
 }
@@ -410,10 +401,11 @@ TEST_F(GptpEngineFakeTest, HandlePacket_SyncFollowUp_SnapshotBecomesSync)
     socket_raw_->Push(MakeFollowUpFrame(1U, /*sec=*/2, /*ns=*/0));
 
     EXPECT_TRUE(WaitForSync(*engine_));
-    score::td::PtpTimeInfo info{};
-    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
-    EXPECT_TRUE(info.status.is_synchronized);
-    EXPECT_FALSE(info.status.is_timeout);
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_TRUE(data.status.is_synchronized);
+    EXPECT_FALSE(data.status.is_timeout);
 }
 
 TEST_F(GptpEngineFakeTest, HandlePacket_MultipleSyncFup_SnapshotUpdated)
@@ -472,7 +464,7 @@ TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutPath_IsTimeoutSet)
     auto identity = std::make_unique<FakeIdentity>();
     FakeSocket* raw_sock = sock.get();
 
-    GptpEngine eng{opts, std::make_unique<FakeClock>(), std::move(sock), std::move(identity)};
+    GptpEngine eng{opts, std::move(sock), std::move(identity)};
     ASSERT_TRUE(eng.Initialize());
 
     // First receive a Sync+FUP so the state machine records a timestamp.
@@ -485,7 +477,8 @@ TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutPath_IsTimeoutSet)
     bool got_sync = false;
     for (int i = 0; i < 50; ++i)
     {
-        score::td::PtpTimeInfo tmp{};
+        score::ts::GptpIpcData tmp{};
+        eng.FinalizeSnapshot();
         eng.ReadPTPSnapshot(tmp);
         if (tmp.status.is_synchronized)
         {
@@ -499,7 +492,8 @@ TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutPath_IsTimeoutSet)
     // Now wait longer than sync_timeout_ms for the timeout to trigger.
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
 
-    score::td::PtpTimeInfo info{};
+    score::ts::GptpIpcData info{};
+    eng.FinalizeSnapshot();
     ASSERT_TRUE(eng.ReadPTPSnapshot(info));
     EXPECT_TRUE(info.status.is_timeout);
     EXPECT_FALSE(info.status.is_synchronized);
@@ -513,7 +507,7 @@ TEST(GptpEngineRealSocketTest, Initialize_NonExistentInterface_ReturnsFalse)
     GptpEngineOptions opts;
     opts.iface_name = "nonexistent_iface_xyz";
     opts.pdelay_warmup_ms = 0;
-    GptpEngine eng{opts, std::make_unique<FakeClock>()};
+    GptpEngine eng{opts};
     EXPECT_FALSE(eng.Initialize());
     EXPECT_TRUE(eng.Deinitialize());
 }
@@ -525,7 +519,7 @@ TEST(GptpEngineSocketFailTest, Initialize_SocketOpenFails_ReturnsFalse)
     auto sock = std::make_unique<FakeSocket>();
     auto identity = std::make_unique<FakeIdentity>();
     sock->SetOpenOk(false);
-    GptpEngine eng{FastOptions(), std::make_unique<FakeClock>(), std::move(sock), std::move(identity)};
+    GptpEngine eng{FastOptions(), std::move(sock), std::move(identity)};
     EXPECT_FALSE(eng.Initialize());
     EXPECT_TRUE(eng.Deinitialize());
 }
@@ -535,13 +529,14 @@ TEST(GptpEngineSocketFailTest, Initialize_SocketOpenFails_ReturnsFalse)
 namespace
 {
 
-bool WaitForFlag(GptpEngine& eng, bool (*pred)(const score::td::PtpTimeInfo&), int max_ms = 1000)
+bool WaitForFlag(GptpEngine& eng, bool (*pred)(const score::ts::GptpIpcData&), int max_ms = 1000)
 {
     for (int i = 0; i < max_ms / 10; ++i)
     {
-        score::td::PtpTimeInfo info{};
-        eng.ReadPTPSnapshot(info);
-        if (pred(info))
+        score::ts::GptpIpcData data{};
+        eng.FinalizeSnapshot();
+        eng.ReadPTPSnapshot(data);
+        if (pred(data))
             return true;
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
@@ -565,13 +560,14 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpFuture_Detected)
     socket_raw_->Push(MakeFollowUpFrame(2U, /*sec=*/3U, /*ns=*/0U));
 
     const bool got =
-        WaitForFlag(*engine_, [](const score::td::PtpTimeInfo& i) { return i.status.is_time_jump_future; });
+        WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) { return d.status.is_time_jump_future; });
     EXPECT_TRUE(got);
 
-    score::td::PtpTimeInfo info{};
-    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
-    EXPECT_TRUE(info.status.is_time_jump_future);
-    EXPECT_FALSE(info.status.is_correct);
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_TRUE(data.status.is_time_jump_future);
+    EXPECT_FALSE(data.status.is_correct);
 }
 
 TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
@@ -589,13 +585,14 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
     socket_raw_->Push(MakeFollowUpFrame(2U, /*sec=*/2U, /*ns=*/0U));
 
     const bool got =
-        WaitForFlag(*engine_, [](const score::td::PtpTimeInfo& i) { return i.status.is_time_jump_past; });
+        WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) { return d.status.is_time_jump_past; });
     EXPECT_TRUE(got);
 
-    score::td::PtpTimeInfo info{};
-    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
-    EXPECT_TRUE(info.status.is_time_jump_past);
-    EXPECT_FALSE(info.status.is_correct);
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_TRUE(data.status.is_time_jump_past);
+    EXPECT_FALSE(data.status.is_correct);
 }
 
 }  // namespace details

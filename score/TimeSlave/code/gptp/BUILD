@@ -29,10 +29,9 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = [
-        "//score/TimeDaemon/code/common:logging_contexts",
-        "//score/TimeDaemon/code/common/data_types:ptp_time_info",
+        "//score/TimeSlave/code/common:logging_contexts",
         "//score/TimeSlave/code/gptp/details:gptp_details",
-        "//score/time/HighPrecisionLocalSteadyClock:interface",
+        "//score/libTSClient:gptp_ipc",
         "@score_baselibs//score/mw/log:frontend",
     ],
 )

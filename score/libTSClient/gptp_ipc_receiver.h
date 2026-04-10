@@ -44,9 +44,9 @@ class GptpIpcReceiver final
     /// @return true on success.
     bool Init(const std::string& ipc_name = kGptpIpcName);
 
-    /// Read a PtpTimeInfo snapshot using seqlock (up to 20 retries).
+    /// Read a GptpIpcData snapshot using seqlock (up to 20 retries).
     /// @return The data if consistent, or std::nullopt on contention failure.
-    std::optional<score::td::PtpTimeInfo> Receive();
+    std::optional<score::ts::GptpIpcData> Receive();
 
     /// Unmap the shared memory segment.
     void Close();

@@ -13,6 +13,7 @@ participant "PhcAdjuster" as PHC #Lavender
 participant "GptpEngine" as GE #LightSalmon
 participant "GptpIpcPublisher" as PUB #LightPink
 participant "SharedMemory" as SHM #LightPink
+participant "TimeSlave\n(main thread)" as TS #LightCyan
 
 == RxThread — Sync/FollowUp Processing ==
 
@@ -27,9 +28,8 @@ SOCK -> FC : raw buffer + HW timestamp
 FC -> MP : Ethernet payload
 MP -> SSM : OnFollowUp(PTPMessage)
 SSM -> SSM : compute offset & neighborRateRatio
-SSM --> MP : SyncResult{master_ns, offset_ns,\ntime_jump_flags}
-
-MP --> GE : update latest_snapshot_\n(mutex protected)
+SSM --> GE : SyncResult{master_ns, offset_ns,\ntime_jump_flags}
+GE -> GE : update pending_snapshot_\n(mutex protected)
 
 == PdelayThread — Peer Delay Measurement ==
 
@@ -54,8 +54,11 @@ PHC -> PHC : step or frequency slew
 
 == Periodic Publish to Shared Memory ==
 
-GE -> GE : ReadPTPSnapshot()
-GE -> PUB : Publish(PtpTimeInfo)
-PUB -> SHM : seqlock write\n(atomic seq++, memcpy, seq++)
+TS -> GE : FinalizeSnapshot()
+GE -> GE : check timeout, commit\npending_snapshot_ → current_snapshot_
+TS -> GE : ReadPTPSnapshot(data)
+GE --> TS : GptpIpcData
+TS -> PUB : Publish(GptpIpcData)
+PUB -> SHM : seqlock write\n(seq odd → fence → memcpy → seq_confirm, seq even)
 
 @enduml

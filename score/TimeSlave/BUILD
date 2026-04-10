@@ -10,3 +10,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+
+load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
+
+cc_unit_test_suites_for_host_and_qnx(
+    name = "unit_test_suite",
+    cc_unit_tests = [],
+    test_suites_from_sub_packages = [
+        "//score/TimeSlave/code/gptp:unit_test_suite",
+    ],
+    visibility = ["//score:__subpackages__"],
+)

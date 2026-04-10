@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/TimeDaemon/code/ptp_machine/real/details/real_ptp_engine.h"
+#include "score/TimeDaemon/code/ptp_machine/real/details/shm_ptp_engine.h"
 
 #include "score/TimeDaemon/code/common/logging_contexts.h"
 #include "score/libTSClient/gptp_ipc_data.h"
@@ -23,9 +23,9 @@ namespace td
 namespace details
 {
 
-RealPTPEngine::RealPTPEngine(std::string ipc_name) noexcept : ipc_name_{std::move(ipc_name)} {}
+ShmPTPEngine::ShmPTPEngine(std::string ipc_name) noexcept : ipc_name_{std::move(ipc_name)} {}
 
-bool RealPTPEngine::Initialize()
+bool ShmPTPEngine::Initialize()
 {
     if (initialized_)
         return true;
@@ -33,16 +33,16 @@ bool RealPTPEngine::Initialize()
     initialized_ = receiver_.Init(ipc_name_);
     if (initialized_)
     {
-        score::mw::log::LogInfo(kGPtpMachineContext) << "RealPTPEngine: connected to IPC channel " << ipc_name_;
+        score::mw::log::LogInfo(kGPtpMachineContext) << "ShmPTPEngine: connected to IPC channel " << ipc_name_;
     }
     else
     {
-        score::mw::log::LogError(kGPtpMachineContext) << "RealPTPEngine: failed to open IPC channel " << ipc_name_;
+        score::mw::log::LogError(kGPtpMachineContext) << "ShmPTPEngine: failed to open IPC channel " << ipc_name_;
     }
     return initialized_;
 }
 
-bool RealPTPEngine::Deinitialize()
+bool ShmPTPEngine::Deinitialize()
 {
     if (initialized_)
     {
@@ -52,7 +52,7 @@ bool RealPTPEngine::Deinitialize()
     return true;
 }
 
-bool RealPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
+bool ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 {
     if (!initialized_)
         return false;
@@ -63,7 +63,7 @@ bool RealPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 
     const score::ts::GptpIpcData& d = result.value();
     info.ptp_assumed_time = d.ptp_assumed_time;
-    info.local_time = score::td::PtpTimeInfo::ReferenceClock::time_point{d.local_time};
+    info.local_time = PtpTimeInfo::ReferenceClock::time_point{d.local_time};
     info.rate_deviation = d.rate_deviation;
     info.status.is_synchronized = d.status.is_synchronized;
     info.status.is_timeout = d.status.is_timeout;

@@ -109,7 +109,7 @@ cc_library(
     deps = [
         ":clock_util",
         ":ptp_types",
-        "//score/TimeDaemon/code/common/data_types:ptp_time_info",
+        "//score/libTSClient:gptp_ipc",
     ],
 )
 
@@ -124,7 +124,7 @@ cc_library(
         ":frame_codec",
         ":i_raw_socket",
         ":ptp_types",
-        "//score/TimeDaemon/code/common/data_types:ptp_time_info",
+        "//score/libTSClient:gptp_ipc",
     ],
 )
 
@@ -166,6 +166,7 @@ cc_test(
     name = "raw_socket_test",
     srcs = ["raw_socket_test.cpp"],
     tags = ["unit"],
+    target_compatible_with = ["@platforms//os:linux"],
     deps = [
         ":network_identity",
         ":raw_socket",

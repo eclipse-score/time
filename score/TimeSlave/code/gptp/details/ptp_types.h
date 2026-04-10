@@ -18,7 +18,7 @@
 #include <cstring>
 #include <limits>
 
-#ifndef _QNX_PLAT
+#ifndef __QNXNTO__
 #include <linux/if_ether.h>
 #else
 // Minimal ethhdr definition for QNX

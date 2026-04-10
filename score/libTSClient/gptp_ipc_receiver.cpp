@@ -70,7 +70,7 @@ bool GptpIpcReceiver::Init(const std::string& ipc_name)
     return true;
 }
 
-std::optional<score::td::PtpTimeInfo> GptpIpcReceiver::Receive()
+std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
 {
     if (region_ == nullptr)
         return std::nullopt;
@@ -82,8 +82,8 @@ std::optional<score::td::PtpTimeInfo> GptpIpcReceiver::Receive()
         if ((seq1 & 1U) != 0U)
             continue;  // write in progress, retry
 
-        score::td::PtpTimeInfo data{};
-        std::memcpy(&data, &region_->data, sizeof(score::td::PtpTimeInfo));
+        score::ts::GptpIpcData data{};
+        std::memcpy(&data, &region_->data, sizeof(score::ts::GptpIpcData));
 
         // acq_rel fence: prevents data reads from floating past the consistency checks below
         // (release half prevents memcpy reordering after the fence on ARM64), and prevents

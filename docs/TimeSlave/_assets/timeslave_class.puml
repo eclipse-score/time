@@ -16,63 +16,58 @@ endlegend
 package "score::ts" {
 
     class TimeSlave #LightCyan {
-        - engine_ : GptpEngine
+        - opts_ : GptpEngineOptions
+        - engine_ : unique_ptr<GptpEngine>
         - publisher_ : GptpIpcPublisher
-        - clock_ : HighPrecisionLocalSteadyClock
-        + Initialize() : score::cpp::expected<void>
-        + Run(stop_token) : score::cpp::expected<void>
-        + Deinitialize() : score::cpp::expected<void>
+        + Initialize(ctx) : int32_t
+        + Run(stop_token) : int32_t
     }
 
     class GptpEngine #LightSalmon {
-        - options_ : GptpEngineOptions
+        - opts_ : GptpEngineOptions
         - rx_thread_ : std::thread
         - pdelay_thread_ : std::thread
         - sync_sm_ : SyncStateMachine
         - pdelay_ : PeerDelayMeasurer
-        - socket_ : IRawSocket
+        - phc_adjuster_ : PhcAdjuster
+        - socket_ : unique_ptr<IRawSocket>
+        - identity_ : unique_ptr<INetworkIdentity>
         - codec_ : FrameCodec
-        - parser_ : MessageParser
-        - phc_ : PhcAdjuster
+        - parser_ : GptpMessageParser
         - snapshot_mutex_ : std::mutex
-        - latest_snapshot_ : PtpTimeInfo
+        - pending_snapshot_ : GptpIpcData
+        - current_snapshot_ : GptpIpcData
         + Initialize() : bool
-        + Deinitialize() : void
-        + ReadPTPSnapshot() : PtpTimeInfo
-        - RxThreadFunc(stop_token) : void
-        - PdelayThreadFunc(stop_token) : void
+        + Deinitialize() : bool
+        + FinalizeSnapshot() : void
+        + ReadPTPSnapshot(data : GptpIpcData&) : bool
     }
 
     struct GptpEngineOptions #Beige {
-        + interface_name : std::string
-        + pdelay_interval_ms : uint32_t
-        + sync_timeout_ms : uint32_t
-        + time_jump_forward_ns : int64_t
-        + time_jump_backward_ns : int64_t
-        + phc_config : PhcConfig
+        + iface_name : string = "eth0"
+        + pdelay_interval_ms : int = 1000
+        + pdelay_warmup_ms : int = 2000
+        + sync_timeout_ms : int = 3300
+        + jump_future_threshold_ns : int64_t = 500000000
     }
 
     TimeSlave *-- GptpEngine
-    TimeSlave *-- "1" GptpIpcPublisher
 }
 
-package "score::ts::gptp::details" {
+package "score::ts::details" {
     class FrameCodec #Wheat {
         + ParseEthernetHeader(buf) : EthernetHeader
         + AddEthernetHeader(buf, dst_mac, src_mac) : void
     }
 
-    class MessageParser #Wheat {
-        + Parse(payload, hw_ts) : std::optional<PTPMessage>
+    class GptpMessageParser #Wheat {
+        + Parse(payload, len, msg_out) : bool
     }
 
     class SyncStateMachine #Wheat {
-        - last_sync_ : PTPMessage
-        - last_offset_ns_ : int64_t
-        - neighbor_rate_ratio_ : double
-        - timeout_ : std::atomic<bool>
+        - timeout_ : atomic<bool>
         + OnSync(msg) : void
-        + OnFollowUp(msg) : std::optional<SyncResult>
+        + OnFollowUp(msg) : optional<SyncResult>
         + IsTimeout() : bool
         + GetNeighborRateRatio() : double
     }
@@ -89,37 +84,45 @@ package "score::ts::gptp::details" {
     struct SyncResult #Beige {
         + master_ns : int64_t
         + offset_ns : int64_t
-        + sync_fup_data : SyncFupData
+        + sync_fup_data : GptpIpcSyncFupData
         + time_jump_forward : bool
         + time_jump_backward : bool
     }
 
     struct PDelayResult #Beige {
-        + path_delay_ns : int64_t
+        + pdelay_data : GptpIpcPDelayData
         + valid : bool
     }
-}
 
-package "score::ts::gptp::phc" {
+    class GptpIpcPublisher #LightPink {
+        - region_ : GptpIpcRegion*
+        - shm_fd_ : int
+        + Init(name) : bool
+        + Publish(data : GptpIpcData) : void
+        + Destroy() : void
+    }
+
     class PhcAdjuster #Lavender {
-        - config_ : PhcConfig
-        - fd_ : int
+        - cfg_ : PhcConfig
+        - phc_fd_ : int
         + IsEnabled() : bool
         + AdjustOffset(offset_ns) : void
-        + AdjustFrequency(ppb) : void
+        + AdjustFrequency(rate_ratio) : void
     }
 
     struct PhcConfig #Beige {
-        + enabled : bool
-        + device_path : std::string
-        + step_threshold_ns : int64_t
+        + enabled : bool = false
+        + device : string
+        + step_threshold_ns : int64_t = 100000000
     }
 }
 
 GptpEngine *-- FrameCodec
-GptpEngine *-- MessageParser
+GptpEngine *-- GptpMessageParser
 GptpEngine *-- SyncStateMachine
 GptpEngine *-- PeerDelayMeasurer
 GptpEngine *-- PhcAdjuster
+PhcAdjuster *-- PhcConfig
+TimeSlave *-- "1" GptpIpcPublisher
 
 @enduml

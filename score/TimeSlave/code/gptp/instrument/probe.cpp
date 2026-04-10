@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/TimeSlave/code/gptp/instrument/probe.h"
 
-#include "score/TimeDaemon/code/common/logging_contexts.h"
+#include "score/TimeSlave/code/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
 
 #include <time.h>
@@ -32,7 +32,7 @@ ProbeManager& ProbeManager::Instance()
 
 void ProbeManager::Trace(ProbePoint point, const ProbeData& data)
 {
-    score::mw::log::LogDebug(score::td::kGPtpMachineContext)
+    score::mw::log::LogDebug(score::ts::kGPtpMachineContext)
         << "PROBE point=" << static_cast<int>(point) << " ts=" << data.ts_mono_ns << " val=" << data.value_ns
         << " seq=" << data.seq_id;
 

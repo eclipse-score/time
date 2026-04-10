@@ -14,14 +14,14 @@
 #define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_REAL_GPTP_REAL_MACHINE_H
 
 #include "score/TimeDaemon/code/ptp_machine/core/ptp_machine.h"
-#include "score/TimeDaemon/code/ptp_machine/real/details/real_ptp_engine.h"
+#include "score/TimeDaemon/code/ptp_machine/real/details/shm_ptp_engine.h"
 
 namespace score
 {
 namespace td
 {
 
-/// @brief PTPMachine instantiated with the real gPTP engine.
+/// @brief PTPMachine instantiated with the shared-memory gPTP engine.
 ///
 /// Reads PtpTimeInfo snapshots written by TimeSlave via the IPC channel.
 /// Construct via CreateGPTPRealMachine() (see factory.h) or directly:
@@ -30,7 +30,7 @@ namespace td
 /// auto machine = std::make_shared<GPTPRealMachine>(
 ///     "real", std::chrono::milliseconds{50}, "/gptp_ptp_info");
 /// @endcode
-using GPTPRealMachine = PTPMachine<details::RealPTPEngine>;
+using GPTPRealMachine = PTPMachine<details::ShmPTPEngine>;
 
 }  // namespace td
 }  // namespace score

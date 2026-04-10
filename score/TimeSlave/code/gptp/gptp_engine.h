@@ -13,7 +13,7 @@
 #ifndef SCORE_TIMESLAVE_CODE_GPTP_GPTP_ENGINE_H
 #define SCORE_TIMESLAVE_CODE_GPTP_GPTP_ENGINE_H
 
-#include "score/TimeDaemon/code/common/data_types/ptp_time_info.h"
+#include "score/libTSClient/gptp_ipc_data.h"
 #include "score/TimeSlave/code/gptp/details/frame_codec.h"
 #include "score/TimeSlave/code/gptp/details/i_network_identity.h"
 #include "score/TimeSlave/code/gptp/details/i_raw_socket.h"
@@ -53,17 +53,21 @@ struct GptpEngineOptions
  * Runs two POSIX threads: RxThread (receive/parse PTP frames) and
  * PdelayThread (periodic Pdelay_Req transmission).
  *
- * ReadPTPSnapshot() is thread-safe once Initialize() returns true.
+ * Dual-snapshot design:
+ *  - pending_snapshot_: filled by the RxThread on every Sync+FollowUp
+ *  - current_snapshot_: a committed, fully-flagged snapshot
+ *
+ * Callers should:
+ *  1. Call FinalizeSnapshot() to check timeout and commit pending to current.
+ *  2. Call ReadPTPSnapshot() (const) to retrieve the current snapshot.
  */
 class GptpEngine final
 {
   public:
-    explicit GptpEngine(GptpEngineOptions opts,
-                        std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock) noexcept;
+    explicit GptpEngine(GptpEngineOptions opts) noexcept;
 
     /// Constructor for testing: inject fake socket and identity.
     GptpEngine(GptpEngineOptions opts,
-               std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock,
                std::unique_ptr<IRawSocket> socket,
                std::unique_ptr<INetworkIdentity> identity) noexcept;
 
@@ -83,9 +87,13 @@ class GptpEngine final
     /// @return true (always succeeds).
     bool Deinitialize();
 
-    /// Copy the latest measurement snapshot into @p info.
+    /// Check for sync timeout, apply status flags, and commit pending_snapshot_
+    /// to current_snapshot_.  Must be called periodically before ReadPTPSnapshot().
+    void FinalizeSnapshot() noexcept;
+
+    /// Copy the latest committed snapshot into @p data.
     /// Non-blocking; returns false only if the engine is not initialized.
-    bool ReadPTPSnapshot(score::td::PtpTimeInfo& info);
+    bool ReadPTPSnapshot(score::ts::GptpIpcData& data) const noexcept;
 
   private:
     void RxLoop() noexcept;
@@ -96,7 +104,6 @@ class GptpEngine final
 
     GptpEngineOptions opts_;
 
-    std::unique_ptr<score::td::PtpTimeInfo::ReferenceClock> local_clock_;
     std::unique_ptr<IRawSocket> socket_;
     std::unique_ptr<INetworkIdentity> identity_;
     FrameCodec codec_;
@@ -105,7 +112,8 @@ class GptpEngine final
     std::unique_ptr<PeerDelayMeasurer> pdelay_;
 
     mutable std::mutex snapshot_mutex_;
-    score::td::PtpTimeInfo snapshot_{};
+    score::ts::GptpIpcData pending_snapshot_{};  ///< Filled by RxThread on Sync+FollowUp
+    score::ts::GptpIpcData current_snapshot_{};  ///< Committed by FinalizeSnapshot()
 
     std::atomic<bool> running_{false};
     std::thread rx_thread_;

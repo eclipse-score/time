@@ -1,59 +1,60 @@
 @startuml
 !theme plain
+skinparam nodesep 40
+skinparam ranksep 50
+skinparam componentStyle rectangle
 
 title TimeSlave Deployment View
 
-node "ECU" {
-    package "TimeSlave Process" as TSP {
-        component [GptpEngine] as GE #LightSalmon
-        component [GptpIpcPublisher] as PUB #LightPink
-
-        package "RxThread" as RXT {
-            component [FrameCodec] as FC #Wheat
-            component [MessageParser] as MP #Wheat
-            component [SyncStateMachine] as SSM #Wheat
-        }
-
-        package "PdelayThread" as PDT {
-            component [PeerDelayMeasurer] as PDM #Wheat
-        }
-
-        component [PhcAdjuster] as PHC #Lavender
-        component [ProbeManager] as PM #Beige
-        component [Recorder] as REC #Beige
-    }
-
-    package "TimeDaemon Process" as TDP {
-        component [GptpIpcReceiver] as RCV #LightPink
-    }
-
-    database "Shared Memory\n/gptp_ptp_info" as SHM
-
-    interface "Raw Socket\n(AF_PACKET)" as SOCK
-    interface "PHC Device\n(/dev/ptpN)" as PHCDEV
+node "Time Master" as TM {
+    component [PTP Grandmaster\nClock] as GMC
 }
 
-cloud "Network" as NET
+node "ECU" as ECU {
 
-GE --> RXT
-GE --> PDT
-GE --> PHC
-GE --> PUB
+    package "TimeSlave Process" as TSP {
+        component [GptpEngine\n«RxThread + PdelayThread»] as GE #LightSalmon
+        component [PhcAdjuster] as PHC #Lavender
+        component [GptpIpcPublisher] as PUB #LightPink
+        component [ProbeManager + Recorder] as INST #Beige
+    }
 
-FC --> MP
-MP --> SSM
-MP --> PDM
+    component [«hw clock»\nPHC Device] as PHCDEV
 
-PUB -[#green]-> SHM : seqlock write
-RCV -[#green]-> SHM : seqlock read
+    database "Shared Memory\n/gptp_ptp_info" as SHM #LightCyan
 
-RXT -[#blue]-> SOCK : recv
-PDT -[#blue]-> SOCK : send/recv
+    package "TimeDaemon Process" as TDP {
+        component [ShmPTPEngine] as SHME #LightSalmon
+        component [GptpIpcReceiver] as RCV #LightPink
+    }
+}
 
-PHC -[#orange]-> PHCDEV : clock_adjtime
+cloud "Network\n(Ethernet)" as NET
 
-SOCK -[#blue]-> NET : gPTP frames\nEtherType 0x88F7
+' Top-level flow
+GMC -down[#purple]-> GE : PTP sync messages\n(EtherType 0x88F7)
+GE -down[#blue]-> NET : PDelayReq / PDelayResp
+NET -up[#blue]-> GE
 
-PM --> REC : probe events
+' Hardware clock adjustment
+GE -down-> PHC : offset / rate ratio
+PHC -down[#orange]-> PHCDEV : clock_adjtime /\nEMAC ioctl
+
+' Shared memory IPC
+GE -down-> PUB
+PUB -down[#green]-> SHM : seqlock write\n(GptpIpcData)
+RCV -up[#green]-> SHM : seqlock read\n(GptpIpcData)
+
+' TimeDaemon internal
+SHME -down-* RCV
+
+' Instrumentation
+GE .down.> INST : probe events
+
+note right of TDP
+  ShmPTPEngine wraps GptpIpcReceiver.
+  Converts GptpIpcData → PtpTimeInfo.
+  Instantiated as GPTPRealMachine.
+end note
 
 @enduml

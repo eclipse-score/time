@@ -13,7 +13,7 @@
 #ifndef SCORE_TIMESLAVE_CODE_GPTP_DETAILS_PDELAY_MEASURER_H
 #define SCORE_TIMESLAVE_CODE_GPTP_DETAILS_PDELAY_MEASURER_H
 
-#include "score/TimeDaemon/code/common/data_types/ptp_time_info.h"
+#include "score/libTSClient/gptp_ipc_data.h"
 #include "score/TimeSlave/code/gptp/details/i_raw_socket.h"
 #include "score/TimeSlave/code/gptp/details/ptp_types.h"
 
@@ -31,7 +31,7 @@ namespace details
 struct PDelayResult
 {
     std::int64_t path_delay_ns{0};
-    score::td::PDelayData pdelay_data{};
+    score::ts::GptpIpcPDelayData pdelay_data{};
     bool valid{false};
 };
 

@@ -145,7 +145,7 @@ TEST_F(SyncStateMachineTest, JumpPast_Detected_OnSecondPair)
     DeliverPair(ssm_, 1U, 2'100'000'000LL, 2'000'000'000LL);
 
     // Second pair: master_ns goes backward → is_time_jump_past
-    auto result = ssm_.OnFollowUp(MakeFollowUp(2U, 1'000'000'000LL));  // no Sync preceding this on new seqId
+    std::ignore = ssm_.OnFollowUp(MakeFollowUp(2U, 1'000'000'000LL));  // no Sync preceding this on new seqId
 
     ssm_.OnSync(MakeSync(2U, 3'000'000'000LL));
     auto r2 = ssm_.OnFollowUp(MakeFollowUp(2U, 1'000'000'000LL));

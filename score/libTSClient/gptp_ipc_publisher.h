@@ -43,8 +43,8 @@ class GptpIpcPublisher final
     /// @return true on success.
     bool Init(const std::string& ipc_name = kGptpIpcName);
 
-    /// Publish a PtpTimeInfo snapshot using seqlock.
-    void Publish(const score::td::PtpTimeInfo& info);
+    /// Publish a GptpIpcData snapshot using seqlock.
+    void Publish(const score::ts::GptpIpcData& data);
 
     /// Unmap and unlink the shared memory segment.
     void Destroy();

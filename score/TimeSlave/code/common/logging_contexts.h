@@ -18,7 +18,11 @@ namespace score
 namespace ts
 {
 
+/// Logging context for the gPTP protocol engine (RxThread / PdelayThread).
 constexpr auto kGPtpMachineContext = "GPTP_SLAVE";
+
+/// Logging context for the TimeSlave application lifecycle (Initialize / Run).
+constexpr auto kTimeSlaveAppContext = "TS_APP";
 
 }  // namespace ts
 }  // namespace score

@@ -134,7 +134,7 @@ TEST_F(PeerDelayMeasurerTest, PDelayData_TimestampFields_PopulatedCorrectly)
     measurer_.OnResponse(MakeResp(0U, /*t2=*/100LL, /*t4=*/180LL));
     measurer_.OnResponseFollowUp(MakeResp(0U, /*t3=*/80LL));
 
-    const score::td::PDelayData& d = measurer_.GetResult().pdelay_data;
+    const score::ts::GptpIpcPDelayData& d = measurer_.GetResult().pdelay_data;
     EXPECT_EQ(d.request_origin_timestamp, 0ULL);      // t1
     EXPECT_EQ(d.request_receipt_timestamp, 100ULL);   // t2
     EXPECT_EQ(d.response_origin_timestamp, 80ULL);    // t3

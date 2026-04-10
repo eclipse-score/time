@@ -14,7 +14,6 @@
 
 #include "score/TimeSlave/code/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
-#include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
 
 #include <thread>
 
@@ -23,44 +22,49 @@ namespace score
 namespace ts
 {
 
+namespace
+{
+
+constexpr std::int32_t kInitSuccess = 0;
+constexpr std::int32_t kInitFailure = -1;
+
+}  // namespace
+
 TimeSlave::TimeSlave() = default;
 
 std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContext& /*context*/)
 {
-    // Create the high-precision local clock for the gPTP engine
-    score::time::HighPrecisionLocalSteadyClock::FactoryImpl clock_factory{};
-    auto clock = clock_factory.CreateHighPrecisionLocalSteadyClock();
-
-    engine_ = std::make_unique<details::GptpEngine>(opts_, std::move(clock));
+    engine_ = std::make_unique<details::GptpEngine>(opts_);
 
     if (!engine_->Initialize())
     {
-        score::mw::log::LogError(kGPtpMachineContext) << "TimeSlave: GptpEngine initialization failed";
-        return -1;
+        score::mw::log::LogError(kTimeSlaveAppContext) << "TimeSlave: GptpEngine initialization failed";
+        return kInitFailure;
     }
 
     if (!publisher_.Init())
     {
-        score::mw::log::LogError(kGPtpMachineContext) << "TimeSlave: shared memory publisher initialization failed";
-        return -1;
+        score::mw::log::LogError(kTimeSlaveAppContext) << "TimeSlave: shared memory publisher initialization failed";
+        return kInitFailure;
     }
 
-    score::mw::log::LogInfo(kGPtpMachineContext) << "TimeSlave initialized";
-    return 0;
+    score::mw::log::LogInfo(kTimeSlaveAppContext) << "TimeSlave initialized";
+    return kInitSuccess;
 }
 
 std::int32_t TimeSlave::Run(const score::cpp::stop_token& token)
 {
     constexpr auto kPublishInterval = std::chrono::milliseconds{50};
 
-    score::mw::log::LogInfo(kGPtpMachineContext) << "TimeSlave running";
+    score::mw::log::LogInfo(kTimeSlaveAppContext) << "TimeSlave running";
 
     while (!token.stop_requested())
     {
-        score::td::PtpTimeInfo info{};
-        if (engine_->ReadPTPSnapshot(info))
+        engine_->FinalizeSnapshot();
+        score::ts::GptpIpcData data{};
+        if (engine_->ReadPTPSnapshot(data))
         {
-            publisher_.Publish(info);
+            publisher_.Publish(data);
         }
 
         std::this_thread::sleep_for(kPublishInterval);
@@ -69,8 +73,8 @@ std::int32_t TimeSlave::Run(const score::cpp::stop_token& token)
     engine_->Deinitialize();
     publisher_.Destroy();
 
-    score::mw::log::LogInfo(kGPtpMachineContext) << "TimeSlave stopped";
-    return 0;
+    score::mw::log::LogInfo(kTimeSlaveAppContext) << "TimeSlave stopped";
+    return kInitSuccess;
 }
 
 }  // namespace ts

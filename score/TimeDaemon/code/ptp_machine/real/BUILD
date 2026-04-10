@@ -28,7 +28,7 @@ cc_library(
     visibility = ["//score/TimeDaemon:__subpackages__"],
     deps = [
         "//score/TimeDaemon/code/ptp_machine/core:ptp_machine",
-        "//score/TimeDaemon/code/ptp_machine/real/details:real_ptp_engine",
+        "//score/TimeDaemon/code/ptp_machine/real/details:shm_ptp_engine",
         "//score/libTSClient:gptp_ipc",
     ],
 )
@@ -50,7 +50,7 @@ cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
     cc_unit_tests = [":gptp_real_machine_test"],
     test_suites_from_sub_packages = [
-        "//score/TimeDaemon/code/ptp_machine/real/details:unit_test_suite",
+        "//score/TimeDaemon/code/ptp_machine/real/details:unit_test_suite",  # shm_ptp_engine
     ],
     visibility = ["//score/TimeDaemon:__subpackages__"],
 )

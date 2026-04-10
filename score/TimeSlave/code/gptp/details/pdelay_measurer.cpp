@@ -144,7 +144,7 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
     r.path_delay_ns = delay;
     r.valid = true;
 
-    score::td::PDelayData& d = r.pdelay_data;
+    score::ts::GptpIpcPDelayData& d = r.pdelay_data;
     d.request_origin_timestamp = static_cast<std::uint64_t>(t1.ns);
     d.request_receipt_timestamp = static_cast<std::uint64_t>(t2.ns);
     d.response_origin_timestamp = static_cast<std::uint64_t>(t3.ns);

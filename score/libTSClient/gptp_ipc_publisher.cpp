@@ -18,8 +18,8 @@
 #include <cstring>
 #include <type_traits>
 
-static_assert(std::is_trivially_copyable<score::td::PtpTimeInfo>::value,
-              "PtpTimeInfo must be trivially copyable for seqlock memcpy to be valid");
+static_assert(std::is_trivially_copyable<score::ts::GptpIpcData>::value,
+              "GptpIpcData must be trivially copyable for seqlock memcpy to be valid");
 
 namespace score
 {
@@ -65,7 +65,7 @@ bool GptpIpcPublisher::Init(const std::string& ipc_name)
     return true;
 }
 
-void GptpIpcPublisher::Publish(const score::td::PtpTimeInfo& info)
+void GptpIpcPublisher::Publish(const score::ts::GptpIpcData& data)
 {
     if (region_ == nullptr)
         return;
@@ -77,7 +77,7 @@ void GptpIpcPublisher::Publish(const score::td::PtpTimeInfo& info)
     // half of acq_rel is unnecessary for a seqlock writer; release suffices here.
     std::atomic_thread_fence(std::memory_order_release);
 
-    std::memcpy(&region_->data, &info, sizeof(score::td::PtpTimeInfo));
+    std::memcpy(&region_->data, &data, sizeof(score::ts::GptpIpcData));
 
     region_->seq_confirm.store(next + 1U, std::memory_order_release);
     region_->seq.store(next + 1U, std::memory_order_release);

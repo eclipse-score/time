@@ -122,7 +122,7 @@ SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessag
         return v >= 0 ? static_cast<std::uint64_t>(v) : 0U;
     };
 
-    score::td::SyncFupData& d = r.sync_fup_data;
+    score::ts::GptpIpcSyncFupData& d = r.sync_fup_data;
     d.precise_origin_timestamp = to_u64(fup_ts.ns);
     d.reference_global_timestamp = to_u64(master_ns);
     d.reference_local_timestamp = to_u64(sync.recvHardwareTS.ns);
