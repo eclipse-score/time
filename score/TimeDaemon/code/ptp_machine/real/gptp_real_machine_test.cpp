@@ -36,9 +36,9 @@ std::string UniqueShmName()
            std::to_string(counter.fetch_add(1, std::memory_order_relaxed));
 }
 
-score::td::PtpTimeInfo MakePublishedInfo()
+score::ts::GptpIpcData MakePublishedInfo()
 {
-    score::td::PtpTimeInfo info{};
+    score::ts::GptpIpcData info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{5'000'000'000LL};
     info.rate_deviation = 0.5;
     info.status.is_synchronized = true;
