@@ -30,7 +30,7 @@ jobs:
       matrix:
         config: ['time-x86_64-qnx', 'time-arm64-qnx']
     with:
-      bazel-target: '//score/... //examples/...'
+      bazel-target: '--lockfile_mode=error //score/... //examples/...'
       bazel-config: ${{ matrix.config }}
       credential-helper: 'tools/qnx_credential_helper.py'
       environment-name: 'workflow-approval'
