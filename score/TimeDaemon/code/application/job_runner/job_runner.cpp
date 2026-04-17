@@ -27,15 +27,15 @@ JobRunner::JobRunner(std::vector<Job> jobs, const std::string name)
 
 void JobRunner::Start(const score::cpp::stop_token& token)
 {
-    if (status_ != Result::kIdle)
     {
-        return;  // Already running
-    }
+        std::lock_guard<std::mutex> lock(status_mutex_);
+        if (status_ != Result::kIdle)
+        {
+            return;  // Already running
+        }
 
-    {
         // Set before score::cpp::jthread as if we will set it after, worker_thread_
         // it could be already done.
-        std::lock_guard<std::mutex> lock(status_mutex_);
         status_ = Result::kInProgress;
     }
 
