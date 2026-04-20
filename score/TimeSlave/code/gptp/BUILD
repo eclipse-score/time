@@ -31,6 +31,7 @@ cc_library(
     deps = [
         "//score/TimeSlave/code/common:logging_contexts",
         "//score/TimeSlave/code/gptp/details:gptp_details",
+        "//score/TimeSlave/code/gptp/phc:phc_adjuster",
         "//score/libTSClient:gptp_ipc",
         "@score_baselibs//score/mw/log:frontend",
     ],

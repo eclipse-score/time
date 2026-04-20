@@ -10,44 +10,46 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-
-// QNX BPF-based raw socket shim for gPTP frame capture and transmission.
-// Provides qnx_raw_open / qnx_raw_recv / qnx_raw_send / qnx_phc_* symbols
-// declared in raw_socket.cpp (extern "C").
-
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <net/bpf.h>
 #include <net/if.h>
 #include <netinet/if_ether.h>
+#include <poll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <algorithm>
+#include <atomic>
 #include <cerrno>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 
-// QNX SDP 8.0: PTP API constants (from io-sock/ptp.h, inlined to avoid
-// struct PortIdentity redefinition conflict with details/ptp_types.h).
 #define PTP_GET_TIME 0x102
 #define PTP_SET_TIME 0x103
+// EMAC_PTP_ADJ_FREQ_PPM: Qualcomm BSP (hw/iosock/emac_ioctl.h), ptp_ppm_t = int
+// Positive ppm = speed up PHC, negative = slow down.
+static constexpr unsigned long kEmacPtpAdjFreqPpm = 52UL;
 struct ptp_time
 {
     int64_t sec;
     int32_t nsec;
 };
 
-// Inlined ptp_tstmp (from io-sock/ptp.h) — avoids PortIdentity name collision.
-// A TX loopback frame contains an Ethernet header followed by this struct.
-struct PtpTstmp
+struct ptp_tstmp
 {
-    uint32_t uid;
-    ptp_time time;
+    struct
+    {
+        std::int64_t  sec;   // EMAC PHC TX hardware timestamp seconds,       offset  0
+        std::int32_t  nsec;  // EMAC PHC TX hardware timestamp nanoseconds,   offset  8
+        // implicit 4-byte trailing pad: sizeof(this struct) = 16
+    } time;
+    std::uint32_t uid;       // per-TX frame matching uid (BIOCGTSTAMPID),    offset 16
+    // implicit 4-byte trailing pad: sizeof(ptp_tstmp) = 24
 };
 
-// ── EtherType constants ───────────────────────────────────────────────────────
+
 #ifndef ETH_P_8021Q
 #define ETH_P_8021Q 0x8100U
 #endif
@@ -55,120 +57,134 @@ struct PtpTstmp
 #define ETH_P_1588 0x88F7U
 #endif
 
-// ── Self-contained ethernet header layout ────────────────────────────────────
 struct GptpEthHdr
 {
     unsigned char h_dest[6];
     unsigned char h_source[6];
-    uint16_t h_proto;
+    uint16_t      h_proto;
 };
 
-static constexpr int64_t kNsPerSec = 1'000'000'000LL;
+static constexpr int64_t     kNsPerSec    = 1'000'000'000LL;
 static constexpr std::size_t kMaxBpfBufSz = 65536U;
-static constexpr int kMaxTxScanTries = 8;
 
-// Caplen of a BPF TX loopback frame injected by the PTP driver:
-//   Ethernet header (14 B) + ptp_tstmp payload (4 + 12 = 16 B) = 30 B
-static constexpr int kTxLoopbackCaplen = static_cast<int>(sizeof(GptpEthHdr) + sizeof(PtpTstmp));
+// PHC frequency adjustment state (PI controller).
+// g_skip_freq_after_step: skip N cycles after a step correction so the
+//   clock can stabilise before re-applying rate-ratio based slewing.
+// g_smoothed_comp_ppb: P term — EMA of raw_ppb (α=0.2), fast convergence.
+// g_integral_ppb:      I term — slow integrator of P, eliminates the E/2
+//   steady-state error that a pure P/EMA controller leaves behind.
+static int    g_skip_freq_after_step = 0;
+static double g_smoothed_comp_ppb    = 0.0;  // P term: EMA of raw_ppb (ppb)
+static double g_integral_ppb         = 0.0;  // I term: integrator (ppb)
 
-// ── BPF kernel filter: pass only IEEE 802.1AS (ETH_P_1588) frames ────────────
-//   BPF_LD  H ABS 12   — load EtherType (bytes 12-13)
-//   BPF_JEQ ETH_P_1588 — jump if match
-//   BPF_RET (u_int)-1  — keep entire packet
-//   BPF_RET 0          — drop
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
+static_assert(sizeof(ptp_tstmp) == 24U, "ptp_tstmp: time{sec:8+nsec:4+pad:4}=16 + uid:4 + pad:4 = 24");
+static constexpr int kTxLoopbackCaplen = static_cast<int>(sizeof(GptpEthHdr) + sizeof(ptp_tstmp));
+
 static struct bpf_insn kPtp1588FilterInsns[] = {
     BPF_STMT(BPF_LD + BPF_H + BPF_ABS, 12),
     BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, ETH_P_1588, 0, 1),
     BPF_STMT(BPF_RET + BPF_K, static_cast<u_int>(-1)),
     BPF_STMT(BPF_RET + BPF_K, 0),
 };
-static const u_int kPtp1588FilterLen = static_cast<u_int>(sizeof(kPtp1588FilterInsns) / sizeof(kPtp1588FilterInsns[0]));
+static const u_int kPtp1588FilterLen =
+    static_cast<u_int>(sizeof(kPtp1588FilterInsns) / sizeof(kPtp1588FilterInsns[0]));
 
-// ── Per-thread BPF context ───────────────────────────────────────────────────
+static struct bpf_insn kPdelayReqFilterInsns[] = {
+    BPF_STMT(BPF_LD  + BPF_H   + BPF_ABS, 12),                          // load EtherType
+    BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K,   ETH_P_1588, 0, 4),           // != 0x88F7 → FAIL
+    BPF_STMT(BPF_LD  + BPF_B   + BPF_ABS, 14),                          // load PTP tsmt byte
+    BPF_STMT(BPF_ALU + BPF_AND + BPF_K,   0x0FU),                       // mask message type
+    BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K,   0x02U, 0, 1),                // != Pdelay_Req → FAIL
+    BPF_STMT(BPF_RET + BPF_K,             static_cast<u_int>(-1)),      // PASS
+    BPF_STMT(BPF_RET + BPF_K,             0U),                          // FAIL
+};
+static const u_int kPdelayReqFilterLen =
+    static_cast<u_int>(sizeof(kPdelayReqFilterInsns) / sizeof(kPdelayReqFilterInsns[0]));
+
 struct QnxRawContext
 {
-    int bpf_fd = -1;
-    u_int bpf_buflen = 0;
-    char iface_name[IFNAMSIZ]{};
+    int          bpf_fd     = -1;
+    u_int        bpf_buflen = 0;
+    char         iface_name[IFNAMSIZ]{};
     unsigned char bpf_buf[kMaxBpfBufSz]{};
-    ssize_t bpf_n = 0;
-    ssize_t bpf_off = 0;
-    bool initialized = false;
+    ssize_t      bpf_n   = 0;
+    ssize_t      bpf_off = 0;
+    bool         initialized = false;
     unsigned char tx_frame[ETHER_HDR_LEN + 1500]{};
 
-    // Secondary BPF fd with BIOCSSEESENT=1 for reading TX loopback timestamps.
-    // Lazily opened on first qnx_raw_send() call.
-    int tx_loopback_fd = -1;
-    u_int tx_loopback_buflen = 0;
-    unsigned char tx_loopback_buf[kMaxBpfBufSz]{};
+    int           promisc_sock = -1;
+
+    int           tx_lb_fd      = -1;
+    u_int         tx_lb_buflen  = 0;
+    unsigned char tx_lb_buf[kMaxBpfBufSz]{};
+
+    std::atomic<std::int64_t> inject_t1_ns{-1LL};
 
     ~QnxRawContext()
     {
-        if (bpf_fd >= 0)
-        {
-            ::close(bpf_fd);
-            bpf_fd = -1;
-        }
-        if (tx_loopback_fd >= 0)
-        {
-            ::close(tx_loopback_fd);
-            tx_loopback_fd = -1;
-        }
+        if (bpf_fd >= 0)       { ::close(bpf_fd);       bpf_fd       = -1; }
+        if (tx_lb_fd >= 0)     { ::close(tx_lb_fd);     tx_lb_fd     = -1; }
+        if (promisc_sock >= 0) { ::close(promisc_sock); promisc_sock = -1; }
     }
 };
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
-thread_local QnxRawContext g_qnx_ctx;
+static QnxRawContext g_qnx_ctx;
 
-// ── Internal helpers ──────────────────────────────────────────────────────────
-
-// Convert a bpf_xhdr hardware timestamp to timespec.
-// bpf_ts::bt_sec  — seconds (int64_t)
-// bpf_ts::bt_frac — binary fraction of a second (uint64_t, unit = 2^-64 s)
-// This is equivalent to bintime2timespec() from <sys/time.h>.
 static void bpf_ts_to_timespec(const bpf_xhdr* bh, struct timespec* ts) noexcept
 {
-    ts->tv_sec = static_cast<time_t>(bh->bh_tstamp.bt_sec);
+    ts->tv_sec  = static_cast<time_t>(bh->bh_tstamp.bt_sec);
     const uint64_t top32 = bh->bh_tstamp.bt_frac >> 32U;
     ts->tv_nsec = static_cast<long>((top32 * 1'000'000'000ULL) >> 32U);
 }
 
-// Parse an Ethernet/VLAN frame; return byte offset of PTP payload or -1.
 static int ptp_payload_offset(const unsigned char* frame, int caplen)
 {
     if (caplen < static_cast<int>(sizeof(GptpEthHdr)))
         return -1;
-
     GptpEthHdr eth{};
     std::memcpy(&eth, frame, sizeof(GptpEthHdr));
     uint16_t etype = ntohs(eth.h_proto);
     int offset = static_cast<int>(sizeof(GptpEthHdr));
-
     if (etype == ETH_P_8021Q)
     {
-        if (caplen < offset + 4)
-            return -1;
+        if (caplen < offset + 4) return -1;
         uint16_t inner{};
         std::memcpy(&inner, frame + offset + 2, sizeof(uint16_t));
         etype = ntohs(inner);
         offset += 4;
     }
-
     return (etype == ETH_P_1588) ? offset : -1;
 }
 
-// Open a secondary BPF fd on the same interface as main_fd, with
-// BIOCSSEESENT=1 so our own TX frames appear as loopback records.
-// Stores the resulting buffer length in g_qnx_ctx.tx_loopback_buflen.
-// Returns the new fd or -1.
-static int open_tx_loopback_fd(int main_fd) noexcept
+static void join_eth_multicast(const char* ifname, const unsigned char mac[6]) noexcept
 {
-    // Retrieve interface name from the already-bound main fd.
+    int s = ::socket(AF_INET, SOCK_DGRAM, 0);
+    if (s < 0) return;
     ::ifreq ifr{};
-    if (::ioctl(main_fd, BIOCGETIF, &ifr) < 0)
-        return -1;
+    ::strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+    ifr.ifr_addr.sa_len    = static_cast<unsigned char>(1U + 1U + ETHER_ADDR_LEN);
+    ifr.ifr_addr.sa_family = AF_UNSPEC;
+    std::memcpy(ifr.ifr_addr.sa_data, mac, 6);
+    (void)::ioctl(s, SIOCADDMULTI, &ifr);
+    ::close(s);
+}
 
+static int set_iface_promisc(const char* ifname) noexcept
+{
+    int s = ::socket(AF_INET, SOCK_DGRAM, 0);
+    if (s < 0) return -1;
+    ::ifreq ifr{};
+    ::strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+    if (::ioctl(s, SIOCGIFFLAGS, &ifr) == 0)
+    {
+        ifr.ifr_flags |= IFF_PROMISC | IFF_ALLMULTI;
+        (void)::ioctl(s, SIOCSIFFLAGS, &ifr);
+    }
+    return s;  // keep open — closed in ~QnxRawContext()
+}
+
+static int open_tx_loopback_fd(const char* ifname) noexcept
+{
     char devpath[256]{};
     const char* sock_env = std::getenv("SOCK");
     if (sock_env != nullptr && sock_env[0] != '\0')
@@ -176,51 +192,36 @@ static int open_tx_loopback_fd(int main_fd) noexcept
     else
         std::snprintf(devpath, sizeof(devpath), "/dev/bpf");
 
-    int lfd = ::open(devpath, O_RDWR);
-    if (lfd < 0)
-        return -1;
+    const int fd = ::open(devpath, O_RDWR);
+    if (fd < 0) return -1;
 
-    if (::ioctl(lfd, BIOCSETIF, &ifr) < 0)
-    {
-        ::close(lfd);
-        return -1;
-    }
+    ::ifreq ifr{};
+    ::strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
+    if (::ioctl(fd, BIOCSETIF, &ifr) < 0) { ::close(fd); return -1; }
 
-    // Enable loopback so our sent frames are visible on this fd.
     u_int one = 1U;
-    (void)::ioctl(lfd, BIOCSSEESENT, &one);
-    (void)::ioctl(lfd, BIOCIMMEDIATE, &one);
+    (void)::ioctl(fd, BIOCSSEESENT,  &one);  // capture TX frames
+    (void)::ioctl(fd, BIOCIMMEDIATE, &one);  // no batching delay
 
-    // Request PTP hardware timestamps in bpf_xhdr format.
-    u_int bpf_ts = BPF_T_PTP | BPF_T_BINTIME;
-    (void)::ioctl(lfd, BIOCSTSTAMP, &bpf_ts);
+    u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
+    (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
 
-    // Apply the same ETH_P_1588 kernel filter.
-    struct bpf_program prog
-    {
-        kPtp1588FilterLen, kPtp1588FilterInsns
-    };
-    (void)::ioctl(lfd, BIOCSETF, &prog);
+    struct bpf_program prog{kPdelayReqFilterLen, kPdelayReqFilterInsns};
+    if (::ioctl(fd, BIOCSETF, &prog) < 0) { ::close(fd); return -1; }
 
     u_int buflen = 0U;
-    if (::ioctl(lfd, BIOCGBLEN, &buflen) < 0 || buflen == 0U || buflen > kMaxBpfBufSz)
+    if (::ioctl(fd, BIOCGBLEN, &buflen) < 0 || buflen > kMaxBpfBufSz)
     {
-        ::close(lfd);
+        ::close(fd);
         return -1;
     }
-    g_qnx_ctx.tx_loopback_buflen = buflen;
-    return lfd;
+    g_qnx_ctx.tx_lb_buflen = buflen;
+    return fd;
 }
-
-// ── Public C interface ────────────────────────────────────────────────────────
 
 extern "C" int qnx_raw_open(const char* ifname)
 {
-    if (ifname == nullptr)
-    {
-        errno = EINVAL;
-        return -1;
-    }
+    if (ifname == nullptr) { errno = EINVAL; return -1; }
 
     ::strlcpy(g_qnx_ctx.iface_name, ifname, sizeof(g_qnx_ctx.iface_name));
 
@@ -232,37 +233,26 @@ extern "C" int qnx_raw_open(const char* ifname)
         std::snprintf(devpath, sizeof(devpath), "/dev/bpf");
 
     int fd = ::open(devpath, O_RDWR);
-    if (fd < 0)
-        return -1;
+    if (fd < 0) return -1;
 
     ::ifreq ifr{};
     ::strlcpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-    if (::ioctl(fd, BIOCSETIF, &ifr) < 0)
-    {
-        ::close(fd);
-        return -1;
-    }
+    if (::ioctl(fd, BIOCSETIF, &ifr) < 0) { ::close(fd); return -1; }
 
-    // Do NOT see our own TX frames on the main fd; use tx_loopback_fd instead.
-    int zero = 0;
-    (void)::ioctl(fd, BIOCSSEESENT, &zero);
+    u_int seesent = 0U;
+    (void)::ioctl(fd, BIOCSSEESENT, &seesent);
 
     u_int yes = 1U;
     (void)::ioctl(fd, BIOCIMMEDIATE, &yes);
+
+    g_qnx_ctx.promisc_sock = set_iface_promisc(ifname);
     (void)::ioctl(fd, BIOCPROMISC, &yes);
 
-    // Request PTP hardware timestamps in bpf_xhdr format (IEEE 1588 clock).
-    // Falls back gracefully: if unsupported, timestamps will be zero and
-    // qnx_raw_recv() will fall back to CLOCK_REALTIME.
-    u_int bpf_ts = BPF_T_PTP | BPF_T_BINTIME;
+    u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
     (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
 
-    // Install kernel BPF filter: discard all non-ETH_P_1588 frames early.
-    struct bpf_program prog
-    {
-        kPtp1588FilterLen, kPtp1588FilterInsns
-    };
-    (void)::ioctl(fd, BIOCSETF, &prog);  // best-effort; userspace filter still runs
+    struct bpf_program prog{kPtp1588FilterLen, kPtp1588FilterInsns};
+    if (::ioctl(fd, BIOCSETF, &prog) < 0) { ::close(fd); return -1; }
 
     if (::ioctl(fd, BIOCGBLEN, &g_qnx_ctx.bpf_buflen) < 0)
     {
@@ -276,8 +266,16 @@ extern "C" int qnx_raw_open(const char* ifname)
         return -1;
     }
 
-    g_qnx_ctx.bpf_fd = fd;
+    g_qnx_ctx.bpf_fd      = fd;
     g_qnx_ctx.initialized = true;
+
+    g_qnx_ctx.tx_lb_fd = open_tx_loopback_fd(ifname);
+
+    static const unsigned char kPtpP2PMac[6]  = {0x01U, 0x80U, 0xC2U, 0x00U, 0x00U, 0x0EU};
+    static const unsigned char kPtp1588Mac[6] = {0x01U, 0x1BU, 0x19U, 0x00U, 0x00U, 0x00U};
+    join_eth_multicast(ifname, kPtpP2PMac);
+    join_eth_multicast(ifname, kPtp1588Mac);
+
     return fd;
 }
 
@@ -303,87 +301,133 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
 
     for (;;)
     {
-        // Refill BPF read buffer when exhausted.
         if (g_qnx_ctx.bpf_off >= g_qnx_ctx.bpf_n)
         {
-            ssize_t n = ::read(fd, g_qnx_ctx.bpf_buf, g_qnx_ctx.bpf_buflen);
-            if (n < 0)
-                return -1;
+            if (nonblock == 0)
+            {
+                struct pollfd pfd{fd, POLLIN, 0};
+                const int pr = ::poll(&pfd, 1, 100);
+                if (pr < 0) return -1;
+                if (pr == 0) { errno = ETIMEDOUT; return -1; }
+                if ((pfd.revents & (POLLERR | POLLHUP | POLLNVAL)) != 0) return -1;
+            }
+
+            const ssize_t n = ::read(fd, g_qnx_ctx.bpf_buf, g_qnx_ctx.bpf_buflen);
+            if (n < 0) return -1;
             if (n == 0)
             {
-                if (nonblock != 0)
-                {
-                    errno = EAGAIN;
-                    return -1;
-                }
+                if (nonblock != 0) { errno = EAGAIN; return -1; }
                 continue;
             }
-            g_qnx_ctx.bpf_n = n;
+            g_qnx_ctx.bpf_n   = n;
             g_qnx_ctx.bpf_off = 0;
         }
 
-        // Need at least sizeof(bpf_xhdr) bytes for the header.
-        if (g_qnx_ctx.bpf_off + static_cast<ssize_t>(sizeof(bpf_xhdr)) > g_qnx_ctx.bpf_n)
+        static constexpr ssize_t kBhHdrMinBytes =
+            static_cast<ssize_t>(offsetof(bpf_xhdr, bh_hdrlen)) +
+            static_cast<ssize_t>(sizeof(u_short));  // = 26
+
+        if (g_qnx_ctx.bpf_off + kBhHdrMinBytes > g_qnx_ctx.bpf_n)
         {
             g_qnx_ctx.bpf_off = g_qnx_ctx.bpf_n;
             continue;
         }
 
-        // Verify 8-byte alignment required by bpf_xhdr.
-        const auto ptr_val = reinterpret_cast<std::uintptr_t>(g_qnx_ctx.bpf_buf + g_qnx_ctx.bpf_off);
-        if (ptr_val % alignof(bpf_xhdr) != 0U)
+        const unsigned char* bh_raw = g_qnx_ctx.bpf_buf + g_qnx_ctx.bpf_off;
+        bpf_u_int32 bh_caplen = 0;
+        u_short     bh_hdrlen = 0;
+        std::memcpy(&bh_caplen, bh_raw + offsetof(bpf_xhdr, bh_caplen), sizeof(bpf_u_int32));
+        std::memcpy(&bh_hdrlen, bh_raw + offsetof(bpf_xhdr, bh_hdrlen), sizeof(u_short));
+
+        if (bh_hdrlen < static_cast<u_short>(kBhHdrMinBytes) ||
+            bh_caplen > static_cast<bpf_u_int32>(g_qnx_ctx.bpf_n) ||
+            g_qnx_ctx.bpf_off + static_cast<ssize_t>(bh_hdrlen) +
+                static_cast<ssize_t>(bh_caplen) > g_qnx_ctx.bpf_n)
         {
             g_qnx_ctx.bpf_off = g_qnx_ctx.bpf_n;
             continue;
         }
 
-        const auto* bh = reinterpret_cast<const bpf_xhdr*>(g_qnx_ctx.bpf_buf + g_qnx_ctx.bpf_off);
+        const unsigned char* pkt      = bh_raw + bh_hdrlen;
+        const int            caplen   = static_cast<int>(bh_caplen);
+        const ssize_t        next_off =
+            g_qnx_ctx.bpf_off + static_cast<ssize_t>(BPF_WORDALIGN(bh_hdrlen + bh_caplen));
 
-        // Bounds checks.
-        if (bh->bh_hdrlen < static_cast<u_short>(sizeof(bpf_xhdr)) ||
-            bh->bh_caplen > static_cast<bpf_u_int32>(g_qnx_ctx.bpf_n) ||
-            g_qnx_ctx.bpf_off + static_cast<ssize_t>(bh->bh_hdrlen) + static_cast<ssize_t>(bh->bh_caplen) >
-                g_qnx_ctx.bpf_n)
-        {
-            g_qnx_ctx.bpf_off = g_qnx_ctx.bpf_n;
-            continue;
-        }
-
-        const unsigned char* pkt = reinterpret_cast<const unsigned char*>(bh) + bh->bh_hdrlen;
-        const int caplen = static_cast<int>(bh->bh_caplen);
-        const ssize_t next_off = g_qnx_ctx.bpf_off + static_cast<ssize_t>(BPF_WORDALIGN(bh->bh_hdrlen + bh->bh_caplen));
-
-        // Skip TX loopback frames (BIOCSSEESENT=0 should prevent them on the
-        // main fd, but guard defensively: a loopback frame has a fixed small
-        // caplen equal to ETH header + ptp_tstmp, not a valid PTP message).
         if (caplen == kTxLoopbackCaplen)
         {
+            ptp_tstmp tstmp{};
+            std::memcpy(&tstmp, pkt + sizeof(GptpEthHdr), sizeof(ptp_tstmp));
+            const std::int64_t t1_ns =
+                tstmp.time.sec * kNsPerSec + static_cast<std::int64_t>(tstmp.time.nsec);
+            if (t1_ns > 0)
+            {
+                g_qnx_ctx.inject_t1_ns.store(t1_ns, std::memory_order_release);
+                std::fprintf(stderr, "[t1-inject] uid=%u ts=%lld.%09d\n",
+                             tstmp.uid,
+                             static_cast<long long>(tstmp.time.sec),
+                             tstmp.time.nsec);
+            }
             g_qnx_ctx.bpf_off = next_off;
             continue;
         }
 
         const int ptp_off = ptp_payload_offset(pkt, caplen);
-        if (ptp_off >= 0)
+        if (ptp_off < 0)
         {
-            // Use PTP hardware RX timestamp from bpf_xhdr.
-            // bt_sec==0 && bt_frac==0 means the driver did not provide a HW
-            // timestamp; fall back to CLOCK_REALTIME in that case.
-            if (bh->bh_tstamp.bt_sec != 0 || bh->bh_tstamp.bt_frac != 0)
-            {
-                bpf_ts_to_timespec(bh, hwts);
-            }
-            else
-            {
-                (void)::clock_gettime(CLOCK_REALTIME, hwts);
-            }
-
-            const int frame_len = std::min(caplen, buf_len);
-            std::memcpy(buf, pkt, static_cast<std::size_t>(frame_len));
             g_qnx_ctx.bpf_off = next_off;
-            return frame_len;
+            continue;
         }
 
+        const uint8_t msgtype = static_cast<uint8_t>(pkt[ptp_off]) & 0x0Fu;
+        const auto* bh = reinterpret_cast<const bpf_xhdr*>(bh_raw);
+        bool t4_set = false;
+        if (bh->bh_tstamp.bt_sec != 0 || bh->bh_tstamp.bt_frac != 0)
+        {
+            bpf_ts_to_timespec(bh, hwts);
+            t4_set = true;
+            if (msgtype == 0x03u)
+            {
+                std::fprintf(stderr, "[t4] bpf_phc ts=%lld.%09ld\n",
+                             static_cast<long long>(hwts->tv_sec),
+                             hwts->tv_nsec);
+            }
+        }
+        // PTP_GET_TIME fallback: use PHC hardware time when no BPF timestamp
+        // is available, so rate_ratio reflects ΔPHC / ΔCLOCK_REALTIME.
+        if (!t4_set && g_qnx_ctx.promisc_sock >= 0)
+        {
+            struct
+            {
+                struct ifdrv    ifd;
+                struct ptp_time tm;
+            } cmd{};
+            std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name,
+                         sizeof(cmd.ifd.ifd_name) - 1U);
+            cmd.ifd.ifd_len  = sizeof(cmd.tm);
+            cmd.ifd.ifd_data = &cmd.tm;
+            cmd.ifd.ifd_cmd  = PTP_GET_TIME;
+            if (::ioctl(g_qnx_ctx.promisc_sock, SIOCGDRVSPEC, &cmd) == 0)
+            {
+                hwts->tv_sec  = static_cast<time_t>(cmd.tm.sec);
+                hwts->tv_nsec = static_cast<long>(cmd.tm.nsec);
+                t4_set = true;
+                if (msgtype == 0x03u)
+                {
+                    std::fprintf(stderr, "[t4] PTP_GET_TIME ts=%lld.%09ld\n",
+                                 static_cast<long long>(cmd.tm.sec),
+                                 static_cast<long>(cmd.tm.nsec));
+                }
+            }
+        }
+        if (!t4_set)
+        {
+            (void)::clock_gettime(CLOCK_REALTIME, hwts);
+        }
+
+        const int frame_len = std::min(caplen, buf_len);
+        std::memcpy(buf, pkt, static_cast<std::size_t>(frame_len));
         g_qnx_ctx.bpf_off = next_off;
+        return frame_len;
     }
 }
 
@@ -401,79 +445,56 @@ extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
     }
 
     std::memcpy(g_qnx_ctx.tx_frame, buf, static_cast<std::size_t>(len));
-    ssize_t n = ::write(fd, g_qnx_ctx.tx_frame, static_cast<std::size_t>(len));
-    if (n < 0)
+
+    g_qnx_ctx.inject_t1_ns.store(-1LL, std::memory_order_relaxed);
+
+    if (::write(fd, g_qnx_ctx.tx_frame, static_cast<std::size_t>(len)) < 0)
         return -1;
 
-    // Attempt to obtain a hardware TX timestamp via the BPF loopback mechanism:
-    //   1. BIOCGTSTAMPID returns the UID assigned to the just-sent frame.
-    //   2. The driver inserts a loopback record on fds with BIOCSSEESENT=1;
-    //      its payload is a ptp_tstmp struct carrying the actual HW timestamp.
-    //   3. We scan the secondary loopback fd for a record whose uid matches.
-    // If any step fails, we fall back to a CLOCK_REALTIME software timestamp.
-    uint32_t tx_uid = 0U;
-    if (::ioctl(fd, BIOCGTSTAMPID, &tx_uid) == 0)
+    for (int i = 0; i < 100; ++i)
     {
-        // Lazy-open the secondary fd (needs BIOCGETIF to recover iface name).
-        if (g_qnx_ctx.tx_loopback_fd < 0)
-            g_qnx_ctx.tx_loopback_fd = open_tx_loopback_fd(fd);
-
-        if (g_qnx_ctx.tx_loopback_fd >= 0 && g_qnx_ctx.tx_loopback_buflen > 0)
+        const std::int64_t t1 = g_qnx_ctx.inject_t1_ns.load(std::memory_order_acquire);
+        if (t1 > 0)
         {
-            const int lfd = g_qnx_ctx.tx_loopback_fd;
+            hwts->tv_sec  = static_cast<time_t>(t1 / kNsPerSec);
+            hwts->tv_nsec = static_cast<long>(t1 % kNsPerSec);
+            std::fprintf(stderr, "[t1] inject   ts=%lld.%09ld\n",
+                         static_cast<long long>(hwts->tv_sec),
+                         hwts->tv_nsec);
+            return len;
+        }
+        ::usleep(100U);  // 100 µs
+    }
 
-            // Non-blocking scan: the loopback frame typically arrives within
-            // a few microseconds; we try kMaxTxScanTries reads.
-            int flags = ::fcntl(lfd, F_GETFL, 0);
-            (void)::fcntl(lfd, F_SETFL, (flags >= 0 ? flags : 0) | O_NONBLOCK);
-
-            for (int tries = 0; tries < kMaxTxScanTries; ++tries)
-            {
-                ssize_t nr = ::read(lfd, g_qnx_ctx.tx_loopback_buf, g_qnx_ctx.tx_loopback_buflen);
-                if (nr <= 0)
-                    break;
-
-                ssize_t off = 0;
-                while (off + static_cast<ssize_t>(sizeof(bpf_xhdr)) <= nr)
-                {
-                    const auto pv = reinterpret_cast<std::uintptr_t>(g_qnx_ctx.tx_loopback_buf + off);
-                    if (pv % alignof(bpf_xhdr) != 0U)
-                        break;
-
-                    const auto* bh = reinterpret_cast<const bpf_xhdr*>(g_qnx_ctx.tx_loopback_buf + off);
-
-                    if (bh->bh_hdrlen < static_cast<u_short>(sizeof(bpf_xhdr)) ||
-                        off + static_cast<ssize_t>(bh->bh_hdrlen) + static_cast<ssize_t>(bh->bh_caplen) > nr)
-                        break;
-
-                    const unsigned char* pkt = reinterpret_cast<const unsigned char*>(bh) + bh->bh_hdrlen;
-                    const int caplen = static_cast<int>(bh->bh_caplen);
-                    const ssize_t next = off + static_cast<ssize_t>(BPF_WORDALIGN(bh->bh_hdrlen + bh->bh_caplen));
-
-                    // A TX loopback record has a fixed caplen and contains a
-                    // ptp_tstmp payload right after the Ethernet header.
-                    if (caplen == kTxLoopbackCaplen)
-                    {
-                        const auto* tstmp = reinterpret_cast<const PtpTstmp*>(pkt + sizeof(GptpEthHdr));
-                        if (tstmp->uid == tx_uid)
-                        {
-                            hwts->tv_sec = static_cast<time_t>(tstmp->time.sec);
-                            hwts->tv_nsec = static_cast<long>(tstmp->time.nsec);
-                            return static_cast<int>(len);
-                        }
-                    }
-                    off = next;
-                }
-            }
+    if (g_qnx_ctx.promisc_sock >= 0)
+    {
+        struct
+        {
+            struct ifdrv    ifd;
+            struct ptp_time tm;
+        } cmd{};
+        std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name,
+                     sizeof(cmd.ifd.ifd_name) - 1U);
+        cmd.ifd.ifd_len  = sizeof(cmd.tm);
+        cmd.ifd.ifd_data = &cmd.tm;
+        cmd.ifd.ifd_cmd  = PTP_GET_TIME;
+        if (::ioctl(g_qnx_ctx.promisc_sock, SIOCGDRVSPEC, &cmd) == 0)
+        {
+            hwts->tv_sec  = static_cast<time_t>(cmd.tm.sec);
+            hwts->tv_nsec = static_cast<long>(cmd.tm.nsec);
+            std::fprintf(stderr, "[t1] PTP_GET  ts=%lld.%09ld (inject timeout)\n",
+                         static_cast<long long>(hwts->tv_sec),
+                         hwts->tv_nsec);
+            return len;
         }
     }
 
-    // Fallback: software TX timestamp.
     (void)::clock_gettime(CLOCK_REALTIME, hwts);
-    return static_cast<int>(len);
+    std::fprintf(stderr, "[t1] CLOCK_RT ts=%lld.%09ld (fallback)\n",
+                 static_cast<long long>(hwts->tv_sec),
+                 static_cast<long>(hwts->tv_nsec));
+    return len;
 }
-
-// ── PHC clock adjustment (QNX SDP 8.0 io-sock/ptp.h ioctl path) ──────────────
 
 extern "C" int qnx_phc_open(const char* phc_dev)
 {
@@ -482,74 +503,112 @@ extern "C" int qnx_phc_open(const char* phc_dev)
     return 0;
 }
 
+
 extern "C" int qnx_phc_adjtime_step(int /*phc_fd*/, long long offset_ns)
 {
-    if (offset_ns == 0)
-        return 0;
+    if (offset_ns == 0) return 0;
 
     const int s = ::socket(AF_INET, SOCK_DGRAM, 0);
-    if (s < 0)
-        return -1;
+    if (s < 0) return -1;
 
     struct
     {
-        struct ifdrv ifd;
+        struct ifdrv   ifd;
         struct ptp_time tm;
     } cmd{};
-
     std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1U);
-    cmd.ifd.ifd_len = sizeof(cmd.tm);
+    cmd.ifd.ifd_len  = sizeof(cmd.tm);
     cmd.ifd.ifd_data = &cmd.tm;
-    cmd.ifd.ifd_cmd = PTP_GET_TIME;
+    cmd.ifd.ifd_cmd  = PTP_GET_TIME;
 
-    if (::ioctl(s, SIOCGDRVSPEC, &cmd) == -1)
-    {
-        ::close(s);
-        return -1;
-    }
+    if (::ioctl(s, SIOCGDRVSPEC, &cmd) == -1) { ::close(s); return -1; }
 
     const int64_t cur_ns = cmd.tm.sec * kNsPerSec + static_cast<int64_t>(cmd.tm.nsec);
-    const int64_t new_ns = cur_ns + static_cast<int64_t>(offset_ns);
-
-    cmd.tm.sec = new_ns / kNsPerSec;
+    const int64_t new_ns = cur_ns - static_cast<int64_t>(offset_ns);
+    cmd.tm.sec  = new_ns / kNsPerSec;
     cmd.tm.nsec = static_cast<int32_t>(new_ns % kNsPerSec);
     if (cmd.tm.nsec < 0)
     {
         cmd.tm.nsec += static_cast<int32_t>(kNsPerSec);
-        cmd.tm.sec -= 1;
+        cmd.tm.sec  -= 1;
     }
 
     cmd.ifd.ifd_cmd = PTP_SET_TIME;
-    const int r = ::ioctl(s, SIOCSDRVSPEC, &cmd);
+    const int r = ::ioctl(s, SIOCGDRVSPEC, &cmd);
+    if (r == 0)
+    {
+        std::fprintf(stderr, "[phc-step] offset=%lld ns  new=%lld.%09d\n",
+                     static_cast<long long>(offset_ns),
+                     static_cast<long long>(cmd.tm.sec),
+                     cmd.tm.nsec);
+        // After a hard step, skip 3 frequency-adjustment cycles and reset
+        // the smoothed estimate so stale rate data doesn't corrupt slewing.
+        g_skip_freq_after_step = 3;
+        g_smoothed_comp_ppb    = 0.0;
+        g_integral_ppb         = 0.0;
+    }
+    else
+    {
+        std::fprintf(stderr, "[phc-step] PTP_SET_TIME failed errno=%d\n", errno);
+    }
     ::close(s);
     return r;
 }
 
 extern "C" int qnx_phc_adjfreq_ppb(int /*phc_fd*/, long long freq_ppb)
 {
-    if (freq_ppb == 0)
+    // Skip a few cycles immediately after a step correction.
+    if (g_skip_freq_after_step > 0)
+    {
+        --g_skip_freq_after_step;
         return 0;
+    }
+
+    constexpr double kAlpha  = 0.2;
+    constexpr double kKi     = 0.002;
+    constexpr double kICap   = 300'000.0;   // I term anti-windup: ±300 ppm
+    constexpr double kTotCap = 400'000.0;   // combined output cap: ±400 ppm
+
+    // --- P term: EMA of raw_ppb ---
+    g_smoothed_comp_ppb = kAlpha * static_cast<double>(freq_ppb)
+                        + (1.0 - kAlpha) * g_smoothed_comp_ppb;
+
+    // --- I term: slow integrator of P; clamp to prevent wind-up ---
+    g_integral_ppb += kKi * g_smoothed_comp_ppb;
+    if (g_integral_ppb >  kICap) g_integral_ppb =  kICap;
+    if (g_integral_ppb < -kICap) g_integral_ppb = -kICap;
+
+    // --- Combined PI output ---
+    double combined = g_smoothed_comp_ppb + g_integral_ppb;
+    if (combined >  kTotCap) combined =  kTotCap;
+    if (combined < -kTotCap) combined = -kTotCap;
+
+    // ppb → ppm with sign flip:
+    //   positive error = slave running fast → apply negative adj_ppm to slow PHC down
+    const int adj_ppm = -static_cast<int>(combined / 1000.0);
+    if (adj_ppm == 0) return 0;  // below 1 ppm resolution, skip ioctl
 
     const int s = ::socket(AF_INET, SOCK_DGRAM, 0);
-    if (s < 0)
-        return -1;
-
-    // Convert ppb to ppm (EMAC_PTP_ADJ_FREQ_PPM expects ppm)
-    int ppm = static_cast<int>(freq_ppb / 1000LL);
+    if (s < 0) return -1;
 
     struct
     {
         struct ifdrv ifd;
-        int adj_ppm;
+        int          ppm;
     } cmd{};
-
     std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1U);
-    cmd.ifd.ifd_len = sizeof(cmd.adj_ppm);
-    cmd.ifd.ifd_data = &cmd.adj_ppm;
-    cmd.ifd.ifd_cmd = 0x200;  // EMAC_PTP_ADJ_FREQ_PPM
-    cmd.adj_ppm = ppm;
+    cmd.ifd.ifd_cmd  = kEmacPtpAdjFreqPpm;
+    cmd.ifd.ifd_len  = sizeof(int);
+    cmd.ifd.ifd_data = &cmd.ppm;
+    cmd.ppm          = adj_ppm;
 
     const int r = ::ioctl(s, SIOCGDRVSPEC, &cmd);
+    std::fprintf(stderr, "[phc-freq] raw_ppb=%lld P=%.0f I=%.0f adj_ppm=%d r=%d%s\n",
+                 static_cast<long long>(freq_ppb),
+                 g_smoothed_comp_ppb,
+                 g_integral_ppb,
+                 adj_ppm, r,
+                 r != 0 ? " (FAILED)" : "");
     ::close(s);
     return r;
 }

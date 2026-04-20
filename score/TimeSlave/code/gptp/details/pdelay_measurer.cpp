@@ -123,7 +123,7 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
                     sizeof(PortIdentity)) != 0)
         return;
 
-    // t1 = HW send timestamp of our Pdelay_Req
+    // t1 = BPF_T_BINTIME (PHC) send timestamp of our Pdelay_Req (TX loopback fd)
     const TmvT t1 = req_.sendHardwareTS;
     // t2 = remote receipt time (from Pdelay_Resp body: requestReceiptTimestamp)
     const TmvT t2 = resp_.parseMessageTs;
@@ -132,7 +132,7 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
     const TmvT c1 = CorrectionToTmv(resp_.ptpHdr.correctionField);
     const TmvT c2 = CorrectionToTmv(resp_fup_.ptpHdr.correctionField);
     const TmvT t3c = TmvT{t3.ns + c1.ns + c2.ns};
-    // t4 = local HW receive timestamp of Pdelay_Resp
+    // t4 = BPF_T_BINTIME (PHC) receive timestamp of Pdelay_Resp (main BPF fd)
     const TmvT t4 = resp_.recvHardwareTS;
 
     const std::int64_t delay = ((t2.ns - t1.ns) + (t4.ns - t3c.ns)) / 2LL;

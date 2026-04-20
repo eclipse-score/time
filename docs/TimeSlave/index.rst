@@ -178,7 +178,7 @@ The ``GptpEngine`` has the following requirements:
 - The ``GptpEngine`` shall manage a PdelayThread for periodic peer delay measurement
 - The ``GptpEngine`` shall provide a ``FinalizeSnapshot()`` method that checks for sync timeout, applies status flags, and commits the pending snapshot to the current snapshot; this must be called before ``ReadPTPSnapshot()``
 - The ``GptpEngine`` shall provide a ``ReadPTPSnapshot(GptpIpcData&)`` method that copies the latest committed snapshot into the caller's buffer and returns false only if the engine is not initialized
-- The ``GptpEngine`` shall support configurable parameters via ``GptpEngineOptions`` (interface name, PDelay interval, PDelay warmup, sync timeout, time-jump threshold)
+- The ``GptpEngine`` shall support configurable parameters via ``GptpEngineOptions`` (interface name, PDelay interval, PDelay warmup, sync timeout, time-jump threshold, PHC configuration)
 - The ``GptpEngine`` shall support exchangeability of the raw socket implementation for different platforms (Linux, QNX)
 
 Class view
@@ -458,7 +458,7 @@ TimeSlave supports two target platforms with platform-specific implementations s
      - QNX
    * - Raw Socket
      - ``AF_PACKET`` + ``SO_TIMESTAMPING``; HW RX timestamp via ``recvmsg`` ``SCM_TIMESTAMPING``
-     - BPF (``/dev/bpf``); HW RX timestamp via ``bpf_xhdr.bh_tstamp`` (``BIOCSTSTAMP BPF_T_PTP|BPF_T_BINTIME``); TX timestamp via ``BIOCGTSTAMPID`` + loopback fd (``BIOCSSEESENT``); fallback to ``CLOCK_REALTIME``
+     - BPF (``/dev/bpf``); HW RX timestamp via ``bpf_xhdr.bh_tstamp`` (``BIOCSTSTAMP BPF_T_BINTIME|BPF_T_PTP``); TX PHC timestamp via dedicated TX loopback fd (``BIOCSSEESENT``), filtered to Pdelay_Req frames only (BPF message-type 0x02); single static context (not thread-local)
    * - Network Identity
      - ``ioctl(SIOCGIFHWADDR)`` → EUI-48 → EUI-64
      - ``getifaddrs()`` + ``AF_LINK`` / ``sockaddr_dl`` (``LLADDR``) → EUI-48/64
@@ -609,7 +609,7 @@ The ``GptpEngineOptions`` struct provides all configurable parameters for the gP
      - Description
    * - ``iface_name``
      - string
-     - Network interface for gPTP frames (e.g., ``eth0``); default: ``"eth0"``
+     - Network interface for gPTP frames (e.g., ``emac0``); default: ``"emac0"``
    * - ``pdelay_interval_ms``
      - int
      - Interval between PDelayReq transmissions (ms); default: ``1000``
@@ -622,8 +622,11 @@ The ``GptpEngineOptions`` struct provides all configurable parameters for the gP
    * - ``jump_future_threshold_ns``
      - int64_t
      - Threshold above which a positive clock offset is flagged as a forward time jump (ns); default: ``500 000 000``
+   * - ``phc_config``
+     - PhcConfig
+     - PHC hardware clock adjustment settings (see ``PhcConfig`` table below); disabled by default
 
-The ``PhcConfig`` struct (used by ``PhcAdjuster``, configured independently) contains:
+The ``PhcConfig`` struct (embedded in ``GptpEngineOptions``) contains:
 
 .. list-table:: PhcAdjuster Configuration
    :header-rows: 1

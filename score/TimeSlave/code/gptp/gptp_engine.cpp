@@ -43,7 +43,8 @@ GptpEngine::GptpEngine(GptpEngineOptions opts) noexcept
       codec_{},
       parser_{},
       sync_sm_{opts_.jump_future_threshold_ns},
-      pdelay_{nullptr}
+      pdelay_{nullptr},
+      phc_{opts_.phc_config}
 {
 }
 
@@ -56,7 +57,8 @@ GptpEngine::GptpEngine(GptpEngineOptions opts,
       codec_{},
       parser_{},
       sync_sm_{opts_.jump_future_threshold_ns},
-      pdelay_{nullptr}
+      pdelay_{nullptr},
+      phc_{opts_.phc_config}
 {
 }
 
@@ -296,22 +298,48 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
 
 void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdelay) noexcept
 {
-    std::lock_guard<std::mutex> lk(snapshot_mutex_);
+    const double rate_ratio = sync_sm_.GetNeighborRateRatio();
 
-    const std::int64_t local_rx_ns = static_cast<std::int64_t>(sync.sync_fup_data.reference_local_timestamp);
-    pending_snapshot_.ptp_assumed_time = std::chrono::nanoseconds{local_rx_ns - sync.offset_ns};
-    // Capture local_time as close as possible to Sync frame handling to minimise jitter.
-    pending_snapshot_.local_time = std::chrono::nanoseconds{MonoNs()};
-    pending_snapshot_.rate_deviation = sync_sm_.GetNeighborRateRatio();
+    {
+        std::lock_guard<std::mutex> lk(snapshot_mutex_);
 
-    pending_snapshot_.status.is_synchronized = true;
-    pending_snapshot_.status.is_timeout = false;
-    pending_snapshot_.status.is_time_jump_future = sync.is_time_jump_future;
-    pending_snapshot_.status.is_time_jump_past = sync.is_time_jump_past;
-    pending_snapshot_.status.is_correct = !sync.is_time_jump_future && !sync.is_time_jump_past;
+        const std::int64_t local_rx_ns = static_cast<std::int64_t>(sync.sync_fup_data.reference_local_timestamp);
+        pending_snapshot_.ptp_assumed_time = std::chrono::nanoseconds{local_rx_ns - sync.offset_ns};
+        // Capture local_time as close as possible to Sync frame handling to minimise jitter.
+        pending_snapshot_.local_time = std::chrono::nanoseconds{MonoNs()};
+        pending_snapshot_.rate_deviation = rate_ratio;
 
-    pending_snapshot_.sync_fup_data = sync.sync_fup_data;
-    pending_snapshot_.pdelay_data = pdelay.pdelay_data;
+        pending_snapshot_.status.is_synchronized = true;
+        pending_snapshot_.status.is_timeout = false;
+        pending_snapshot_.status.is_time_jump_future = sync.is_time_jump_future;
+        pending_snapshot_.status.is_time_jump_past = sync.is_time_jump_past;
+        pending_snapshot_.status.is_correct = !sync.is_time_jump_future && !sync.is_time_jump_past;
+
+        pending_snapshot_.sync_fup_data = sync.sync_fup_data;
+        pending_snapshot_.pdelay_data = pdelay.pdelay_data;
+    }
+
+    if (phc_.IsEnabled())
+    {
+        const bool is_step =
+            (sync.offset_ns >= opts_.phc_config.step_threshold_ns) ||
+            (sync.offset_ns <= -opts_.phc_config.step_threshold_ns);
+
+        phc_.AdjustOffset(sync.offset_ns);
+        phc_.AdjustFrequency(rate_ratio);
+
+        if (is_step)
+        {
+            score::mw::log::LogInfo(kGPtpMachineContext)
+                << "PHC step applied: offset=" << sync.offset_ns << " ns";
+        }
+        else
+        {
+            score::mw::log::LogInfo(kGPtpMachineContext)
+                << "PHC slew: offset=" << sync.offset_ns << " ns"
+                << " rate_ratio=" << rate_ratio;
+        }
+    }
 }
 
 }  // namespace details

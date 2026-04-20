@@ -21,6 +21,7 @@
 #include "score/TimeSlave/code/gptp/details/pdelay_measurer.h"
 #include "score/TimeSlave/code/gptp/details/ptp_types.h"
 #include "score/TimeSlave/code/gptp/details/sync_state_machine.h"
+#include "score/TimeSlave/code/gptp/phc/phc_adjuster.h"
 
 #include <atomic>
 #include <cstdint>
@@ -40,11 +41,12 @@ namespace details
 /// Configuration for GptpEngine.
 struct GptpEngineOptions
 {
-    std::string iface_name = "eth0";                        ///< Network interface for gPTP
+    std::string iface_name = "emac0";                       ///< Network interface for gPTP
     int pdelay_interval_ms = 1000;                          ///< Period between Pdelay_Req transmissions (ms)
     int pdelay_warmup_ms = 2000;                            ///< Delay before first Pdelay_Req (ms)
     int sync_timeout_ms = 3300;                             ///< Declare timeout after this many ms without Sync
     std::int64_t jump_future_threshold_ns = 500'000'000LL;  ///< 500 ms
+    PhcConfig phc_config{};                                 ///< PHC hardware clock adjustment (disabled by default)
 };
 
 /**
@@ -110,6 +112,7 @@ class GptpEngine final
     GptpMessageParser parser_;
     SyncStateMachine sync_sm_;
     std::unique_ptr<PeerDelayMeasurer> pdelay_;
+    PhcAdjuster phc_;
 
     mutable std::mutex snapshot_mutex_;
     score::ts::GptpIpcData pending_snapshot_{};  ///< Filled by RxThread on Sync+FollowUp
