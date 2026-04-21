@@ -472,7 +472,7 @@
 </ol>
 <p>The raw architectural diagram is represented below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-18f644fa0ffca7f2ac03a3844b877d9751b5f959.svg" type="image/svg+xml" style="width:930px;height:860px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-08699140f7367bc9588d4a7098d6a16312fa91e8.svg" type="image/svg+xml" style="width:930px;height:860px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="components-decomposition">
 <h3><a class="toc-backref" href="#id24" role="doc-backlink">Components decomposition</a><a class="headerlink" href="#components-decomposition" title="Link to this heading">#</a></h3>
@@ -804,7 +804,7 @@
 <h5>Class view<a class="headerlink" href="#id9" title="Link to this heading">#</a></h5>
 <p>The Class Diagram is presented below:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-21ecb95404cad9b0d6cd65a6c27ecb0f1c53fcd9.svg" type="image/svg+xml" style="width:1312px;height:822px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-f875146d7ef383ab5580777376aeeca6be5488fa.svg" type="image/svg+xml" style="width:1313px;height:822px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="publish-new-data">
 <h5>Publish new data<a class="headerlink" href="#publish-new-data" title="Link to this heading">#</a></h5>
@@ -1022,11 +1022,11 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>TimeSlave Application</p></td>
-<td><p>TS_APP</p></td>
+<td><p>TSAP</p></td>
 <td><p><strong>T</strong>ime<strong>S</strong>lave <strong>App</strong>lication lifecycle (Initialize / Run)</p></td>
 </tr>
 <tr class="row-odd"><td><p>gPTP Engine (RxThread / PdelayThread)</p></td>
-<td><p>GPTP_SLAVE</p></td>
+<td><p>GTPS</p></td>
 <td><p><strong>GPTP</strong> <strong>SLAVE</strong> engine — low-level protocol processing</p></td>
 </tr>
 <tr class="row-even"><td><p>ShmPTPEngine (TimeDaemon side)</p></td>
@@ -1142,7 +1142,7 @@
 <section id="shmptpengine-sw-component">
 <h4><a class="toc-backref" href="#id46" role="doc-backlink">ShmPTPEngine SW component</a><a class="headerlink" href="#shmptpengine-sw-component" title="Link to this heading">#</a></h4>
 <p>The <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code> component (in <code class="docutils literal notranslate"><span class="pre">score::td::details</span></code>) is the TimeDaemon-side adapter that reads <code class="docutils literal notranslate"><span class="pre">GptpIpcData</span></code> from the shared memory channel written by TimeSlave and converts it into the <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> structure expected by the TimeDaemon pipeline.</p>
-<p>It is instantiated as <code class="docutils literal notranslate"><span class="pre">GPTPRealMachine</span></code> — a type alias for <code class="docutils literal notranslate"><span class="pre">PTPMachine&lt;details::ShmPTPEngine&gt;</span></code> — which connects <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code> to the TimeDaemon’s internal <code class="docutils literal notranslate"><span class="pre">MessageBroker</span></code>.</p>
+<p>It is instantiated as <code class="docutils literal notranslate"><span class="pre">GPTPShmMachine</span></code> — a type alias for <code class="docutils literal notranslate"><span class="pre">PTPMachine&lt;details::ShmPTPEngine&gt;</span></code> — which connects <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code> to the TimeDaemon’s internal <code class="docutils literal notranslate"><span class="pre">MessageBroker</span></code>.</p>
 <section id="id10">
 <h5>Component requirements<a class="headerlink" href="#id10" title="Link to this heading">#</a></h5>
 <p>The <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code> has the following requirements:</p>
@@ -1158,21 +1158,21 @@
 <h5>Class view<a class="headerlink" href="#id11" title="Link to this heading">#</a></h5>
 <p>The Class Diagram is presented below:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-5c258de1af6c2555482cd9880cfe10f3113461f5.svg" type="image/svg+xml" style="width:1028px;height:1267px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-3e4348498bac622acfa8f5a45caceb81a3ce96cc.svg" type="image/svg+xml" style="width:1028px;height:1267px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="component-initialization">
 <h5>Component initialization<a class="headerlink" href="#component-initialization" title="Link to this heading">#</a></h5>
 <p>During initialization the <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code> shall open the shared memory channel to be able to read from it.</p>
 <p>The initialization workflow is represented in the following sequence diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-786615de34ece7ddd82169c537f53dd28dd0935e.svg" type="image/svg+xml" style="width:1430px;height:1023px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-a0c70fa44947448da70e10c1532329c8b603ce7b.svg" type="image/svg+xml" style="width:1434px;height:1023px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="read-ptp-snapshot">
 <h5>Read PTP snapshot<a class="headerlink" href="#read-ptp-snapshot" title="Link to this heading">#</a></h5>
 <p>After <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code> reads the latest <code class="docutils literal notranslate"><span class="pre">GptpIpcData</span></code> from shared memory, it maps it to <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> and publishes via the <code class="docutils literal notranslate"><span class="pre">MessageBroker</span></code>.</p>
 <p>The periodic read and publish workflow is described below:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-0b6ef135609067b4a89c58494d645ababa0e56e6.svg" type="image/svg+xml" style="width:1424px;height:907px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-fe292e76b7b557c3607c8e94a8c30f4b4c911591.svg" type="image/svg+xml" style="width:1424px;height:907px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="data-mapping">
 <h5>Data mapping<a class="headerlink" href="#data-mapping" title="Link to this heading">#</a></h5>
@@ -1225,8 +1225,8 @@
 </section>
 <section id="factory">
 <h5>Factory<a class="headerlink" href="#factory" title="Link to this heading">#</a></h5>
-<p><code class="docutils literal notranslate"><span class="pre">CreateGPTPRealMachine(name,</span> <span class="pre">ipc_name)</span></code> is a convenience factory function in <code class="docutils literal notranslate"><span class="pre">score::td</span></code> that creates a configured <code class="docutils literal notranslate"><span class="pre">GPTPRealMachine</span></code> (<code class="docutils literal notranslate"><span class="pre">shared_ptr</span></code>) backed by <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code>:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">machine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CreateGPTPRealMachine</span><span class="p">(</span><span class="s">&quot;real&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/gptp_ptp_info&quot;</span><span class="p">);</span>
+<p><code class="docutils literal notranslate"><span class="pre">CreateGPTPShmMachine(name,</span> <span class="pre">ipc_name)</span></code> is a convenience factory function in <code class="docutils literal notranslate"><span class="pre">score::td</span></code> that creates a configured <code class="docutils literal notranslate"><span class="pre">GPTPShmMachine</span></code> (<code class="docutils literal notranslate"><span class="pre">shared_ptr</span></code>) backed by <code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code>:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">machine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CreateGPTPShmMachine</span><span class="p">(</span><span class="s">&quot;shm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;/gptp_ptp_info&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
 </section>
