@@ -34,7 +34,7 @@ inline constexpr std::uint32_t kGptpIpcMagic = 0x47505450U;
 /**
  * @brief Shared memory layout for gPTP IPC (seqlock protocol).
  *
- * Single-writer (TimeSlave), multi-reader (TimeDaemon via RealPTPEngine).
+ * Single-writer (TimeSlave), multi-reader (TimeDaemon via ShmPTPEngine).
  * Aligned to 64 bytes (cache line) to avoid false sharing.
  *
  * Seqlock protocol:

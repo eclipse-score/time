@@ -15,30 +15,30 @@ load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
 cc_library(
-    name = "gptp_real_machine",
+    name = "gptp_shm_machine",
     srcs = [
         "factory.cpp",
     ],
     hdrs = [
         "factory.h",
-        "gptp_real_machine.h",
+        "gptp_shm_machine.h",
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = ["//score/TimeDaemon:__subpackages__"],
     deps = [
         "//score/TimeDaemon/code/ptp_machine/core:ptp_machine",
-        "//score/TimeDaemon/code/ptp_machine/real/details:shm_ptp_engine",
+        "//score/TimeDaemon/code/ptp_machine/shm/details:shm_ptp_engine",
         "//score/libTSClient:gptp_ipc",
     ],
 )
 
 cc_test(
-    name = "gptp_real_machine_test",
-    srcs = ["gptp_real_machine_test.cpp"],
+    name = "gptp_shm_machine_test",
+    srcs = ["gptp_shm_machine_test.cpp"],
     tags = ["unit"],
     deps = [
-        ":gptp_real_machine",
+        ":gptp_shm_machine",
         "//score/libTSClient:gptp_ipc",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
@@ -48,9 +48,9 @@ cc_test(
 
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    cc_unit_tests = [":gptp_real_machine_test"],
+    cc_unit_tests = [":gptp_shm_machine_test"],
     test_suites_from_sub_packages = [
-        "//score/TimeDaemon/code/ptp_machine/real/details:unit_test_suite",  # shm_ptp_engine
+        "//score/TimeDaemon/code/ptp_machine/shm/details:unit_test_suite",
     ],
     visibility = ["//score/TimeDaemon:__subpackages__"],
 )

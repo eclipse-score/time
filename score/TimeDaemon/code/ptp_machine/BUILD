@@ -23,7 +23,7 @@ cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
     test_suites_from_sub_packages = [
         "//score/TimeDaemon/code/ptp_machine/core:unit_test_suite",
-        "//score/TimeDaemon/code/ptp_machine/real:unit_test_suite",
+        "//score/TimeDaemon/code/ptp_machine/shm:unit_test_suite",
         "//score/TimeDaemon/code/ptp_machine/stub:unit_test_suite",
     ],
     visibility = ["//score/TimeDaemon:__subpackages__"],

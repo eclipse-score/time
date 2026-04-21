@@ -32,6 +32,7 @@ struct SyncResult
 {
     std::int64_t master_ns{0};               ///< Grandmaster time (ns since epoch)
     std::int64_t offset_ns{0};               ///< local hw_ts − master_ns
+    std::int64_t sync_mono_ns{0};            ///< CLOCK_MONOTONIC when the Sync frame was received
     score::ts::GptpIpcSyncFupData sync_fup_data{};  ///< Ready to copy into GptpIpcData (pdelay field filled by engine)
     bool is_time_jump_future{false};
     bool is_time_jump_past{false};

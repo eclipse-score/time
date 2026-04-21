@@ -9,19 +9,19 @@ autonumber "<font color=red><b>[00]"
 legend top left
     |= Color           |= Description         |
     | <#LightCyan>     | TimeDaemon           |
-    | <#Wheat>         | GPTPRealMachine       |
+    | <#Wheat>         | GPTPShmMachine       |
     | <#LightPink>     | libTSClient IPC       |
 endlegend
 
 participant "TimeBaseHandler" as tb #LightCyan
-participant "GPTPRealMachine\n(PTPMachine<ShmPTPEngine>)" as machine #Wheat
+participant "GPTPShmMachine\n(PTPMachine<ShmPTPEngine>)" as machine #Wheat
 participant "ShmPTPEngine" as engine #Wheat
 participant "GptpIpcReceiver" as receiver #LightPink
 participant "MessageBroker" as broker #LightCyan
 
 == Construction ==
 
-tb -> machine ** : CreateGPTPRealMachine("real", "/gptp_ptp_info")
+tb -> machine ** : CreateGPTPShmMachine("shm", "/gptp_ptp_info")
 activate tb
 activate machine
 machine -> engine ** : ShmPTPEngine("/gptp_ptp_info")

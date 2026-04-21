@@ -54,7 +54,7 @@ GE .down.> INST : probe events
 note right of TDP
   ShmPTPEngine wraps GptpIpcReceiver.
   Converts GptpIpcData → PtpTimeInfo.
-  Instantiated as GPTPRealMachine.
+  Instantiated as GPTPShmMachine.
 end note
 
 @enduml

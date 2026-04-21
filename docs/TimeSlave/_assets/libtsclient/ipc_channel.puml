@@ -64,7 +64,7 @@ end note
 
 note bottom of ShmPTPEngine
   Maps GptpIpcData fields to PtpTimeInfo.
-  Instantiated as GPTPRealMachine via CreateGPTPRealMachine().
+  Instantiated as GPTPShmMachine via CreateGPTPShmMachine().
 end note
 
 @enduml

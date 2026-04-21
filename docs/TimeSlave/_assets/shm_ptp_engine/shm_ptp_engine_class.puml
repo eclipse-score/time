@@ -11,10 +11,10 @@ legend top left
 endlegend
 
 package "score::td" {
-    class "GPTPRealMachine" as real_machine #Wheat {
+    class "GPTPShmMachine" as real_machine #Wheat {
         type alias for PTPMachine<ShmPTPEngine>
         --
-        Constructed via CreateGPTPRealMachine()
+        Constructed via CreateGPTPShmMachine()
     }
 }
 

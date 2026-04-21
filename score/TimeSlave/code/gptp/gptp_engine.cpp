@@ -74,7 +74,7 @@ bool GptpEngine::Initialize()
 
     if (!identity_->Resolve(opts_.iface_name))
     {
-        score::mw::log::LogError(kGPtpMachineContext)
+        score::mw::log::LogError(kTimeSlaveAppContext)
             << "GptpEngine: failed to resolve ClockIdentity for " << opts_.iface_name;
         return false;
     }
@@ -83,14 +83,14 @@ bool GptpEngine::Initialize()
 
     if (!socket_->Open(opts_.iface_name))
     {
-        score::mw::log::LogError(kGPtpMachineContext)
+        score::mw::log::LogError(kTimeSlaveAppContext)
             << "GptpEngine: failed to open raw socket on " << opts_.iface_name;
         return false;
     }
 
     if (!socket_->EnableHwTimestamping())
     {
-        score::mw::log::LogWarn(kGPtpMachineContext)
+        score::mw::log::LogWarn(kTimeSlaveAppContext)
             << "GptpEngine: HW timestamping not available on " << opts_.iface_name << ", falling back to SW timestamps";
     }
 
@@ -104,7 +104,7 @@ bool GptpEngine::Initialize()
     }
     catch (const std::system_error& e)
     {
-        score::mw::log::LogError(kGPtpMachineContext) << "GptpEngine: failed to create RxThread: " << std::string_view{e.what()};
+        score::mw::log::LogError(kTimeSlaveAppContext) << "GptpEngine: failed to create RxThread: " << std::string_view{e.what()};
         running_.store(false, std::memory_order_release);
         socket_->Close();
         return false;
@@ -116,12 +116,12 @@ bool GptpEngine::Initialize()
     }
     catch (const std::system_error& e)
     {
-        score::mw::log::LogError(kGPtpMachineContext) << "GptpEngine: failed to create PdelayThread: " << std::string_view{e.what()};
+        score::mw::log::LogError(kTimeSlaveAppContext) << "GptpEngine: failed to create PdelayThread: " << std::string_view{e.what()};
         Deinitialize();
         return false;
     }
 
-    score::mw::log::LogInfo(kGPtpMachineContext) << "GptpEngine initialized on " << opts_.iface_name;
+    score::mw::log::LogInfo(kTimeSlaveAppContext) << "GptpEngine initialized on " << opts_.iface_name;
     return true;
 }
 
@@ -137,7 +137,7 @@ bool GptpEngine::Deinitialize()
     if (pdelay_thread_.joinable())
         pdelay_thread_.join();
 
-    score::mw::log::LogInfo(kGPtpMachineContext) << "GptpEngine deinitialized";
+    score::mw::log::LogInfo(kTimeSlaveAppContext) << "GptpEngine deinitialized";
     return true;
 }
 
@@ -253,6 +253,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     {
         case kPtpMsgtypeSync:
             msg.recvHardwareTS = hw_ts;
+            msg.recvMonoNs = MonoNs();
             sync_sm_.OnSync(msg);
             break;
 
@@ -305,8 +306,7 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
 
         const std::int64_t local_rx_ns = static_cast<std::int64_t>(sync.sync_fup_data.reference_local_timestamp);
         pending_snapshot_.ptp_assumed_time = std::chrono::nanoseconds{local_rx_ns - sync.offset_ns};
-        // Capture local_time as close as possible to Sync frame handling to minimise jitter.
-        pending_snapshot_.local_time = std::chrono::nanoseconds{MonoNs()};
+        pending_snapshot_.local_time = std::chrono::nanoseconds{sync.sync_mono_ns};
         pending_snapshot_.rate_deviation = rate_ratio;
 
         pending_snapshot_.status.is_synchronized = true;

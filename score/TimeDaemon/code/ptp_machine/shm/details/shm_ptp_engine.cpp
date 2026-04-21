@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/TimeDaemon/code/ptp_machine/real/details/shm_ptp_engine.h"
+#include "score/TimeDaemon/code/ptp_machine/shm/details/shm_ptp_engine.h"
 
 #include "score/TimeDaemon/code/common/logging_contexts.h"
 #include "score/libTSClient/gptp_ipc_data.h"

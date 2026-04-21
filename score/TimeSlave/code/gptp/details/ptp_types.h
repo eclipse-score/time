@@ -175,6 +175,7 @@ struct PTPMessage
     TmvT sendHardwareTS{};
     TmvT parseMessageTs{};
     TmvT recvHardwareTS{};
+    std::int64_t recvMonoNs{0};  // CLOCK_MONOTONIC at packet reception; set for Sync only
 };
 
 static_assert(sizeof(PTPMessage) <= 1600, "PTPMessage too large");

@@ -8,7 +8,7 @@ autonumber "<font color=red><b>[00]"
 
 legend top left
     |= Color           |= Description             |
-    | <#Wheat>         | GPTPRealMachine           |
+    | <#Wheat>         | GPTPShmMachine           |
     | <#LightPink>     | libTSClient IPC           |
     | <#LightCyan>     | Shared Memory             |
     | <#PaleTurquoise> | MessageBroker             |

@@ -108,6 +108,7 @@ SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessag
     SyncResult r{};
     r.master_ns = master_ns;
     r.offset_ns = offset_ns;
+    r.sync_mono_ns = sync.recvMonoNs;
 
     if (has_previous_master_)
     {

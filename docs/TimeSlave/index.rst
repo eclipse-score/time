@@ -583,10 +583,10 @@ The TimeSlave and its TimeDaemon-side adapter use the following logging contexts
      - Context ID
      - Comments
    * - TimeSlave Application
-     - TS_APP
+     - TSAP
      - **T**\ ime\ **S**\ lave **App**\ lication lifecycle (Initialize / Run)
    * - gPTP Engine (RxThread / PdelayThread)
-     - GPTP_SLAVE
+     - GTPS
      - **GPTP** **SLAVE** engine — low-level protocol processing
    * - ShmPTPEngine (TimeDaemon side)
      - GPTP
@@ -673,7 +673,7 @@ ShmPTPEngine SW component
 
 The ``ShmPTPEngine`` component (in ``score::td::details``) is the TimeDaemon-side adapter that reads ``GptpIpcData`` from the shared memory channel written by TimeSlave and converts it into the ``PtpTimeInfo`` structure expected by the TimeDaemon pipeline.
 
-It is instantiated as ``GPTPRealMachine`` — a type alias for ``PTPMachine<details::ShmPTPEngine>`` — which connects ``ShmPTPEngine`` to the TimeDaemon's internal ``MessageBroker``.
+It is instantiated as ``GPTPShmMachine`` — a type alias for ``PTPMachine<details::ShmPTPEngine>`` — which connects ``ShmPTPEngine`` to the TimeDaemon's internal ``MessageBroker``.
 
 Component requirements
 ''''''''''''''''''''''
@@ -773,11 +773,11 @@ Data mapping
 Factory
 '''''''
 
-``CreateGPTPRealMachine(name, ipc_name)`` is a convenience factory function in ``score::td`` that creates a configured ``GPTPRealMachine`` (``shared_ptr``) backed by ``ShmPTPEngine``:
+``CreateGPTPShmMachine(name, ipc_name)`` is a convenience factory function in ``score::td`` that creates a configured ``GPTPShmMachine`` (``shared_ptr``) backed by ``ShmPTPEngine``:
 
 .. code-block:: cpp
 
-   auto machine = CreateGPTPRealMachine("real", "/gptp_ptp_info");
+   auto machine = CreateGPTPShmMachine("shm", "/gptp_ptp_info");
 
 Using in test environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

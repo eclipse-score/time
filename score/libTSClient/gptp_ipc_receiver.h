@@ -29,7 +29,7 @@ namespace details
  * @brief Multi-reader receiver for the gPTP IPC channel.
  *
  * Opens an existing POSIX shared memory segment (read-only) and reads
- * PtpTimeInfo using the seqlock protocol.  Used by RealPTPEngine.
+ * PtpTimeInfo using the seqlock protocol.  Used by ShmPTPEngine.
  */
 class GptpIpcReceiver final
 {

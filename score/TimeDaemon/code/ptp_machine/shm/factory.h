@@ -10,10 +10,10 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_PTP_MACHINE_REAL_FACTORY_H
-#define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_REAL_FACTORY_H
+#ifndef SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_FACTORY_H
+#define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_FACTORY_H
 
-#include "score/TimeDaemon/code/ptp_machine/real/gptp_real_machine.h"
+#include "score/TimeDaemon/code/ptp_machine/shm/gptp_shm_machine.h"
 #include "score/libTSClient/gptp_ipc_channel.h"
 
 #include <memory>
@@ -25,20 +25,20 @@ namespace td
 {
 
 /**
- * @brief Factory function to create a configured GPTPRealMachine.
+ * @brief Factory function to create a configured GPTPShmMachine.
  *
- * Creates a GPTPRealMachine backed by the real gPTP engine.
+ * Creates a GPTPShmMachine backed by the shared-memory gPTP engine.
  * The engine reads PtpTimeInfo snapshots published by TimeSlave via
  * the IPC channel named @p ipc_name.
  *
  * @param name      Logical name for the machine instance.
  * @param ipc_name  IPC channel name (default: kGptpIpcName).
- * @return          A fully configured GPTPRealMachine instance.
+ * @return          A fully configured GPTPShmMachine instance.
  */
-std::shared_ptr<GPTPRealMachine> CreateGPTPRealMachine(const std::string& name,
+std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(const std::string& name,
                                                        const std::string& ipc_name = score::ts::details::kGptpIpcName);
 
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_PTP_MACHINE_REAL_FACTORY_H
+#endif  // SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_FACTORY_H

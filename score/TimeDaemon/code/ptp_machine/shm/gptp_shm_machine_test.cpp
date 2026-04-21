@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/TimeDaemon/code/ptp_machine/real/gptp_real_machine.h"
-#include "score/TimeDaemon/code/ptp_machine/real/factory.h"
+#include "score/TimeDaemon/code/ptp_machine/shm/gptp_shm_machine.h"
+#include "score/TimeDaemon/code/ptp_machine/shm/factory.h"
 #include "score/libTSClient/gptp_ipc_publisher.h"
 
 #include <gtest/gtest.h>
@@ -50,7 +50,7 @@ score::ts::GptpIpcData MakePublishedInfo()
 
 }  // namespace
 
-class GPTPRealMachineIntegrationTest : public ::testing::Test
+class GPTPShmMachineIntegrationTest : public ::testing::Test
 {
   protected:
     void SetUp() override
@@ -59,7 +59,7 @@ class GPTPRealMachineIntegrationTest : public ::testing::Test
         ASSERT_TRUE(pub_.Init(name_));
         pub_.Publish(MakePublishedInfo());
 
-        machine_ = CreateGPTPRealMachine("RealPTPMachine", name_);
+        machine_ = CreateGPTPShmMachine("ShmPTPMachine", name_);
         machine_->SetPublishCallback([this](const PtpTimeInfo& data) {
             {
                 std::lock_guard<std::mutex> lk(mu_);
@@ -78,29 +78,29 @@ class GPTPRealMachineIntegrationTest : public ::testing::Test
 
     std::string name_;
     score::ts::details::GptpIpcPublisher pub_;
-    std::shared_ptr<GPTPRealMachine> machine_;
+    std::shared_ptr<GPTPShmMachine> machine_;
     std::promise<void> promise_;
     PtpTimeInfo published_{};
     std::mutex mu_;
 };
 
-TEST_F(GPTPRealMachineIntegrationTest, GetName_ReturnsConstructionName)
+TEST_F(GPTPShmMachineIntegrationTest, GetName_ReturnsConstructionName)
 {
-    EXPECT_EQ(machine_->GetName(), "RealPTPMachine");
+    EXPECT_EQ(machine_->GetName(), "ShmPTPMachine");
 }
 
-TEST_F(GPTPRealMachineIntegrationTest, Init_WhenShmExists_ReturnsTrue)
+TEST_F(GPTPShmMachineIntegrationTest, Init_WhenShmExists_ReturnsTrue)
 {
     EXPECT_TRUE(machine_->Init());
 }
 
-TEST_F(GPTPRealMachineIntegrationTest, Init_WhenShmMissing_ReturnsFalse)
+TEST_F(GPTPShmMachineIntegrationTest, Init_WhenShmMissing_ReturnsFalse)
 {
-    auto m = CreateGPTPRealMachine("NoShm", "/gptp_nosuchshm_xyz");
+    auto m = CreateGPTPShmMachine("NoShm", "/gptp_nosuchshm_xyz");
     EXPECT_FALSE(m->Init());
 }
 
-TEST_F(GPTPRealMachineIntegrationTest, Start_DeliversPublishedData_ViaCallback)
+TEST_F(GPTPShmMachineIntegrationTest, Start_DeliversPublishedData_ViaCallback)
 {
     ASSERT_TRUE(machine_->Init());
     machine_->Start();
@@ -117,7 +117,7 @@ TEST_F(GPTPRealMachineIntegrationTest, Start_DeliversPublishedData_ViaCallback)
     EXPECT_EQ(published_.sync_fup_data.pdelay, 1'000U);
 }
 
-TEST_F(GPTPRealMachineIntegrationTest, Init_CalledTwice_SecondCallReturnsSameResult)
+TEST_F(GPTPShmMachineIntegrationTest, Init_CalledTwice_SecondCallReturnsSameResult)
 {
     ASSERT_TRUE(machine_->Init());
     EXPECT_TRUE(machine_->Init());
