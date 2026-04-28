@@ -72,6 +72,7 @@ class PeerDelayMeasurer final
     mutable std::mutex mutex_;
 
     std::uint16_t seqnum_{0U};
+    std::uint16_t resp_count_{0U};  // Pdelay_Resp messages received for the current request
     PTPMessage req_{};
     PTPMessage resp_{};
     PTPMessage resp_fup_{};

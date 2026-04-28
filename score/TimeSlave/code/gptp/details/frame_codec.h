@@ -53,9 +53,10 @@ class FrameCodec final
      * Modifies @p buf in-place (shifts payload to make room) and increments
      * @p buf_len by the size of the added header.
      *
-     * @param buf      Buffer large enough to hold existing payload plus header.
-     * @param buf_len  In/out: payload length → frame length after prepend.
-     * @param src_mac  Source MAC address (should be the port's own MAC).
+     * @param buf           Buffer large enough to hold existing payload plus header.
+     * @param buf_len       In/out: payload length → frame length after prepend.
+     * @param src_mac       Source MAC address (should be the port's own MAC).
+     * @param buf_capacity  Total allocated size of @p buf in bytes; used to detect overflow.
      * @return true on success, false if the buffer would overflow.
      */
     bool AddEthernetHeader(std::uint8_t* buf,

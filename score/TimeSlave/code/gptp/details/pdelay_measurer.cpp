@@ -53,6 +53,7 @@ int PeerDelayMeasurer::SendRequest(IRawSocket& socket)
         req_.ptpHdr.sequenceId = seqnum_;
         req_.ptpHdr.sourcePortIdentity.portNumber = 0x0001U;  // host byte order
         req_.sendHardwareTS = TmvT{-1};  // sentinel: TX timestamp pending
+        resp_count_ = 0U;
         ++seqnum_;  // uint16_t: wraps naturally at 0xFFFF
     }
 
@@ -89,19 +90,25 @@ int PeerDelayMeasurer::SendRequest(IRawSocket& socket)
 void PeerDelayMeasurer::OnResponse(const PTPMessage& msg)
 {
     std::lock_guard<std::mutex> lk(mutex_);
+    if (msg.ptpHdr.sequenceId != req_.ptpHdr.sequenceId)
+        return;
+    ++resp_count_;
     resp_ = msg;
 }
 
 void PeerDelayMeasurer::OnResponseFollowUp(const PTPMessage& msg)
 {
-
     std::lock_guard<std::mutex> lk(mutex_);
+    if (msg.ptpHdr.sequenceId != req_.ptpHdr.sequenceId)
+        return;
     resp_fup_ = msg;
     ComputeAndStoreUnlocked();
 }
 
 void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
 {
+    if (resp_count_ > 1U)  // multiple responses → non-time-aware bridge detected
+        return;
     if (req_.ptpHdr.sequenceId != resp_.ptpHdr.sequenceId)
         return;
     if (resp_.ptpHdr.sequenceId != resp_fup_.ptpHdr.sequenceId)
@@ -159,6 +166,7 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
     d.resp_clock_identity = ClockIdentityToU64(resp_.ptpHdr.sourcePortIdentity.clockIdentity);
 
     result_ = r;
+    resp_count_ = 0U;
 }
 
 PDelayResult PeerDelayMeasurer::GetResult() const

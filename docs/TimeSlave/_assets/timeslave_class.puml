@@ -56,8 +56,8 @@ package "score::ts" {
 
 package "score::ts::details" {
     class FrameCodec #Wheat {
-        + ParseEthernetHeader(buf) : EthernetHeader
-        + AddEthernetHeader(buf, dst_mac, src_mac) : void
+        + ParseEthernetHeader(frame, frame_len, ptp_offset) : bool
+        + AddEthernetHeader(buf, buf_len, src_mac, buf_capacity) : bool
     }
 
     class GptpMessageParser #Wheat {
