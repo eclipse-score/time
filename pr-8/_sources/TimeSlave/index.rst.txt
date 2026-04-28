@@ -345,6 +345,8 @@ The ``PeerDelayMeasurer`` has the following requirements:
 - The ``PeerDelayMeasurer`` shall transmit PDelayReq frames and capture the hardware transmit timestamp (``t1``)
 - The ``PeerDelayMeasurer`` shall receive PDelayResp (providing ``t2``, ``t4``) and PDelayRespFollowUp (providing ``t3c``) messages
 - The ``PeerDelayMeasurer`` shall compute the peer delay using the IEEE 802.1AS formula: ``path_delay = ((t2 - t1) + (t4 - t3c)) / 2``
+- The ``PeerDelayMeasurer`` shall discard PDelayResp and PDelayRespFollowUp messages whose sequence ID does not match the most recently transmitted PDelayReq
+- The ``PeerDelayMeasurer`` shall suppress the path-delay result when more than one PDelayResp is received for a single PDelayReq (detection of non-time-aware bridges per IEEE 802.1AS)
 - The ``PeerDelayMeasurer`` shall provide thread-safe access to the ``PDelayResult`` via a mutex, as ``SendRequest()`` runs on the PdelayThread while response handlers are called from the RxThread
 
 PhcAdjuster SW component

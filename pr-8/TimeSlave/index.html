@@ -494,7 +494,7 @@
 <p>Main classes and components are presented on this diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><figure class="align-center">
 <p class="plantuml">
-<object data="../_images/plantuml-a58ae5b86c72034293ed6ec6ddc5c7485a8be469.svg" type="image/svg+xml" style="width:2593px;height:1130px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-691fcaf2adce2a17ef801a776bf49f907e4ba1c9.svg" type="image/svg+xml" style="width:2683px;height:1130px;background:#FFFFFF;"></object></p>
 </figure>
 </div></section>
 <section id="data-and-control-flow">
@@ -753,6 +753,8 @@
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall transmit PDelayReq frames and capture the hardware transmit timestamp (<code class="docutils literal notranslate"><span class="pre">t1</span></code>)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall receive PDelayResp (providing <code class="docutils literal notranslate"><span class="pre">t2</span></code>, <code class="docutils literal notranslate"><span class="pre">t4</span></code>) and PDelayRespFollowUp (providing <code class="docutils literal notranslate"><span class="pre">t3c</span></code>) messages</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall compute the peer delay using the IEEE 802.1AS formula: <code class="docutils literal notranslate"><span class="pre">path_delay</span> <span class="pre">=</span> <span class="pre">((t2</span> <span class="pre">-</span> <span class="pre">t1)</span> <span class="pre">+</span> <span class="pre">(t4</span> <span class="pre">-</span> <span class="pre">t3c))</span> <span class="pre">/</span> <span class="pre">2</span></code></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall discard PDelayResp and PDelayRespFollowUp messages whose sequence ID does not match the most recently transmitted PDelayReq</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall suppress the path-delay result when more than one PDelayResp is received for a single PDelayReq (detection of non-time-aware bridges per IEEE 802.1AS)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PeerDelayMeasurer</span></code> shall provide thread-safe access to the <code class="docutils literal notranslate"><span class="pre">PDelayResult</span></code> via a mutex, as <code class="docutils literal notranslate"><span class="pre">SendRequest()</span></code> runs on the PdelayThread while response handlers are called from the RxThread</p></li>
 </ul>
 </section>
