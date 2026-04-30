@@ -520,7 +520,7 @@ production implementations.  <em>Clients must never include anything from a</em>
 <p>The most common pattern: obtain a snapshot and inspect the synchronisation quality
 before using the time value.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-d0c8afe88ed0419ba0bfa88a9422d0810fe05ea9.svg" type="image/svg+xml" style="width:906px;height:708px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-9d400d95aa4b655ee7e04af49b9b93dd41839ae6.svg" type="image/svg+xml" style="width:921px;height:681px;background:#FFFFFF;"></object></p>
 </div><p><strong>Code example:</strong></p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_clock.h&quot;</span>
 
@@ -579,7 +579,7 @@ before using the time value.</p>
 <code class="docutils literal notranslate"><span class="pre">IsAvailable()</span></code> for a non-blocking probe, or <code class="docutils literal notranslate"><span class="pre">WaitUntilAvailable()</span></code> when it is
 acceptable to block the calling thread.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-6b94f12e5fa8768a64d9cc1014a2887fe4703ad6.svg" type="image/svg+xml" style="width:790px;height:845px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-948678e067f12ad21c52567f795a5916847f5a82.svg" type="image/svg+xml" style="width:736px;height:786px;background:#FFFFFF;"></object></p>
 </div><p><strong>Code example:</strong></p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;score/stop_token.hpp&gt;</span>
@@ -621,7 +621,7 @@ require an async transport</strong> (currently <code class="docutils literal not
 <li><p><code class="docutils literal notranslate"><span class="pre">PDelayMeasurementData&lt;VehicleTime&gt;</span></code> — fired when a peer-delay measurement completes.</p></li>
 </ul>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-0384ed10d01deb983dabc92160e88e58de203242.svg" type="image/svg+xml" style="width:1259px;height:808px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-5a55ae1c99190716b6bb094c629635a4020555df.svg" type="image/svg+xml" style="width:1235px;height:808px;background:#FFFFFF;"></object></p>
 </div><p><strong>Code example:</strong></p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/ptp/time_slave_sync_data.h&quot;</span>
@@ -710,7 +710,7 @@ ready.</p>
 <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;</span></code> as a constructor parameter.  Tests install a mock backend for the duration of
 the test scope using <code class="docutils literal notranslate"><span class="pre">ClockOverrideGuard&lt;Tag&gt;</span></code>.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../_images/plantuml-3146898c1e9f89804fce37cb53c3e157dda97756.svg" type="image/svg+xml" style="width:1028px;height:966px;background:#FFFFFF;"></object></p>
+<object data="../_images/plantuml-c8a5a2a96a96c28c4b2c7d464d0f5e48f7f7f41e.svg" type="image/svg+xml" style="width:1028px;height:966px;background:#FFFFFF;"></object></p>
 </div><p><strong>Code example:</strong></p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_time_mock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/clock/clock_override_guard.h&quot;</span>
