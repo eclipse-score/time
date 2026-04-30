@@ -1,0 +1,1035 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>score::time — Unified Clock Interface &#8212; S-CORE Time  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/score.css?v=6e51530f" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/score_needs.css?v=e97392eb" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/score_design.css?v=d9fd870c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/modern.css?v=803738c0" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'time/index';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/inc_time/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Concept for TimeDaemon" href="../TimeDaemon/index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.1" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">Eclipse S-CORE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../TimeDaemon/index.html">
+    Concept for TimeDaemon
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    score::time — Unified Clock Interface
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../TimeDaemon/index.html">
+    Concept for TimeDaemon
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    score::time — Unified Clock Interface
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">score::time — Unified Clock Interface</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="score-time-unified-clock-interface">
+<h1>score::time — Unified Clock Interface<a class="headerlink" href="#score-time-unified-clock-interface" title="Link to this heading">#</a></h1>
+<nav class="contents local" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview" id="id1">Overview</a></p>
+<ul>
+<li><p><a class="reference internal" href="#clock-domains" id="id2">Clock domains</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#architecture" id="id3">Architecture</a></p>
+<ul>
+<li><p><a class="reference internal" href="#class-overview" id="id4">Class overview</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#use-cases" id="id5">Use Cases</a></p>
+<ul>
+<li><p><a class="reference internal" href="#uc1-time-polling-with-status-check" id="id6">UC1 — Time polling with status check</a></p></li>
+<li><p><a class="reference internal" href="#uc2-availability-waiting-at-startup" id="id7">UC2 — Availability waiting at startup</a></p></li>
+<li><p><a class="reference internal" href="#uc3-async-ptp-event-subscription" id="id8">UC3 — Async PTP event subscription</a></p></li>
+<li><p><a class="reference internal" href="#uc4-status-flag-mapping-diagnostics" id="id9">UC4 — Status flag mapping (diagnostics)</a></p></li>
+<li><p><a class="reference internal" href="#uc5-hplsc-as-reference-steady-clock" id="id10">UC5 — HPLSC as reference steady clock</a></p></li>
+<li><p><a class="reference internal" href="#uc6-unit-testing-with-mock-injection" id="id11">UC6 — Unit testing with mock injection</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#bazel-dependencies" id="id12">Bazel dependencies</a></p></li>
+<li><p><a class="reference internal" href="#design-decisions" id="id13">Design decisions</a></p>
+<ul>
+<li><p><a class="reference internal" href="#no-factory-classes" id="id14">No factory classes</a></p></li>
+<li><p><a class="reference internal" href="#opacity-of-details" id="id15">Opacity of <code class="docutils literal notranslate"><span class="pre">details/</span></code></a></p></li>
+<li><p><a class="reference internal" href="#clocksnapshot-replaces-nested-timestatus" id="id16"><code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> replaces nested <code class="docutils literal notranslate"><span class="pre">TimeStatus</span></code></a></p></li>
+<li><p><a class="reference internal" href="#subscribe-e-collapses-four-named-callback-methods" id="id17"><code class="docutils literal notranslate"><span class="pre">Subscribe&lt;E&gt;</span></code> collapses four named callback methods</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#extending-with-a-new-clock-domain" id="id18">Extending with a new clock domain</a></p></li>
+</ul>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Overview</a><a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">score::time</span></code> provides a <strong>unified, clock-domain-agnostic API</strong> for reading time snapshots,
+subscribing to PTP protocol events, and checking clock readiness — all through a single
+template wrapper <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;</span></code>.</p>
+<p>The design separates three concerns:</p>
+<ol class="arabic simple">
+<li><p><strong>What kind of time</strong> — expressed as a <em>tag struct</em> (<code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>, <code class="docutils literal notranslate"><span class="pre">HplsTime</span></code>,
+<code class="docutils literal notranslate"><span class="pre">std::chrono::steady_clock</span></code>, <code class="docutils literal notranslate"><span class="pre">std::chrono::system_clock</span></code>).</p></li>
+<li><p><strong>How to access it</strong> — always via <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;::GetInstance()</span></code>; never via a factory class.</p></li>
+<li><p><strong>How to test it</strong> — via <code class="docutils literal notranslate"><span class="pre">ClockOverrideGuard&lt;Tag&gt;</span></code> which injects a GMock test double
+without any constructor-parameter changes to the SUT.</p></li>
+</ol>
+<section id="clock-domains">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Clock domains</a><a class="headerlink" href="#clock-domains" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 30.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Clock alias</p></th>
+<th class="head"><p>Tag</p></th>
+<th class="head"><p>Status concept</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">VehicleTimeStatus</span></code> (PTP sync flags + rate deviation)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HplsClock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">HplsTime</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NoStatus</span></code> (always-ready local steady clock)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SteadyClock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std::chrono::steady_clock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NoStatus</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SystemClock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std::chrono::system_clock</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">NoStatus</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="architecture">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Architecture</a><a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-3331727ce097e49c68ffd298896f45e6ac6cb41b.svg" type="image/svg+xml" style="width:1673px;height:893px;background:#FFFFFF;"></object></p>
+</div><p>The library has three layers:</p>
+<ul class="simple">
+<li><p><strong>Public headers</strong> under <code class="docutils literal notranslate"><span class="pre">score/time/&lt;domain&gt;/</span></code> — tag structs and callback types that
+clients include directly.</p></li>
+<li><p><strong>Framework layer</strong> under <code class="docutils literal notranslate"><span class="pre">score/time/clock/</span></code> — the <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;</span></code> wrapper, traits,
+subscription hooks, and the override guard.  This layer has no backend dependency.</p></li>
+<li><p><strong>Internal</strong> under <code class="docutils literal notranslate"><span class="pre">score/time/&lt;domain&gt;/details/</span></code> — pure-virtual backend interfaces and
+production implementations.  <em>Clients must never include anything from a</em> <code class="docutils literal notranslate"><span class="pre">details/</span></code>
+<em>subfolder.</em></p></li>
+</ul>
+<section id="class-overview">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">Class overview</a><a class="headerlink" href="#class-overview" title="Link to this heading">#</a></h3>
+<div style="overflow-x: auto; max-width: 100%;"><figure class="align-center">
+<p class="plantuml">
+<object data="../_images/plantuml-9673bb97f3fb7ad0df9d81ac8ae57b460002e47e.svg" type="image/svg+xml" style="width:1370px;height:1196px;background:#FFFFFF;"></object></p>
+</figure>
+</div></section>
+</section>
+<section id="use-cases">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Use Cases</a><a class="headerlink" href="#use-cases" title="Link to this heading">#</a></h2>
+<section id="uc1-time-polling-with-status-check">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">UC1 — Time polling with status check</a><a class="headerlink" href="#uc1-time-polling-with-status-check" title="Link to this heading">#</a></h3>
+<p>The most common pattern: obtain a snapshot and inspect the synchronisation quality
+before using the time value.</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-d0c8afe88ed0419ba0bfa88a9422d0810fe05ea9.svg" type="image/svg+xml" style="width:906px;height:708px;background:#FFFFFF;"></object></p>
+</div><p><strong>Code example:</strong></p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_clock.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MyComponent::CheckTime</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">();</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">.</span><span class="n">Now</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">().</span><span class="n">IsSynchronized</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Time is valid and synchronized with the PTP Grand Master.</span>
+<span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
+<span class="w">        </span><span class="c1">// use tp ...</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">().</span><span class="n">IsFlagActive</span><span class="p">(</span>
+<span class="w">                   </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">::</span><span class="n">StatusFlag</span><span class="o">::</span><span class="n">kTimeOut</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Clock has not received a sync message within the timeout window.</span>
+<span class="w">        </span><span class="n">HandleTimeout</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Status flags for <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kSynchronized</span></code></p></td>
+<td><p>Synchronized at least once to the PTP Grand Master</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kSynchToGateway</span></code></p></td>
+<td><p>Currently in sync with the PTP gateway</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kTimeOut</span></code></p></td>
+<td><p>No sync message received within the configured time window</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kTimeLeapFuture</span></code></p></td>
+<td><p>A large forward adjustment was applied</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kTimeLeapPast</span></code></p></td>
+<td><p>A large backward adjustment was applied</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">kUnknown</span></code></p></td>
+<td><p>Status cannot be determined</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">IsSynchronized()</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code> only when <code class="docutils literal notranslate"><span class="pre">kSynchronized</span></code> is set <strong>and</strong> none of
+<code class="docutils literal notranslate"><span class="pre">{kTimeOut,</span> <span class="pre">kTimeLeapFuture,</span> <span class="pre">kTimeLeapPast}</span></code> is set.</p>
+</section>
+<section id="uc2-availability-waiting-at-startup">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">UC2 — Availability waiting at startup</a><a class="headerlink" href="#uc2-availability-waiting-at-startup" title="Link to this heading">#</a></h3>
+<p>PTP-backed clocks (<code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>) require an async connection to the PTP stack.  Use
+<code class="docutils literal notranslate"><span class="pre">IsAvailable()</span></code> for a non-blocking probe, or <code class="docutils literal notranslate"><span class="pre">WaitUntilAvailable()</span></code> when it is
+acceptable to block the calling thread.</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-6b94f12e5fa8768a64d9cc1014a2887fe4703ad6.svg" type="image/svg+xml" style="width:790px;height:845px;background:#FFFFFF;"></object></p>
+</div><p><strong>Code example:</strong></p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;score/stop_token.hpp&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;chrono&gt;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MyService::Init</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">cpp</span><span class="o">::</span><span class="n">stop_token</span><span class="o">&amp;</span><span class="w"> </span><span class="n">stop</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Non-blocking probe:</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">clock</span><span class="p">.</span><span class="n">IsAvailable</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">LOG_WARN</span><span class="p">(</span><span class="s">&quot;VehicleTime not yet available, waiting ...&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Blocking wait — returns true if ready, false on timeout or stop request:</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">deadline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">{</span><span class="mi">30</span><span class="p">};</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">clock</span><span class="p">.</span><span class="n">WaitUntilAvailable</span><span class="p">(</span><span class="n">stop</span><span class="p">,</span><span class="w"> </span><span class="n">deadline</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">LOG_ERROR</span><span class="p">(</span><span class="s">&quot;VehicleTime did not become available within 30 s&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">.</span><span class="n">Now</span><span class="p">();</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">IsAvailable()</span></code> and <code class="docutils literal notranslate"><span class="pre">WaitUntilAvailable()</span></code> are <strong>only available on clock domains that
+require an async transport</strong> (currently <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>).  Calling them on <code class="docutils literal notranslate"><span class="pre">HplsTime</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SteadyClock</span></code>, or <code class="docutils literal notranslate"><span class="pre">SystemClock</span></code> is a <strong>compile error</strong> — those clocks are always ready.</p>
+</div>
+</section>
+<section id="uc3-async-ptp-event-subscription">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">UC3 — Async PTP event subscription</a><a class="headerlink" href="#uc3-async-ptp-event-subscription" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code> delivers two kinds of PTP protocol events via callbacks:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TimeSlaveSyncData&lt;VehicleTime&gt;</span></code> — fired on each PTP sync message.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PDelayMeasurementData&lt;VehicleTime&gt;</span></code> — fired when a peer-delay measurement completes.</p></li>
+</ul>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-0384ed10d01deb983dabc92160e88e58de203242.svg" type="image/svg+xml" style="width:1259px;height:808px;background:#FFFFFF;"></object></p>
+</div><p><strong>Code example:</strong></p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/ptp/time_slave_sync_data.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/ptp/pdelay_measurement_data.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MyDiagHandler::RegisterCallbacks</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">clock</span><span class="p">.</span><span class="n">Subscribe</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">TimeSlaveSyncData</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+<span class="w">        </span><span class="p">[</span><span class="k">this</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">OnTimeSyncData</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+
+<span class="w">    </span><span class="n">clock</span><span class="p">.</span><span class="n">Subscribe</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">PDelayMeasurementData</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">&gt;&gt;</span><span class="p">(</span>
+<span class="w">        </span><span class="p">[</span><span class="k">this</span><span class="p">](</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">OnPDelayData</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"> </span><span class="p">});</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MyDiagHandler::Shutdown</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">();</span>
+<span class="w">    </span><span class="n">clock</span><span class="p">.</span><span class="n">Unsubscribe</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">TimeSlaveSyncData</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">clock</span><span class="p">.</span><span class="n">Unsubscribe</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">PDelayMeasurementData</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Callbacks are invoked on the <strong>backend thread</strong> — the callback implementation must be
+thread-safe.</p>
+</div>
+</section>
+<section id="uc4-status-flag-mapping-diagnostics">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">UC4 — Status flag mapping (diagnostics)</a><a class="headerlink" href="#uc4-status-flag-mapping-diagnostics" title="Link to this heading">#</a></h3>
+<p>When mapping <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code> status flags to diagnostic bits (e.g. DTC bitmasks), access
+the flag type via the tag struct directly:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;map&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="n">SvtFlag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">::</span><span class="n">StatusFlag</span><span class="p">;</span>
+
+<span class="k">static</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">SvtFlag</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">kDiagBitMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="p">{</span><span class="n">SvtFlag</span><span class="o">::</span><span class="n">kSynchronized</span><span class="p">,</span><span class="w">   </span><span class="mh">0x01U</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="n">SvtFlag</span><span class="o">::</span><span class="n">kTimeOut</span><span class="p">,</span><span class="w">        </span><span class="mh">0x02U</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="n">SvtFlag</span><span class="o">::</span><span class="n">kTimeLeapFuture</span><span class="p">,</span><span class="w"> </span><span class="mh">0x04U</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="n">SvtFlag</span><span class="o">::</span><span class="n">kTimeLeapPast</span><span class="p">,</span><span class="w">   </span><span class="mh">0x08U</span><span class="p">},</span>
+<span class="w">    </span><span class="p">{</span><span class="n">SvtFlag</span><span class="o">::</span><span class="n">kUnknown</span><span class="p">,</span><span class="w">        </span><span class="mh">0x80U</span><span class="p">},</span>
+<span class="p">};</span>
+
+<span class="kt">uint8_t</span><span class="w"> </span><span class="nf">BuildDiagByte</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTimeStatus</span><span class="o">&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">result</span><span class="p">{</span><span class="mi">0U</span><span class="p">};</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">kDiagBitMap</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">IsFlagActive</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="n">first</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="n">second</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="uc5-hplsc-as-reference-steady-clock">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">UC5 — HPLSC as reference steady clock</a><a class="headerlink" href="#uc5-hplsc-as-reference-steady-clock" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">HplsClock</span></code> (High-Precision Local Steady Clock) is a monotonic clock that provides
+nanosecond-resolution time without any PTP dependency.  It has <strong>no status</strong> — it is always
+ready.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/hpls_time/hpls_clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;chrono&gt;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">MyValidator::CheckDeadline</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">hpls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">HplsClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">();</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">deadline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hpls</span><span class="p">.</span><span class="n">Now</span><span class="p">().</span><span class="n">TimePoint</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">{</span><span class="mi">3</span><span class="p">};</span>
+
+<span class="w">    </span><span class="c1">// ... do work ...</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">hpls</span><span class="p">.</span><span class="n">Now</span><span class="p">().</span><span class="n">TimePoint</span><span class="p">()</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">deadline</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">HandleDeadlineExceeded</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="uc6-unit-testing-with-mock-injection">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">UC6 — Unit testing with mock injection</a><a class="headerlink" href="#uc6-unit-testing-with-mock-injection" title="Link to this heading">#</a></h3>
+<p>The SUT always obtains its clock via <code class="docutils literal notranslate"><span class="pre">GetInstance()</span></code> — it never accepts a
+<code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;</span></code> as a constructor parameter.  Tests install a mock backend for the duration of
+the test scope using <code class="docutils literal notranslate"><span class="pre">ClockOverrideGuard&lt;Tag&gt;</span></code>.</p>
+<div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
+<object data="../_images/plantuml-3146898c1e9f89804fce37cb53c3e157dda97756.svg" type="image/svg+xml" style="width:1028px;height:966px;background:#FFFFFF;"></object></p>
+</div><p><strong>Code example:</strong></p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/vehicle_time_mock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/clock/clock_override_guard.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;gmock/gmock.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;gtest/gtest.h&gt;</span>
+
+<span class="k">using</span><span class="w"> </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Return</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">ClockOverrideGuard</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTimeMock</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">ClockSnapshot</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTimeStatus</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">ClockStatus</span><span class="p">;</span>
+
+<span class="c1">// ── System Under Test ──────────────────────────────────────────────────────</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyService</span><span class="w"> </span><span class="p">{</span>
+<span class="k">public</span><span class="o">:</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsTimeReady</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">IsAvailable</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">::</span><span class="n">Timepoint</span><span class="w"> </span><span class="n">CurrentTime</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">().</span><span class="n">TimePoint</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// ── Test ───────────────────────────────────────────────────────────────────</span>
+<span class="n">TEST</span><span class="p">(</span><span class="n">MyServiceTest</span><span class="p">,</span><span class="w"> </span><span class="n">ReportsReadyWhenAvailable</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">mock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">VehicleTimeMock</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">ClockOverrideGuard</span><span class="o">&lt;</span><span class="n">VehicleTime</span><span class="o">&gt;</span><span class="w"> </span><span class="n">guard</span><span class="p">{</span><span class="n">mock</span><span class="p">};</span><span class="w">   </span><span class="c1">// installs mock</span>
+
+<span class="w">    </span><span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">mock</span><span class="p">,</span><span class="w"> </span><span class="n">IsAvailable</span><span class="p">()).</span><span class="n">WillOnce</span><span class="p">(</span><span class="n">Return</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span>
+
+<span class="w">    </span><span class="n">MyService</span><span class="w"> </span><span class="n">svc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">svc</span><span class="p">.</span><span class="n">IsTimeReady</span><span class="p">());</span>
+<span class="p">}</span><span class="w">  </span><span class="c1">// guard destructor calls ResetOverride() — production backend resumes</span>
+
+<span class="n">TEST</span><span class="p">(</span><span class="n">MyServiceTest</span><span class="p">,</span><span class="w"> </span><span class="n">ReturnsExpectedTimepoint</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">mock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">VehicleTimeMock</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="n">ClockOverrideGuard</span><span class="o">&lt;</span><span class="n">VehicleTime</span><span class="o">&gt;</span><span class="w"> </span><span class="n">guard</span><span class="p">{</span><span class="n">mock</span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VehicleTime</span><span class="o">::</span><span class="n">Timepoint</span><span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">nanoseconds</span><span class="p">{</span><span class="mf">12345L</span><span class="n">L</span><span class="p">}};</span>
+<span class="w">    </span><span class="n">VehicleTimeStatus</span><span class="w"> </span><span class="n">status</span><span class="p">;</span>
+<span class="w">    </span><span class="n">status</span><span class="p">.</span><span class="n">flags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ClockStatus</span><span class="o">&lt;</span><span class="n">VehicleTime</span><span class="o">::</span><span class="n">StatusFlag</span><span class="o">&gt;</span><span class="p">{</span>
+<span class="w">        </span><span class="p">{</span><span class="n">VehicleTime</span><span class="o">::</span><span class="n">StatusFlag</span><span class="o">::</span><span class="n">kSynchronized</span><span class="p">}};</span>
+<span class="w">    </span><span class="n">EXPECT_CALL</span><span class="p">(</span><span class="o">*</span><span class="n">mock</span><span class="p">,</span><span class="w"> </span><span class="n">Now</span><span class="p">()).</span><span class="n">WillOnce</span><span class="p">(</span><span class="n">Return</span><span class="p">(</span>
+<span class="w">        </span><span class="n">ClockSnapshot</span><span class="o">&lt;</span><span class="n">VehicleTime</span><span class="o">::</span><span class="n">Timepoint</span><span class="p">,</span><span class="w"> </span><span class="n">VehicleTimeStatus</span><span class="o">&gt;</span><span class="p">{</span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">}));</span>
+
+<span class="w">    </span><span class="n">MyService</span><span class="w"> </span><span class="n">svc</span><span class="p">;</span>
+<span class="w">    </span><span class="n">EXPECT_EQ</span><span class="p">(</span><span class="n">svc</span><span class="p">.</span><span class="n">CurrentTime</span><span class="p">(),</span><span class="w"> </span><span class="n">expected</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>BUILD dependency for tests:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cc_test</span><span class="p">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_service_test&quot;</span><span class="p">,</span>
+    <span class="n">srcs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;my_service_test.cpp&quot;</span><span class="p">],</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="s2">&quot;exclusive&quot;</span><span class="p">],</span>   <span class="c1"># &quot;exclusive&quot; required — see note below</span>
+    <span class="n">deps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;:my_service&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;//score/time/vehicle_time:vehicle_time_mock&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@googletest//:gtest&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@googletest//:gtest_main&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&quot;exclusive&quot;</span></code> tag is <strong>mandatory</strong> for every test that uses
+<code class="docutils literal notranslate"><span class="pre">ClockOverrideGuard&lt;Tag&gt;</span></code>.  The guard mutates a per-<code class="docutils literal notranslate"><span class="pre">Tag</span></code> process-global static.
+Two tests overriding the same <code class="docutils literal notranslate"><span class="pre">Tag</span></code> in the same process concurrently (e.g. with
+<code class="docutils literal notranslate"><span class="pre">ctest</span> <span class="pre">-j</span></code>) is a data race — undefined behaviour.  Marking the test binary
+<code class="docutils literal notranslate"><span class="pre">&quot;exclusive&quot;</span></code> ensures it runs without parallel siblings.</p>
+</div>
+</section>
+</section>
+<section id="bazel-dependencies">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Bazel dependencies</a><a class="headerlink" href="#bazel-dependencies" title="Link to this heading">#</a></h2>
+<p>Choose the target that matches your use case:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 55.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Target</p></th>
+<th class="head"><p>When to use</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/vehicle_time:vehicle_time</span></code></p></td>
+<td><p>Production binary — includes real PTP backend</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/vehicle_time:vehicle_time_mock</span></code></p></td>
+<td><p>Unit test — mock injection via <code class="docutils literal notranslate"><span class="pre">ClockOverrideGuard</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/vehicle_time:interface</span></code></p></td>
+<td><p>Header-only, no backend — interface/type usage only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/hpls_time:hpls_time</span></code></p></td>
+<td><p>Production binary — HPLS steady clock</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/hpls_time:hpls_time_mock</span></code></p></td>
+<td><p>Unit test — HplsTime mock injection</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/hpls_time:interface</span></code></p></td>
+<td><p>Header-only</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/steady_time:steady_time</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std::chrono::steady_clock</span></code> wrapper</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/system_time:system_time</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">std::chrono::system_clock</span></code> wrapper</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">//score/time/ptp:ptp_types</span></code></p></td>
+<td><p>PTP notification data types (for callbacks)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="design-decisions">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">Design decisions</a><a class="headerlink" href="#design-decisions" title="Link to this heading">#</a></h2>
+<section id="no-factory-classes">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">No factory classes</a><a class="headerlink" href="#no-factory-classes" title="Link to this heading">#</a></h3>
+<p>The old <code class="docutils literal notranslate"><span class="pre">SynchronizedVehicleTime</span></code> API required clients to instantiate factory objects
+directly.  <code class="docutils literal notranslate"><span class="pre">score::time</span></code> removes all factory nesting: <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;::GetInstance()</span></code> is
+the sole entry point, and the production backend is chosen at <strong>link time</strong> by the Bazel
+alias target.</p>
+</section>
+<section id="opacity-of-details">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">Opacity of <code class="docutils literal notranslate"><span class="pre">details/</span></code></a><a class="headerlink" href="#opacity-of-details" title="Link to this heading">#</a></h3>
+<p>Virtual dispatch exists solely to enable GMock test doubles.  The vtable is hidden inside
+<code class="docutils literal notranslate"><span class="pre">details/</span></code> — public headers never declare a virtual function.  <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;</span></code> is a plain
+value type.  The <code class="docutils literal notranslate"><span class="pre">*_mock.h</span></code> headers are the only public headers permitted to include
+<code class="docutils literal notranslate"><span class="pre">details/</span></code> internals.</p>
+</section>
+<section id="clocksnapshot-replaces-nested-timestatus">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> replaces nested <code class="docutils literal notranslate"><span class="pre">TimeStatus</span></code></a><a class="headerlink" href="#clocksnapshot-replaces-nested-timestatus" title="Link to this heading">#</a></h3>
+<p>The old <code class="docutils literal notranslate"><span class="pre">SynchronizedVehicleTime::TimeStatus</span></code> had public mutable data members, raw-integer
+constructors, and non-const accessors.  <code class="docutils literal notranslate"><span class="pre">ClockSnapshot&lt;TimepointT,</span> <span class="pre">StatusT&gt;</span></code> is a simple
+immutable two-field struct:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">snap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
+<span class="n">snap</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span><span class="w">   </span><span class="c1">// std::chrono::time_point&lt;VehicleTime, nanoseconds&gt;</span>
+<span class="n">snap</span><span class="p">.</span><span class="n">Status</span><span class="p">();</span><span class="w">      </span><span class="c1">// VehicleTimeStatus — const reference</span>
+</pre></div>
+</div>
+<p>Generic code works for all clock domains:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">Tag</span><span class="o">&gt;</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">Age</span><span class="p">(</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">Clock</span><span class="o">&lt;</span><span class="n">Tag</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">clk</span><span class="p">,</span>
+<span class="w">         </span><span class="k">typename</span><span class="w"> </span><span class="nc">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">Clock</span><span class="o">&lt;</span><span class="n">Tag</span><span class="o">&gt;::</span><span class="n">time_point</span><span class="w"> </span><span class="n">ref</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">clk</span><span class="p">.</span><span class="n">Now</span><span class="p">().</span><span class="n">TimePoint</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">ref</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="subscribe-e-collapses-four-named-callback-methods">
+<h3><a class="toc-backref" href="#id17" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">Subscribe&lt;E&gt;</span></code> collapses four named callback methods</a><a class="headerlink" href="#subscribe-e-collapses-four-named-callback-methods" title="Link to this heading">#</a></h3>
+<p>The old API required four separate named methods (<code class="docutils literal notranslate"><span class="pre">Set*</span></code>, <code class="docutils literal notranslate"><span class="pre">Unset*</span></code> for each event type).
+The <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;</span></code> wrapper exposes a single pair <code class="docutils literal notranslate"><span class="pre">Subscribe&lt;E&gt;()</span></code> / <code class="docutils literal notranslate"><span class="pre">Unsubscribe&lt;E&gt;()</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">SubscriptionHook&lt;Tag,</span> <span class="pre">EventType&gt;</span></code> specialisation bridges to the named virtual methods
+on the backend interface — which must remain non-template (C++ forbids virtual templates).</p>
+</section>
+</section>
+<section id="extending-with-a-new-clock-domain">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">Extending with a new clock domain</a><a class="headerlink" href="#extending-with-a-new-clock-domain" title="Link to this heading">#</a></h2>
+<p>Adding a new time domain (e.g. <code class="docutils literal notranslate"><span class="pre">SdatTime</span></code>) requires only new files — no existing file
+is modified:</p>
+<ol class="arabic simple">
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">score/time/sdat_time/sdat_time.h</span></code> — tag struct with <code class="docutils literal notranslate"><span class="pre">Duration</span></code> and <code class="docutils literal notranslate"><span class="pre">Timepoint</span></code>.</p></li>
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">score/time/sdat_time/details/sdat_time_iface.h</span></code> — pure-virtual backend interface.</p></li>
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">score/time/sdat_time/details/sdat_prod_impl.cpp</span></code> — production backend.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">ClockTraits&lt;SdatTime&gt;</span></code> specialisation in <code class="docutils literal notranslate"><span class="pre">score/time/sdat_time/sdat_clock.h</span></code>.</p></li>
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">score/time/sdat_time/sdat_time_mock.h</span></code> — GMock test double.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">sdat_time</span></code>, <code class="docutils literal notranslate"><span class="pre">sdat_time_mock</span></code>, <code class="docutils literal notranslate"><span class="pre">interface</span></code> aliases in <code class="docutils literal notranslate"><span class="pre">score/time/sdat_time/BUILD</span></code>.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../TimeDaemon/index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Concept for TimeDaemon</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clock-domains">Clock domains</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#class-overview">Class overview</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uc1-time-polling-with-status-check">UC1 — Time polling with status check</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uc2-availability-waiting-at-startup">UC2 — Availability waiting at startup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uc3-async-ptp-event-subscription">UC3 — Async PTP event subscription</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uc4-status-flag-mapping-diagnostics">UC4 — Status flag mapping (diagnostics)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uc5-hplsc-as-reference-steady-clock">UC5 — HPLSC as reference steady clock</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uc6-unit-testing-with-mock-injection">UC6 — Unit testing with mock injection</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bazel-dependencies">Bazel dependencies</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#design-decisions">Design decisions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-factory-classes">No factory classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#opacity-of-details">Opacity of <code class="docutils literal notranslate"><span class="pre">details/</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clocksnapshot-replaces-nested-timestatus"><code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> replaces nested <code class="docutils literal notranslate"><span class="pre">TimeStatus</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#subscribe-e-collapses-four-named-callback-methods"><code class="docutils literal notranslate"><span class="pre">Subscribe&lt;E&gt;</span></code> collapses four named callback methods</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extending-with-a-new-clock-domain">Extending with a new clock domain</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/eclipse-score/inc_time/edit/main/docs/time/index.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/time/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
