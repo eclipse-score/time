@@ -17,8 +17,9 @@ The design separates three concerns:
 1. **What kind of time** — expressed as a *tag struct* (``VehicleTime``, ``HplsTime``,
    ``std::chrono::steady_clock``, ``std::chrono::system_clock``).
 2. **How to access it** — always via ``Clock<Tag>::GetInstance()``; never via a factory class.
-3. **How to test it** — via ``ClockOverrideGuard<Tag>`` which injects a GMock test double
-   without any constructor-parameter changes to the SUT.
+3. **How to use it in testing** — via ``test_utils::ScopedClockOverride<Tag>`` (scope-bound global
+   override when the SUT calls ``GetInstance()`` internally) or
+   ``test_utils::ClockTestFactory<Tag>`` (direct constructor injection, no global state).
 
 Clock domains
 ~~~~~~~~~~~~~
@@ -43,6 +44,23 @@ Clock domains
      - ``std::chrono::system_clock``
      - ``NoStatus``
 
+Relation to automotive time synchronization standards
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``score::time`` addresses the same problem domain as the time-base management modules
+found in automotive middleware stacks: reading a time snapshot, inspecting
+synchronization quality flags, waiting for clock availability, and subscribing to
+PTP protocol events.
+
+The key design upgrade ``score::time`` brings over typical C-style automotive APIs is
+replacing the **runtime integer time-base selector** with a **compile-time ``Tag``
+template parameter**.  This gives full type-safety and zero runtime dispatch for
+time-domain selection: a component that depends on ``Clock<HplsTime>`` simply cannot
+accidentally read ``VehicleTime`` at runtime — the compiler enforces the distinction.
+All other structural concepts (composite snapshot result, quality status flags, layered
+backend hiding) follow the same principles as established automotive time
+synchronization practice, expressed in modern C++.
+
 Architecture
 ------------
 
@@ -62,7 +80,10 @@ The library has three layers:
 - **Public headers** under ``score/time/<domain>/`` — tag structs and callback types that
   clients include directly.
 - **Framework layer** under ``score/time/clock/`` — the ``Clock<Tag>`` wrapper, traits,
-  subscription hooks, and the override guard.  This layer has no backend dependency.
+  subscription hooks, and the test utilities (``clock_test_utils`` Bazel target).  This
+  layer has no backend dependency.
+  The ``clock_test_utils`` target (``scoped_clock_override.h``, ``clock_test_factory.h``)
+  is ``testonly`` and must not appear in production deps.
 - **Internal** under ``score/time/<domain>/details/`` — pure-virtual backend interfaces and
   production implementations.  *Clients must never include anything from a* ``details/``
   *subfolder.*
@@ -89,7 +110,7 @@ Use Cases
 UC1 — Time polling with status check
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The most common pattern: obtain a snapshot and inspect the synchronisation quality
+The most common pattern: obtain a snapshot and inspect the synchronization quality
 before using the time value.
 
 .. raw:: html
@@ -304,104 +325,6 @@ ready.
        }
    }
 
-UC6 — Unit testing with mock injection
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The SUT always obtains its clock via ``GetInstance()`` — it never accepts a
-``Clock<Tag>`` as a constructor parameter.  Tests install a mock backend for the duration of
-the test scope using ``ClockOverrideGuard<Tag>``.
-
-.. raw:: html
-
-   <div style="overflow-x: auto; max-width: 100%;">
-
-.. uml:: _assets/uc_testing.puml
-   :alt: UC6 — Unit test mock injection sequence
-
-.. raw:: html
-
-   </div>
-
-**Code example:**
-
-.. code-block:: cpp
-
-   #include "score/time/vehicle_time/vehicle_time_mock.h"
-   #include "score/time/clock/clock_override_guard.h"
-   #include <gmock/gmock.h>
-   #include <gtest/gtest.h>
-
-   using ::testing::Return;
-   using score::time::ClockOverrideGuard;
-   using score::time::VehicleTime;
-   using score::time::VehicleTimeMock;
-   using score::time::ClockSnapshot;
-   using score::time::VehicleTimeStatus;
-   using score::time::ClockStatus;
-
-   // ── System Under Test ──────────────────────────────────────────────────────
-   class MyService {
-   public:
-       bool IsTimeReady() const {
-           return score::time::VehicleClock::GetInstance().IsAvailable();
-       }
-       score::time::VehicleTime::Timepoint CurrentTime() const {
-           return score::time::VehicleClock::GetInstance().Now().TimePoint();
-       }
-   };
-
-   // ── Test ───────────────────────────────────────────────────────────────────
-   TEST(MyServiceTest, ReportsReadyWhenAvailable)
-   {
-       auto mock = std::make_shared<VehicleTimeMock>();
-       ClockOverrideGuard<VehicleTime> guard{mock};   // installs mock
-
-       EXPECT_CALL(*mock, IsAvailable()).WillOnce(Return(true));
-
-       MyService svc;
-       EXPECT_TRUE(svc.IsTimeReady());
-   }  // guard destructor calls ResetOverride() — production backend resumes
-
-   TEST(MyServiceTest, ReturnsExpectedTimepoint)
-   {
-       auto mock = std::make_shared<VehicleTimeMock>();
-       ClockOverrideGuard<VehicleTime> guard{mock};
-
-       const auto expected = VehicleTime::Timepoint{std::chrono::nanoseconds{12345LL}};
-       VehicleTimeStatus status;
-       status.flags = ClockStatus<VehicleTime::StatusFlag>{
-           {VehicleTime::StatusFlag::kSynchronized}};
-       EXPECT_CALL(*mock, Now()).WillOnce(Return(
-           ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{expected, status}));
-
-       MyService svc;
-       EXPECT_EQ(svc.CurrentTime(), expected);
-   }
-
-**BUILD dependency for tests:**
-
-.. code-block:: python
-
-   cc_test(
-       name = "my_service_test",
-       srcs = ["my_service_test.cpp"],
-       tags = ["unit", "exclusive"],   # "exclusive" required — see note below
-       deps = [
-           ":my_service",
-           "//score/time/vehicle_time:vehicle_time_mock",
-           "@googletest//:gtest",
-           "@googletest//:gtest_main",
-       ],
-   )
-
-.. note::
-
-   The ``"exclusive"`` tag is **mandatory** for every test that uses
-   ``ClockOverrideGuard<Tag>``.  The guard mutates a per-``Tag`` process-global static.
-   Two tests overriding the same ``Tag`` in the same process concurrently (e.g. with
-   ``ctest -j``) is a data race — undefined behaviour.  Marking the test binary
-   ``"exclusive"`` ensures it runs without parallel siblings.
-
 Bazel dependencies
 ------------------
 
@@ -416,13 +339,13 @@ Choose the target that matches your use case:
    * - ``//score/time/vehicle_time:vehicle_time``
      - Production binary — includes real PTP backend
    * - ``//score/time/vehicle_time:vehicle_time_mock``
-     - Unit test — mock injection via ``ClockOverrideGuard``
+     - Unit test — ``VehicleClockMock`` + scope-bound override or constructor injection
    * - ``//score/time/vehicle_time:interface``
      - Header-only, no backend — interface/type usage only
    * - ``//score/time/hpls_time:hpls_time``
      - Production binary — HPLS steady clock
    * - ``//score/time/hpls_time:hpls_time_mock``
-     - Unit test — HplsTime mock injection
+     - Unit test — ``HplsClockMock`` + scope-bound override or constructor injection
    * - ``//score/time/hpls_time:interface``
      - Header-only
    * - ``//score/time/steady_time:steady_time``
@@ -493,5 +416,5 @@ is modified:
 2. Create ``score/time/sdat_time/details/sdat_time_iface.h`` — pure-virtual backend interface.
 3. Create ``score/time/sdat_time/details/sdat_prod_impl.cpp`` — production backend.
 4. Add ``ClockTraits<SdatTime>`` specialisation in ``score/time/sdat_time/sdat_clock.h``.
-5. Create ``score/time/sdat_time/sdat_time_mock.h`` — GMock test double.
+5. Create ``score/time/sdat_time/sdat_clock_mock.h`` — GMock test double.
 6. Add ``sdat_time``, ``sdat_time_mock``, ``interface`` aliases in ``score/time/sdat_time/BUILD``.
