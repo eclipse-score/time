@@ -16,7 +16,7 @@
 #include "score/time_daemon/src/ipc/svt/publisher/factory.h"
 #include "score/time_daemon/src/msg_broker/subscription.h"
 #include "score/time_daemon/src/msg_broker/topic.h"
-#include "score/time_daemon/src/ptp_machine/stub/factory.h"
+#include "score/time_daemon/src/ptp_machine/shm/factory.h"
 #include "score/time_daemon/src/verification_machine/svt/factory.h"
 #include "score/concurrency/interruptible_wait.h"
 #include "score/mw/log/logging.h"
@@ -39,7 +39,7 @@ SvtHandler::SvtHandler() noexcept
       handler_status_{TimebaseHandler::Status::kIdle}
 {
     msg_broker_ = std::make_shared<MessageBroker<PtpTimeInfo>>();
-    gptp_machine_ = CreateGPTPStubMachine("ptp_worker");
+    gptp_machine_ = CreateGPTPShmMachine("ptp_worker");
     verification_machine_ = CreateSvtVerificationMachine("time_verification_worker");
     ipc_publisher_ = CreateSvtPublisher("svt_ipc_publisher");
     ctrl_flow_divider_ = CreatePtpControlFlowDivider("ptp_control_flow_divider", std::chrono::milliseconds{250});
