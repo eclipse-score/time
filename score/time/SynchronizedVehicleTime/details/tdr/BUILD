@@ -44,14 +44,14 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
             False,
             [
                 "//score/time/HighPrecisionLocalSteadyClock",
-                "//score/TimeDaemon/code/ipc:svt_receiver",
+                "//score/time_daemon/src/ipc:svt_receiver",
             ],
         ),
         (
             "for_unit_testing",
             True,
             [
-                "//score/TimeDaemon/code/ipc:svt_receiver_mock",
+                "//score/time_daemon/src/ipc:svt_receiver_mock",
                 "//score/time/HighPrecisionLocalSteadyClock:utest_mock",
             ],
         ),
@@ -95,7 +95,7 @@ cc_test(
         ":tdr",
         "//score/time/HighPrecisionLocalSteadyClock:utest_mock",
         #integration like test that uses real svt_publisher instead of mock receiver
-        "//score/TimeDaemon/code/ipc:svt_publisher",
+        "//score/time_daemon/src/ipc:svt_publisher",
         "@score_baselibs//score/language/safecpp/coverage_termination_handler",
         "@score_baselibs//score/mw/log:console_only_backend",
         "@googletest//:gtest",

@@ -15,8 +15,8 @@
 
 #include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
 
-#include "score/TimeDaemon/code/ipc/svt/receiver/factory.h"
-#include "score/TimeDaemon/code/ipc/svt/svt_time_info.h"
+#include "score/time_daemon/src/ipc/svt/receiver/factory.h"
+#include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
 #include "score/mw/log/logging.h"
 
