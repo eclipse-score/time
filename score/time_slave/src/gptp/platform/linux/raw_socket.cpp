@@ -134,6 +134,17 @@ bool RawSocketImpl::Open(const std::string& iface)
             << "RawSocket::Open: Failed to set BPF filter (errno=" << errno << ")";
     }
 
+    // Enable kernel layer software timestamps as a baseline, so we get at least some timestamp
+    // even if hw timestamping isn't available or fails to configure. The HW timestamp will come
+    // in the same control message but different field, so the caller can use it if present and
+    // fall back to SW timestamp if not.
+    const int enable = 1;
+    if (sys_->setsockopt_call(fd, SOL_SOCKET, SO_TIMESTAMPNS, &enable, sizeof(enable)) < 0)
+    {
+        score::mw::log::LogWarn(kTimeSlaveAppContext)
+            << "RawSocket::Open: Failed to enable SO_TIMESTAMPNS (errno=" << errno << ")";
+    }
+
     fd_.store(fd, std::memory_order_release);
     iface_ = iface;
     return true;
@@ -213,7 +224,14 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
                 continue;
             const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
             if (ts[2].tv_sec != 0 || ts[2].tv_nsec != 0)
+            {
                 hwts = ts[2];
+                break; // Prefer raw HW timestamp if available
+            }
+        }
+        else if (cm->cmsg_type == SO_TIMESTAMPNS)
+        {
+            memcpy(&hwts, CMSG_DATA(cm), sizeof(hwts));
         }
     }
     return len;
