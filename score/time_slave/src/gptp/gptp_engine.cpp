@@ -259,11 +259,13 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     switch (msg.msgtype)
     {
         case kPtpMsgtypePdelayReq:
+            mw::log::LogDebug(kGPtpMachineContext) << "PdelayReq message received, hw_ts=" << hw_ts.ns << " ns";
             if (msg.ptpHdr.domainNumber == opts_.domain_number)
                 SendPDelayResponseAndFollowUp(msg, hw_ts);
             break;
 
         case kPtpMsgtypeSync:
+            mw::log::LogDebug(kGPtpMachineContext) << "Sync message received, hw_ts=" << hw_ts.ns << " ns";
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
                 break;
             msg.recvHardwareTS = hw_ts;
@@ -272,6 +274,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             break;
 
         case kPtpMsgtypeFollowUp:
+            mw::log::LogDebug(kGPtpMachineContext) << "FollowUp message received, hw_ts=" << hw_ts.ns << " ns";
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
                 break;
             msg.parseMessageTs = TimestampToTmv(msg.follow_up.preciseOriginTimestamp);
@@ -296,6 +299,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             break;
 
         case kPtpMsgtypePdelayResp:
+            mw::log::LogDebug(kGPtpMachineContext) << "PdelayResp message received, hw_ts=" << hw_ts.ns << " ns";
             msg.recvHardwareTS = hw_ts;
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp.requestReceiptTimestamp);
             if (pdelay_)
@@ -303,12 +307,14 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             break;
 
         case kPtpMsgtypePdelayRespFollowUp:
+            mw::log::LogDebug(kGPtpMachineContext) << "PdelayRespFollowUp message received, hw_ts=" << hw_ts.ns << " ns";
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp_fup.responseOriginReceiptTimestamp);
             if (pdelay_)
                 pdelay_->OnResponseFollowUp(msg);
             break;
 
         default:
+            mw::log::LogDebug(kGPtpMachineContext) << "Unhandled message received: " << static_cast<int>(msg.msgtype) << ", hw_ts=" << hw_ts.ns << " ns";
             break;
     }
 }
