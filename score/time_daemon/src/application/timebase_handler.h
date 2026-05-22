@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_APPLICATION_TIMEBASE_HANDLER_H
-#define SCORE_TIMEDAEMON_CODE_APPLICATION_TIMEBASE_HANDLER_H
+#ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H
+#define SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H
 
 #include <score/stop_token.hpp>
 #include <future>
@@ -79,4 +79,4 @@ class TimebaseHandler
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_APPLICATION_TIMEBASE_HANDLER_H
+#endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H

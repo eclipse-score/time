@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_SVT_SHMEM_PATH_H
-#define SCORE_TIMEDAEMON_CODE_IPC_SVT_SHMEM_PATH_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_SHMEM_PATH_H
+#define SCORE_TIME_DAEMON_SRC_IPC_SVT_SHMEM_PATH_H
 
 #include <string>
 
@@ -28,4 +28,4 @@ const std::string kSvtShmemPath{"/svt_shmem_path"};
 }  // namespace td
 }  // namespace score
 
-#endif  // #ifndef SCORE_TIMEDAEMON_CODE_IPC_SVT_SHMEM_PATH_H
+#endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_SHMEM_PATH_H

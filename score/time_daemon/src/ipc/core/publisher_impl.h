@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_CORE_PUBLISHER_IMPL_H
-#define SCORE_TIMEDAEMON_CODE_IPC_CORE_PUBLISHER_IMPL_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_PUBLISHER_IMPL_H
+#define SCORE_TIME_DAEMON_SRC_IPC_CORE_PUBLISHER_IMPL_H
 
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
@@ -66,4 +66,4 @@ void PublisherImpl<DataType, IpcDataType>::OnMessage(DataType data)
 }  // namespace td
 }  // namespace score
 
-#endif  // #ifndef SCORE_TIMEDAEMON_CODE_IPC_CORE_PUBLISHER_IMPL_H
+#endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_PUBLISHER_IMPL_H

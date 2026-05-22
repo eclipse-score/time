@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_COMMON_MACHINES_BASE_MACHINE_H
-#define SCORE_TIMEDAEMON_CODE_COMMON_MACHINES_BASE_MACHINE_H
+#ifndef SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_BASE_MACHINE_H
+#define SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_BASE_MACHINE_H
 
 #include <string>
 
@@ -64,4 +64,4 @@ class BaseMachine
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_COMMON_MACHINES_BASE_MACHINE_H
+#endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_BASE_MACHINE_H

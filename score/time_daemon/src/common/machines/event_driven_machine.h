@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H
-#define SCORE_TIMEDAEMON_CODE_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H
+#ifndef SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H
+#define SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H
 
 #include "score/time_daemon/src/common/machines/proactive_machine.h"
 #include "score/concurrency/condition_variable.h"
@@ -109,4 +109,4 @@ class EventDrivenMachine : public ProactiveMachine
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H
+#endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H

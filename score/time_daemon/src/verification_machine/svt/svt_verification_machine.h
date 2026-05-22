@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_SVT_SVT_VERIFICATION_MACHINE_H
-#define SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_SVT_SVT_VERIFICATION_MACHINE_H
+#ifndef SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_SVT_VERIFICATION_MACHINE_H
+#define SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_SVT_VERIFICATION_MACHINE_H
 
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/verification_machine/core/verification_machine.h"
@@ -32,4 +32,4 @@ using SvtVerificationMachine = VerificationMachine<PtpTimeInfo>;
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_SVT_SVT_VERIFICATION_MACHINE_H
+#endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_SVT_VERIFICATION_MACHINE_H

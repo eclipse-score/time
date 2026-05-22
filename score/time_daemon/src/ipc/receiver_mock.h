@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_RECEIVER_MOCK_H
-#define SCORE_TIMEDAEMON_CODE_IPC_RECEIVER_MOCK_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_MOCK_H
+#define SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_MOCK_H
 
 #include "score/time_daemon/src/ipc/receiver.h"
 
@@ -39,4 +39,4 @@ class ReceiverMock : public Receiver<T>
 }  // namespace td
 }  // namespace score
 
-#endif  // #ifndef SCORE_TIMEDAEMON_CODE_IPC_RECEIVER_MOCK_H
+#endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_MOCK_H

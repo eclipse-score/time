@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_COMMON_DATA_FLOW_PRODUCER_H
-#define SCORE_TIMEDAEMON_CODE_COMMON_DATA_FLOW_PRODUCER_H
+#ifndef SCORE_TIME_DAEMON_SRC_COMMON_DATA_FLOW_PRODUCER_H
+#define SCORE_TIME_DAEMON_SRC_COMMON_DATA_FLOW_PRODUCER_H
 
 #include <functional>
 
@@ -66,4 +66,4 @@ class Producer
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_COMMON_DATA_FLOW_PRODUCER_H
+#endif  // SCORE_TIME_DAEMON_SRC_COMMON_DATA_FLOW_PRODUCER_H

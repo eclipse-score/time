@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H
-#define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H
+#ifndef SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H
+#define SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H
 
 #include "score/time_daemon/src/common/data_flow/producer.h"
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
@@ -194,4 +194,4 @@ void PTPMachine<PTPEngine>::Publish(const PtpTimeInfo& data)
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H
+#endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H

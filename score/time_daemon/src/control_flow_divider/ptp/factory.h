@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_PTP_FACTORY_H
-#define SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_PTP_FACTORY_H
+#ifndef SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_FACTORY_H
+#define SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_FACTORY_H
 
 #include "score/time_daemon/src/control_flow_divider/ptp/ptp_control_flow_divider.h"
 
@@ -41,4 +41,4 @@ std::shared_ptr<PtpControlFlowDivider> CreatePtpControlFlowDivider(const std::st
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_PTP_FACTORY_H
+#endif  // SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_FACTORY_H

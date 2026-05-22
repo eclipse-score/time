@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_CORE_RECEIVER_IMPL_H
-#define SCORE_TIMEDAEMON_CODE_IPC_CORE_RECEIVER_IMPL_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_RECEIVER_IMPL_H
+#define SCORE_TIME_DAEMON_SRC_IPC_CORE_RECEIVER_IMPL_H
 
 #include "score/time_daemon/src/ipc/receiver.h"
 
@@ -63,4 +63,4 @@ std::optional<IpcDataType> ReceiverImpl<IpcDataType>::Receive() noexcept
 }  // namespace td
 }  // namespace score
 
-#endif  // #ifndef SCORE_TIMEDAEMON_CODE_IPC_CORE_RECEIVER_IMPL_H
+#endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_RECEIVER_IMPL_H

@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_MSG_BROKER_TOPIC_H
-#define SCORE_TIMEDAEMON_CODE_MSG_BROKER_TOPIC_H
+#ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_TOPIC_H
+#define SCORE_TIME_DAEMON_SRC_MSG_BROKER_TOPIC_H
 
 #include <functional>
 #include <ostream>
@@ -64,4 +64,4 @@ struct hash<score::td::Topic>
 };
 }  // namespace std
 
-#endif  // SCORE_TIMEDAEMON_CODE_MSG_BROKER_TOPIC_H
+#endif  // SCORE_TIME_DAEMON_SRC_MSG_BROKER_TOPIC_H

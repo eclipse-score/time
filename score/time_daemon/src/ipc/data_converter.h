@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_DATA_CONVERTER_H
-#define SCORE_TIMEDAEMON_CODE_IPC_DATA_CONVERTER_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_DATA_CONVERTER_H
+#define SCORE_TIME_DAEMON_SRC_IPC_DATA_CONVERTER_H
 
 #include <type_traits>
 
@@ -48,4 +48,4 @@ inline Dst ConvertToIpcData(const Src& src)
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_IPC_DATA_CONVERTER_H
+#endif  // SCORE_TIME_DAEMON_SRC_IPC_DATA_CONVERTER_H

@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_SVT_RECEIVER_FACTORY_H
-#define SCORE_TIMEDAEMON_CODE_IPC_SVT_RECEIVER_FACTORY_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_RECEIVER_FACTORY_H
+#define SCORE_TIME_DAEMON_SRC_IPC_SVT_RECEIVER_FACTORY_H
 
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 
@@ -32,4 +32,4 @@ std::shared_ptr<SvtReceiver> CreateSvtReceiver();
 }  // namespace td
 }  // namespace score
 
-#endif  // #ifndef SCORE_TIMEDAEMON_CODE_IPC_SVT_RECEIVER_FACTORY_H
+#endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_RECEIVER_FACTORY_H

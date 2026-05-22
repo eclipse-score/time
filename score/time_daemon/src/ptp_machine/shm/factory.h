@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_FACTORY_H
-#define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_FACTORY_H
+#ifndef SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_FACTORY_H
+#define SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_FACTORY_H
 
 #include "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine.h"
 #include "score/libTSClient/gptp_ipc_channel.h"
@@ -41,4 +41,4 @@ std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(const std::string& name,
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_FACTORY_H
+#endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_FACTORY_H

@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_SVT_SVT_PUBLISHER_H
-#define SCORE_TIMEDAEMON_CODE_IPC_SVT_SVT_PUBLISHER_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_PUBLISHER_H
+#define SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_PUBLISHER_H
 
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/ipc/core/publisher_impl.h"
@@ -30,4 +30,4 @@ using SvtPublisher = PublisherImpl<PtpTimeInfo, svt::TimeBaseSnapshot>;
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_IPC_SVT_SVT_PUBLISHER_H
+#endif  // SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_PUBLISHER_H

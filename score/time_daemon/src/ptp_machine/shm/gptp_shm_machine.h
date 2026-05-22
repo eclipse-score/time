@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_GPTP_SHM_MACHINE_H
-#define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_GPTP_SHM_MACHINE_H
+#ifndef SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_GPTP_SHM_MACHINE_H
+#define SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_GPTP_SHM_MACHINE_H
 
 #include "score/time_daemon/src/ptp_machine/core/ptp_machine.h"
 #include "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.h"
@@ -35,4 +35,4 @@ using GPTPShmMachine = PTPMachine<details::ShmPTPEngine>;
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_GPTP_SHM_MACHINE_H
+#endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_GPTP_SHM_MACHINE_H

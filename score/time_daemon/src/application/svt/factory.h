@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_APPLICATION_FACTORY_H
-#define SCORE_TIMEDAEMON_CODE_APPLICATION_FACTORY_H
+#ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_FACTORY_H
+#define SCORE_TIME_DAEMON_SRC_APPLICATION_FACTORY_H
 
 #include "score/time_daemon/src/application/timebase_handler.h"
 
@@ -30,4 +30,4 @@ std::unique_ptr<TimebaseHandler> CreateSvtTimebase();
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_APPLICATION_FACTORY_H
+#endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_FACTORY_H

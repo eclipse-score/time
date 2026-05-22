@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_APPLICATION_SVT_HANDLER_H
-#define SCORE_TIMEDAEMON_CODE_APPLICATION_SVT_HANDLER_H
+#ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_SVT_HANDLER_H
+#define SCORE_TIME_DAEMON_SRC_APPLICATION_SVT_HANDLER_H
 
 #include "score/time_daemon/src/application/job_runner/job_runner.h"
 #include "score/time_daemon/src/application/timebase_handler.h"
@@ -82,4 +82,4 @@ class SvtHandler : public TimebaseHandler
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_APPLICATION_SVT_HANDLER_H
+#endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_SVT_HANDLER_H

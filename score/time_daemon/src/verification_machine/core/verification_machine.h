@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H
-#define SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H
+#ifndef SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H
+#define SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H
 
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/data_flow/producer.h"
@@ -202,4 +202,4 @@ void VerificationMachine<DataType>::SetupPipeline(const std::vector<StageFactory
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H
+#endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H

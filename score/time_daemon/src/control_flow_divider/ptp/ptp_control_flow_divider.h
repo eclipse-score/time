@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_PTP_PTP_CONTROL_FLOW_DIVIDER_H
-#define SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_PTP_PTP_CONTROL_FLOW_DIVIDER_H
+#ifndef SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_PTP_CONTROL_FLOW_DIVIDER_H
+#define SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_PTP_CONTROL_FLOW_DIVIDER_H
 
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/control_flow_divider/core/control_flow_divider.h"
@@ -34,4 +34,4 @@ using PtpControlFlowDivider = ControlFlowDivider<PtpTimeInfo, kBufferSize>;
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_PTP_PTP_CONTROL_FLOW_DIVIDER_H
+#endif  // SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_PTP_CONTROL_FLOW_DIVIDER_H

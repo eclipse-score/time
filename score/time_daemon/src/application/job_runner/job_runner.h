@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_APPLICATION_JOB_RUNNER_JOB_RUNNER_H
-#define SCORE_TIMEDAEMON_CODE_APPLICATION_JOB_RUNNER_JOB_RUNNER_H
+#ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_JOB_RUNNER_JOB_RUNNER_H
+#define SCORE_TIME_DAEMON_SRC_APPLICATION_JOB_RUNNER_JOB_RUNNER_H
 
 #include <score/jthread.hpp>
 #include <score/stop_token.hpp>
@@ -97,4 +97,4 @@ class JobRunner
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_APPLICATION_JOB_RUNNER_JOB_RUNNER_H
+#endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_JOB_RUNNER_JOB_RUNNER_H

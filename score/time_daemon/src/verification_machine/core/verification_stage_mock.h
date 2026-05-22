@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_MOCK_H
-#define SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_MOCK_H
+#ifndef SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_MOCK_H
+#define SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_MOCK_H
 
 #include "gmock/gmock.h"
 #include "score/time_daemon/src/verification_machine/core/verification_stage.h"
@@ -53,4 +53,4 @@ class VerificationStageMock : public VerificationStage<ValidatorMockData>
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_MOCK_H
+#endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_MOCK_H

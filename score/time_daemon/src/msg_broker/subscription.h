@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_MSG_BROKER_SUBSCRIPTION_H
-#define SCORE_TIMEDAEMON_CODE_MSG_BROKER_SUBSCRIPTION_H
+#ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_SUBSCRIPTION_H
+#define SCORE_TIME_DAEMON_SRC_MSG_BROKER_SUBSCRIPTION_H
 
 #include <functional>
 
@@ -40,4 +40,4 @@ class Subscription
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_MSG_BROKER_SUBSCRIPTION_H
+#endif  // SCORE_TIME_DAEMON_SRC_MSG_BROKER_SUBSCRIPTION_H

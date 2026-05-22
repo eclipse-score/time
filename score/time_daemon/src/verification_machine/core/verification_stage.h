@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H
-#define SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H
+#ifndef SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H
+#define SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H
 
 #include <memory>
 
@@ -96,4 +96,4 @@ void VerificationStage<DataType>::SetNext(std::unique_ptr<VerificationStage<Data
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H
+#endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H

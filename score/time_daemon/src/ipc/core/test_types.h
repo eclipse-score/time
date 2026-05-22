@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_CORE_TEST_TYPES_H
-#define SCORE_TIMEDAEMON_CODE_IPC_CORE_TEST_TYPES_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_TEST_TYPES_H
+#define SCORE_TIME_DAEMON_SRC_IPC_CORE_TEST_TYPES_H
 
 #include <cstdint>
 
@@ -112,4 +112,4 @@ struct DataConverter<test::FakeTimeInfo, test::FakeTimeInfoIpc>
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_IPC_CORE_TEST_TYPES_H
+#endif  // SCORE_TIME_DAEMON_SRC_IPC_CORE_TEST_TYPES_H

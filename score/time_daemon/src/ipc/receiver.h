@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_RECEIVER_H
-#define SCORE_TIMEDAEMON_CODE_IPC_RECEIVER_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_H
+#define SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_H
 
 #include <optional>
 
@@ -49,4 +49,4 @@ class Receiver
 }  // namespace td
 }  // namespace score
 
-#endif  // #ifndef SCORE_TIMEDAEMON_CODE_IPC_RECEIVER_H
+#endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_H

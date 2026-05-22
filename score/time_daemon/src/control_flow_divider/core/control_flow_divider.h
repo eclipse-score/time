@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H
-#define SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H
+#ifndef SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H
+#define SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H
 
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/data_flow/producer.h"
@@ -207,4 +207,4 @@ void ControlFlowDivider<DataType, BufferSize>::Publish(const DataType& data)
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H
+#endif  // SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H

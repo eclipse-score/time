@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_IPC_SVT_SVT_TIME_INFO_H
-#define SCORE_TIMEDAEMON_CODE_IPC_SVT_SVT_TIME_INFO_H
+#ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_TIME_INFO_H
+#define SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_TIME_INFO_H
 
 #include <cstdint>
 #include <ostream>
@@ -187,4 +187,4 @@ struct DataConverter<PtpTimeInfo, svt::TimeBaseSnapshot>
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_IPC_SVT_SVT_TIME_INFO_H
+#endif  // SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_TIME_INFO_H

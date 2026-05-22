@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H
-#define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H
+#ifndef SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H
+#define SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H
 
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
@@ -106,4 +106,4 @@ class FakePTPEngine
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H
+#endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H

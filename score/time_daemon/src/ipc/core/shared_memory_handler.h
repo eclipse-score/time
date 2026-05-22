@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_MSG_BROKER_SHARED_DATA_H
-#define SCORE_TIMEDAEMON_CODE_MSG_BROKER_SHARED_DATA_H
+#ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H
+#define SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H
 
 #include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/memory/shared/managed_memory_resource.h"
@@ -184,4 +184,4 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIMEDAEMON_CODE_MSG_BROKER_SHARED_DATA_H
+#endif  // SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H

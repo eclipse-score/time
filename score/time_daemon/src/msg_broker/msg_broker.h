@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIMEDAEMON_CODE_MSG_BROKER_MSG_BROKER_H
-#define SCORE_TIMEDAEMON_CODE_MSG_BROKER_MSG_BROKER_H
+#ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_MSG_BROKER_H
+#define SCORE_TIME_DAEMON_SRC_MSG_BROKER_MSG_BROKER_H
 
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/data_flow/producer.h"
@@ -108,4 +108,4 @@ void MessageBroker<T>::OnNewData(const Topic& topic, const T& data) const
 }  // namespace td
 }  // namespace score
 
-#endif  // #ifndef SCORE_TIMEDAEMON_CODE_MSG_BROKER_MSG_BROKER_H
+#endif  // #ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_MSG_BROKER_H
