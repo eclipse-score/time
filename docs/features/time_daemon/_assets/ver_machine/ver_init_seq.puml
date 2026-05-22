@@ -1,0 +1,66 @@
+@startuml verification_machine_init_sequence_diagram
+
+title VerificationMachine: Initialization Sequence
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color          |= Description           |
+    |<#LightCyan>     | time_daemon members     |
+    |<#PaleTurquoise> | MessageBroker          |
+    |<#Lavender>      | VerificationMachine    |
+endlegend
+
+participant "TimeBaseHandler" as tb_handler #LightCyan
+participant "VerificationMachine" as verif_machine #Lavender
+participant "Validators" as validators #Lavender
+participant "MessageBroker" as broker #PaleTurquoise
+
+== VerificationMachine Construction ==
+
+tb_handler -> verif_machine ** : create(name, validator_factories...)
+activate tb_handler
+activate verif_machine
+
+verif_machine -> validators ** : Create validator pipeline
+note right of validators
+    Chain of Responsibility:
+    - SynchronizationValidator
+    - TimeoutValidator
+    - TimeJumpsValidator
+end note
+
+verif_machine -> verif_machine : SetupPipeline()
+note right
+    Link validators in chain:
+    stage1.SetNext(stage2)
+    stage2.SetNext(stage3)
+end note
+
+verif_machine --> tb_handler : SvtVerificationMachine*
+deactivate verif_machine
+deactivate tb_handler
+
+== Setup Connections ==
+
+tb_handler -> broker : AddSubscriber("raw_ptp_data", verif_machine)
+activate tb_handler
+activate broker
+broker --> tb_handler
+deactivate broker
+deactivate tb_handler
+
+tb_handler -> broker : AddProducer("validated_ptp_data", verif_machine)
+activate tb_handler
+activate broker
+broker -> verif_machine : SetPublishCallback(broker::OnNewData)
+activate verif_machine
+verif_machine --> broker
+deactivate verif_machine
+broker --> tb_handler
+deactivate broker
+deactivate tb_handler
+
+@enduml

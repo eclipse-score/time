@@ -29,7 +29,7 @@ cc_library(
     deps = [
         "//score/TimeDaemon/code/ptp_machine/core:ptp_machine",
         "//score/TimeDaemon/code/ptp_machine/shm/details:shm_ptp_engine",
-        "//score/libTSClient:gptp_ipc",
+        "//score/ts_client/src:gptp_ipc",
     ],
 )
 
@@ -39,7 +39,7 @@ cc_test(
     tags = ["unit"],
     deps = [
         ":gptp_shm_machine",
-        "//score/libTSClient:gptp_ipc",
+        "//score/ts_client/src:gptp_ipc",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",

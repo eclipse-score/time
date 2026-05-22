@@ -1,0 +1,79 @@
+@startuml ptp_machine_initialization
+
+title PTPMachine: Initialization Sequence
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color        |= Description                  |
+    | <#LightCyan>  | time_daemon members            |
+    | <#PaleTurquoise> | MessageBroker              |
+    | <#Wheat>      | PtpMachine                    |
+endlegend
+
+participant "TimeBaseHandler" as tb_handler #LightCyan
+participant "PTPMachine" as ptp_machine #Wheat
+participant "PTPEngine" as engine #Wheat
+participant "MessageBroker" as broker #PaleTurquoise
+
+== PTPMachine Construction ==
+
+tb_handler -> ptp_machine ** : create(name, interval)
+activate tb_handler
+activate ptp_machine
+ptp_machine -> engine ** : create PTP engine
+note right of engine
+    Initialize engine interface
+    for PTP stack communication
+end note
+ptp_machine --> tb_handler
+deactivate ptp_machine
+deactivate tb_handler
+
+== PTPMachine Initialization ==
+
+tb_handler -> ptp_machine : Init()
+activate tb_handler
+activate ptp_machine
+ptp_machine -> engine : Initialize()
+activate engine
+note right
+    Establish connection
+    to PTP daemon
+end note
+engine --> ptp_machine
+deactivate engine
+ptp_machine --> tb_handler
+deactivate ptp_machine
+deactivate tb_handler
+
+== Setup Producer ==
+
+tb_handler -> broker : AddProducer("in_ptp_data", ptp_machine)
+activate tb_handler
+activate broker
+broker -> ptp_machine : SetPublishCallback(broker::OnNewData)
+activate ptp_machine
+ptp_machine --> broker
+deactivate ptp_machine
+broker --> tb_handler
+deactivate broker
+deactivate tb_handler
+
+== Start Periodic Operation ==
+
+tb_handler -> ptp_machine : Start()
+activate tb_handler
+activate ptp_machine
+ptp_machine -> ptp_machine : Start periodic thread
+note right
+    Begin periodic PTP
+    data retrieval
+end note
+ptp_machine --> tb_handler
+deactivate ptp_machine
+deactivate tb_handler
+
+@enduml

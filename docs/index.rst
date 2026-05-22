@@ -12,10 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-TimeDaemon Documentation
-========================
+time_daemon Documentation
+=========================
 
-This documentation describes the **TimeDaemon** and the **score::time** module.
+This documentation describes the **time_daemon** and the **score::time** module.
 
 .. contents:: Table of Contents
    :depth: 2
@@ -24,36 +24,37 @@ This documentation describes the **TimeDaemon** and the **score::time** module.
 Overview
 --------
 
-**TimeDaemon** is a non-AUTOSAR adaptive process designed to provide synchronized vehicle time to client applications.
+**time_daemon** is a non-AUTOSAR adaptive process designed to provide synchronized vehicle time to client applications.
 It supports multiple time bases including **in-vehicle synchronized time** (PTP - Precision Time Protocol) and
 **external synchronized time** (absolute time base). The daemon retrieves time information from the respective time sources,
 verifies and validates the timepoints, and distributes this time information across multiple clients through efficient IPC mechanisms.
 
-The main responsibilities of TimeDaemon include:
+The main responsibilities of time_daemon include:
 
 - **Providing current Vehicle time** to different applications
 - **Setting synchronization qualifiers** (e.g., Synchronized, Timeout, etc.)
 - **Providing diagnostic information** for system monitoring
 - **Supporting additional verification mechanisms** such as QualifiedVehicleTime (QVT) for safety-critical applications
 
-For a detailed concept and architectural design, please refer to the :doc:`TimeDaemon Concept Documentation <time/index>`.
+For a detailed concept and architectural design, please refer to the :doc:`time_daemon Concept Documentation <features/time_daemon/index>`.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   time/index
-   TimeSlave/index
+   features/index
 
 Project Layout
 --------------
 
-The module template includes the following top-level structure:
+This module follows the Eclipse SCORE component structure:
 
-- `src/`: Main C++/Rust sources
-- `tests/`: Unit and integration tests
+- `score/time_daemon/src/`: Time daemon process sources
+- `score/time_slave/src/`: Time slave process sources
+- `score/time/`: Client-facing time base libraries
+- `score/ts_client/`: Time synchronization client library
 - `examples/`: Usage examples
-- `docs/`: Documentation using `docs-as-code`
+- `docs/features/`: Feature-level documentation
 - `.github/workflows/`: CI/CD pipelines
 
 Quick Start
@@ -63,19 +64,19 @@ To build the module:
 
 .. code-block:: bash
 
-   bazel build //src/...
+   bazel build //score/...
 
 To run tests:
 
 .. code-block:: bash
 
-   bazel test //tests/...
+   bazel test //score/...
 
 To build the documentation:
 
 .. code-block:: bash
 
-   bazel run //:docs
+   bazel build //:docs
 
 Configuration
 -------------

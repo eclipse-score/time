@@ -1,0 +1,38 @@
+@startuml dd_deployment_diagram
+
+title Deployment view
+
+node "Application Layer" {
+    [Business logic] as app_bl
+    [mw::time::svt] <<library>> as mw
+}
+
+node "Application Layer\n(Diagnostics)" {
+    [Business logic] as app_diag_bl
+    [mw::time::qvt] <<library>> as mw_qvt
+}
+
+node "PTP Daemon" {
+    [ptpd] <<daemon>> as ptpd
+}
+
+node "time_daemon" {
+    [MessageBroker]  as msg_broker
+    [VerificationMachine]  as verification_machine
+    [QualifiedVehicleTime]  as qvt_machine
+    [PTP machine] as ptp_machine
+    [IPC] as ipc
+    [IPC_QVT] as ipc_qvt
+}
+
+ptpd -[#blue]-> ptp_machine : PTP time updates\n(via shmem and devctl)
+ptp_machine -[#green]-> verification_machine: Time information
+verification_machine -[#green]-> qvt_machine: Time information
+qvt_machine -[#green]-> ipc: Time information
+qvt_machine -[#green]-> ipc_qvt: Diag-related information\nfor DTC and communication\nto central validator
+ipc_qvt -[#green]-> mw_qvt : Now()
+mw_qvt -[#orange]-> app_diag_bl : Now()
+ipc -[#green]-> mw: Time information
+mw -[#orange]-> app_bl : Now()
+
+@enduml

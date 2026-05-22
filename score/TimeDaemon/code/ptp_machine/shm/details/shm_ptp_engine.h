@@ -14,7 +14,7 @@
 #define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_DETAILS_SHM_PTP_ENGINE_H
 
 #include "score/TimeDaemon/code/common/data_types/ptp_time_info.h"
-#include "score/libTSClient/gptp_ipc_receiver.h"
+#include "score/ts_client/src/gptp_ipc_receiver.h"
 
 #include <string>
 

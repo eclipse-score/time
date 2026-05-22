@@ -14,7 +14,7 @@
 #define SCORE_TIMEDAEMON_CODE_PTP_MACHINE_SHM_FACTORY_H
 
 #include "score/TimeDaemon/code/ptp_machine/shm/gptp_shm_machine.h"
-#include "score/libTSClient/gptp_ipc_channel.h"
+#include "score/ts_client/src/gptp_ipc_channel.h"
 
 #include <memory>
 #include <string>

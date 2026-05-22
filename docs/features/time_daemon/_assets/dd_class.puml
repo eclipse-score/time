@@ -1,0 +1,136 @@
+@startuml dd_class_diagram
+
+title time_daemon: Class Diagram Overview
+
+legend top left
+    | <#LightCyan>      | time_daemon members            |
+    | <#Wheat>          | PtpMachine                    |
+    | <#LightBlue>      | ControlFlowDivider            |
+    | <#Lavender>       | VerificationMachine           |
+    | <#LightPink>      | IPC components                |
+    | <#LightCoral>     | score::communication          |
+    | <#Beige>          | Base classes                  |
+endlegend
+
+class "PtpTimeInfo" as time_info #Beige {
+    Time information data structure
+    ...
+    +ptp: uint64
+    +local_time: uint64
+    +status: int
+}
+
+class "TimeBaseHandler" as tb_handler #LightCyan {
+    Main handler managing all components
+    ...
+    +Initialize(): void
+    +RunOnce(): void
+}
+
+class "MessageBroker<T>" as msg_broker #PaleTurquoise {
+    Central communication hub
+    ...
+    +AddSubscriber(topic, subscriber): void
+    +AddProducer(topic, producer): void
+    -Publish(topic, data): void
+}
+
+abstract class "BaseMachine" as base_machine #Beige {
+    Base class for all machines
+    ...
+    +GetName(): string
+    +Init(): bool
+}
+
+abstract class "Consumer<T>" as consumer #Beige {
+    Consumer interface
+    ...
+    +OnMessage(data: T): void
+}
+
+abstract class "Producer<T>" as producer #Beige {
+    Producer interface
+    ...
+    +SetPublishCallback(callback): void
+}
+
+abstract class "ProactiveMachine" as proactive_machine #Beige {
+    Machine with own execution thread
+    ...
+    +Start(): void
+    +Stop(): void
+}
+
+abstract class "ReactiveMachine" as reactive_machine #Beige {
+    Machine reacting to events
+}
+
+class "PTPMachine" as ptp_machine #Wheat {
+    Retrieves PTP time information
+    ...
+    +Init(): bool
+    #PeriodicTask(): void
+}
+
+class "ControlFlowDivider<T>" as control_flow_divider #LightBlue {
+    Decouples data flow timing
+    ...
+    +OnMessage(data): void
+    #OnEvent(): void
+    #OnTimeout(): void
+}
+
+class "VerificationMachine<T>" as ver_machine #Lavender {
+    Validates and qualifies time data
+    ...
+    +OnMessage(data): void
+}
+
+class "IpcPublisher<T>" as ipc_publisher #LightPink {
+    Publishes time data via IPC (score::communication)
+    ...
+    +OnMessage(data): void
+}
+
+class "IpcReceiver<T>" as ipc_receiver #LightPink {
+    Receives time data via IPC (score::communication)
+    ...
+    +Receive(): optional<PtpTimeInfo>
+}
+
+class "score::time::svt" as mw_svt #LightGreen {
+    Middleware time API
+    ...
+    +Now(): TimeStatus
+}
+
+base_machine <|-- proactive_machine
+base_machine <|-- reactive_machine
+
+proactive_machine <|.. ptp_machine
+proactive_machine <|.. control_flow_divider
+reactive_machine <|.. ver_machine
+reactive_machine <|.. ipc_publisher
+
+consumer <|.. control_flow_divider
+consumer <|.. ver_machine
+consumer <|.. ipc_publisher
+
+producer <|.. ptp_machine
+producer <|.. control_flow_divider
+producer <|.. ver_machine
+
+ptp_machine --> msg_broker : produces to
+control_flow_divider --> msg_broker : consumes/produces
+ver_machine --> msg_broker : consumes/produces
+ipc_publisher --> msg_broker : consumes from
+
+mw_svt *-- ipc_receiver : uses
+
+tb_handler *-- msg_broker : contains
+tb_handler *-- ptp_machine : contains
+tb_handler *-- control_flow_divider : contains
+tb_handler *-- ver_machine : contains
+tb_handler *-- ipc_publisher : contains
+
+@enduml
