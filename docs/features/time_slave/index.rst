@@ -819,7 +819,6 @@ The ``GptpEngine`` provides a dedicated test constructor that accepts injected i
 .. code-block:: cpp
 
    GptpEngine engine(opts,
-                     std::make_unique<FakeClock>(),
                      std::make_unique<FakeSocket>(),
                      std::make_unique<FakeIdentity>());
 

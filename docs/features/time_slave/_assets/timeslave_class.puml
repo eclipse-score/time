@@ -16,22 +16,26 @@ endlegend
 package "score::ts" {
 
     class TimeSlave #LightCyan {
-        - opts_ : GptpEngineOptions
-        - engine_ : unique_ptr<GptpEngine>
-        - publisher_ : GptpIpcPublisher
+        - opts_ : details::GptpEngineOptions
+        - engine_ : unique_ptr<details::GptpEngine>
+        - publisher_ : details::GptpIpcPublisher
         + Initialize(ctx) : int32_t
         + Run(stop_token) : int32_t
     }
+
+}
+
+package "score::ts::details" {
 
     class GptpEngine #LightSalmon {
         - opts_ : GptpEngineOptions
         - rx_thread_ : std::thread
         - pdelay_thread_ : std::thread
         - sync_sm_ : SyncStateMachine
-        - pdelay_ : PeerDelayMeasurer
-        - phc_adjuster_ : PhcAdjuster
-        - socket_ : unique_ptr<IRawSocket>
-        - identity_ : unique_ptr<INetworkIdentity>
+        - pdelay_ : unique_ptr<PeerDelayMeasurer>
+        - phc_ : PhcAdjuster
+        - socket_ : unique_ptr<RawSocket>
+        - identity_ : unique_ptr<NetworkIdentity>
         - codec_ : FrameCodec
         - parser_ : GptpMessageParser
         - snapshot_mutex_ : std::mutex
@@ -44,17 +48,14 @@ package "score::ts" {
     }
 
     struct GptpEngineOptions #Beige {
-        + iface_name : string = "eth0"
+        + iface_name : string = "emac0"
         + pdelay_interval_ms : int = 1000
         + pdelay_warmup_ms : int = 2000
         + sync_timeout_ms : int = 3300
         + jump_future_threshold_ns : int64_t = 500000000
+        + phc_config : PhcConfig = {}
     }
 
-    TimeSlave *-- GptpEngine
-}
-
-package "score::ts::details" {
     class FrameCodec #Wheat {
         + ParseEthernetHeader(frame, frame_len, ptp_offset) : bool
         + AddEthernetHeader(buf, buf_len, src_mac, buf_capacity) : bool
@@ -96,7 +97,8 @@ package "score::ts::details" {
 
     class GptpIpcPublisher #LightPink {
         - region_ : GptpIpcRegion*
-        - shm_fd_ : int
+        - shm_resource_ : shared_ptr<ISharedMemoryResource>
+        - ipc_name_ : string
         + Init(name) : bool
         + Publish(data : GptpIpcData) : void
         + Destroy() : void

@@ -13,7 +13,8 @@ endlegend
 package "time_slave Process" {
     class GptpIpcPublisher #LightPink {
         - region_ : GptpIpcRegion*
-        - shm_fd_ : int
+        - shm_resource_ : shared_ptr<ISharedMemoryResource>
+        - ipc_name_ : string
         + Init(name) : bool
         + Publish(data : GptpIpcData) : void
         + Destroy() : void
@@ -34,7 +35,7 @@ package "Shared Memory" {
 package "time_daemon Process" {
     class GptpIpcReceiver #LightPink {
         - region_ : const GptpIpcRegion*
-        - shm_fd_ : int
+        - shm_resource_ : shared_ptr<ISharedMemoryResource>
         + Init(name) : bool
         + Receive() : std::optional<GptpIpcData>
         + Close() : void
