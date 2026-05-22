@@ -31,9 +31,9 @@ cc_library(
 cc_binary(
     name = "TimeDaemon",
     srcs = [
+        "main.cpp",
         "time_daemon.cpp",
         "time_daemon.h",
-        "main.cpp",
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],

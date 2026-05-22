@@ -27,9 +27,9 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score/time_daemon:__subpackages__"],
     deps = [
+        "//score/libTSClient:gptp_ipc",
         "//score/time_daemon/src/ptp_machine/core:ptp_machine",
         "//score/time_daemon/src/ptp_machine/shm/details:shm_ptp_engine",
-        "//score/libTSClient:gptp_ipc",
     ],
 )
 
