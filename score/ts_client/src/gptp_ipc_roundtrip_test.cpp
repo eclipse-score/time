@@ -182,7 +182,7 @@ TEST_F(GptpIpcRoundtripTest, ReceiverInit_WrongMagic_ReturnsFalse)
 
     new (shm.Region()) GptpIpcRegion{};
     const std::uint32_t bad = 0xDEADBEEFU;
-    std::memcpy(shm.ptr, &bad, sizeof(bad));
+    std::memcpy(shm.Region(), &bad, sizeof(bad));
 
     EXPECT_FALSE(rx_.Init(name_));
 }

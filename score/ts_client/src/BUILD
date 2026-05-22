@@ -30,8 +30,8 @@ cc_library(
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = [
-        "//score:__subpackages__",
         "//examples:__subpackages__",
+        "//score:__subpackages__",
     ],
     deps = [
         "@score_baselibs//score/memory/shared",
