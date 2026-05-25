@@ -25,7 +25,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score/time_daemon:__subpackages__"],
     deps = [
-        "//score/time/HighPrecisionLocalSteadyClock",
+        "//score/time/hpls_time:interface",
         "//score/time_daemon/src/common/data_flow",
         "//score/time_daemon/src/common/machines",
         "@score_baselibs//score/mw/log:frontend",

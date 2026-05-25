@@ -52,6 +52,7 @@ cc_test(
     tags = ["unit"],
     deps = [
         ":svt_verification_machine",
+        "//score/time/hpls_time:hpls_time_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",

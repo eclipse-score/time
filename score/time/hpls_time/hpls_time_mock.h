@@ -15,6 +15,7 @@
 
 #include "score/time/hpls_time/hpls_clock_iface.h"
 #include "score/time/hpls_time/hpls_clock.h"
+#include "score/time/clock/clock_override_guard.h"
 
 #include <gmock/gmock.h>
 
@@ -49,6 +50,27 @@ class HplsTimeMock : public HplsClockIface
                 (),
                 (const, noexcept, override));
 };
+
+/// @brief Creates an @c HplsClock backed by @p mock for isolated unit tests.
+///
+/// The process-wide override is installed only transiently — for a single
+/// @c GetInstance() call — and then immediately removed.  The returned
+/// @c HplsClock still holds a @c shared_ptr to @p mock via its internal
+/// @c impl_ member, so @p mock controls every subsequent @c Now() call on
+/// that clock without leaving any process-wide state behind.
+///
+/// Usage:
+/// @code
+///   auto mock  = std::make_shared<HplsTimeMock>();
+///   auto clock = MakeHplsClockFrom(mock);   // no override active after this line
+///   TimeoutValidator validator{clock, timeout};
+///   EXPECT_CALL(*mock, Now()).WillOnce(Return(...));
+/// @endcode
+[[nodiscard]] inline HplsClock MakeHplsClockFrom(std::shared_ptr<HplsTimeMock> mock)
+{
+    ClockOverrideGuard<HplsTime> guard{mock};
+    return HplsClock::GetInstance();
+}  // guard destroyed here — process-wide override cleared
 
 }  // namespace time
 }  // namespace score

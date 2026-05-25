@@ -21,8 +21,6 @@ alias(
     tags = ["QM"],
     visibility = [
         "//score/time_daemon:__subpackages__",
-        # Added visibility for integration test purpose
-        "//score/time/SynchronizedVehicleTime/details/tdr:__pkg__",
     ],
 )
 
@@ -32,10 +30,8 @@ alias(
     actual = "//score/time_daemon/src/ipc/svt/receiver:factory",
     tags = ["QM"],
     visibility = [
-        # Added visibility for integration test purpose
-        "//score/time_daemon:__subpackages__",
-        "//score/time/SynchronizedVehicleTime/details/tdr:__pkg__",
         "//score/time/vehicle_time/details/td_impl:__pkg__",
+        "//score/time_daemon:__subpackages__",
     ],
 )
 
@@ -45,7 +41,6 @@ alias(
     actual = "//score/time_daemon/src/ipc/svt/receiver:factory_mock",
     tags = ["QM"],
     visibility = [
-        "//score/time/SynchronizedVehicleTime/details/tdr:__pkg__",
         "//score/time/vehicle_time/details/td_impl:__pkg__",
     ],
 )

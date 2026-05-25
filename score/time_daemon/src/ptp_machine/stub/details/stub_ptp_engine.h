@@ -37,7 +37,7 @@ namespace details
 class StubPTPEngine final
 {
   public:
-    explicit StubPTPEngine(std::unique_ptr<PtpTimeInfo::ReferenceClock> local_clock) noexcept;
+    explicit StubPTPEngine(PtpTimeInfo::ReferenceClock local_clock) noexcept;
     ~StubPTPEngine() noexcept = default;
     StubPTPEngine& operator=(const StubPTPEngine&) & noexcept = delete;
     StubPTPEngine& operator=(StubPTPEngine&&) & noexcept = delete;
@@ -81,7 +81,7 @@ class StubPTPEngine final
     bool ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept;
 
   private:
-    std::unique_ptr<PtpTimeInfo::ReferenceClock> local_clock_;
+    PtpTimeInfo::ReferenceClock local_clock_;
 };
 
 }  // namespace details

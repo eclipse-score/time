@@ -17,8 +17,6 @@ load("@score_baselibs//third_party/itf:py_unittest_qnx_test.bzl", "py_unittest_q
 py_unittest_qnx_test(
     name = "qnx_unit_test_cases",
     test_suites = [
-        # TODO(migration): remove after HighPrecisionLocalSteadyClock is deleted
-        "//score/time/HighPrecisionLocalSteadyClock:qnx_unit_test_cases",
         "//score/time/hpls_time:qnx_unit_test_cases",
     ],
     visibility = ["//score/time:__pkg__"],
@@ -26,21 +24,14 @@ py_unittest_qnx_test(
 
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    cc_unit_tests = [
-        # TODO(migration): remove after HighPrecisionLocalSteadyClock / SynchronizedVehicleTime are deleted
-        "//score/time/HighPrecisionLocalSteadyClock:unit_tests",
-        "//score/time/SynchronizedVehicleTime:unit_tests",
-    ],
+    cc_unit_tests = [],
     test_suites_from_sub_packages = [
         "//score/time/clock:unit_test_suite",
-        "//score/time/common:unit_test_suite",
         "//score/time/ptp:unit_test_suite",
         "//score/time/hpls_time:unit_test_suite",
         "//score/time/vehicle_time:unit_test_suite",
         "//score/time/steady_time:unit_test_suite",
         "//score/time/system_time:unit_test_suite",
-        # TODO(migration): remove after SynchronizedVehicleTime is deleted
-        "//score/time/SynchronizedVehicleTime:unit_test_suite",
     ],
     visibility = ["//score:__pkg__"],
 )

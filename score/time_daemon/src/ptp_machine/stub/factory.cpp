@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/stub/factory.h"
-#include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
+#include "score/time/hpls_time/hpls_clock.h"
 
 namespace score
 {
@@ -21,9 +21,7 @@ namespace td
 std::shared_ptr<GPTPStubMachine> CreateGPTPStubMachine(const std::string& name)
 {
     constexpr std::chrono::milliseconds updateInterval(50);
-    score::time::HighPrecisionLocalSteadyClock::FactoryImpl clockFactory{};
-    auto clock = clockFactory.CreateHighPrecisionLocalSteadyClock();
-    return std::make_shared<GPTPStubMachine>(name, updateInterval, std::move(clock));
+    return std::make_shared<GPTPStubMachine>(name, updateInterval, score::time::HplsClock::GetInstance());
 }
 
 }  // namespace td
