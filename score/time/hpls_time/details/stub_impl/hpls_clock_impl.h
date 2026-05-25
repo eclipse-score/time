@@ -30,7 +30,7 @@ namespace detail
 /// @brief Stub backend for the HPLS clock domain (host/test-only).
 ///
 /// Wraps std::chrono::steady_clock so that Clock<HplsTime>::GetInstance()
-/// resolves at link time even when ClockOverrideGuard is not active.
+/// resolves at link time even when ScopedClockOverride is not active.
 class HplsClockImpl final : public HplsClockIface
 {
   public:

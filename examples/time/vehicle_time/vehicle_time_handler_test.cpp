@@ -12,9 +12,9 @@
  ********************************************************************************/
 #include "examples/time/vehicle_time/vehicle_time_handler.h"
 
-#include "score/time/vehicle_time/vehicle_time_mock.h"
-#include "score/time/hpls_time/hpls_time_mock.h"
-#include "score/time/clock/clock_override_guard.h"
+#include "score/time/vehicle_time/vehicle_clock_mock.h"
+#include "score/time/hpls_time/hpls_clock_mock.h"
+#include "score/time/clock/scoped_clock_override.h"
 #include "score/time/clock/clock_snapshot.h"
 
 #include <gmock/gmock.h>
@@ -37,23 +37,23 @@ namespace test
 /// @brief Test fixture: replaces both VehicleClock and HplsClock with mocks.
 ///
 /// This is the key pattern for components that depend on multiple time bases:
-/// each clock domain has its own ClockOverrideGuard that injects the mock
+/// each clock domain has its own ScopedClockOverride that injects the mock
 /// backend for the duration of the test.
 class VehicleTimeHandlerTest : public ::testing::Test
 {
   protected:
     VehicleTimeHandlerTest()
-        : vehicle_mock_{std::make_shared<score::time::VehicleTimeMock>()}
-        , hpls_mock_{std::make_shared<score::time::HplsTimeMock>()}
+        : vehicle_mock_{std::make_shared<score::time::VehicleClockMock>()}
+        , hpls_mock_{std::make_shared<score::time::HplsClockMock>()}
         , vehicle_guard_{vehicle_mock_}
         , hpls_guard_{hpls_mock_}
     {
     }
 
-    std::shared_ptr<score::time::VehicleTimeMock> vehicle_mock_;
-    std::shared_ptr<score::time::HplsTimeMock>    hpls_mock_;
-    score::time::ClockOverrideGuard<score::time::VehicleTime>  vehicle_guard_;
-    score::time::ClockOverrideGuard<score::time::HplsTime>     hpls_guard_;
+    std::shared_ptr<score::time::VehicleClockMock> vehicle_mock_;
+    std::shared_ptr<score::time::HplsClockMock>    hpls_mock_;
+    score::time::test_utils::ScopedClockOverride<score::time::VehicleTime>  vehicle_guard_;
+    score::time::test_utils::ScopedClockOverride<score::time::HplsTime>     hpls_guard_;
 };
 
 TEST_F(VehicleTimeHandlerTest, ReportContainsSynchronizedVehicleTimeAndHplsTime)

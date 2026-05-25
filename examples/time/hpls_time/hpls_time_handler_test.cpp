@@ -12,8 +12,8 @@
  ********************************************************************************/
 #include "examples/time/hpls_time/hpls_time_handler.h"
 
-#include "score/time/hpls_time/hpls_time_mock.h"
-#include "score/time/clock/clock_override_guard.h"
+#include "score/time/hpls_time/hpls_clock_mock.h"
+#include "score/time/clock/scoped_clock_override.h"
 #include "score/time/clock/clock_snapshot.h"
 #include "score/time/clock/no_status.h"
 
@@ -38,13 +38,13 @@ class HplsTimeHandlerTest : public ::testing::Test
 {
   protected:
     HplsTimeHandlerTest()
-        : mock_{std::make_shared<score::time::HplsTimeMock>()}
+        : mock_{std::make_shared<score::time::HplsClockMock>()}
         , guard_{mock_}
     {
     }
 
-    std::shared_ptr<score::time::HplsTimeMock>          mock_;
-    score::time::ClockOverrideGuard<score::time::HplsTime> guard_;
+    std::shared_ptr<score::time::HplsClockMock>          mock_;
+    score::time::test_utils::ScopedClockOverride<score::time::HplsTime> guard_;
 };
 
 TEST_F(HplsTimeHandlerTest, ReportContainsTimePointFromMock)

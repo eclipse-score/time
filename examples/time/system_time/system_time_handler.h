@@ -36,7 +36,7 @@ struct TimeReport
 /// @par Testing pattern
 /// @code
 ///   auto mock = std::make_shared<score::time::SystemClockMock>();
-///   score::time::ClockOverrideGuard<std::chrono::system_clock> guard{mock};
+///   score::time::test_utils::ScopedClockOverride<std::chrono::system_clock> guard{mock};
 ///   EXPECT_CALL(*mock, Now()).WillOnce(Return(...));
 ///   SystemTimeHandler handler;
 ///   const auto report = handler.GetCurrentTime();

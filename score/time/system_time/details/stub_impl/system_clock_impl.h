@@ -30,7 +30,7 @@ namespace detail
 /// @brief Stub backend for the system-clock domain (host/test-only).
 ///
 /// Returns a default-constructed (epoch-zero) snapshot for all calls so that
-/// tests without an active ClockOverrideGuard get a deterministic, safe value.
+/// tests without an active ScopedClockOverride get a deterministic, safe value.
 class SystemClockImpl final : public SystemClockIface
 {
   public:

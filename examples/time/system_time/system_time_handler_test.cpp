@@ -13,7 +13,7 @@
 #include "examples/time/system_time/system_time_handler.h"
 
 #include "score/time/system_time/system_clock_mock.h"
-#include "score/time/clock/clock_override_guard.h"
+#include "score/time/clock/scoped_clock_override.h"
 #include "score/time/clock/clock_snapshot.h"
 #include "score/time/clock/no_status.h"
 
@@ -44,7 +44,7 @@ class SystemTimeHandlerTest : public ::testing::Test
     }
 
     std::shared_ptr<score::time::SystemClockMock>                   mock_;
-    score::time::ClockOverrideGuard<std::chrono::system_clock>      guard_;
+    score::time::test_utils::ScopedClockOverride<std::chrono::system_clock>      guard_;
 };
 
 TEST_F(SystemTimeHandlerTest, ReportContainsUnixTimeFromMock)

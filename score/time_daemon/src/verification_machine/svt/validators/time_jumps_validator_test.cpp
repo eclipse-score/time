@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 
-#include "score/time/hpls_time/hpls_time_mock.h"
+#include "score/time/hpls_time/hpls_clock_mock.h"
 
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
@@ -61,10 +61,11 @@ INSTANTIATE_TEST_CASE_P(
 
 TEST_P(TimeJumpsValidatorParamTest, ValidationTest)
 {
-    auto mock = std::make_shared<score::time::HplsTimeMock>();
+    auto mock = std::make_shared<score::time::HplsClockMock>();
 
     TimeJumpsValidator validator(
-        score::time::MakeHplsClockFrom(mock), std::chrono::nanoseconds(500'000), std::chrono::nanoseconds(5'000'000), 2U);
+        score::time::test_utils::ClockTestFactory<score::time::HplsTime>::Make(mock),
+        std::chrono::nanoseconds(500'000), std::chrono::nanoseconds(5'000'000), 2U);
 
     // Pass synchronized state debouncing
     EXPECT_CALL(*mock, Now())

@@ -22,7 +22,7 @@ alias(
     visibility = ["//visibility:public"],
 )
 
-# The public interface for test purposes (includes mock backend)
+# The public interface for test purposes (mock backend bundled)
 alias(
     name = "hpls_time_mock",
     testonly = True,
@@ -69,15 +69,14 @@ cc_library(
 cc_library(
     name = "hpls_clock_mock",
     testonly = True,
-    hdrs = ["hpls_time_mock.h"],
+    hdrs = ["hpls_clock_mock.h"],
     features = COMPILER_WARNING_FEATURES,
     visibility = ["//score/time:__subpackages__"],
     deps = [
-        ":hpls_clock_iface",
-        # Stub backend — provides CreateBackend<HplsTime>() at link time.
-        # Bundled here so test targets only need hpls_time_mock as a single dep.
-        "//score/time/hpls_time/details/stub_impl",
         ":hpls_clock",
+        ":hpls_clock_iface",
+        "//score/time/clock:clock_test_utils",
+        "//score/time/hpls_time/details/stub_impl",
         "@googletest//:gtest",
     ],
 )
@@ -113,7 +112,7 @@ cc_test(
     features = COMPILER_WARNING_FEATURES,
     deps = [
         ":hpls_time_mock",
-        "//score/time/clock:clock_core",
+        "//score/time/clock:clock_test_utils",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

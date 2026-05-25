@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time/hpls_time/hpls_time_mock.h"
-#include "score/time/clock/clock_override_guard.h"
+#include "score/time/hpls_time/hpls_clock_mock.h"
+#include "score/time/clock/scoped_clock_override.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -30,8 +30,8 @@ namespace time
 
 TEST(HplsClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
 {
-    auto mock = std::make_shared<HplsTimeMock>();
-    ClockOverrideGuard<HplsTime> guard{mock};
+    auto mock = std::make_shared<HplsClockMock>();
+    test_utils::ScopedClockOverride<HplsTime> guard{mock};
 
     const HplsTime::Timepoint tp{std::chrono::nanoseconds{1'000'000LL}};
     EXPECT_CALL(*mock, Now()).WillOnce(Return(
@@ -46,8 +46,8 @@ TEST(HplsClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
 
 TEST(HplsClockTest, NowReturnsZeroTimepointByDefault)
 {
-    auto mock = std::make_shared<HplsTimeMock>();
-    ClockOverrideGuard<HplsTime> guard{mock};
+    auto mock = std::make_shared<HplsClockMock>();
+    test_utils::ScopedClockOverride<HplsTime> guard{mock};
 
     EXPECT_CALL(*mock, Now()).WillOnce(Return(
         ClockSnapshot<HplsTime::Timepoint, NoStatus>{HplsTime::Timepoint{}, NoStatus{}}));
@@ -59,8 +59,8 @@ TEST(HplsClockTest, NowReturnsZeroTimepointByDefault)
 
 TEST(HplsClockTest, NowSnapshotCarriesNoStatus)
 {
-    auto mock = std::make_shared<HplsTimeMock>();
-    ClockOverrideGuard<HplsTime> guard{mock};
+    auto mock = std::make_shared<HplsClockMock>();
+    test_utils::ScopedClockOverride<HplsTime> guard{mock};
 
     EXPECT_CALL(*mock, Now()).WillOnce(Return(
         ClockSnapshot<HplsTime::Timepoint, NoStatus>{HplsTime::Timepoint{}, NoStatus{}}));

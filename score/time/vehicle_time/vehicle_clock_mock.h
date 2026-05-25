@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIME_VEHICLE_TIME_VEHICLE_TIME_MOCK_H
-#define SCORE_TIME_VEHICLE_TIME_VEHICLE_TIME_MOCK_H
+#ifndef SCORE_TIME_VEHICLE_TIME_VEHICLE_CLOCK_MOCK_H
+#define SCORE_TIME_VEHICLE_TIME_VEHICLE_CLOCK_MOCK_H
 
 #include "score/time/vehicle_time/vehicle_clock_iface.h"
 #include "score/time/vehicle_time/vehicle_clock.h"
@@ -26,23 +26,23 @@ namespace time
 /// @brief GMock test double for the vehicle time domain.
 ///
 /// Implements @c VehicleClockIface so it can be injected via
-/// @c ClockOverrideGuard<VehicleTime> in unit tests.
+/// @c test_utils::ScopedClockOverride<VehicleTime> in unit tests.
 ///
 /// Usage:
 /// @code
-///   auto mock = std::make_shared<VehicleTimeMock>();
-///   ClockOverrideGuard<VehicleTime> guard{mock};
+///   auto mock = std::make_shared<VehicleClockMock>();
+///   test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 ///   EXPECT_CALL(*mock, Now()).WillOnce(Return(...));
 /// @endcode
-class VehicleTimeMock : public VehicleClockIface
+class VehicleClockMock : public VehicleClockIface
 {
   public:
-    VehicleTimeMock()                                    = default;
-    ~VehicleTimeMock() noexcept override                 = default;
-    VehicleTimeMock(const VehicleTimeMock&)              = delete;
-    VehicleTimeMock& operator=(const VehicleTimeMock&)   = delete;
-    VehicleTimeMock(VehicleTimeMock&&)                   = delete;
-    VehicleTimeMock& operator=(VehicleTimeMock&&)        = delete;
+    VehicleClockMock()                                     = default;
+    ~VehicleClockMock() noexcept override                  = default;
+    VehicleClockMock(const VehicleClockMock&)              = delete;
+    VehicleClockMock& operator=(const VehicleClockMock&)   = delete;
+    VehicleClockMock(VehicleClockMock&&)                   = delete;
+    VehicleClockMock& operator=(VehicleClockMock&&)        = delete;
 
     MOCK_METHOD((ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>),
                 Now,
@@ -75,4 +75,4 @@ class VehicleTimeMock : public VehicleClockIface
 }  // namespace time
 }  // namespace score
 
-#endif  // SCORE_TIME_VEHICLE_TIME_VEHICLE_TIME_MOCK_H
+#endif  // SCORE_TIME_VEHICLE_TIME_VEHICLE_CLOCK_MOCK_H

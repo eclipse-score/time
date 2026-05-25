@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time/vehicle_time/vehicle_time_mock.h"
-#include "score/time/clock/clock_override_guard.h"
+#include "score/time/vehicle_time/vehicle_clock_mock.h"
+#include "score/time/clock/scoped_clock_override.h"
 
 #include <score/stop_token.hpp>
 
@@ -52,8 +52,8 @@ class SampleVehicleService
 
 TEST(VehicleClockTest, NowReturnsSynchronizedStatusAndTimepoint)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     VehicleTimeStatus status;
     status.flags = ClockStatus<VehicleTime::StatusFlag>{{VehicleTime::StatusFlag::kSynchronized}};
@@ -70,8 +70,8 @@ TEST(VehicleClockTest, NowReturnsSynchronizedStatusAndTimepoint)
 
 TEST(VehicleClockTest, NowIsSynchronizedReturnsTrueWhenFlagSet)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     VehicleTimeStatus status;
     status.flags = ClockStatus<VehicleTime::StatusFlag>{{VehicleTime::StatusFlag::kSynchronized}};
@@ -83,8 +83,8 @@ TEST(VehicleClockTest, NowIsSynchronizedReturnsTrueWhenFlagSet)
 
 TEST(VehicleClockTest, NowIsSynchronizedReturnsFalseWhenTimeoutSet)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     VehicleTimeStatus status;
     status.flags = ClockStatus<VehicleTime::StatusFlag>{
@@ -99,8 +99,8 @@ TEST(VehicleClockTest, NowIsSynchronizedReturnsFalseWhenTimeoutSet)
 
 TEST(VehicleClockTest, IsAvailableReturnsTrueWhenBackendReports)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     EXPECT_CALL(*mock, IsAvailable()).WillOnce(Return(true));
 
@@ -109,8 +109,8 @@ TEST(VehicleClockTest, IsAvailableReturnsTrueWhenBackendReports)
 
 TEST(VehicleClockTest, IsAvailableReturnsFalseWhenBackendUnavailable)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     EXPECT_CALL(*mock, IsAvailable()).WillOnce(Return(false));
 
@@ -119,8 +119,8 @@ TEST(VehicleClockTest, IsAvailableReturnsFalseWhenBackendUnavailable)
 
 TEST(VehicleClockTest, WaitUntilAvailableForwardsTokenAndDeadlineToBackend)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     score::cpp::stop_source source;
     const auto until = std::chrono::steady_clock::now() + std::chrono::milliseconds{100};
@@ -134,8 +134,8 @@ TEST(VehicleClockTest, WaitUntilAvailableForwardsTokenAndDeadlineToBackend)
 
 TEST(VehicleClockTest, SubscribeTimeSlaveSyncDataCapturesAndInvokesCallback)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     VehicleTime::TimeSlaveSyncDataReceivedCallback captured_cb;
     EXPECT_CALL(*mock, SetTimeSlaveSyncDataReceivedCallback(_))
@@ -155,8 +155,8 @@ TEST(VehicleClockTest, SubscribeTimeSlaveSyncDataCapturesAndInvokesCallback)
 
 TEST(VehicleClockTest, UnsubscribeTimeSlaveSyncDataForwardsToBackend)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     EXPECT_CALL(*mock, UnsetTimeSlaveSyncDataReceivedCallback()).Times(1);
 
@@ -172,12 +172,12 @@ TEST(VehicleClockTest, VehicleTimeStatusFlagValues)
     EXPECT_EQ(static_cast<std::uint8_t>(VehicleTime::StatusFlag::kTimeLeapFuture), 3U);
 }
 
-// ── UC6: ClockOverrideGuard injects mock into a SUT that calls GetInstance() ──
+// ── UC6: ScopedClockOverride injects mock into a SUT that calls GetInstance() ──
 
-TEST(VehicleClockTest, ClockOverrideGuardInjectsMockIntoSut)
+TEST(VehicleClockTest, ScopedClockOverrideInjectsMockIntoSut)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard{mock};
+    auto mock = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     const VehicleTime::Timepoint expected_tp{std::chrono::nanoseconds{999LL}};
 
@@ -190,18 +190,18 @@ TEST(VehicleClockTest, ClockOverrideGuardInjectsMockIntoSut)
     EXPECT_EQ(sut.GetCurrentTime(), expected_tp);
 }
 
-TEST(VehicleClockTest, ClockOverrideGuardRestoresBackendAfterScope)
+TEST(VehicleClockTest, ScopedClockOverrideRestoresBackendAfterScope)
 {
-    auto mock = std::make_shared<VehicleTimeMock>();
+    auto mock = std::make_shared<VehicleClockMock>();
     {
-        ClockOverrideGuard<VehicleTime> guard{mock};
+        test_utils::ScopedClockOverride<VehicleTime> guard{mock};
         EXPECT_CALL(*mock, IsAvailable()).WillOnce(Return(false));
         EXPECT_FALSE(VehicleClock::GetInstance().IsAvailable());
     }
     // After guard goes out of scope, override is cleared.
     // A new guard for the same Tag must succeed without assertion.
-    auto mock2 = std::make_shared<VehicleTimeMock>();
-    ClockOverrideGuard<VehicleTime> guard2{mock2};
+    auto mock2 = std::make_shared<VehicleClockMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard2{mock2};
     EXPECT_CALL(*mock2, IsAvailable()).WillOnce(Return(true));
     EXPECT_TRUE(VehicleClock::GetInstance().IsAvailable());
 }

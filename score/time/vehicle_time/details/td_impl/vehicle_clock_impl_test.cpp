@@ -14,8 +14,8 @@
 
 #include "score/TimeDaemon/code/ipc/receiver_mock.h"
 #include "score/TimeDaemon/code/ipc/svt/svt_time_info.h"
-#include "score/time/hpls_time/hpls_time_mock.h"
-#include "score/time/clock/clock_override_guard.h"
+#include "score/time/hpls_time/hpls_clock_mock.h"
+#include "score/time/clock/scoped_clock_override.h"
 #include "score/time/clock/clock_snapshot.h"
 #include "score/time/clock/no_status.h"
 
@@ -42,15 +42,15 @@ class VehicleTimeImplTest : public ::testing::Test
 {
   protected:
     VehicleTimeImplTest()
-        : mock_hpls_{std::make_shared<HplsTimeMock>()}
+        : mock_hpls_{std::make_shared<HplsClockMock>()}
         , hpls_guard_{mock_hpls_}
         , mock_svt_{std::make_shared<SvtMock>()}
         , impl_{std::make_unique<detail::VehicleClockImpl>(mock_svt_, HplsClock::GetInstance())}
     {
     }
 
-    std::shared_ptr<HplsTimeMock>             mock_hpls_;
-    ClockOverrideGuard<HplsTime>              hpls_guard_;
+    std::shared_ptr<HplsClockMock>             mock_hpls_;
+    test_utils::ScopedClockOverride<HplsTime>              hpls_guard_;
     std::shared_ptr<SvtMock>                  mock_svt_;
     std::unique_ptr<detail::VehicleClockImpl> impl_;
 };

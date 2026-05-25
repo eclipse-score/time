@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
 
-#include "score/time/hpls_time/hpls_time_mock.h"
+#include "score/time/hpls_time/hpls_clock_mock.h"
 
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
@@ -90,9 +90,10 @@ INSTANTIATE_TEST_SUITE_P(
 
 TEST_P(TimeoutValidatorParamTest, ValidationTest)
 {
-    auto mock = std::make_shared<score::time::HplsTimeMock>();
+    auto mock = std::make_shared<score::time::HplsClockMock>();
 
-    TimeoutValidator validator(score::time::MakeHplsClockFrom(mock), std::chrono::nanoseconds{3'300'000'000});
+    TimeoutValidator validator(score::time::test_utils::ClockTestFactory<score::time::HplsTime>::Make(mock),
+                               std::chrono::nanoseconds{3'300'000'000});
 
     for (const auto& param : GetParam().sequence)
     {

@@ -19,7 +19,6 @@ cc_library(
     hdrs = [
         "availability_hook.h",
         "clock.h",
-        "clock_override_guard.h",
         "clock_snapshot.h",
         "clock_status.h",
         "clock_traits.h",
@@ -31,6 +30,20 @@ cc_library(
     deps = [
         "@score_baselibs//score/language/futurecpp",
     ],
+)
+
+# Test-only clock utilities: RAII override guard + direct-backend factory.
+# Mock libraries and test targets depend on this; production code must not.
+cc_library(
+    name = "clock_test_utils",
+    testonly = True,
+    hdrs = [
+        "clock_test_factory.h",
+        "scoped_clock_override.h",
+    ],
+    features = COMPILER_WARNING_FEATURES,
+    visibility = ["//score/time:__subpackages__"],
+    deps = [":clock_core"],
 )
 
 cc_test(

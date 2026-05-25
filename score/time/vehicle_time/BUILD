@@ -23,14 +23,12 @@ alias(
     ],
 )
 
-# The public interface for test purposes (includes mock backend)
+# The public interface for test purposes (mock backend bundled)
 alias(
     name = "vehicle_time_mock",
     testonly = True,
     actual = ":vehicle_clock_mock",
-    visibility = [
-        "//visibility:public",
-    ],
+    visibility = ["//visibility:public"],
 )
 
 # Interface without backend — for business-logic libraries that are tested
@@ -89,14 +87,13 @@ cc_library(
 cc_library(
     name = "vehicle_clock_mock",
     testonly = True,
-    hdrs = ["vehicle_time_mock.h"],
+    hdrs = ["vehicle_clock_mock.h"],
     features = COMPILER_WARNING_FEATURES,
     visibility = ["//score/time:__subpackages__"],
     deps = [
-        ":vehicle_clock_iface",
-        # Stub backend — provides CreateBackend<VehicleTime>() at link time.
-        # Bundled here so test targets only need vehicle_time_mock as a single dep.
         ":vehicle_clock",
+        ":vehicle_clock_iface",
+        "//score/time/clock:clock_test_utils",
         "//score/time/vehicle_time/details/stub_impl",
         "@googletest//:gtest",
     ],
@@ -108,7 +105,7 @@ cc_test(
     features = COMPILER_WARNING_FEATURES,
     deps = [
         ":vehicle_time_mock",
-        "//score/time/clock:clock_core",
+        "//score/time/clock:clock_test_utils",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

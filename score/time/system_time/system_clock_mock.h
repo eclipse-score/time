@@ -26,12 +26,12 @@ namespace time
 /// @brief GMock test double for the system-clock domain.
 ///
 /// Implements @c SystemClockIface so it can be injected via
-/// @c ClockOverrideGuard<std::chrono::system_clock> in unit tests.
+/// @c test_utils::ScopedClockOverride<std::chrono::system_clock> in unit tests.
 ///
 /// Usage:
 /// @code
 ///   auto mock = std::make_shared<SystemClockMock>();
-///   ClockOverrideGuard<std::chrono::system_clock> guard{mock};
+///   test_utils::ScopedClockOverride<std::chrono::system_clock> guard{mock};
 ///   EXPECT_CALL(*mock, Now()).WillOnce(Return(...));
 /// @endcode
 class SystemClockMock : public SystemClockIface

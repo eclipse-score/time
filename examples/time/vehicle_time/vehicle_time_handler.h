@@ -50,14 +50,14 @@ struct TimeReport
 ///
 /// This class demonstrates how to write a component that depends on two different
 /// time bases.  In unit tests, both clocks can be replaced independently via
-/// ClockOverrideGuard, without any special constructor injection.
+/// ScopedClockOverride, without any special constructor injection.
 ///
 /// @par Testing pattern
 /// @code
-///   auto vehicle_mock = std::make_shared<score::time::VehicleTimeMock>();
-///   auto hpls_mock    = std::make_shared<score::time::HplsTimeMock>();
-///   score::time::ClockOverrideGuard<score::time::VehicleTime> vg{vehicle_mock};
-///   score::time::ClockOverrideGuard<score::time::HplsTime>    hg{hpls_mock};
+///   auto vehicle_mock = std::make_shared<score::time::VehicleClockMock>();
+///   auto hpls_mock    = std::make_shared<score::time::HplsClockMock>();
+///   score::time::test_utils::ScopedClockOverride<score::time::VehicleTime> vg{vehicle_mock};
+///   score::time::test_utils::ScopedClockOverride<score::time::HplsTime>    hg{hpls_mock};
 ///   EXPECT_CALL(*vehicle_mock, Now()).WillOnce(Return(...));
 ///   EXPECT_CALL(*hpls_mock,    Now()).WillOnce(Return(...));
 ///   VehicleTimeHandler handler;

@@ -35,8 +35,8 @@ struct TimeReport
 ///
 /// @par Testing pattern
 /// @code
-///   auto mock = std::make_shared<score::time::HplsTimeMock>();
-///   score::time::ClockOverrideGuard<score::time::HplsTime> guard{mock};
+///   auto mock = std::make_shared<score::time::HplsClockMock>();
+///   score::time::test_utils::ScopedClockOverride<score::time::HplsTime> guard{mock};
 ///   EXPECT_CALL(*mock, Now()).WillOnce(Return(...));
 ///   HplsTimeHandler handler;
 ///   const auto report = handler.GetCurrentTime();

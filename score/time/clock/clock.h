@@ -29,11 +29,16 @@ namespace score
 namespace time
 {
 
-// Forward declaration — ClockOverrideGuard is defined in clock_override_guard.h,
-// which includes this header. The forward declaration breaks the circular dependency
-// and allows Clock<Tag> to declare ClockOverrideGuard<Tag> as a friend.
+// Forward declarations for test-only helpers. Placed in their own sub-namespace
+// so Clock<Tag> can friend them without polluting score::time.
+namespace test_utils
+{
 template <typename Tag>
-class ClockOverrideGuard;
+class ScopedClockOverride;
+
+template <typename Tag>
+class ClockTestFactory;
+}  // namespace test_utils
 
 namespace detail
 {
@@ -147,24 +152,25 @@ class Clock
     }
 
   private:
-    friend class ClockOverrideGuard<Tag>;
+    friend class test_utils::ScopedClockOverride<Tag>;
+    friend class test_utils::ClockTestFactory<Tag>;
 
     /// @brief Installs a test-double backend for this @c Tag.
     ///
-    /// Called only by @c ClockOverrideGuard<Tag> constructor.
+    /// Called only by @c ScopedClockOverride<Tag> constructor.
     static void OverrideForTest(std::shared_ptr<Backend> impl) noexcept
     {
         std::lock_guard<std::mutex> lock{instance_guard_};
         SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(
             !instance_override_,
             "score::time: Clock::OverrideForTest() called while an override is already active. "
-            "Nesting ClockOverrideGuard<Tag> for the same Tag is not allowed.");
+            "Nesting ScopedClockOverride<Tag> for the same Tag is not allowed.");
         instance_override_ = std::move(impl);
     }
 
     /// @brief Removes the test-double backend for this @c Tag.
     ///
-    /// Called only by @c ClockOverrideGuard<Tag> destructor.
+    /// Called only by @c ScopedClockOverride<Tag> destructor.
     static void ResetOverride() noexcept
     {
         std::lock_guard<std::mutex> lock{instance_guard_};

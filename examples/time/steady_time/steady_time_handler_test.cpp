@@ -13,7 +13,7 @@
 #include "examples/time/steady_time/steady_time_handler.h"
 
 #include "score/time/steady_time/steady_clock_mock.h"
-#include "score/time/clock/clock_override_guard.h"
+#include "score/time/clock/scoped_clock_override.h"
 #include "score/time/clock/clock_snapshot.h"
 #include "score/time/clock/no_status.h"
 
@@ -44,7 +44,7 @@ class SteadyTimeHandlerTest : public ::testing::Test
     }
 
     std::shared_ptr<score::time::SteadyClockMock>                   mock_;
-    score::time::ClockOverrideGuard<std::chrono::steady_clock>       guard_;
+    score::time::test_utils::ScopedClockOverride<std::chrono::steady_clock>       guard_;
 };
 
 TEST_F(SteadyTimeHandlerTest, ReportContainsMonotonicTimeFromMock)

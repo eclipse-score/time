@@ -26,12 +26,12 @@ namespace time
 /// @brief GMock test double for the steady-clock domain.
 ///
 /// Implements @c SteadyClockIface so it can be injected via
-/// @c ClockOverrideGuard<std::chrono::steady_clock> in unit tests.
+/// @c test_utils::ScopedClockOverride<std::chrono::steady_clock> in unit tests.
 ///
 /// Usage:
 /// @code
 ///   auto mock = std::make_shared<SteadyClockMock>();
-///   ClockOverrideGuard<std::chrono::steady_clock> guard{mock};
+///   test_utils::ScopedClockOverride<std::chrono::steady_clock> guard{mock};
 ///   EXPECT_CALL(*mock, Now()).WillOnce(Return(...));
 /// @endcode
 class SteadyClockMock : public SteadyClockIface

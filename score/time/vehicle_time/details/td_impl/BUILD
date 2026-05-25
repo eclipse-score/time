@@ -47,7 +47,7 @@ cc_test(
     tags = ["unit"],
     deps = [
         "//score/TimeDaemon/code/ipc:svt_receiver_mock",
-        "//score/time/hpls_time:hpls_clock_mock",
+        "//score/time/hpls_time:hpls_time_mock",
         "//score/time/vehicle_time:vehicle_clock",
         "//score/time/vehicle_time:vehicle_clock_iface",
         "@googletest//:gtest",
