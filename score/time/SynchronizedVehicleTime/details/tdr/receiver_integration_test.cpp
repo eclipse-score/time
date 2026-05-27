@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/TimeDaemon/code/ipc/svt/publisher/factory.h"
+#include "score/time_daemon/src/ipc/svt/publisher/factory.h"
 #include "score/time/HighPrecisionLocalSteadyClock/high_precision_local_steady_clock_mock.h"
 #include "score/time/SynchronizedVehicleTime/details/tdr/receiver.h"
 

@@ -12,11 +12,11 @@
  ********************************************************************************/
 #include "score/time/SynchronizedVehicleTime/details/tdr/receiver.h"
 
-#include "score/TimeDaemon/code/ipc/receiver_mock.h"
+#include "score/time_daemon/src/ipc/receiver_mock.h"
 
-#include "score/TimeDaemon/code/ipc/svt/receiver/factory.h"
+#include "score/time_daemon/src/ipc/svt/receiver/factory.h"
 
-#include "score/TimeDaemon/code/ipc/svt/receiver/svt_receiver.h"
+#include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 
 #include "score/time/HighPrecisionLocalSteadyClock/high_precision_local_steady_clock_mock.h"
 

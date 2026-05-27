@@ -15,7 +15,7 @@
 
 #include "score/time/SynchronizedVehicleTime/synchronized_vehicle_time.h"
 
-#include "score/TimeDaemon/code/ipc/svt/receiver/svt_receiver.h"
+#include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 
 #include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
 #include "score/time/HighPrecisionLocalSteadyClock/high_precision_local_steady_clock.h"
