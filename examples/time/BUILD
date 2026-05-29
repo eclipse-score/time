@@ -25,7 +25,7 @@ cc_unit_test_suites_for_host_and_qnx(
     cc_unit_tests = [],
     test_suites_from_sub_packages = [
         "//examples/time/vehicle_time:unit_test_suite",
-        "//examples/time/hpls_time:unit_test_suite",
+        "//examples/time/hirs_time:unit_test_suite",
         "//examples/time/steady_time:unit_test_suite",
         "//examples/time/system_time:unit_test_suite",
     ],

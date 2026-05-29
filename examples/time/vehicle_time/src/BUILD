@@ -20,7 +20,7 @@ cc_library(
     features = COMPILER_WARNING_FEATURES,
     visibility = ["//examples/time/vehicle_time:__pkg__"],
     deps = [
-        "//score/time/hpls_time:interface",
+        "//score/time/hirs_time:interface",
         "//score/time/vehicle_time:interface",
     ],
 )
@@ -32,7 +32,7 @@ cc_binary(
     visibility = ["//examples/time/vehicle_time:__pkg__"],
     deps = [
         ":time_handler",
-        "//score/time/hpls_time",
+        "//score/time/hirs_time",
         "//score/time/vehicle_time",
         "@score_baselibs//score/mw/log:console_only_backend",
     ],
@@ -44,7 +44,7 @@ cc_test(
     features = COMPILER_WARNING_FEATURES,
     deps = [
         ":time_handler",
-        "//score/time/hpls_time:hpls_time_mock",
+        "//score/time/hirs_time:hirs_time_mock",
         "//score/time/vehicle_time:vehicle_time_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",

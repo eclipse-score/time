@@ -20,7 +20,7 @@ namespace time
 {
 
 /// @brief Empty placeholder status type for clocks that have no quality concept
-///        (e.g. HplsClock, std::chrono::steady_clock).
+///        (e.g. HirsClock, std::chrono::steady_clock).
 ///
 /// Used as the @c StatusT parameter of @c ClockSnapshot when the clock does not
 /// produce a synchronisation-quality indicator alongside its time-point.

@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 
-#include "score/time/hpls_time/src/hpls_clock_backend_mock.h"
+#include "score/time/hirs_time/src/hirs_clock_backend_mock.h"
 
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
@@ -61,22 +61,22 @@ INSTANTIATE_TEST_CASE_P(
 
 TEST_P(TimeJumpsValidatorParamTest, ValidationTest)
 {
-    auto mock = std::make_shared<score::time::HplsClockBackendMock>();
+    auto mock = std::make_shared<score::time::HirsClockBackendMock>();
 
     TimeJumpsValidator validator(
-        score::time::test_utils::ClockTestFactory<score::time::HplsTime>::Make(mock),
+        score::time::test_utils::ClockTestFactory<score::time::HirsTime>::Make(mock),
         std::chrono::nanoseconds(500'000), std::chrono::nanoseconds(5'000'000), 2U);
 
     // Pass synchronized state debouncing
     EXPECT_CALL(*mock, Now())
         // For initial time
         .WillOnce(::testing::Return(
-            score::time::ClockSnapshot<score::time::HplsTime::Timepoint, score::time::NoStatus>{
-                score::time::HplsTime::Timepoint{std::chrono::nanoseconds(0)}, {}}))
+            score::time::ClockSnapshot<score::time::HirsTime::Timepoint, score::time::NoStatus>{
+                score::time::HirsTime::Timepoint{std::chrono::nanoseconds(0)}, {}}))
         // For threshold pass
         .WillOnce(::testing::Return(
-            score::time::ClockSnapshot<score::time::HplsTime::Timepoint, score::time::NoStatus>{
-                score::time::HplsTime::Timepoint{std::chrono::nanoseconds(6'000'000'000)}, {}}));
+            score::time::ClockSnapshot<score::time::HirsTime::Timepoint, score::time::NoStatus>{
+                score::time::HirsTime::Timepoint{std::chrono::nanoseconds(6'000'000'000)}, {}}));
 
     PtpTimeInfo entry_data{};
     entry_data.status.is_synchronized = true;

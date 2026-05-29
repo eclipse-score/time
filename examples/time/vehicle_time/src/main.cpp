@@ -13,10 +13,10 @@
 
 /**
  * @file
- * @brief Example: periodic VehicleTime + HplsTime report printer.
+ * @brief Example: periodic VehicleTime + HirsTime report printer.
  *
  * Uses VehicleTimeHandler to obtain a combined snapshot of the PTP-synchronized
- * vehicle time and the local monotonic HPLS time, then prints both to stdout
+ * vehicle time and the local monotonic HIRS time, then prints both to stdout
  * once per second until interrupted by SIGINT or SIGTERM.
  *
  * The handler class can be unit-tested in isolation — see time_handler_test.cpp.
@@ -53,12 +53,12 @@ void PrintReport(const examples::time::vehicle_time::TimeReport& report, std::ui
 {
     const auto v_sec  = report.vehicle_time_ns / 1'000'000'000LL;
     const auto v_ns   = report.vehicle_time_ns % 1'000'000'000LL;
-    const auto h_sec  = report.hpls_time_ns    / 1'000'000'000LL;
-    const auto h_ns   = report.hpls_time_ns    % 1'000'000'000LL;
+    const auto h_sec  = report.hirs_time_ns    / 1'000'000'000LL;
+    const auto h_ns   = report.hirs_time_ns    % 1'000'000'000LL;
 
     std::cout << "[" << seq << "]"
               << "  vehicle=" << v_sec << "." << v_ns << " s"
-              << "  hpls="    << h_sec << "." << h_ns << " s"
+              << "  hirs="    << h_sec << "." << h_ns << " s"
               << "  synchronized=" << (report.synchronized ? "yes" : "no")
               << "  valid="        << (report.valid         ? "yes" : "no")
               << "  rate_deviation=" << report.rate_deviation
@@ -75,7 +75,7 @@ int main()
 
     examples::time::vehicle_time::VehicleTimeHandler handler;
 
-    std::cout << "VehicleTime + HplsTime printer started. Press Ctrl+C to stop.\n";
+    std::cout << "VehicleTime + HirsTime printer started. Press Ctrl+C to stop.\n";
 
     std::uint64_t seq{0U};
 

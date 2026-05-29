@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/stub/factory.h"
-#include "score/time/hpls_time/src/hpls_clock.h"
+#include "score/time/hirs_time/src/hirs_clock.h"
 
 namespace score
 {
@@ -21,7 +21,7 @@ namespace td
 std::shared_ptr<GPTPStubMachine> CreateGPTPStubMachine(const std::string& name)
 {
     constexpr std::chrono::milliseconds updateInterval(50);
-    return std::make_shared<GPTPStubMachine>(name, updateInterval, score::time::HplsClock::GetInstance());
+    return std::make_shared<GPTPStubMachine>(name, updateInterval, score::time::HirsClock::GetInstance());
 }
 
 }  // namespace td

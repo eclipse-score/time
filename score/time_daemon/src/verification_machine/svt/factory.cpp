@@ -14,7 +14,7 @@
 #include "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
-#include "score/time/hpls_time/src/hpls_clock.h"
+#include "score/time/hirs_time/src/hirs_clock.h"
 
 namespace score
 {
@@ -29,11 +29,11 @@ std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::
             return std::make_unique<SynchronizationValidator>(/*args for validation*/);
         },
         []() {
-            return std::make_unique<TimeoutValidator>(score::time::HplsClock::GetInstance(),
+            return std::make_unique<TimeoutValidator>(score::time::HirsClock::GetInstance(),
                                                       std::chrono::nanoseconds{3'300'000'000});
         },
         []() {
-            return std::make_unique<TimeJumpsValidator>(score::time::HplsClock::GetInstance(),
+            return std::make_unique<TimeJumpsValidator>(score::time::HirsClock::GetInstance(),
                                                         std::chrono::nanoseconds(500'000),
                                                         std::chrono::nanoseconds(5'000'000'000),
                                                         2U);

@@ -42,14 +42,14 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
             "gptp_stub_machine",
             False,
             [
-                "//score/time/hpls_time:hpls_time",
+                "//score/time/hirs_time:hirs_time",
             ],
         ),
         (
             "gptp_stub_machine_for_utests",
             True,
             [
-                "//score/time/hpls_time:hpls_time_mock",
+                "//score/time/hirs_time:hirs_time_mock",
             ],
         ),
     ]

@@ -30,7 +30,7 @@ namespace detail
 
 VehicleClockBackendImpl::VehicleClockBackendImpl(
     std::shared_ptr<score::td::SvtReceiver> receiver,
-    HplsClock                               local_clock) noexcept
+    HirsClock                               local_clock) noexcept
     : is_ready_{false}
     , svt_receiver_{std::move(receiver)}
     , local_clock_{std::move(local_clock)}
@@ -162,7 +162,7 @@ template <>
 std::shared_ptr<VehicleClockBackend> detail::CreateBackend<VehicleTime>()
 {
     return std::make_shared<detail::VehicleClockBackendImpl>(score::td::CreateSvtReceiver(),
-                                                      HplsClock::GetInstance());
+                                                      HirsClock::GetInstance());
 }
 
 }  // namespace time

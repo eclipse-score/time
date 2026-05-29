@@ -23,7 +23,7 @@ namespace time
 /// @brief SFINAE gate for @c Clock<Tag>::IsAvailable() and @c WaitUntilAvailable().
 ///
 /// The primary template is intentionally undefined. Clock domains that are always
-/// available (e.g. @c HplsTime, @c std::chrono::steady_clock) must NOT provide a
+/// available (e.g. @c HirsTime, @c std::chrono::steady_clock) must NOT provide a
 /// specialization — attempting to call @c IsAvailable() / @c WaitUntilAvailable()
 /// on such clocks is a compile error (use of incomplete type).
 ///
@@ -41,7 +41,7 @@ struct AvailabilityHook;
 /// @brief Detects whether @c AvailabilityHook<Tag> has been specialised.
 ///
 /// @c HasAvailability<Tag>::value is @c true only for clock domains that require a
-/// readiness check (e.g. VehicleTime). For always-available clocks (HplsTime,
+/// readiness check (e.g. VehicleTime). For always-available clocks (HirsTime,
 /// std::chrono::steady_clock, std::chrono::system_clock) the hook is undefined and
 /// this trait is @c false.
 template <typename Tag, typename = void>

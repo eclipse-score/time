@@ -55,7 +55,7 @@ std::shared_ptr<typename ClockTraits<Tag>::Backend> CreateBackend();
 
 /// @brief Unified clock value wrapper.
 ///
-/// @tparam Tag  Clock domain tag struct (e.g. VehicleTime, HplsTime,
+/// @tparam Tag  Clock domain tag struct (e.g. VehicleTime, HirsTime,
 ///              std::chrono::steady_clock).
 ///
 /// All clock domains share the same API surface:
@@ -128,7 +128,7 @@ class Clock
     /// @brief Returns @c true if the clock backend resource is ready.
     ///
     /// Only available for clock domains that require a readiness check (e.g. VehicleTime).
-    /// Calling this on an always-available clock (HplsTime, steady_clock) is a compile error.
+    /// Calling this on an always-available clock (HirsTime, steady_clock) is a compile error.
     template <typename T = Tag, std::enable_if_t<HasAvailability<T>::value, int> = 0>
     [[nodiscard]] bool IsAvailable() const noexcept
     {
@@ -138,7 +138,7 @@ class Clock
     /// @brief Blocks until the clock resource is available or the stop-token / deadline fires.
     ///
     /// Only available for clock domains that require a readiness check (e.g. VehicleTime).
-    /// Calling this on an always-available clock (HplsTime, steady_clock) is a compile error.
+    /// Calling this on an always-available clock (HirsTime, steady_clock) is a compile error.
     ///
     /// @param token  Stop token that can interrupt the wait from outside.
     /// @param until  Steady-clock deadline after which the wait is abandoned.

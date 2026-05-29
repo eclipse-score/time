@@ -17,7 +17,7 @@ load("@score_baselibs//third_party/itf:py_unittest_qnx_test.bzl", "py_unittest_q
 py_unittest_qnx_test(
     name = "qnx_unit_test_cases",
     test_suites = [
-        "//score/time/hpls_time:qnx_unit_test_cases",
+        "//score/time/hirs_time:qnx_unit_test_cases",
     ],
     visibility = ["//score/time:__pkg__"],
 )
@@ -28,7 +28,7 @@ cc_unit_test_suites_for_host_and_qnx(
     test_suites_from_sub_packages = [
         "//score/time/clock:unit_test_suite",
         "//score/time/ptp:unit_test_suite",
-        "//score/time/hpls_time:unit_test_suite",
+        "//score/time/hirs_time:unit_test_suite",
         "//score/time/vehicle_time:unit_test_suite",
         "//score/time/steady_time:unit_test_suite",
         "//score/time/system_time:unit_test_suite",

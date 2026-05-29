@@ -29,7 +29,7 @@ namespace time
 ///
 /// This class is the successor to @c TimeBaseStatus. It is used by timebases that express their
 /// quality state as a set of named bit-positions (e.g. @c VehicleTime::StatusFlag). Timebases
-/// with no quality concept (e.g. HplsTime) use @c NoStatus instead.
+/// with no quality concept (e.g. HirsTime) use @c NoStatus instead.
 ///
 /// @tparam FlagEnumT  Scoped enum type whose enumerators are **bit positions** (not bitmasks).
 ///                    The underlying type must be an unsigned integer type.

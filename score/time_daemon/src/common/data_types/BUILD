@@ -23,7 +23,7 @@ cc_library(
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = ["//score/time_daemon:__subpackages__"],
-    deps = ["//score/time/hpls_time:interface"],
+    deps = ["//score/time/hirs_time:interface"],
 )
 
 cc_test(

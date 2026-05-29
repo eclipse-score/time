@@ -27,7 +27,7 @@ cc_library(
     features = COMPILER_WARNING_FEATURES,
     visibility = ["//score/time/vehicle_time:__subpackages__"],
     deps = [
-        "//score/time/hpls_time/src:hpls_clock",
+        "//score/time/hirs_time/src:hirs_clock",
         "//score/time/vehicle_time/src:vehicle_clock",
         "//score/time_daemon/src/ipc:svt_receiver",
         "@score_baselibs//score/mw/log:frontend",
@@ -45,7 +45,7 @@ cc_test(
     features = COMPILER_WARNING_FEATURES,
     tags = ["unit"],
     deps = [
-        "//score/time/hpls_time:hpls_time_mock",
+        "//score/time/hirs_time:hirs_time_mock",
         "//score/time/vehicle_time/src:vehicle_clock",
         "//score/time_daemon/src/ipc:svt_receiver_mock",
         "@googletest//:gtest",

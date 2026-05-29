@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
 
-#include "score/time/hpls_time/src/hpls_clock_backend_mock.h"
+#include "score/time/hirs_time/src/hirs_clock_backend_mock.h"
 
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
@@ -90,9 +90,9 @@ INSTANTIATE_TEST_SUITE_P(
 
 TEST_P(TimeoutValidatorParamTest, ValidationTest)
 {
-    auto mock = std::make_shared<score::time::HplsClockBackendMock>();
+    auto mock = std::make_shared<score::time::HirsClockBackendMock>();
 
-    TimeoutValidator validator(score::time::test_utils::ClockTestFactory<score::time::HplsTime>::Make(mock),
+    TimeoutValidator validator(score::time::test_utils::ClockTestFactory<score::time::HirsTime>::Make(mock),
                                std::chrono::nanoseconds{3'300'000'000});
 
     for (const auto& param : GetParam().sequence)
@@ -105,8 +105,8 @@ TEST_P(TimeoutValidatorParamTest, ValidationTest)
         PtpTimeInfo in_data = {cur_ptp_time, cur_local_time, 0, {}, in_sync_data, {}};
         EXPECT_CALL(*mock, Now())
             .WillOnce(::testing::Return(
-                score::time::ClockSnapshot<score::time::HplsTime::Timepoint, score::time::NoStatus>{
-                    score::time::HplsTime::Timepoint{param.simulated_current_time_ns}, {}}));
+                score::time::ClockSnapshot<score::time::HirsTime::Timepoint, score::time::NoStatus>{
+                    score::time::HirsTime::Timepoint{param.simulated_current_time_ns}, {}}));
         auto result = validator.Process(in_data);
         EXPECT_EQ(result.status.is_timeout, param.is_expected_timeout)
             << " for simulated_sequence_id_for_sync_msg = " << param.simulated_sequence_id_for_sync_msg
