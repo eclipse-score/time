@@ -563,8 +563,8 @@ before using the time value.</p>
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">();</span>
 <span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">.</span><span class="n">Now</span><span class="p">();</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">().</span><span class="n">IsSynchronized</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// Time is valid and synchronized with the PTP Grand Master.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">().</span><span class="n">IsReliable</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Time is reliable — synchronized and no fault flags active.</span>
 <span class="w">        </span><span class="k">auto</span><span class="w"> </span><span class="n">tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
 <span class="w">        </span><span class="c1">// use tp ...</span>
 <span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">().</span><span class="n">IsFlagActive</span><span class="p">(</span>
@@ -604,8 +604,10 @@ before using the time value.</p>
 </tbody>
 </table>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">IsSynchronized()</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code> only when <code class="docutils literal notranslate"><span class="pre">kSynchronized</span></code> is set <strong>and</strong> none of
-<code class="docutils literal notranslate"><span class="pre">{kTimeOut,</span> <span class="pre">kTimeLeapFuture,</span> <span class="pre">kTimeLeapPast}</span></code> is set.</p>
+<p><code class="docutils literal notranslate"><span class="pre">IsReliable()</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code> only when <code class="docutils literal notranslate"><span class="pre">kSynchronized</span></code> is set <strong>and</strong> none of
+<code class="docutils literal notranslate"><span class="pre">{kTimeOut,</span> <span class="pre">kTimeLeapFuture,</span> <span class="pre">kTimeLeapPast}</span></code> is set.  Use <code class="docutils literal notranslate"><span class="pre">HasBeenSynchronized()</span></code> to
+check whether the clock was ever synchronized during this lifecycle, regardless of current
+fault flags.</p>
 </section>
 <section id="uc2-availability-waiting-at-startup">
 <h3><a class="toc-backref" href="#id8" role="doc-backlink">UC2 — Availability waiting at startup</a><a class="headerlink" href="#uc2-availability-waiting-at-startup" title="Link to this heading">#</a></h3>

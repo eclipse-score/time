@@ -135,8 +135,8 @@ before using the time value.
        auto clock = score::time::VehicleClock::GetInstance();
        auto snapshot = clock.Now();
 
-       if (snapshot.Status().IsSynchronized()) {
-           // Time is valid and synchronized with the PTP Grand Master.
+       if (snapshot.Status().IsReliable()) {
+           // Time is reliable — synchronized and no fault flags active.
            auto tp = snapshot.TimePoint();
            // use tp ...
        } else if (snapshot.Status().IsFlagActive(
@@ -164,8 +164,10 @@ Status flags for ``VehicleTime``:
 | ``kUnknown``              | Status cannot be determined                                  |
 +---------------------------+--------------------------------------------------------------+
 
-``IsSynchronized()`` returns ``true`` only when ``kSynchronized`` is set **and** none of
-``{kTimeOut, kTimeLeapFuture, kTimeLeapPast}`` is set.
+``IsReliable()`` returns ``true`` only when ``kSynchronized`` is set **and** none of
+``{kTimeOut, kTimeLeapFuture, kTimeLeapPast}`` is set.  Use ``HasBeenSynchronized()`` to
+check whether the clock was ever synchronized during this lifecycle, regardless of current
+fault flags.
 
 UC2 — Availability waiting at startup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
