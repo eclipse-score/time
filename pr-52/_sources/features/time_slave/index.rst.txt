@@ -45,7 +45,7 @@ The design consists of several sw components:
 5. `SyncStateMachine <#syncstatemachine-sw-component>`_
 6. `PeerDelayMeasurer <#peerdelaymeasurer-sw-component>`_
 7. `PhcAdjuster <#phcadjuster-sw-component>`_
-8. `ts_client <#libtsclient-sw-component>`_
+8. `ts_client <#ts_client/src-sw-component>`_
 9. `ShmPTPEngine <#shmptpengine-sw-component>`_
 
 Class view
@@ -225,7 +225,7 @@ The ``GptpEngine`` uses the following synchronization mechanisms:
 Hardware timestamping fallback
 '''''''''''''''''''''''''''''''
 
-During ``Initialize()``, ``GptpEngine`` calls ``IRawSocket::EnableHwTimestamping()`` to request NIC-level receive timestamps (``SO_TIMESTAMPING`` on Linux). If the NIC does not support hardware timestamping, the call returns ``false`` and a warning is logged:
+During ``Initialize()``, ``GptpEngine`` calls ``RawSocket::EnableHwTimestamping()`` to request NIC-level receive timestamps (``SO_TIMESTAMPING`` on Linux). If the NIC does not support hardware timestamping, the call returns ``false`` and a warning is logged:
 
 .. code-block:: none
 
@@ -406,7 +406,7 @@ The Class Diagram is presented below:
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/libtsclient/ipc_channel.puml
+.. uml:: _assets/ts_client/ipc_channel.puml
    :alt: Class Diagram
 
 .. raw:: html
@@ -439,7 +439,7 @@ The seqlock protocol workflow is presented in the following sequence diagram:
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/libtsclient/ipc_sequence.puml
+.. uml:: _assets/ts_client/ipc_sequence.puml
    :alt: Seqlock Protocol
 
 .. raw:: html
@@ -471,7 +471,7 @@ time_slave supports two target platforms with platform-specific implementations 
      - ``CLOCK_MONOTONIC`` via ``clock_gettime()``
      - QNX ``ClockCycles()`` CPU instruction (reads hardware performance counter directly, equivalent to ``RDTSC`` on x86 / ``CNTVCT`` on ARM64), converted to nanoseconds via cycles-per-second calibration. Used instead of ``clock_gettime()`` because QNX ``CLOCK_MONOTONIC`` resolution is limited to microsecond level, whereas ``ClockCycles()`` provides nanosecond-level precision with no syscall overhead.
 
-The ``IRawSocket`` and ``INetworkIdentity`` interfaces provide the abstraction boundary. Platform-specific source files are organized under ``score/time_slave/src/gptp/platform/linux/`` and ``score/time_slave/src/gptp/platform/qnx/``.
+The ``RawSocket`` and ``NetworkIdentity`` interfaces provide the abstraction boundary. Platform-specific source files are organized under ``score/time_slave/src/gptp/platform/linux/`` and ``score/time_slave/src/gptp/platform/qnx/``.
 
 Instrumentation
 ~~~~~~~~~~~~~~~~
@@ -655,13 +655,13 @@ The time_slave architecture supports the following extensibility points:
 Platform extensibility
 ''''''''''''''''''''''
 
-1. New target platforms can be supported by implementing the ``IRawSocket`` and ``INetworkIdentity`` interfaces under a new ``platform/<os>/`` directory and selecting the implementation via ``Bazel select()``
+1. New target platforms can be supported by implementing the ``RawSocket`` and ``NetworkIdentity`` interfaces under a new ``platform/<os>/`` directory and selecting the implementation via ``Bazel select()``
 2. The ``PhcAdjuster`` platform implementations (``clock_adjtime`` on Linux, EMAC ioctls on QNX) can be extended for additional hardware without changing protocol logic
 
 Protocol extensibility
 ''''''''''''''''''''''
 
-1. The ``GptpEngine`` accepts injected ``IRawSocket`` and ``INetworkIdentity`` dependencies, making it straightforward to test or replace individual platform abstractions
+1. The ``GptpEngine`` accepts injected ``RawSocket`` and ``NetworkIdentity`` dependencies, making it straightforward to test or replace individual platform abstractions
 2. The shared memory IPC channel name is configurable (``GptpIpcPublisher::Init(name)`` / ``GptpIpcReceiver::Init(name)``), allowing multiple gPTP instances per ECU if needed
 
 time_daemon integration extensibility
@@ -804,10 +804,10 @@ The ``time_slave`` and its constituent components can be tested on an x86 Linux 
    * - Abstraction
      - Production implementation
      - Test replacement
-   * - ``IRawSocket``
+   * - ``RawSocket``
      - ``RawSocket`` (AF_PACKET)
      - ``FakeSocket`` (push-based frame queue)
-   * - ``INetworkIdentity``
+   * - ``NetworkIdentity``
      - ``NetworkIdentity`` (ioctl)
      - ``FakeIdentity`` (fixed clock identity)
    * - ``high_precision_local_steady_clock``

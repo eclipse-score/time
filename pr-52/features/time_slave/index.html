@@ -482,7 +482,7 @@
 <li><p><a class="reference external" href="#syncstatemachine-sw-component">SyncStateMachine</a></p></li>
 <li><p><a class="reference external" href="#peerdelaymeasurer-sw-component">PeerDelayMeasurer</a></p></li>
 <li><p><a class="reference external" href="#phcadjuster-sw-component">PhcAdjuster</a></p></li>
-<li><p><a class="reference external" href="#libtsclient-sw-component">ts_client</a></p></li>
+<li><p><a class="reference external" href="#ts_client/src-sw-component">ts_client</a></p></li>
 <li><p><a class="reference external" href="#shmptpengine-sw-component">ShmPTPEngine</a></p></li>
 </ol>
 </section>
@@ -593,7 +593,7 @@
 <h5>Class view<a class="headerlink" href="#id2" title="Link to this heading">#</a></h5>
 <p>The Class Diagram is presented below:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-91957b57fbd9b43d8861f9c2dd1249a9d1f58934.svg" type="image/svg+xml" style="width:2563px;height:914px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-fa3ff45923ab4cd16706a3d569055e7dbef5c5fe.svg" type="image/svg+xml" style="width:2581px;height:914px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="threading-model">
 <h5>Threading model<a class="headerlink" href="#threading-model" title="Link to this heading">#</a></h5>
@@ -612,7 +612,7 @@
 </section>
 <section id="hardware-timestamping-fallback">
 <h5>Hardware timestamping fallback<a class="headerlink" href="#hardware-timestamping-fallback" title="Link to this heading">#</a></h5>
-<p>During <code class="docutils literal notranslate"><span class="pre">Initialize()</span></code>, <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> calls <code class="docutils literal notranslate"><span class="pre">IRawSocket::EnableHwTimestamping()</span></code> to request NIC-level receive timestamps (<code class="docutils literal notranslate"><span class="pre">SO_TIMESTAMPING</span></code> on Linux). If the NIC does not support hardware timestamping, the call returns <code class="docutils literal notranslate"><span class="pre">false</span></code> and a warning is logged:</p>
+<p>During <code class="docutils literal notranslate"><span class="pre">Initialize()</span></code>, <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> calls <code class="docutils literal notranslate"><span class="pre">RawSocket::EnableHwTimestamping()</span></code> to request NIC-level receive timestamps (<code class="docutils literal notranslate"><span class="pre">SO_TIMESTAMPING</span></code> on Linux). If the NIC does not support hardware timestamping, the call returns <code class="docutils literal notranslate"><span class="pre">false</span></code> and a warning is logged:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GptpEngine: HW timestamping not available on &lt;iface&gt;, falling back to SW timestamps
 </pre></div>
 </div>
@@ -803,7 +803,7 @@
 <h5>Class view<a class="headerlink" href="#id9" title="Link to this heading">#</a></h5>
 <p>The Class Diagram is presented below:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-78c3c36ffbddb3fe37f1b0210a84e739443761e6.svg" type="image/svg+xml" style="width:1546px;height:839px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-3685140d2a4af1a3e27de5dc159113c6dbd1b5df.svg" type="image/svg+xml" style="width:1546px;height:839px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="publish-new-data">
 <h5>Publish new data<a class="headerlink" href="#publish-new-data" title="Link to this heading">#</a></h5>
@@ -826,7 +826,7 @@
 </ol>
 <p>The seqlock protocol workflow is presented in the following sequence diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-06ce050785996d5dbf5e73357b05ae4d48840f79.svg" type="image/svg+xml" style="width:1131px;height:1114px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-414908a3d4a36d03e2b19af92a7a69bb0d9ed33f.svg" type="image/svg+xml" style="width:1131px;height:1114px;background:#FFFFFF;"></object></p>
 </div></section>
 </section>
 </section>
@@ -866,7 +866,7 @@
 </tbody>
 </table>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">IRawSocket</span></code> and <code class="docutils literal notranslate"><span class="pre">INetworkIdentity</span></code> interfaces provide the abstraction boundary. Platform-specific source files are organized under <code class="docutils literal notranslate"><span class="pre">score/time_slave/src/gptp/platform/linux/</span></code> and <code class="docutils literal notranslate"><span class="pre">score/time_slave/src/gptp/platform/qnx/</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">RawSocket</span></code> and <code class="docutils literal notranslate"><span class="pre">NetworkIdentity</span></code> interfaces provide the abstraction boundary. Platform-specific source files are organized under <code class="docutils literal notranslate"><span class="pre">score/time_slave/src/gptp/platform/linux/</span></code> and <code class="docutils literal notranslate"><span class="pre">score/time_slave/src/gptp/platform/qnx/</span></code>.</p>
 </section>
 <section id="instrumentation">
 <h3><a class="toc-backref" href="#id39" role="doc-backlink">Instrumentation</a><a class="headerlink" href="#instrumentation" title="Link to this heading">#</a></h3>
@@ -1119,14 +1119,14 @@
 <section id="platform-extensibility">
 <h5>Platform extensibility<a class="headerlink" href="#platform-extensibility" title="Link to this heading">#</a></h5>
 <ol class="arabic simple">
-<li><p>New target platforms can be supported by implementing the <code class="docutils literal notranslate"><span class="pre">IRawSocket</span></code> and <code class="docutils literal notranslate"><span class="pre">INetworkIdentity</span></code> interfaces under a new <code class="docutils literal notranslate"><span class="pre">platform/&lt;os&gt;/</span></code> directory and selecting the implementation via <code class="docutils literal notranslate"><span class="pre">Bazel</span> <span class="pre">select()</span></code></p></li>
+<li><p>New target platforms can be supported by implementing the <code class="docutils literal notranslate"><span class="pre">RawSocket</span></code> and <code class="docutils literal notranslate"><span class="pre">NetworkIdentity</span></code> interfaces under a new <code class="docutils literal notranslate"><span class="pre">platform/&lt;os&gt;/</span></code> directory and selecting the implementation via <code class="docutils literal notranslate"><span class="pre">Bazel</span> <span class="pre">select()</span></code></p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PhcAdjuster</span></code> platform implementations (<code class="docutils literal notranslate"><span class="pre">clock_adjtime</span></code> on Linux, EMAC ioctls on QNX) can be extended for additional hardware without changing protocol logic</p></li>
 </ol>
 </section>
 <section id="protocol-extensibility">
 <h5>Protocol extensibility<a class="headerlink" href="#protocol-extensibility" title="Link to this heading">#</a></h5>
 <ol class="arabic simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> accepts injected <code class="docutils literal notranslate"><span class="pre">IRawSocket</span></code> and <code class="docutils literal notranslate"><span class="pre">INetworkIdentity</span></code> dependencies, making it straightforward to test or replace individual platform abstractions</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> accepts injected <code class="docutils literal notranslate"><span class="pre">RawSocket</span></code> and <code class="docutils literal notranslate"><span class="pre">NetworkIdentity</span></code> dependencies, making it straightforward to test or replace individual platform abstractions</p></li>
 <li><p>The shared memory IPC channel name is configurable (<code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher::Init(name)</span></code> / <code class="docutils literal notranslate"><span class="pre">GptpIpcReceiver::Init(name)</span></code>), allowing multiple gPTP instances per ECU if needed</p></li>
 </ol>
 </section>
@@ -1256,11 +1256,11 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">IRawSocket</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RawSocket</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">RawSocket</span></code> (AF_PACKET)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FakeSocket</span></code> (push-based frame queue)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">INetworkIdentity</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NetworkIdentity</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">NetworkIdentity</span></code> (ioctl)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FakeIdentity</span></code> (fixed clock identity)</p></td>
 </tr>
