@@ -75,6 +75,12 @@ int main()
 
     examples::time::vehicle_time::VehicleTimeHandler handler;
 
+    if (!handler.Init())
+    {
+        std::cerr << "Failed to initialise VehicleTime backend. Exiting.\n";
+        return 1;
+    }
+
     std::cout << "VehicleTime + HirsTime printer started. Press Ctrl+C to stop.\n";
 
     std::uint64_t seq{0U};

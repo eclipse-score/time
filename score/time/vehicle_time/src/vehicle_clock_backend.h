@@ -39,6 +39,13 @@ class VehicleClockBackend
     /// \brief Returns the current vehicle time snapshot (time-point + quality status).
     virtual ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept = 0;
 
+    /// \brief Initialises the backend resource.
+    ///
+    /// Idempotent: a second call on an already-initialised backend returns \c true immediately.
+    ///
+    /// \return \c true on success; \c false on failure.
+    virtual bool Init() noexcept = 0;
+
     /// \brief Returns true if the vehicle time backend resource is available.
     virtual bool IsAvailable() const noexcept = 0;
 

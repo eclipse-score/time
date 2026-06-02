@@ -55,35 +55,57 @@ class VehicleTimeImplTest : public ::testing::Test
     std::unique_ptr<detail::VehicleClockBackendImpl> impl_;
 };
 
-// ── IsAvailable ──────────────────────────────────────────────────────────────
+// ── Init / IsAvailable ───────────────────────────────────────────────────────
 
-TEST_F(VehicleTimeImplTest, IsAvailableReturnsFalseWhenInitFails)
+TEST_F(VehicleTimeImplTest, IsAvailableReturnsFalseBeforeInit)
 {
-    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(false));
     EXPECT_FALSE(impl_->IsAvailable());
 }
 
-TEST_F(VehicleTimeImplTest, IsAvailableReturnsTrueAfterSuccessfulInit)
+TEST_F(VehicleTimeImplTest, InitReturnsFalseWhenReceiverInitFails)
+{
+    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(false));
+    EXPECT_FALSE(impl_->Init());
+    EXPECT_FALSE(impl_->IsAvailable());
+}
+
+TEST_F(VehicleTimeImplTest, InitReturnsTrueWhenReceiverInitSucceeds)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
+    EXPECT_TRUE(impl_->Init());
     EXPECT_TRUE(impl_->IsAvailable());
 }
 
-TEST_F(VehicleTimeImplTest, IsAvailableCachesResultAfterSuccess)
+TEST_F(VehicleTimeImplTest, InitIsIdempotentAfterSuccess)
 {
-    // Init() is called only once even though IsAvailable() is queried twice.
+    // svt_receiver_->Init() is called only once even when Init() is called twice.
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
+    EXPECT_TRUE(impl_->Init());
+    EXPECT_TRUE(impl_->Init());  // idempotent — no second svt_receiver_->Init()
     EXPECT_TRUE(impl_->IsAvailable());
+}
+
+TEST_F(VehicleTimeImplTest, InitTrueAllowsNowToReturnData)
+{
+    // Control-flow: Init() → IsAvailable() == true → Now() returns non-kUnknown snapshot.
+    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
+    impl_->Init();
     EXPECT_TRUE(impl_->IsAvailable());
+
+    const SvtSnapshot data{1000ULL, 0ULL, 0.0, {true, false, false, false, true}, {}, {}};
+    EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
+    EXPECT_CALL(*mock_hirs_, Now())
+        .WillOnce(Return(ClockSnapshot<HirsTime::Timepoint, NoStatus>{HirsTime::Timepoint{0ns}, NoStatus{}}));
+
+    const auto snapshot = impl_->Now();
+    EXPECT_FALSE(snapshot.Status().IsFlagActive(VehicleTime::StatusFlag::kUnknown));
 }
 
 // ── Now — pre-conditions ──────────────────────────────────────────────────────
 
 TEST_F(VehicleTimeImplTest, NowReturnsUnknownStatusWhenNotReady)
 {
-    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(false));
-    impl_->IsAvailable();
-
+    // is_ready_ is false by default — Init() not called
     const auto snapshot = impl_->Now();
     EXPECT_TRUE(snapshot.Status().IsFlagActive(VehicleTime::StatusFlag::kUnknown));
 }
@@ -91,7 +113,7 @@ TEST_F(VehicleTimeImplTest, NowReturnsUnknownStatusWhenNotReady)
 TEST_F(VehicleTimeImplTest, NowReturnsUnknownStatusWhenReceiveReturnsNullopt)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(std::nullopt));
     const auto snapshot = impl_->Now();
@@ -101,7 +123,7 @@ TEST_F(VehicleTimeImplTest, NowReturnsUnknownStatusWhenReceiveReturnsNullopt)
 TEST_F(VehicleTimeImplTest, NowReturnsUnknownStatusWhenLocalClockBehindCapture)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     // local_time = 600, now_local = 500 → now_local < local_at_capture → unknown
     const SvtSnapshot data{1000ULL, 600ULL, 0.0, {true, false, false, false, true}, {}, {}};
@@ -120,7 +142,7 @@ TEST_F(VehicleTimeImplTest, NowReturnsUnknownStatusWhenLocalClockBehindCapture)
 TEST_F(VehicleTimeImplTest, NowComputesAdjustedTimestamp)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     // adjusted = ptp_at_capture + (now_local - local_at_capture)
     //          = 1000 + (600 - 500) = 1100 ns
@@ -140,7 +162,7 @@ TEST_F(VehicleTimeImplTest, NowComputesAdjustedTimestamp)
 TEST_F(VehicleTimeImplTest, NowSetsSynchronizedFlagFromSvtStatus)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {true, false, false, false, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
@@ -154,7 +176,7 @@ TEST_F(VehicleTimeImplTest, NowSetsSynchronizedFlagFromSvtStatus)
 TEST_F(VehicleTimeImplTest, NowSetsTimeOutFlagFromSvtStatus)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     // is_timeout = true
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, true, false, false, true}, {}, {}};
@@ -169,7 +191,7 @@ TEST_F(VehicleTimeImplTest, NowSetsTimeOutFlagFromSvtStatus)
 TEST_F(VehicleTimeImplTest, NowSetsTimeLeapFutureFlagFromSvtStatus)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     // is_time_jump_future = true
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, false, true, false, true}, {}, {}};
@@ -184,7 +206,7 @@ TEST_F(VehicleTimeImplTest, NowSetsTimeLeapFutureFlagFromSvtStatus)
 TEST_F(VehicleTimeImplTest, NowSetsTimeLeapPastFlagFromSvtStatus)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     // is_time_jump_past = true
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, false, false, true, true}, {}, {}};
@@ -199,7 +221,7 @@ TEST_F(VehicleTimeImplTest, NowSetsTimeLeapPastFlagFromSvtStatus)
 TEST_F(VehicleTimeImplTest, NowSetsUnknownFlagWhenIsCorrectIsFalse)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     // is_correct = false → kUnknown
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, false, false, false, false}, {}, {}};
@@ -214,7 +236,7 @@ TEST_F(VehicleTimeImplTest, NowSetsUnknownFlagWhenIsCorrectIsFalse)
 TEST_F(VehicleTimeImplTest, NowForwardsRateDeviation)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
-    impl_->IsAvailable();
+    impl_->Init();
 
     const SvtSnapshot data{0ULL, 0ULL, 2.5, {false, false, false, false, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
@@ -230,13 +252,13 @@ TEST_F(VehicleTimeImplTest, NowForwardsRateDeviation)
 TEST_F(VehicleTimeImplTest, WaitUntilAvailableReturnsTrueWhenInitSucceeds)
 {
     EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
+    impl_->Init();
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds{3};
     EXPECT_TRUE(impl_->WaitUntilAvailable(score::cpp::stop_source{}.get_token(), deadline));
 }
 
 TEST_F(VehicleTimeImplTest, WaitUntilAvailableReturnsFalseWhenStopRequested)
 {
-    EXPECT_CALL(*mock_svt_, Init()).WillRepeatedly(Return(false));
     score::cpp::stop_source ss;
     ss.request_stop();
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds{3};
@@ -245,7 +267,6 @@ TEST_F(VehicleTimeImplTest, WaitUntilAvailableReturnsFalseWhenStopRequested)
 
 TEST_F(VehicleTimeImplTest, WaitUntilAvailableReturnsFalseWhenDeadlinePassed)
 {
-    EXPECT_CALL(*mock_svt_, Init()).WillRepeatedly(Return(false));
     const auto past_deadline = std::chrono::steady_clock::now() - std::chrono::seconds{1};
     EXPECT_FALSE(impl_->WaitUntilAvailable(score::cpp::stop_source{}.get_token(), past_deadline));
 }

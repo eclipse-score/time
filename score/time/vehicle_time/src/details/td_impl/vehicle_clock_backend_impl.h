@@ -26,6 +26,7 @@
 #include <atomic>
 #include <chrono>
 #include <memory>
+#include <mutex>
 
 namespace score
 {
@@ -64,6 +65,8 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
 
     ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept override;
 
+    bool Init() noexcept override;
+
     bool IsAvailable() const noexcept override;
 
     bool WaitUntilAvailable(const score::cpp::stop_token&         token,
@@ -85,7 +88,8 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     static ClockStatus<VehicleTime::StatusFlag> ConvertPtpStatus(
         const score::td::svt::TimeBaseStatus& ptp_status) noexcept;
 
-    mutable std::atomic_bool                   is_ready_;
+    std::atomic_bool                           is_ready_;
+    std::mutex                                 init_mutex_;
     std::shared_ptr<score::td::SvtReceiver>    svt_receiver_;
     HirsClock                                  local_clock_;
 };

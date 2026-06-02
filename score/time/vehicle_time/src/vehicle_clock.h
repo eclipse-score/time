@@ -20,6 +20,7 @@
 #include "score/time/clock/src/clock.h"
 #include "score/time/clock/src/clock_snapshot.h"
 #include "score/time/clock/src/clock_status.h"
+#include "score/time/clock/src/initialization_hook.h"
 
 #include <score/stop_token.hpp>
 
@@ -42,6 +43,15 @@ struct ClockTraits<VehicleTime>
 
     /// \brief Obtains the current vehicle time snapshot from the backend.
     static Snapshot CallNow(const Backend& impl) noexcept;
+};
+
+template <>
+struct InitializationHook<VehicleTime>
+{
+    using Backend = ClockTraits<VehicleTime>::Backend;
+
+    /// \brief Delegates to \c VehicleClockBackend::Init().
+    static bool CallInit(Backend& impl) noexcept;
 };
 
 template <>

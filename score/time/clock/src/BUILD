@@ -22,6 +22,7 @@ cc_library(
         "clock_snapshot.h",
         "clock_status.h",
         "clock_traits.h",
+        "initialization_hook.h",
         "no_status.h",
         "subscription_hook.h",
     ],

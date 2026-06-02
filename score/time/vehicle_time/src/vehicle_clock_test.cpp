@@ -95,6 +95,16 @@ TEST(VehicleClockTest, NowIsReliableReturnsFalseWhenTimeoutSet)
     EXPECT_FALSE(VehicleClock::GetInstance().Now().Status().IsReliable());
 }
 
+TEST(VehicleClockTest, InitForwardsToBackend)
+{
+    auto mock = std::make_shared<VehicleClockBackendMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
+
+    EXPECT_CALL(*mock, Init()).WillOnce(Return(true));
+
+    EXPECT_TRUE(VehicleClock::GetInstance().Init());
+}
+
 TEST(VehicleClockTest, IsAvailableReturnsTrueWhenBackendReports)
 {
     auto mock = std::make_shared<VehicleClockBackendMock>();

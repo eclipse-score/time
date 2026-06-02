@@ -49,6 +49,8 @@ class VehicleClockBackendMock : public VehicleClockBackend
                 (),
                 (const, noexcept, override));
 
+    MOCK_METHOD(bool, Init, (), (noexcept, override));
+
     MOCK_METHOD(bool, IsAvailable, (), (const, noexcept, override));
 
     MOCK_METHOD(bool,

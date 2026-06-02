@@ -46,6 +46,11 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
         return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{};
     }
 
+    bool Init() noexcept override
+    {
+        return true;
+    }
+
     bool IsAvailable() const noexcept override
     {
         return false;

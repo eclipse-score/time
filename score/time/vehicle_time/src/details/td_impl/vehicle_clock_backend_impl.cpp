@@ -32,6 +32,7 @@ VehicleClockBackendImpl::VehicleClockBackendImpl(
     std::shared_ptr<score::td::SvtReceiver> receiver,
     HirsClock                               local_clock) noexcept
     : is_ready_{false}
+    , init_mutex_{}
     , svt_receiver_{std::move(receiver)}
     , local_clock_{std::move(local_clock)}
 {
@@ -76,13 +77,37 @@ VehicleClockBackendImpl::Now() const noexcept
     return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, status};
 }
 
+bool VehicleClockBackendImpl::Init() noexcept
+{
+    if (is_ready_.load(std::memory_order_acquire))
+    {
+        return true;  // fast path: already initialised
+    }
+
+    // Need to avoid concurrent Init() calls
+    const std::lock_guard<std::mutex> init_guard{init_mutex_};
+
+    // Lets check if another thread completed init while we waited for the lock
+    if (is_ready_.load(std::memory_order_relaxed))
+    {
+        return true;
+    }
+
+    const bool ok = svt_receiver_->Init();
+    if (!ok)
+    {
+        score::mw::log::LogError(kVehicleTimeLogContext)
+            << "VehicleClockBackendImpl: failed to open TimeDaemon shared memory segment.";
+    }
+
+    is_ready_.store(ok, std::memory_order_release);
+
+    return ok;
+}
+
 bool VehicleClockBackendImpl::IsAvailable() const noexcept
 {
-    if (!is_ready_)
-    {
-        is_ready_ = svt_receiver_->Init();
-    }
-    return is_ready_;
+    return is_ready_.load(std::memory_order_acquire);
 }
 
 bool VehicleClockBackendImpl::WaitUntilAvailable(

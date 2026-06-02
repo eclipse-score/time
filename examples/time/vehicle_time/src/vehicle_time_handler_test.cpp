@@ -56,6 +56,20 @@ class VehicleTimeHandlerTest : public ::testing::Test
     score::time::test_utils::ScopedClockOverride<score::time::HirsTime>     hirs_guard_;
 };
 
+TEST_F(VehicleTimeHandlerTest, InitReturnsTrueWhenBackendInitSucceeds)
+{
+    EXPECT_CALL(*vehicle_mock_, Init()).WillOnce(Return(true));
+    VehicleTimeHandler handler;
+    EXPECT_TRUE(handler.Init());
+}
+
+TEST_F(VehicleTimeHandlerTest, InitReturnsFalseWhenBackendInitFails)
+{
+    EXPECT_CALL(*vehicle_mock_, Init()).WillOnce(Return(false));
+    VehicleTimeHandler handler;
+    EXPECT_FALSE(handler.Init());
+}
+
 TEST_F(VehicleTimeHandlerTest, ReportContainsSynchronizedVehicleTimeAndHirsTime)
 {
     // Prepare a synchronized vehicle time snapshot.

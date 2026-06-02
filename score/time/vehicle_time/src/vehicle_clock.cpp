@@ -26,6 +26,11 @@ ClockTraits<VehicleTime>::CallNow(const Backend& impl) noexcept
     return impl.Now();
 }
 
+bool InitializationHook<VehicleTime>::CallInit(Backend& impl) noexcept
+{
+    return impl.Init();
+}
+
 bool AvailabilityHook<VehicleTime>::CallIsAvailable(const Backend& impl) noexcept
 {
     return impl.IsAvailable();

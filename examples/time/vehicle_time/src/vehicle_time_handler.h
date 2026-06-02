@@ -58,9 +58,11 @@ struct TimeReport
 ///   auto hirs_mock    = std::make_shared<score::time::HirsClockBackendMock>();
 ///   score::time::test_utils::ScopedClockOverride<score::time::VehicleTime> vg{vehicle_mock};
 ///   score::time::test_utils::ScopedClockOverride<score::time::HirsTime>    hg{hirs_mock};
+///   EXPECT_CALL(*vehicle_mock, Init()).WillOnce(Return(true));
 ///   EXPECT_CALL(*vehicle_mock, Now()).WillOnce(Return(...));
 ///   EXPECT_CALL(*hirs_mock,    Now()).WillOnce(Return(...));
 ///   VehicleTimeHandler handler;
+///   handler.Init();
 ///   const auto report = handler.GetCurrentTime();
 /// @endcode
 class VehicleTimeHandler
@@ -73,6 +75,18 @@ class VehicleTimeHandler
     VehicleTimeHandler& operator=(const VehicleTimeHandler&)  = delete;
     VehicleTimeHandler(VehicleTimeHandler&&)                  = delete;
     VehicleTimeHandler& operator=(VehicleTimeHandler&&)       = delete;
+
+    /// @brief Initialises the VehicleTime backend.
+    ///
+    /// Must be called once before @c GetCurrentTime(). Returns @c false on failure;
+    /// the call may be retried. @c GetCurrentTime() returns @c kUnknown snapshots
+    /// until this succeeds.
+    ///
+    /// @return @c true if the backend is ready.
+    [[nodiscard]] bool Init() noexcept
+    {
+        return score::time::VehicleClock::GetInstance().Init();
+    }
 
     /// @brief Reads the current vehicle time and local HIRS time and returns a combined report.
     [[nodiscard]] TimeReport GetCurrentTime() const noexcept

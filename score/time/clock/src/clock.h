@@ -15,6 +15,7 @@
 
 #include "score/time/clock/src/availability_hook.h"
 #include "score/time/clock/src/clock_traits.h"
+#include "score/time/clock/src/initialization_hook.h"
 #include "score/time/clock/src/subscription_hook.h"
 
 #include <score/assert.hpp>
@@ -123,6 +124,23 @@ class Clock
     void Unsubscribe() noexcept
     {
         SubscriptionHook<Tag, EventType>::Unsubscribe(*impl_);
+    }
+
+    /// @brief Initialises the clock backend resource.
+    ///
+    /// Must be called once by the handle owner before reading time. Until @c Init() returns
+    /// @c true, @c Now() returns a snapshot with @c kUnknown status. If @c Init() returns
+    /// @c false, the call may be retried. Once succeeded, subsequent calls return @c true
+    /// immediately.
+    ///
+    /// Only available for clock domains that require explicit initialisation (e.g. VehicleTime).
+    /// Calling this on an always-ready clock (HirsTime, steady_clock) is a compile error.
+    ///
+    /// @return @c true if the backend is ready; @c false on failure.
+    template <typename T = Tag, std::enable_if_t<HasInitialization<T>::value, bool> = true>
+    bool Init() noexcept
+    {
+        return InitializationHook<T>::CallInit(*impl_);
     }
 
     /// @brief Returns @c true if the clock backend resource is ready.
