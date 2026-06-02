@@ -87,25 +87,6 @@ class ClockStatus final
         return is_any_flag_set;
     }
 
-    /// @brief Returns @c true if the timebase data is reliable for use right now.
-    ///
-    /// Reliable means the timebase has been synchronized at least once during this lifecycle
-    /// and no fault flags (timeout, time leap) are currently active.
-    ///
-    /// @note Requires a template specialization for the concrete @c FlagEnumT.
-    bool IsReliable() const noexcept;
-
-    /// @brief Returns @c true if the timebase has been synchronized at least once
-    ///        during the current lifecycle, regardless of current fault state.
-    ///
-    /// @note Requires a template specialization for the concrete @c FlagEnumT.
-    bool HasBeenSynchronized() const noexcept;
-
-    /// @brief Returns @c true if the status flags are internally consistent (no contradictory combination).
-    ///
-    /// @note Requires a template specialization for the concrete @c FlagEnumT.
-    bool IsConsistent() const noexcept;
-
     /// @brief Formats all active flags into an @c ostringstream for diagnostics.
     ///
     /// @note Requires a template specialization for the concrete @c FlagEnumT.

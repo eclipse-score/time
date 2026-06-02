@@ -61,25 +61,6 @@ struct VehicleTime
         score::cpp::callback<void(const PDelayMeasurementData<VehicleTime>&), kCallbackCapacity>;
 };
 
-/// \brief Returns true if the vehicle time data is reliable for use right now.
-///
-/// Reliable := kSynchronized is set AND none of {kTimeOut, kTimeLeapFuture, kTimeLeapPast} is set.
-template <>
-bool ClockStatus<VehicleTime::StatusFlag>::IsReliable() const noexcept;
-
-/// \brief Returns true if the vehicle time has been synchronized at least once during this lifecycle.
-///
-/// HasBeenSynchronized := kSynchronized flag is set, regardless of any active fault flags.
-template <>
-bool ClockStatus<VehicleTime::StatusFlag>::HasBeenSynchronized() const noexcept;
-
-/// \brief Returns true if the vehicle time status flags are internally consistent (no contradictory combination).
-///
-/// Consistent := kUnknown is NOT set, at least one non-kUnknown flag is set,
-///               and kTimeLeapFuture and kTimeLeapPast are not both set simultaneously.
-template <>
-bool ClockStatus<VehicleTime::StatusFlag>::IsConsistent() const noexcept;
-
 /// \brief Formats all active VehicleTime status flags into an ostringstream for diagnostics.
 template <>
 std::ostringstream ClockStatus<VehicleTime::StatusFlag>::PrintTo() const;
@@ -101,21 +82,48 @@ struct VehicleTimeStatus
     // Convenience delegates — avoid .flags. indirection at call sites.
 
     /// \brief Returns true if the vehicle time data is reliable for use right now.
+    ///
+    /// Reliable := kSynchronized is set AND none of {kTimeOut, kTimeLeapFuture, kTimeLeapPast} is set.
     bool IsReliable() const noexcept
     {
-        return flags.IsReliable();
+        return (flags.IsFlagActive(VehicleTime::StatusFlag::kSynchronized) &&
+                (!flags.IsAnyOfFlagsActive({VehicleTime::StatusFlag::kTimeOut,
+                                            VehicleTime::StatusFlag::kTimeLeapFuture,
+                                            VehicleTime::StatusFlag::kTimeLeapPast})));
     }
 
     /// \brief Returns true if the vehicle time has been synchronized at least once during this lifecycle.
+    ///
+    /// HasBeenSynchronized := kSynchronized flag is set, regardless of any active fault flags.
     bool HasBeenSynchronized() const noexcept
     {
-        return flags.HasBeenSynchronized();
+        return flags.IsFlagActive(VehicleTime::StatusFlag::kSynchronized);
     }
 
-    /// \brief Returns true if the vehicle time status flags are internally consistent.
+    /// \brief Returns true if the vehicle time status flags are internally consistent (no contradictory combination).
+    ///
+    /// Consistent := kUnknown is NOT set, at least one non-kUnknown flag is set,
+    ///               and kTimeLeapFuture and kTimeLeapPast are not both set simultaneously.
     bool IsConsistent() const noexcept
     {
-        return flags.IsConsistent();
+        if (flags.IsFlagActive(VehicleTime::StatusFlag::kUnknown))
+        {
+            return false;
+        }
+        if (!flags.IsAnyOfFlagsActive({VehicleTime::StatusFlag::kTimeOut,
+                                       VehicleTime::StatusFlag::kSynchronized,
+                                       VehicleTime::StatusFlag::kSynchToGateway,
+                                       VehicleTime::StatusFlag::kTimeLeapFuture,
+                                       VehicleTime::StatusFlag::kTimeLeapPast}))
+        {
+            return false;
+        }
+        if (flags.IsFlagActive(VehicleTime::StatusFlag::kTimeLeapFuture) &&
+            flags.IsFlagActive(VehicleTime::StatusFlag::kTimeLeapPast))
+        {
+            return false;
+        }
+        return true;
     }
 
     /// \brief Returns the fractional rate deviation of the local clock relative to the Grand Master.

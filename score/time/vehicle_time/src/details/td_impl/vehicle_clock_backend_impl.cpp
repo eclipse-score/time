@@ -70,11 +70,9 @@ VehicleClockBackendImpl::Now() const noexcept
 
     const VehicleTime::Timepoint adjusted_tp{ptp_at_capture + (now_local - local_at_capture)};
 
-    VehicleTimeStatus status;
-    status.flags          = ConvertPtpStatus(rx_data.value().status);
-    status.rate_deviation = rx_data.value().rate_deviation;
-
-    return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, status};
+    const VehicleTimeStatus vehicle_status{
+        ConvertPtpStatus(rx_data.value().status), rx_data.value().rate_deviation};
+    return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, vehicle_status};
 }
 
 bool VehicleClockBackendImpl::Init() noexcept
@@ -151,8 +149,7 @@ void VehicleClockBackendImpl::UnsetPDelayMeasurementFinishedCallback() noexcept
     // Not yet supported.
 }
 
-ClockStatus<VehicleTime::StatusFlag>
-VehicleClockBackendImpl::ConvertPtpStatus(
+ClockStatus<VehicleTime::StatusFlag> VehicleClockBackendImpl::ConvertPtpStatus(
     const score::td::svt::TimeBaseStatus& ptp_status) noexcept
 {
     using Flag = VehicleTime::StatusFlag;

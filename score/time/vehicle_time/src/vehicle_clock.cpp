@@ -23,44 +23,6 @@ namespace time
 {
 
 template <>
-bool ClockStatus<VehicleTime::StatusFlag>::IsReliable() const noexcept
-{
-    return (IsFlagActive(VehicleTime::StatusFlag::kSynchronized) &&
-            (!IsAnyOfFlagsActive({VehicleTime::StatusFlag::kTimeOut,
-                                  VehicleTime::StatusFlag::kTimeLeapFuture,
-                                  VehicleTime::StatusFlag::kTimeLeapPast})));
-}
-
-template <>
-bool ClockStatus<VehicleTime::StatusFlag>::HasBeenSynchronized() const noexcept
-{
-    return IsFlagActive(VehicleTime::StatusFlag::kSynchronized);
-}
-
-template <>
-bool ClockStatus<VehicleTime::StatusFlag>::IsConsistent() const noexcept
-{
-    if (IsFlagActive(VehicleTime::StatusFlag::kUnknown))
-    {
-        return false;
-    }
-    if (!IsAnyOfFlagsActive({VehicleTime::StatusFlag::kTimeOut,
-                             VehicleTime::StatusFlag::kSynchronized,
-                             VehicleTime::StatusFlag::kSynchToGateway,
-                             VehicleTime::StatusFlag::kTimeLeapFuture,
-                             VehicleTime::StatusFlag::kTimeLeapPast}))
-    {
-        return false;
-    }
-    if (IsFlagActive(VehicleTime::StatusFlag::kTimeLeapFuture) &&
-        IsFlagActive(VehicleTime::StatusFlag::kTimeLeapPast))
-    {
-        return false;
-    }
-    return true;
-}
-
-template <>
 std::ostringstream ClockStatus<VehicleTime::StatusFlag>::PrintTo() const
 {
     static const std::map<VehicleTime::StatusFlag, std::string> kFlagNames = {
@@ -81,8 +43,7 @@ std::ostringstream ClockStatus<VehicleTime::StatusFlag>::PrintTo() const
     return oss;
 }
 
-ClockTraits<VehicleTime>::Snapshot
-ClockTraits<VehicleTime>::CallNow(const Backend& impl) noexcept
+ClockTraits<VehicleTime>::Snapshot ClockTraits<VehicleTime>::CallNow(const Backend& impl) noexcept
 {
     return impl.Now();
 }
