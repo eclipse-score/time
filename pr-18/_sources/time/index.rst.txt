@@ -107,24 +107,26 @@ Class overview
 Use Cases
 ---------
 
-UC1 — Time polling with status check
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+VehicleTime
+~~~~~~~~~~~
 
-The most common pattern: obtain a snapshot and inspect the synchronization quality
-before using the time value.
+VT1 — Time polling with status check
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Obtain a snapshot and inspect the synchronization quality before using the time value.
+VehicleTime wraps a PTP-synchronized timebase and always reports a ``VehicleTimeStatus``
+alongside the timepoint.
 
 .. raw:: html
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/uc_polling.puml
-   :alt: UC1 — Time polling sequence
+.. uml:: _assets/vehicle_time/vt1_polling.puml
+   :alt: VT1 — Time polling with status check
 
 .. raw:: html
 
    </div>
-
-**Code example:**
 
 .. code-block:: cpp
 
@@ -136,24 +138,21 @@ before using the time value.
        auto snapshot = clock.Now();
 
        if (snapshot.Status().IsReliable()) {
-           // Time is reliable — synchronized and no fault flags active.
            auto tp = snapshot.TimePoint();
            // use tp ...
        } else if (snapshot.Status().IsFlagActive(
                       score::time::VehicleTime::StatusFlag::kTimeOut)) {
-           // Clock has not received a sync message within the timeout window.
            HandleTimeout();
        }
    }
 
-Status flags for ``VehicleTime``:
-
 .. note::
 
-   For ``VehicleTime``, ``Init()`` must be called once during application startup before
-   ``Now()`` is expected to return synchronized data (see UC2).  Without it, ``Now()``
-   returns a snapshot with ``kUnknown`` status.  ``HirsTime``, ``SteadyClock``, and
-   ``SystemClock`` do not require ``Init()`` and are always ready.
+   ``Init()`` must be called once during application startup before ``Now()`` is expected
+   to return synchronized data (see VT2).  Without it, ``Now()`` returns a snapshot with
+   ``kUnknown`` status.
+
+**Status flags:**
 
 +---------------------------+--------------------------------------------------------------+
 | Flag                      | Meaning                                                      |
@@ -168,7 +167,7 @@ Status flags for ``VehicleTime``:
 +---------------------------+--------------------------------------------------------------+
 | ``kTimeLeapPast``         | A large backward adjustment was applied                      |
 +---------------------------+--------------------------------------------------------------+
-| ``kUnknown``              | Status cannot be determined                                  |
+| ``kUnknown``              | Status cannot be determined (e.g. ``Init()`` not yet called) |
 +---------------------------+--------------------------------------------------------------+
 
 ``VehicleTimeStatus::IsReliable()`` returns ``true`` only when ``kSynchronized`` is set
@@ -183,25 +182,24 @@ semantics.  ``ClockStatus<FlagEnumT>`` itself exposes only generic bit-manipulat
 (``IsFlagActive``, ``IsAnyOfFlagsActive``, ``AddFlag``) and the domain-specific
 ``PrintTo()`` specialization.
 
-UC2 — Initialization and readiness check
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+VT2 — Initialization and readiness check
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-PTP-backed clocks (``VehicleTime``) require an explicit ``Init()`` call to open the IPC
-channel to the TimeDaemon before any time data becomes available.  Until ``Init()`` returns
-``true``, ``Now()`` returns a snapshot with ``kUnknown`` status and ``IsAvailable()``
-returns ``false``.
+``VehicleTime`` requires an explicit ``Init()`` call to open the IPC channel to the
+TimeDaemon before any time data becomes available.  Until ``Init()`` returns ``true``,
+``Now()`` returns a snapshot with ``kUnknown`` status and ``IsAvailable()`` returns
+``false``.
 
 After a successful ``Init()``, ``IsAvailable()`` returns ``true`` immediately.  The
-non-blocking ``IsAvailable()`` probe and the blocking ``WaitUntilAvailable()`` are then
-useful when ``Init()`` is retried by a background thread and another thread wants to wait
-until the backend becomes ready.
+non-blocking ``IsAvailable()`` probe and the blocking ``WaitUntilAvailable()`` are useful
+when ``Init()`` is retried on a background thread.
 
 .. raw:: html
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/uc_availability.puml
-   :alt: UC2 — Initialization and readiness check sequence
+.. uml:: _assets/vehicle_time/vt2_availability.puml
+   :alt: VT2 — Initialization and readiness check
 
 .. raw:: html
 
@@ -216,15 +214,10 @@ until the backend becomes ready.
    bool MyService::Startup()
    {
        auto clock = score::time::VehicleClock::GetInstance();
-
-       // Must be called once before Now() is expected to return real data.
-       // Returns false on failure — safe to retry.
        if (!clock.Init()) {
            LOG_ERROR("VehicleTime: failed to open IPC channel");
            return false;
        }
-
-       // Init() succeeded — IsAvailable() is now true.
        auto snapshot = clock.Now();
        // ...
        return true;
@@ -241,27 +234,24 @@ until the backend becomes ready.
    void MyService::WaitForClock(const score::cpp::stop_token& stop)
    {
        auto clock = score::time::VehicleClock::GetInstance();
-
-       // Block until the backend reports ready, or deadline / stop fires:
        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds{30};
        if (!clock.WaitUntilAvailable(stop, deadline)) {
            LOG_ERROR("VehicleTime did not become available within 30 s");
            return;
        }
-
        auto snapshot = clock.Now();
        // ...
    }
 
 .. note::
 
-   ``Init()``, ``IsAvailable()``, and ``WaitUntilAvailable()`` are **only available on clock
-   domains that require explicit initialisation** (currently ``VehicleTime``).  Calling them
-   on ``HirsTime``, ``SteadyClock``, or ``SystemClock`` is a **compile error** — those clocks
-   are always ready.
+   ``Init()``, ``IsAvailable()``, and ``WaitUntilAvailable()`` are **only available on
+   clock domains that require explicit initialisation** (currently ``VehicleTime``).
+   Calling them on ``HirsTime``, ``SteadyClock``, or ``SystemClock`` is a **compile
+   error** — those clocks are always ready.
 
-UC3 — Async PTP event subscription
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+VT3 — Async PTP event subscription
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``VehicleTime`` delivers two kinds of PTP protocol events via callbacks:
 
@@ -272,14 +262,12 @@ UC3 — Async PTP event subscription
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/uc_subscription.puml
-   :alt: UC3 — Subscription sequence
+.. uml:: _assets/vehicle_time/vt3_subscription.puml
+   :alt: VT3 — Async PTP event subscription
 
 .. raw:: html
 
    </div>
-
-**Code example:**
 
 .. code-block:: cpp
 
@@ -310,11 +298,23 @@ UC3 — Async PTP event subscription
    Callbacks are invoked on the **backend thread** — the callback implementation must be
    thread-safe.
 
-UC4 — Status flag mapping (diagnostics)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+VT4 — Status flag inspection (diagnostics)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When mapping ``VehicleTime`` status flags to diagnostic bits (e.g. DTC bitmasks), access
-the flag type via the tag struct directly:
+individual flags via ``VehicleTimeStatus::IsFlagActive()`` using the
+``VehicleTime::StatusFlag`` enum.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/vehicle_time/vt4_diagnostics.puml
+   :alt: VT4 — Status flag inspection
+
+.. raw:: html
+
+   </div>
 
 .. code-block:: cpp
 
@@ -342,12 +342,26 @@ the flag type via the tag struct directly:
        return result;
    }
 
-UC5 — HIRS as reference steady clock
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+HirsTime
+~~~~~~~~
 
-``HirsClock`` (High-Resolution Steady) is a monotonic clock that provides
-nanosecond-resolution time without any PTP dependency.  It has **no status** — it is always
-ready.
+HT1 — Time polling
+^^^^^^^^^^^^^^^^^^^
+
+``HirsClock`` (High-Resolution Steady) provides nanosecond-resolution monotonic time
+without any PTP dependency.  It carries ``NoStatus`` — no initialization or quality check
+is needed.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/hirs_time/ht1_polling.puml
+   :alt: HT1 — HirsTime time polling
+
+.. raw:: html
+
+   </div>
 
 .. code-block:: cpp
 
@@ -357,13 +371,162 @@ ready.
    void MyValidator::CheckDeadline()
    {
        auto hirs = score::time::HirsClock::GetInstance();
-       auto deadline = hirs.Now().TimePoint() + std::chrono::seconds{3};
+       const auto deadline = hirs.Now().TimePoint() + std::chrono::seconds{3};
 
        // ... do work ...
 
        if (hirs.Now().TimePoint() > deadline) {
            HandleDeadlineExceeded();
        }
+   }
+
+SteadyClock
+~~~~~~~~~~~
+
+``SteadyClock`` wraps ``std::chrono::steady_clock`` (POSIX ``CLOCK_MONOTONIC``).  It is
+monotonic and never goes backward, making it ideal for measuring elapsed time.  It carries
+``NoStatus`` and requires no initialization.
+
+ST1 — Time polling
+^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/steady_clock/st1_polling.puml
+   :alt: ST1 — SteadyClock time polling
+
+.. raw:: html
+
+   </div>
+
+.. code-block:: cpp
+
+   #include "score/time/steady_time/steady_clock.h"
+
+   void MyComponent::MeasureElapsed()
+   {
+       auto clock = score::time::SteadyClock::GetInstance();
+       const auto start = clock.Now().TimePoint();
+
+       // ... do work ...
+
+       const auto elapsed = clock.Now().TimePoint() - start;
+   }
+
+SystemClock
+~~~~~~~~~~~
+
+``SystemClock`` wraps ``std::chrono::system_clock`` (POSIX ``CLOCK_REALTIME``).  It
+represents wall-clock time (UTC-based) and may jump forward or backward on NTP
+adjustments or manual time changes.  It carries ``NoStatus`` and requires no
+initialization.  Use it when you need a calendar timestamp — not for measuring elapsed
+time.
+
+SC1 — Time polling
+^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/system_clock/sc1_polling.puml
+   :alt: SC1 — SystemClock time polling
+
+.. raw:: html
+
+   </div>
+
+.. code-block:: cpp
+
+   #include "score/time/system_time/system_clock.h"
+   #include <chrono>
+
+   void MyLogger::LogEvent()
+   {
+       auto clock = score::time::SystemClock::GetInstance();
+       const auto wall_time = clock.Now().TimePoint();
+       const auto t = std::chrono::system_clock::to_time_t(wall_time);
+       LOG_INFO("Event at: {}", std::ctime(&t));
+   }
+
+Testing (all domains)
+~~~~~~~~~~~~~~~~~~~~~
+
+Both test utilities work with any clock domain.  Choose based on how the SUT obtains the
+clock:
+
++------------------------------+-------------------------------------------------------+
+| Utility                      | When to use                                           |
++==============================+=======================================================+
+| ``ScopedClockOverride<Tag>`` | SUT calls ``Clock<Tag>::GetInstance()`` internally.   |
+|                              | Scope-bound RAII guard — automatically restored on    |
+|                              | destruction.                                          |
++------------------------------+-------------------------------------------------------+
+| ``ClockTestFactory<Tag>``    | SUT accepts ``Clock<Tag>`` as a constructor argument. |
+|                              | No global state is touched — safe for parallel tests. |
++------------------------------+-------------------------------------------------------+
+
+T1 — ScopedClockOverride (scope-bound override)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/testing/t1_scoped_override.puml
+   :alt: T1 — ScopedClockOverride
+
+.. raw:: html
+
+   </div>
+
+.. code-block:: cpp
+
+   #include "score/time/vehicle_time/vehicle_clock.h"
+   #include "score/time/vehicle_time/vehicle_clock_mock.h"
+
+   TEST(MyServiceTest, ReportsReliableTime)
+   {
+       auto mock = std::make_shared<score::time::VehicleClockMock>();
+       EXPECT_CALL(*mock, Now()).WillOnce(Return(/* snapshot */));
+
+       const score::time::test_utils::ScopedClockOverride<score::time::VehicleTime> guard{mock};
+
+       MyService svc;
+       svc.DoSomething();  // calls VehicleClock::GetInstance() internally
+   }
+
+T2 — ClockTestFactory (constructor injection)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/testing/t2_test_factory.puml
+   :alt: T2 — ClockTestFactory
+
+.. raw:: html
+
+   </div>
+
+.. code-block:: cpp
+
+   #include "score/time/vehicle_time/vehicle_clock.h"
+   #include "score/time/vehicle_time/vehicle_clock_mock.h"
+
+   TEST(MyServiceTest, ReportsReliableTime)
+   {
+       auto mock = std::make_shared<score::time::VehicleClockMock>();
+       EXPECT_CALL(*mock, Now()).WillOnce(Return(/* snapshot */));
+
+       const auto clock =
+           score::time::test_utils::ClockTestFactory<score::time::VehicleTime>::Make(mock);
+
+       MyService svc{clock};
+       svc.DoSomething();
    }
 
 Bazel dependencies
@@ -399,12 +562,13 @@ Choose the target that matches your use case:
 Design decisions
 ----------------
 
-No factory classes
-~~~~~~~~~~~~~~~~~~
+Single entry point — no factory classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The old ``SynchronizedVehicleTime`` API required clients to instantiate factory objects
-directly.  ``score::time`` removes all factory nesting: ``Clock<Tag>::GetInstance()`` is
-the sole entry point, and the production backend is chosen at **link time** by the Bazel
+Classical time APIs expose a factory or manager object that clients instantiate and
+configure before reading time (e.g. ``TimeBaseManager tm; tm.GetCurrentTime(kVehicleBase)``).
+``score::time`` removes that level of indirection: ``Clock<Tag>::GetInstance()`` is the
+sole entry point, and the production backend is chosen at **link time** by the Bazel
 alias target.
 
 Opacity of ``details/``
@@ -415,11 +579,12 @@ Virtual dispatch exists solely to enable GMock test doubles.  The vtable is hidd
 value type.  The ``*_mock.h`` headers are the only public headers permitted to include
 ``details/`` internals.
 
-``ClockSnapshot`` replaces nested ``TimeStatus``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``ClockSnapshot`` — immutable composite result
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The old ``SynchronizedVehicleTime::TimeStatus`` had public mutable data members, raw-integer
-constructors, and non-const accessors.  ``ClockSnapshot<TimepointT, StatusT>`` is a simple
+Classical time APIs return a raw timestamp and require a separate call to retrieve the
+synchronization status, or expose a struct with public mutable data members and
+raw-integer constructors.  ``ClockSnapshot<TimepointT, StatusT>`` is a simple
 immutable two-field struct:
 
 .. code-block:: cpp
@@ -439,39 +604,13 @@ Generic code works for all clock domains:
        return clk.Now().TimePoint() - ref;
    }
 
-``InitializationHook<Tag>`` — explicit lifecycle for IPC-backed clocks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``Subscribe<E>`` — uniform subscription API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``HirsTime``, ``SteadyClock``, and ``SystemClock`` are always ready: a client calls
-``GetInstance()`` and ``Now()`` immediately.  ``VehicleTime`` needs to open a shared-memory
-channel before any data arrives.  Mixing these two lifecycles in a single ``Clock<Tag>``
-interface would force *all* clock domains to carry an ``Init()`` method — including ones that
-never need it.
-
-The framework resolves this with a SFINAE gate:
-
-- ``InitializationHook<Tag>`` is an **intentionally undefined** primary template.  A clock
-  domain opts in by providing a full explicit specialisation that supplies
-  ``static bool CallInit(Backend&) noexcept``.
-- ``HasInitialization<Tag>`` is a ``std::true_type`` / ``std::false_type`` trait derived
-  from whether ``InitializationHook<Tag>::CallInit`` exists.
-- ``Clock<Tag>::Init()`` is only generated when ``HasInitialization<Tag>::value`` is
-  ``true``.  Calling it on a non-init domain is a **compile error**.
-
-``CallInit`` takes a non-const reference because initialisation is a mutating operation.
-This mirrors the existing ``AvailabilityHook<Tag>`` pattern (which gates ``IsAvailable()``
-and ``WaitUntilAvailable()``).
-
-The two flags share the same underlying readiness state in ``VehicleClockBackendImpl``:
-a successful ``Init()`` call sets ``is_ready_ = true``, and ``IsAvailable()`` reads that
-same flag.  ``Init()`` is idempotent — a second call on an already-initialised backend
-returns ``true`` immediately at the cost of a single atomic load.
-
-``Subscribe<E>`` collapses four named callback methods
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The old API required four separate named methods (``Set*``, ``Unset*`` for each event type).
-The ``Clock<Tag>`` wrapper exposes a single pair ``Subscribe<E>()`` / ``Unsubscribe<E>()``.
+Classical event-callback APIs require a separate named setter and unsetter for each event
+type (e.g. ``SetSyncDataCallback``, ``UnsetSyncDataCallback``, ``SetPDelayCallback``,
+``UnsetPDelayCallback``).  ``Clock<Tag>`` exposes a single pair ``Subscribe<E>()`` /
+``Unsubscribe<E>()`` templated on the event type.
 The ``SubscriptionHook<Tag, EventType>`` specialisation bridges to the named virtual methods
 on the backend interface — which must remain non-template (C++ forbids virtual templates).
 
