@@ -13,7 +13,7 @@
 #include "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.h"
 
 #include "score/time_daemon/src/common/logging_contexts.h"
-#include "score/libTSClient/gptp_ipc_data.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/mw/log/logging.h"
 
 namespace score

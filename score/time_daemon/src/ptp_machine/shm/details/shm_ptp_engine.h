@@ -14,7 +14,7 @@
 #define SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_DETAILS_SHM_PTP_ENGINE_H
 
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
-#include "score/libTSClient/gptp_ipc_receiver.h"
+#include "score/ts_client/src/gptp_ipc_receiver.h"
 
 #include <string>
 
@@ -29,7 +29,7 @@ namespace details
  * @brief PTP engine that reads time data from the shared-memory IPC channel
  *        written by TimeSlave via GptpIpcPublisher.
  *
- * Converts the libTSClient-internal GptpIpcData to the TimeDaemon PtpTimeInfo
+ * Converts the ts_client/src-internal GptpIpcData to the TimeDaemon PtpTimeInfo
  * data model.
  */
 class ShmPTPEngine final

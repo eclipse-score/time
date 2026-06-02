@@ -1,0 +1,41 @@
+@startuml ipc_publish_seq_diagram
+
+title IPC Machine: Publishing new TimeInfo data
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+autoactivate on
+
+legend top left
+    |= Color     |= Description                  |
+    |<#LightCyan> | time_daemon members            |
+    |<#LightPink> | IPC components                |
+    |<#LightCoral>| score::communication          |
+endlegend
+
+box VehicleTimeDaemon #LightYellow
+    participant "MessageBroker" as broker #LightCyan
+    participant "IPCMachine:publisher" as ipc_publisher #LightPink
+end box
+
+participant "score::communication" as score_comm #LightCoral
+
+broker -> ipc_publisher: newTimeData(TimeInfo)
+alt if the data was updated
+    ipc_publisher -> ipc_publisher: serialize data
+    ipc_publisher -> score_comm: Send(TimeInfo)
+    note right
+        All data, which is needed by the Apps, like
+        1. current Vehicle time
+        2. local time
+        3. status
+        4. sync/fup and pdelay frames content
+        5. rate and so on
+        shall be published here
+    end note
+    score_comm --> ipc_publisher: success
+end
+ipc_publisher --> broker
+
+@enduml

@@ -1,0 +1,136 @@
+@startuml
+!theme plain
+
+title gPTP Engine Internal Class Diagram
+
+legend top left
+    |= Color          |= Description              |
+    | <#LightSalmon>  | gPTP Engine core           |
+    | <#Wheat>        | Protocol processing        |
+    | <#Lavender>     | PHC adjustment             |
+    | <#LightSkyBlue> | Platform abstraction       |
+    | <#Beige>        | Instrumentation            |
+endlegend
+
+package "score::ts::details" {
+
+    class GptpEngine #LightSalmon {
+        - opts_ : GptpEngineOptions
+        - rx_thread_ : std::thread
+        - pdelay_thread_ : std::thread
+        - socket_ : unique_ptr<RawSocket>
+        - identity_ : unique_ptr<NetworkIdentity>
+        - codec_ : FrameCodec
+        - parser_ : GptpMessageParser
+        - sync_sm_ : SyncStateMachine
+        - pdelay_ : PeerDelayMeasurer
+        - phc_adjuster_ : PhcAdjuster
+        - snapshot_mutex_ : std::mutex
+        - pending_snapshot_ : GptpIpcData
+        - current_snapshot_ : GptpIpcData
+        + Initialize() : bool
+        + Deinitialize() : bool
+        + FinalizeSnapshot() : void
+        + ReadPTPSnapshot(data : GptpIpcData&) : bool
+    }
+
+    interface RawSocket #LightSkyBlue {
+        + Open(iface) : bool
+        + EnableHwTimestamping() : bool
+        + Recv(buf, timeout_ms) : RecvResult
+        + Send(buf, len) : bool
+        + GetFd() : int
+        + Close() : void
+    }
+
+    class "RawSocket\n<<Linux>>" as LinuxSocket #LightSkyBlue {
+        AF_PACKET + SO_TIMESTAMPING
+    }
+
+    class "RawSocket\n<<QNX>>" as QnxSocket #LightSkyBlue {
+        QNX raw-socket shim
+    }
+
+    interface NetworkIdentity #LightSkyBlue {
+        + Resolve(iface) : bool
+        + GetClockIdentity() : ClockIdentity
+        + GetMac() : MacAddress
+    }
+
+    class NetworkIdentity #LightSkyBlue {
+        Derives EUI-64 from MAC\n(inserts 0xFF 0xFE)
+    }
+
+    class FrameCodec #Wheat {
+        + ParseEthernetHeader(buf) : EthernetHeader
+        + AddEthernetHeader(buf, dst_mac, src_mac) : void
+    }
+
+    class GptpMessageParser #Wheat {
+        + Parse(payload, len, msg_out) : bool
+    }
+
+    class SyncStateMachine #Wheat {
+        - timeout_ : atomic<bool>
+        + OnSync(msg) : void
+        + OnFollowUp(msg) : optional<SyncResult>
+        + IsTimeout() : bool
+        + GetNeighborRateRatio() : double
+    }
+
+    class PeerDelayMeasurer #Wheat {
+        - mutex_ : std::mutex
+        - result_ : PDelayResult
+        + SendRequest(socket) : void
+        + OnResponse(msg) : void
+        + OnResponseFollowUp(msg) : void
+        + GetResult() : PDelayResult
+    }
+
+    class PhcAdjuster #Lavender {
+        - cfg_ : PhcConfig
+        - phc_fd_ : int
+        + IsEnabled() : bool
+        + AdjustOffset(offset_ns) : void
+        + AdjustFrequency(rate_ratio) : void
+    }
+
+    struct PhcConfig #Lavender {
+        + enabled : bool = false
+        + device : string
+        + step_threshold_ns : int64_t = 100000000
+    }
+
+    RawSocket <|.. LinuxSocket
+    RawSocket <|.. QnxSocket
+    NetworkIdentity <|.. NetworkIdentity
+    PhcAdjuster *-- PhcConfig
+
+    GptpEngine *-- RawSocket
+    GptpEngine *-- NetworkIdentity
+    GptpEngine *-- FrameCodec
+    GptpEngine *-- GptpMessageParser
+    GptpEngine *-- SyncStateMachine
+    GptpEngine *-- PeerDelayMeasurer
+    GptpEngine *-- PhcAdjuster
+}
+
+package "score::ts::gptp::instrument" {
+    class ProbeManager #Beige {
+        + {static} Instance() : ProbeManager&
+        + Record(point, data) : void
+        + SetRecorder(recorder) : void
+    }
+
+    class Recorder #Beige {
+        - file_ : std::ofstream
+        - mutex_ : std::mutex
+        + Record(entry) : void
+    }
+
+    ProbeManager --> Recorder
+}
+
+GptpEngine *-- ProbeManager
+
+@enduml

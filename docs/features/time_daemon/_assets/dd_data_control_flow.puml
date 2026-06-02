@@ -1,0 +1,98 @@
+@startuml dd_data_control_flow_diagram
+
+title time_daemon: Data and Control Flow
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color        |= Description                  |
+    |<#PaleTurquoise> | MessageBroker               |
+    |<#Wheat>       | PtpMachine                    |
+    |<#LightBlue>   | ControlFlowDivider            |
+    |<#Lavender>    | VerificationMachine           |
+    |<#LightPink>   | IPC components                |
+    |<#LightCoral>  | score::communication          |
+    |<#LightGreen>  | Middleware components         |
+    |<#LightSalmon> | Client Application            |
+endlegend
+
+box time_daemon #LightYellow
+    participant "PTPMachine" as ptp_machine #Wheat
+    participant "MessageBroker" as broker #PaleTurquoise
+    participant "ControlFlowDivider" as cf_divider #LightBlue
+    participant "VerificationMachine" as ver_machine #Lavender
+    participant "IpcPublisher" as ipc_publisher #LightPink
+end box
+
+participant "score::communication" as score_comm #LightCoral
+
+box Application #e6ffe6
+    participant "IpcReceiver" as ipc_receiver #LightPink
+    participant "score::time::svt" as mw_svt #LightGreen
+    participant "Application" as app #LightSalmon
+end box
+
+group PTP data retrieval (periodic)
+    ptp_machine -> ptp_machine : PeriodicTask()
+    activate ptp_machine
+    note right
+        Read PTP time from
+        PTP engine
+    end note
+    ptp_machine -> broker : publish_callback_(PtpTimeInfo)
+    activate broker
+    broker -> cf_divider : OnMessage(PtpTimeInfo)
+    activate cf_divider
+    cf_divider -> cf_divider : Buffer and notify with new event
+    cf_divider --> broker
+    deactivate cf_divider
+    broker --> ptp_machine
+    deactivate broker
+    deactivate ptp_machine
+end
+
+group Data processing (event-driven)
+    cf_divider -> cf_divider : OnEvent()
+    activate cf_divider
+    cf_divider -> broker : publish_callback_(PtpTimeInfo)
+    activate broker
+    broker -> ver_machine : OnMessage(PtpTimeInfo)
+    activate ver_machine
+    ver_machine -> ver_machine : Validate through pipeline
+    ver_machine -> broker : publish_callback_(PtpTimeInfo)
+    deactivate ver_machine
+
+    broker -> ipc_publisher : OnMessage(PtpTimeInfo)
+    activate ipc_publisher
+    ipc_publisher -> score_comm : Send(PtpTimeInfo)
+    activate score_comm
+    score_comm --> ipc_publisher
+    deactivate score_comm
+    ipc_publisher --> broker
+    deactivate ipc_publisher
+    broker --> cf_divider
+    deactivate broker
+    deactivate cf_divider
+end
+
+group Application request (on-demand)
+    app -> mw_svt : Now()
+    activate app
+    activate mw_svt
+    mw_svt -> ipc_receiver : Receive()
+    activate ipc_receiver
+    ipc_receiver -> score_comm : Receive()
+    activate score_comm
+    score_comm --> ipc_receiver : PtpTimeInfo
+    deactivate score_comm
+    ipc_receiver --> mw_svt : PtpTimeInfo
+    deactivate ipc_receiver
+    mw_svt -> mw_svt : Calculate current time
+    mw_svt --> app : Current Vehicle Time
+    deactivate mw_svt
+    deactivate app
+end
+
+@enduml

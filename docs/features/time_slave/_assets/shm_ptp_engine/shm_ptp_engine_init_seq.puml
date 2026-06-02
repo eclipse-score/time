@@ -1,0 +1,82 @@
+@startuml shm_ptp_engine_init_seq
+!theme plain
+
+title ShmPTPEngine: Initialization Sequence
+
+hide footbox
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color           |= Description         |
+    | <#LightCyan>     | time_daemon           |
+    | <#Wheat>         | GPTPShmMachine       |
+    | <#LightPink>     | ts_client IPC       |
+endlegend
+
+participant "TimeBaseHandler" as tb #LightCyan
+participant "GPTPShmMachine\n(PTPMachine<ShmPTPEngine>)" as machine #Wheat
+participant "ShmPTPEngine" as engine #Wheat
+participant "GptpIpcReceiver" as receiver #LightPink
+participant "MessageBroker" as broker #LightCyan
+
+== Construction ==
+
+tb -> machine ** : CreateGPTPShmMachine("shm", "/gptp_ptp_info")
+activate tb
+activate machine
+machine -> engine ** : ShmPTPEngine("/gptp_ptp_info")
+engine -> receiver ** : GptpIpcReceiver()
+machine --> tb
+deactivate machine
+deactivate tb
+
+== Initialization ==
+
+tb -> machine : Init()
+activate tb
+activate machine
+machine -> engine : Initialize()
+activate engine
+engine -> receiver : Init("/gptp_ptp_info")
+activate receiver
+note right of receiver
+    shm_open(O_RDONLY)
+    mmap(PROT_READ)
+    verify magic == 0x47505450
+end note
+receiver --> engine : true / false
+deactivate receiver
+engine --> machine
+deactivate engine
+machine --> tb
+deactivate machine
+deactivate tb
+
+== Setup Producer ==
+
+tb -> broker : subscribe machine to "raw_ptp_data" topic
+activate tb
+activate broker
+broker -> machine : SetPublishCallback(broker::OnNewData)
+activate machine
+machine --> broker
+deactivate machine
+broker --> tb
+deactivate broker
+deactivate tb
+
+== Start Periodic Operation ==
+
+tb -> machine : Start()
+activate tb
+activate machine
+machine -> machine : start periodic thread
+note right
+    Begin periodic IPC reads
+    from shared memory
+end note
+machine --> tb
+deactivate machine
+deactivate tb
+
+@enduml

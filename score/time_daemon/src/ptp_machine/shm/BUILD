@@ -27,9 +27,9 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score/time_daemon:__subpackages__"],
     deps = [
-        "//score/libTSClient:gptp_ipc",
         "//score/time_daemon/src/ptp_machine/core:ptp_machine",
         "//score/time_daemon/src/ptp_machine/shm/details:shm_ptp_engine",
+        "//score/ts_client/src:gptp_ipc",
     ],
 )
 
@@ -39,7 +39,7 @@ cc_test(
     tags = ["unit"],
     deps = [
         ":gptp_shm_machine",
-        "//score/libTSClient:gptp_ipc",
+        "//score/ts_client/src:gptp_ipc",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",

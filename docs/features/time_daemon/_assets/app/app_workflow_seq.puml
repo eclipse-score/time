@@ -1,0 +1,69 @@
+@startuml app_init_seq_diagram
+
+title Application: Initialization Sequence
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color        |= Description                  |
+    |<#LightCyan>   | time_daemon members            |
+    |<#Wheat>       | PtpMachine                    |
+    |<#LightBlue>   | ControlFlowDivider            |
+    |<#LightGreen>  | Middleware components         |
+endlegend
+
+participant "LifecycleManager" as lcm #LightGreen
+participant "Application" as vtd_app #LightCyan
+participant "TimeBaseHandler" as tb_handler #LightCyan
+participant "PtpMachine" as ptp_machine #Wheat
+participant "ControlFlowDivider" as cf_divider #LightBlue
+
+== Execution Phase ==
+
+lcm -> vtd_app : Run(stopToken)
+activate vtd_app
+
+vtd_app -> tb_handler : RunOnce(stopToken)
+activate tb_handler
+tb_handler -> ptp_machine : start()
+activate ptp_machine
+ptp_machine --> tb_handler
+deactivate ptp_machine
+tb_handler -> cf_divider : start()
+activate cf_divider
+cf_divider --> tb_handler
+deactivate cf_divider
+tb_handler --> vtd_app
+deactivate tb_handler
+
+note over vtd_app: Monitor stop token\nfor termination request
+vtd_app -> vtd_app: wait until stopToken is triggered
+
+vtd_app --> lcm : return when stopped
+deactivate vtd_app
+
+== Shutdown Phase ==
+
+lcm -> vtd_app : (stop token triggered)
+activate vtd_app
+vtd_app -> tb_handler : Stop()
+activate tb_handler
+tb_handler -> cf_divider : stop(stop token triggered)
+activate cf_divider
+cf_divider -> cf_divider: join activities
+cf_divider --> tb_handler
+deactivate cf_divider
+
+tb_handler -> ptp_machine : stop(stop token triggered)
+activate ptp_machine
+ptp_machine -> ptp_machine: join activities
+ptp_machine --> tb_handler
+deactivate ptp_machine
+tb_handler --> vtd_app
+deactivate tb_handler
+vtd_app --> lcm
+deactivate vtd_app
+
+@enduml

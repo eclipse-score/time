@@ -1,0 +1,63 @@
+@startuml ctrlflow_init_seq_diagram
+
+title ControlFlowDivider: Initialization Sequence
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color        |= Description                  |
+    |<#LightCyan>   | time_daemon members            |
+    |<#PaleTurquoise> | MessageBroker               |
+    |<#LightBlue>   | ControlFlowDivider            |
+endlegend
+
+participant "TimeBaseHandler" as tb_handler #LightCyan
+participant "ControlFlowDivider" as cfd #LightBlue
+participant "MessageBroker" as broker #PaleTurquoise
+
+== ControlFlowDivider Construction ==
+
+tb_handler -> cfd ** : create(name, timeout)
+activate tb_handler
+activate cfd
+cfd -> cfd : Initialize()
+note right
+    Initialize buffer and
+    event-driven thread
+end note
+deactivate cfd
+deactivate tb_handler
+
+== Setup Connections ==
+
+tb_handler -> cfd : SetPublishCallback(broker::publish)
+activate tb_handler
+activate cfd
+cfd --> tb_handler
+deactivate cfd
+deactivate tb_handler
+
+tb_handler -> broker : Subscribe("validated_ptp_data", cfd::OnMessage)
+activate tb_handler
+activate broker
+broker --> tb_handler
+deactivate broker
+deactivate tb_handler
+
+== Start Processing ==
+
+tb_handler -> cfd : Start()
+activate tb_handler
+activate cfd
+cfd -> cfd : Start thread
+note right
+    Start event-driven thread
+    waiting for data or timeout
+end note
+cfd --> tb_handler
+deactivate cfd
+deactivate tb_handler
+
+@enduml

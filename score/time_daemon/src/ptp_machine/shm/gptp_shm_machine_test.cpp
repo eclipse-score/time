@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine.h"
 #include "score/time_daemon/src/ptp_machine/shm/factory.h"
-#include "score/libTSClient/gptp_ipc_publisher.h"
+#include "score/ts_client/src/gptp_ipc_publisher.h"
 
 #include <gtest/gtest.h>
 
