@@ -12,9 +12,6 @@
  ********************************************************************************/
 #include "score/ts_client/src/gptp_ipc_publisher.h"
 
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <unistd.h>
 #include <cstring>
 #include <type_traits>
 
@@ -35,34 +32,23 @@ GptpIpcPublisher::~GptpIpcPublisher()
 
 bool GptpIpcPublisher::Init(const std::string& ipc_name)
 {
-    if (region_ != nullptr)
+    if (shm_resource_ != nullptr)
         return true;
 
     ipc_name_ = ipc_name;
 
-    (void)::shm_unlink(ipc_name_.c_str());
+    score::memory::shared::SharedMemoryFactory::Remove(ipc_name_);
+    score::memory::shared::SharedMemoryFactory::RemoveStaleArtefacts(ipc_name_);
 
-    shm_fd_ = ::shm_open(ipc_name_.c_str(), O_CREAT | O_RDWR, 0600);
-    if (shm_fd_ < 0)
-        return false;
+    shm_resource_ = score::memory::shared::SharedMemoryFactory::Create(
+        ipc_name_,
+        [this](std::shared_ptr<score::memory::shared::ISharedMemoryResource> res) {
+            region_ = res->construct<GptpIpcRegion>();
+        },
+        sizeof(GptpIpcRegion) + alignof(GptpIpcRegion) - 1U,
+        score::memory::shared::permission::WorldWritable{});
 
-    if (::ftruncate(shm_fd_, static_cast<off_t>(sizeof(GptpIpcRegion))) != 0)
-    {
-        ::close(shm_fd_);  // LCOV_EXCL_LINE
-        shm_fd_ = -1;      // LCOV_EXCL_LINE
-        return false;      // LCOV_EXCL_LINE
-    }
-
-    void* ptr = ::mmap(nullptr, sizeof(GptpIpcRegion), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd_, 0);
-    if (ptr == MAP_FAILED)
-    {
-        ::close(shm_fd_);  // LCOV_EXCL_LINE
-        shm_fd_ = -1;      // LCOV_EXCL_LINE
-        return false;      // LCOV_EXCL_LINE
-    }
-
-    region_ = new (ptr) GptpIpcRegion{};
-    return true;
+    return (shm_resource_ != nullptr) && (region_ != nullptr);
 }
 
 void GptpIpcPublisher::Publish(const score::ts::GptpIpcData& data)
@@ -85,22 +71,13 @@ void GptpIpcPublisher::Publish(const score::ts::GptpIpcData& data)
 
 void GptpIpcPublisher::Destroy()
 {
-    if (region_ != nullptr)
-    {
-        region_->~GptpIpcRegion();
-        ::munmap(region_, sizeof(GptpIpcRegion));
-        region_ = nullptr;
-    }
-    if (shm_fd_ >= 0)
-    {
-        ::close(shm_fd_);
-        shm_fd_ = -1;
-    }
     if (!ipc_name_.empty())
     {
-        ::shm_unlink(ipc_name_.c_str());
+        score::memory::shared::SharedMemoryFactory::Remove(ipc_name_);
         ipc_name_.clear();
     }
+    shm_resource_.reset();
+    region_ = nullptr;
 }
 
 }  // namespace details

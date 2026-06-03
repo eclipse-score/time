@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_CHANNEL_H
-#define SCORE_TS_CLIENT_SRC_GPTP_IPC_CHANNEL_H
+#ifndef SCORE_TS_CLIENT_GPTP_IPC_CHANNEL_H
+#define SCORE_TS_CLIENT_GPTP_IPC_CHANNEL_H
 
 #include "score/ts_client/src/gptp_ipc_data.h"
 
@@ -25,7 +25,6 @@ namespace ts
 namespace details
 {
 
-/// Default POSIX shared memory name for the gPTP IPC channel.
 constexpr char kGptpIpcName[] = "/gptp_ptp_info";
 
 /// Magic number to validate the shared memory region ('GPTP').
@@ -53,4 +52,4 @@ struct alignas(64) GptpIpcRegion
 }  // namespace ts
 }  // namespace score
 
-#endif  // SCORE_TS_CLIENT_SRC_GPTP_IPC_CHANNEL_H
+#endif  // SCORE_TS_CLIENT_GPTP_IPC_CHANNEL_H

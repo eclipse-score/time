@@ -10,11 +10,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TS_CLIENT_GPTP_IPC_H
-#define SCORE_TS_CLIENT_GPTP_IPC_H
+#include "score/TimeDaemon/code/application/svt/factory_shm.h"
+#include "score/TimeDaemon/code/application/svt/svt_handler_shm.h"
 
-#include "score/ts_client/src/gptp_ipc_channel.h"
-#include "score/ts_client/src/gptp_ipc_publisher.h"
-#include "score/ts_client/src/gptp_ipc_receiver.h"
+namespace score
+{
+namespace td
+{
 
-#endif  // SCORE_TS_CLIENT_GPTP_IPC_H
+std::unique_ptr<TimebaseHandler> CreateSvtTimebaseShm()
+{
+    return std::make_unique<SvtHandlerShm>();
+}
+
+}  // namespace td
+}  // namespace score

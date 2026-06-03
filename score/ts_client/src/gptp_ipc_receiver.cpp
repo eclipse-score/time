@@ -12,11 +12,8 @@
  ********************************************************************************/
 #include "score/ts_client/src/gptp_ipc_receiver.h"
 
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <unistd.h>
 #include <cstring>
+#include <memory>
 
 namespace score
 {
@@ -34,31 +31,24 @@ GptpIpcReceiver::~GptpIpcReceiver()
 
 bool GptpIpcReceiver::Init(const std::string& ipc_name)
 {
-    if (region_ != nullptr)
+    if (shm_resource_ != nullptr)
         return true;
 
-    shm_fd_ = ::shm_open(ipc_name.c_str(), O_RDONLY, 0);
-    if (shm_fd_ < 0)
+    shm_resource_ = score::memory::shared::SharedMemoryFactory::Open(ipc_name, false);
+    if (shm_resource_ == nullptr)
         return false;
 
+    // construct<GptpIpcRegion>() on the publisher side aligns the object to
+    // alignof(GptpIpcRegion) within the usable region.  We must apply the same
+    // alignment here so that both sides point to the same address.
+    void* ptr = shm_resource_->getUsableBaseAddress();
+    std::size_t space = sizeof(GptpIpcRegion) + alignof(GptpIpcRegion);
+    ptr = std::align(alignof(GptpIpcRegion), sizeof(GptpIpcRegion), ptr, space);
+    if (ptr == nullptr)
     {
-        struct ::stat st{};
-        if (::fstat(shm_fd_, &st) != 0 || static_cast<std::size_t>(st.st_size) < sizeof(GptpIpcRegion))
-        {
-            ::close(shm_fd_);
-            shm_fd_ = -1;
-            return false;
-        }
-    }
-
-    void* ptr = ::mmap(nullptr, sizeof(GptpIpcRegion), PROT_READ, MAP_SHARED, shm_fd_, 0);
-    if (ptr == MAP_FAILED)
-    {
-        ::close(shm_fd_);
-        shm_fd_ = -1;
+        Close();
         return false;
     }
-
     region_ = static_cast<const GptpIpcRegion*>(ptr);
 
     if (region_->magic.load(std::memory_order_acquire) != kGptpIpcMagic)
@@ -106,16 +96,8 @@ std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
 
 void GptpIpcReceiver::Close()
 {
-    if (region_ != nullptr)
-    {
-        ::munmap(const_cast<GptpIpcRegion*>(region_), sizeof(GptpIpcRegion));
-        region_ = nullptr;
-    }
-    if (shm_fd_ >= 0)
-    {
-        ::close(shm_fd_);
-        shm_fd_ = -1;
-    }
+    shm_resource_.reset();
+    region_ = nullptr;
 }
 
 }  // namespace details

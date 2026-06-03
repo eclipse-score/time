@@ -28,13 +28,14 @@ cc_library(
         "gptp_ipc_receiver.h",
     ],
     features = COMPILER_WARNING_FEATURES,
-    linkopts = select({
-        "@platforms//os:qnx": [],
-        "//conditions:default": ["-lrt"],
-    }),
     tags = ["QM"],
-    visibility = ["//score:__subpackages__"],
-    deps = [],
+    visibility = [
+        "//examples:__subpackages__",
+        "//score:__subpackages__",
+    ],
+    deps = [
+        "@score_baselibs//score/memory/shared",
+    ],
 )
 
 cc_test(
@@ -48,6 +49,7 @@ cc_test(
         ":gptp_ipc",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
 
@@ -62,6 +64,7 @@ cc_test(
         ":gptp_ipc",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
 
@@ -76,6 +79,7 @@ cc_test(
         ":gptp_ipc",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
 

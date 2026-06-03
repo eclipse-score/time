@@ -10,11 +10,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H
-#define SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H
+#ifndef SCORE_TS_CLIENT_GPTP_IPC_RECEIVER_H
+#define SCORE_TS_CLIENT_GPTP_IPC_RECEIVER_H
 
 #include "score/ts_client/src/gptp_ipc_channel.h"
+#include "score/memory/shared/shared_memory_factory.h"
 
+#include <memory>
 #include <optional>
 #include <string>
 
@@ -40,24 +42,17 @@ class GptpIpcReceiver final
     GptpIpcReceiver(const GptpIpcReceiver&) = delete;
     GptpIpcReceiver& operator=(const GptpIpcReceiver&) = delete;
 
-    /// Open and map the shared memory segment (read-only).
-    /// @return true on success.
     bool Init(const std::string& ipc_name = kGptpIpcName);
-
-    /// Read a GptpIpcData snapshot using seqlock (up to 20 retries).
-    /// @return The data if consistent, or std::nullopt on contention failure.
     std::optional<score::ts::GptpIpcData> Receive();
-
-    /// Unmap the shared memory segment.
     void Close();
 
   private:
     const GptpIpcRegion* region_{nullptr};
-    int shm_fd_{-1};
+    std::shared_ptr<score::memory::shared::ISharedMemoryResource> shm_resource_;
 };
 
 }  // namespace details
 }  // namespace ts
 }  // namespace score
 
-#endif  // SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H
+#endif  // SCORE_TS_CLIENT_GPTP_IPC_RECEIVER_H

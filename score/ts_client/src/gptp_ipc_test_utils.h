@@ -10,15 +10,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
-#define SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
+#ifndef SCORE_TS_CLIENT_GPTP_IPC_TEST_UTILS_H
+#define SCORE_TS_CLIENT_GPTP_IPC_TEST_UTILS_H
 
 #include "score/ts_client/src/gptp_ipc_channel.h"
+#include "score/memory/shared/shared_memory_factory.h"
 
-#include <fcntl.h>
-#include <sys/mman.h>
 #include <unistd.h>
 #include <atomic>
+#include <memory>
 #include <string>
 
 namespace score
@@ -28,7 +28,6 @@ namespace ts
 namespace details
 {
 
-/// Generate a unique POSIX shm name per invocation (avoids cross-test pollution).
 inline std::string UniqueShmName()
 {
     static std::atomic<int> counter{0};
@@ -36,47 +35,40 @@ inline std::string UniqueShmName()
            std::to_string(counter.fetch_add(1, std::memory_order_relaxed));
 }
 
-/// RAII helper: creates shm manually (without GptpIpcPublisher) for edge-case
-/// testing; cleans up in destructor.
+/// RAII helper: creates SHM via SharedMemoryFactory (same layout as GptpIpcPublisher)
+/// so that GptpIpcReceiver can open it.  Gives direct access to the region for
+/// edge-case tests that need to corrupt seq/magic.
 struct ManualShm
 {
-    std::string name;
-    void* ptr = MAP_FAILED;
-    std::size_t size = sizeof(GptpIpcRegion);
+    std::shared_ptr<score::memory::shared::ISharedMemoryResource> resource_;
+    GptpIpcRegion* region_{nullptr};
+    std::string name_;
 
-    explicit ManualShm(const std::string& n) : name{n}
+    explicit ManualShm(const std::string& n) : name_{n}
     {
-        const int fd = ::shm_open(name.c_str(), O_CREAT | O_RDWR, 0666);
-        if (fd < 0)
-            return;
-        if (::ftruncate(fd, static_cast<off_t>(size)) != 0)
-        {
-            ::close(fd);
-            return;
-        }
-        ptr = ::mmap(nullptr, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-        ::close(fd);
+        score::memory::shared::SharedMemoryFactory::Remove(n);
+        score::memory::shared::SharedMemoryFactory::RemoveStaleArtefacts(n);
+        resource_ = score::memory::shared::SharedMemoryFactory::Create(
+            n,
+            [this](std::shared_ptr<score::memory::shared::ISharedMemoryResource> res) {
+                region_ = res->construct<GptpIpcRegion>();
+            },
+            sizeof(GptpIpcRegion) + alignof(GptpIpcRegion) - 1U,
+            score::memory::shared::permission::WorldWritable{});
     }
 
     ~ManualShm()
     {
-        if (ptr != MAP_FAILED)
-            ::munmap(ptr, size);
-        ::shm_unlink(name.c_str());
+        resource_.reset();
+        score::memory::shared::SharedMemoryFactory::Remove(name_);
     }
 
-    bool Valid() const
-    {
-        return ptr != MAP_FAILED;
-    }
-    GptpIpcRegion* Region()
-    {
-        return static_cast<GptpIpcRegion*>(ptr);
-    }
+    bool Valid() const { return resource_ != nullptr && region_ != nullptr; }
+    GptpIpcRegion* Region() { return region_; }
 };
 
 }  // namespace details
 }  // namespace ts
 }  // namespace score
 
-#endif  // SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
+#endif  // SCORE_TS_CLIENT_GPTP_IPC_TEST_UTILS_H
