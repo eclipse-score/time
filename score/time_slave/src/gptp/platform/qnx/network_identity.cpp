@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_slave/src/gptp/details/network_identity.h"
+#include "score/time_slave/src/gptp/details/network_identity_impl.h"
 
 #include <arpa/inet.h>
 #include <ifaddrs.h>

@@ -11,8 +11,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_slave/src/gptp/gptp_engine.h"
-#include "score/time_slave/src/gptp/details/i_network_identity.h"
-#include "score/time_slave/src/gptp/details/i_raw_socket.h"
+#include "score/time_slave/src/gptp/details/network_identity.h"
+#include "score/time_slave/src/gptp/details/raw_socket.h"
 
 #include <gtest/gtest.h>
 

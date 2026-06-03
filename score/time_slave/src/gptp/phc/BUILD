@@ -24,7 +24,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = select({
-        "@platforms//os:qnx": ["//score/time_slave/src/gptp/details:raw_socket"],
+        "@platforms//os:qnx": ["//score/time_slave/src/gptp/details:raw_socket_impl"],
         "//conditions:default": [],
     }),
 )

@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,14 +13,9 @@
 #ifndef SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_RAW_SOCKET_H
 #define SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_RAW_SOCKET_H
 
-#include "score/time_slave/src/gptp/details/i_os_syscalls.h"
-#include "score/time_slave/src/gptp/details/i_raw_socket.h"
-
 #include <time.h>
-#include <atomic>
 #include <cstddef>
 #include <cstdint>
-#include <memory>
 #include <string>
 
 namespace score
@@ -30,61 +25,31 @@ namespace ts
 namespace details
 {
 
-/**
- * @brief Platform raw socket for Ethernet I/O with hardware timestamping.
- *
- * On Linux uses AF_PACKET / SO_TIMESTAMPING.
- * On QNX uses the QNX raw-socket shim.
- */
-class RawSocketImpl : public RawSocket
+/// Interface for a platform raw socket used by GptpEngine and PeerDelayMeasurer.
+class RawSocket
 {
   public:
-    /// @param sys  Optional syscall shim for unit testing.  nullptr → real OS calls.
-    explicit RawSocketImpl(OsSyscalls* sys = nullptr) noexcept;
-    ~RawSocketImpl() override;
-
-    RawSocketImpl(const RawSocketImpl&) = delete;
-    RawSocketImpl& operator=(const RawSocketImpl&) = delete;
-    RawSocketImpl(RawSocketImpl&&) = delete;
-    RawSocketImpl& operator=(RawSocketImpl&&) = delete;
+    virtual ~RawSocket() noexcept = default;
 
     /// Open the socket bound to @p iface. Returns false on failure.
-    bool Open(const std::string& iface) override;
+    virtual bool Open(const std::string& iface) = 0;
 
-    /// Configure hardware TX/RX timestamping on the already-opened socket.
-    /// Returns false on failure. A no-op on platforms that don't support it.
-    bool EnableHwTimestamping() override;
+    /// Configure hardware TX/RX timestamping. Returns false on failure.
+    virtual bool EnableHwTimestamping() = 0;
 
     /// Close the socket and release the file descriptor.
-    void Close() override;
+    virtual void Close() = 0;
 
     /// Receive one frame.
-    ///
-    /// @param buf       Output buffer.
-    /// @param buf_len   Capacity of @p buf.
-    /// @param hwts      Output: hardware receive timestamp (zeroed if unavailable).
-    /// @param timeout_ms  <0 block indefinitely, 0 non-blocking, >0 timeout in ms.
     /// @return Number of bytes received, 0 on timeout, -1 on error.
-    int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) override;
+    virtual int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) = 0;
 
     /// Send one frame.
-    ///
-    /// @param buf       Frame data including Ethernet header.
-    /// @param len       Number of bytes to send.
-    /// @param hwts      Output: hardware transmit timestamp (zeroed if unavailable).
     /// @return Number of bytes sent, or -1 on error.
-    int Send(const void* buf, int len, ::timespec& hwts) override;
+    virtual int Send(const void* buf, int len, ::timespec& hwts) = 0;
 
-    /// Return the underlying file descriptor (for advanced use / polling).
-    int GetFd() const override
-    {
-        return fd_.load(std::memory_order_relaxed);
-    }
-
-  private:
-    OsSyscalls* sys_{nullptr};
-    std::atomic<int> fd_{-1};
-    std::string iface_{};
+    /// Return the underlying file descriptor.
+    virtual int GetFd() const = 0;
 };
 
 }  // namespace details

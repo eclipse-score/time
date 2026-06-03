@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2025 Contributors to the Eclipse Foundation
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information regarding copyright ownership.
@@ -13,7 +13,6 @@
 #ifndef SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_NETWORK_IDENTITY_H
 #define SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_NETWORK_IDENTITY_H
 
-#include "score/time_slave/src/gptp/details/i_network_identity.h"
 #include "score/time_slave/src/gptp/details/ptp_types.h"
 
 #include <string>
@@ -25,28 +24,17 @@ namespace ts
 namespace details
 {
 
-/**
- * @brief Derive the IEEE 1588 ClockIdentity from a network interface.
- *
- * The identity is built from the interface's EUI-48 MAC address by inserting
- * 0xFF 0xFE at positions 3–4 to form an EUI-64 (per IEEE 1588-2019 §7.5.2.2).
- * Platform implementation: Linux + QNX via #ifdef.
- */
-class NetworkIdentityImpl : public NetworkIdentity
+/// Interface for resolving the IEEE 1588 ClockIdentity from a network interface.
+class NetworkIdentity
 {
   public:
-    /// Resolve the ClockIdentity for @p iface_name.
-    /// @return true on success.
-    bool Resolve(const std::string& iface_name) override;
+    virtual ~NetworkIdentity() noexcept = default;
 
-    /// Return the resolved identity.  Valid only after a successful Resolve().
-    ClockIdentity GetClockIdentity() const override
-    {
-        return identity_;
-    }
+    /// Resolve the ClockIdentity for @p iface_name. Returns true on success.
+    virtual bool Resolve(const std::string& iface_name) = 0;
 
-  private:
-    ClockIdentity identity_{};
+    /// Return the resolved identity. Valid only after a successful Resolve().
+    virtual ClockIdentity GetClockIdentity() const = 0;
 };
 
 }  // namespace details

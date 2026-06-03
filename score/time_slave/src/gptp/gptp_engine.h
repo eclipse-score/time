@@ -15,8 +15,8 @@
 
 #include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/time_slave/src/gptp/details/frame_codec.h"
-#include "score/time_slave/src/gptp/details/i_network_identity.h"
-#include "score/time_slave/src/gptp/details/i_raw_socket.h"
+#include "score/time_slave/src/gptp/details/network_identity.h"
+#include "score/time_slave/src/gptp/details/raw_socket.h"
 #include "score/time_slave/src/gptp/details/message_parser.h"
 #include "score/time_slave/src/gptp/details/pdelay_measurer.h"
 #include "score/time_slave/src/gptp/details/ptp_types.h"
@@ -104,7 +104,7 @@ class GptpEngine final
 
     void HandlePacket(const std::uint8_t* frame, int len, const ::timespec& hwts) noexcept;
     void UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdelay) noexcept;
-    void SendPDelayResponse(const PTPMessage& req, TmvT t2) noexcept;
+    void SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) noexcept;
 
     GptpEngineOptions opts_;
 

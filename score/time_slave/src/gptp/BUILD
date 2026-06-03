@@ -43,8 +43,8 @@ cc_test(
     tags = ["unit"],
     deps = [
         ":gptp_engine",
-        "//score/time_slave/src/gptp/details:i_network_identity",
-        "//score/time_slave/src/gptp/details:i_raw_socket",
+        "//score/time_slave/src/gptp/details:network_identity",
+        "//score/time_slave/src/gptp/details:raw_socket",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",

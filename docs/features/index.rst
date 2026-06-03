@@ -21,5 +21,4 @@ Features
 
    time_daemon/index
    time_slave/index
-   requirements
    test_cases

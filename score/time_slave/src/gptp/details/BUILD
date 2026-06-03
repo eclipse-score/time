@@ -23,8 +23,8 @@ cc_library(
 )
 
 cc_library(
-    name = "i_raw_socket",
-    hdrs = ["i_raw_socket.h"],
+    name = "raw_socket",
+    hdrs = ["raw_socket.h"],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
@@ -41,8 +41,8 @@ cc_library(
 )
 
 cc_library(
-    name = "i_network_identity",
-    hdrs = ["i_network_identity.h"],
+    name = "network_identity",
+    hdrs = ["network_identity.h"],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
@@ -50,12 +50,12 @@ cc_library(
 )
 
 cc_library(
-    name = "raw_socket",
+    name = "raw_socket_impl",
     srcs = select({
         "@platforms//os:qnx": ["//score/time_slave/src/gptp/platform/qnx:raw_socket_src"],
         "//conditions:default": ["//score/time_slave/src/gptp/platform/linux:raw_socket_src"],
     }),
-    hdrs = ["raw_socket.h"],
+    hdrs = ["raw_socket_impl.h"],
     features = COMPILER_WARNING_FEATURES,
     linkopts = select({
         "@platforms//os:qnx": ["-lsocket"],
@@ -65,8 +65,8 @@ cc_library(
     visibility = ["//score:__subpackages__"],
     deps = [
         ":i_os_syscalls",
-        ":i_raw_socket",
         ":ptp_types",
+        ":raw_socket",
     ],
 )
 
@@ -122,24 +122,24 @@ cc_library(
     visibility = ["//score:__subpackages__"],
     deps = [
         ":frame_codec",
-        ":i_raw_socket",
         ":ptp_types",
+        ":raw_socket",
         "//score/ts_client/src:gptp_ipc",
     ],
 )
 
 cc_library(
-    name = "network_identity",
+    name = "network_identity_impl",
     srcs = select({
         "@platforms//os:qnx": ["//score/time_slave/src/gptp/platform/qnx:network_identity_src"],
         "//conditions:default": ["//score/time_slave/src/gptp/platform/linux:network_identity_src"],
     }),
-    hdrs = ["network_identity.h"],
+    hdrs = ["network_identity_impl.h"],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = [
-        ":i_network_identity",
+        ":network_identity",
         ":ptp_types",
     ],
 )
@@ -151,13 +151,13 @@ cc_library(
     visibility = ["//score:__subpackages__"],
     deps = [
         ":frame_codec",
-        ":i_network_identity",
-        ":i_raw_socket",
         ":message_parser",
         ":network_identity",
+        ":network_identity_impl",
         ":pdelay_measurer",
         ":ptp_types",
         ":raw_socket",
+        ":raw_socket_impl",
         ":sync_state_machine",
     ],
 )
@@ -168,8 +168,8 @@ cc_test(
     tags = ["unit"],
     target_compatible_with = ["@platforms//os:linux"],
     deps = [
-        ":network_identity",
-        ":raw_socket",
+        ":network_identity_impl",
+        ":raw_socket_impl",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",

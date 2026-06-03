@@ -159,7 +159,7 @@ Component requirements
 
 The ``time_slave Application`` has the following requirements:
 
-- The ``time_slave Application`` shall implement the ``Initialize()`` method to create the ``GptpEngine`` with configured options, initialize the ``GptpIpcPublisher`` (creates the shared memory segment), and create the ``high_precision_local_steady_clock`` for the engine
+- The ``time_slave Application`` shall implement the ``Initialize()`` method to create the ``GptpEngine`` with configured options, initialize the ``GptpIpcPublisher`` (creates the shared memory segment), and create the ``HighPrecisionLocalSteadyClock`` for the engine
 - The ``time_slave Application`` shall implement the ``Run()`` method to enter a periodic publish loop (50 ms interval) and monitor the ``stop_token`` for graceful shutdown
 - On each loop iteration, ``time_slave Application`` shall call ``GptpEngine::FinalizeSnapshot()``, then ``GptpEngine::ReadPTPSnapshot(data)``, and publish the resulting ``GptpIpcData`` via ``GptpIpcPublisher::Publish(data)``
 - The ``time_slave Application`` shall call ``GptpEngine::Deinitialize()`` and ``GptpIpcPublisher::Destroy()`` after the ``stop_token`` is set
@@ -467,7 +467,7 @@ time_slave supports two target platforms with platform-specific implementations 
    * - PHC Adjuster
      - ``clock_adjtime()`` (``SYS_clock_adjtime`` syscall); step via ``ADJ_SETOFFSET|ADJ_NANO``; slew via ``ADJ_FREQUENCY`` (scaled-ppm)
      - ``SIOCGDRVSPEC`` / ``SIOCSDRVSPEC`` on UDP socket; step via ``PTP_GET_TIME`` (0x102) + ``PTP_SET_TIME`` (0x103); slew via ``EMAC_PTP_ADJ_FREQ_PPM`` (0x200) in ppm
-   * - high_precision_local_steady_clock
+   * - HighPrecisionLocalSteadyClock
      - ``CLOCK_MONOTONIC`` via ``clock_gettime()``
      - QNX ``ClockCycles()`` CPU instruction (reads hardware performance counter directly, equivalent to ``RDTSC`` on x86 / ``CNTVCT`` on ARM64), converted to nanoseconds via cycles-per-second calibration. Used instead of ``clock_gettime()`` because QNX ``CLOCK_MONOTONIC`` resolution is limited to microsecond level, whereas ``ClockCycles()`` provides nanosecond-level precision with no syscall overhead.
 
@@ -810,7 +810,7 @@ The ``time_slave`` and its constituent components can be tested on an x86 Linux 
    * - ``NetworkIdentity``
      - ``NetworkIdentity`` (ioctl)
      - ``FakeIdentity`` (fixed clock identity)
-   * - ``high_precision_local_steady_clock``
+   * - ``HighPrecisionLocalSteadyClock``
      - Platform clock (Linux / QNX)
      - ``FakeClock`` (returns fixed timestamp)
 

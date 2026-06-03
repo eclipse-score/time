@@ -11,11 +11,9 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_slave/src/gptp/gptp_engine.h"
-#include "score/time_slave/src/gptp/details/raw_socket.h"
-#include "score/time_slave/src/gptp/details/network_identity.h"
+#include "score/time_slave/src/gptp/details/raw_socket_impl.h"
+#include "score/time_slave/src/gptp/details/network_identity_impl.h"
 #include "score/time_slave/src/gptp/details/clock_util.h"
-#include "score/time_slave/src/gptp/details/network_identity.h"
-#include "score/time_slave/src/gptp/details/raw_socket.h"
 
 #include "score/time_slave/src/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
@@ -256,7 +254,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     {
         case kPtpMsgtypePdelayReq:
             if (msg.ptpHdr.domainNumber == opts_.domain_number)
-                SendPDelayResponse(msg, hw_ts);
+                SendPDelayResponseAndFollowUp(msg, hw_ts);
             break;
 
         case kPtpMsgtypeSync:
@@ -354,7 +352,7 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
     }
 }
 
-void GptpEngine::SendPDelayResponse(const PTPMessage& req, TmvT t2) noexcept
+void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) noexcept
 {
     const ClockIdentity& ci = identity_->GetClockIdentity();
     const std::array<std::uint8_t, kMacAddrLen> src_mac = {
