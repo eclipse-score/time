@@ -32,8 +32,8 @@ cc_library(
 )
 
 cc_library(
-    name = "i_os_syscalls",
-    hdrs = ["i_os_syscalls.h"],
+    name = "os_syscalls",
+    hdrs = ["os_syscalls.h"],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
@@ -64,7 +64,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = [
-        ":i_os_syscalls",
+        ":os_syscalls",
         ":ptp_types",
         ":raw_socket",
     ],

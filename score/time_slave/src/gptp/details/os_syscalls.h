@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_I_OS_SYSCALLS_H
-#define SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_I_OS_SYSCALLS_H
+#ifndef SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_OS_SYSCALLS_H
+#define SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_OS_SYSCALLS_H
 
 #include <poll.h>
 #include <sys/ioctl.h>
@@ -99,4 +99,4 @@ class RealOsSyscalls final : public OsSyscalls
 }  // namespace ts
 }  // namespace score
 
-#endif  // SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_I_OS_SYSCALLS_H
+#endif  // SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_OS_SYSCALLS_H

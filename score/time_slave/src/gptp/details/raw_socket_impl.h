@@ -13,7 +13,7 @@
 #ifndef SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_RAW_SOCKET_IMPL_H
 #define SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_RAW_SOCKET_IMPL_H
 
-#include "score/time_slave/src/gptp/details/i_os_syscalls.h"
+#include "score/time_slave/src/gptp/details/os_syscalls.h"
 #include "score/time_slave/src/gptp/details/raw_socket.h"
 
 #include <time.h>
