@@ -1,11 +1,11 @@
 @startuml
 !theme plain
 
-title ts_client Seqlock IPC Protocol
+title libTSClient Seqlock IPC Protocol
 
-participant "time_slave\n(GptpIpcPublisher)" as PUB #LightPink
+participant "TimeSlave\n(GptpIpcPublisher)" as PUB #LightPink
 participant "SharedMemory\n(GptpIpcRegion)" as SHM #LightCyan
-participant "time_daemon\n(GptpIpcReceiver)" as RCV #LightPink
+participant "TimeDaemon\n(GptpIpcReceiver)" as RCV #LightPink
 
 == Initialization ==
 

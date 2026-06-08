@@ -15,13 +15,13 @@ endlegend
 participant "ptpd" as ptpd #PeachPuff
 participant "SDat SOMEIP" as sdat_someip #PeachPuff
 
-box time_daemon: PTP Pipeline #LightCyan
+box TimeDaemon: PTP Pipeline #LightCyan
     participant "PTPMachine" as ptp_machine #LightBlue
     participant "ControlFlow &\nVerification" as ptp_pipeline #LightBlue
     participant "SharedMemory\nPTP" as shmem_ptp #WhiteSmoke
 end box
 
-box time_daemon: Absolute Time Pipeline #MistyRose
+box TimeDaemon: Absolute Time Pipeline #MistyRose
     participant "AbsTimeMachine" as abs_machine #RosyBrown
     participant "ControlFlow &\nVerification" as abs_pipeline #RosyBrown
     participant "SharedMemory\nAbsTime" as shmem_abs #WhiteSmoke

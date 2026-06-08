@@ -1,6 +1,6 @@
 @startuml dd_data_control_flow_diagram
 
-title time_daemon: Data and Control Flow
+title TimeDaemon: Data and Control Flow
 
 hide footbox
 
@@ -18,7 +18,7 @@ legend top left
     |<#LightSalmon> | Client Application            |
 endlegend
 
-box time_daemon #LightYellow
+box TimeDaemon #LightYellow
     participant "PTPMachine" as ptp_machine #Wheat
     participant "MessageBroker" as broker #PaleTurquoise
     participant "ControlFlowDivider" as cf_divider #LightBlue

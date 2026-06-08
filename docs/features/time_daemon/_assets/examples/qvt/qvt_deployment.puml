@@ -16,7 +16,7 @@ node "PTP Daemon" {
     [ptpd] <<daemon>> as ptpd
 }
 
-node "time_daemon" {
+node "TimeDaemon" {
     [MessageBroker]  as msg_broker
     [VerificationMachine]  as verification_machine
     [QualifiedVehicleTime]  as qvt_machine

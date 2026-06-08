@@ -1,9 +1,9 @@
 @startuml dd_class_diagram
 
-title time_daemon: Class Diagram Overview
+title TimeDaemon: Class Diagram Overview
 
 legend top left
-    | <#LightCyan>      | time_daemon members            |
+    | <#LightCyan>      | TimeDaemon members            |
     | <#Wheat>          | PtpMachine                    |
     | <#LightBlue>      | ControlFlowDivider            |
     | <#Lavender>       | VerificationMachine           |

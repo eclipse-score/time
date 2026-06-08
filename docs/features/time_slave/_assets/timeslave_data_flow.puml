@@ -1,7 +1,7 @@
 @startuml
 !theme plain
 
-title time_slave Data Flow
+title TimeSlave Data Flow
 
 participant "Network\n(gPTP Master)" as NET #Beige
 participant "RawSocket" as SOCK #LightSkyBlue
@@ -13,7 +13,7 @@ participant "PhcAdjuster" as PHC #Lavender
 participant "GptpEngine" as GE #LightSalmon
 participant "GptpIpcPublisher" as PUB #LightPink
 participant "SharedMemory" as SHM #LightPink
-participant "time_slave\n(main thread)" as TS #LightCyan
+participant "TimeSlave\n(main thread)" as TS #LightCyan
 
 == RxThread — Sync/FollowUp Processing ==
 

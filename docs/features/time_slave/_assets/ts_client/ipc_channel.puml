@@ -1,16 +1,16 @@
 @startuml
 !theme plain
 
-title ts_client Shared Memory IPC
+title libTSClient Shared Memory IPC
 
 legend top left
     |= Color          |= Description              |
     | <#LightPink>    | IPC components             |
     | <#LightCyan>    | Shared memory region       |
-    | <#LightSalmon>  | time_daemon adapter         |
+    | <#LightSalmon>  | TimeDaemon adapter         |
 endlegend
 
-package "time_slave Process" {
+package "TimeSlave Process" {
     class GptpIpcPublisher #LightPink {
         - region_ : GptpIpcRegion*
         - shm_resource_ : shared_ptr<ISharedMemoryResource>
@@ -32,7 +32,7 @@ package "Shared Memory" {
     }
 }
 
-package "time_daemon Process" {
+package "TimeDaemon Process" {
     class GptpIpcReceiver #LightPink {
         - region_ : const GptpIpcRegion*
         - shm_resource_ : shared_ptr<ISharedMemoryResource>

@@ -9,7 +9,7 @@ autoactivate on
 
 legend top left
     |= Color        |= Description                  |
-    |<#LightCyan>   | time_daemon members            |
+    |<#LightCyan>   | TimeDaemon members            |
     |<#LightPink>   | IPC components                |
     |<#LightCoral>  | score::communication          |
     |<#LightSalmon> | Client Application            |

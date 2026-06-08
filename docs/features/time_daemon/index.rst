@@ -1,17 +1,17 @@
-Concept for time_daemon
+Concept for TimeDaemon
 =======================
 
 .. contents:: Table of Contents
    :depth: 3
    :local:
 
-time_daemon concept
+TimeDaemon concept
 -------------------
 
 Use Cases
 ~~~~~~~~~
 
-time_daemon is the non Autosar adaptive process who is intended to get the Vehicle Time from the ptp slave daemon (ptpd or any other), verify and validate the timepoints and distribute time information across the clients.
+TimeDaemon is the non Autosar adaptive process who is intended to get the Vehicle Time from the ptp slave daemon (ptpd or any other), verify and validate the timepoints and distribute time information across the clients.
 
 More precisely we can specify the following use cases for the time daemon:
 
@@ -156,7 +156,7 @@ SW Components decomposition
 Application SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``Application`` component is the main entry point for the ``time_daemon``. It is responsible for orchestrating the overall lifecycle and initialization of all daemon components.
+The ``Application`` component is the main entry point for the ``TimeDaemon``. It is responsible for orchestrating the overall lifecycle and initialization of all daemon components.
 
 The ``TimebaseHandler`` component is an timebase-specific logic implementation. There might be several handlers available in the ``Application`` per amount of timebases supported. This separation allows for different timebase implementations while maintaining a consistent application structure.
 
@@ -242,7 +242,7 @@ The execution and shutdown workflow is represented in the following sequence dia
 Message Broker SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``Message Broker`` component is the central communication hub that implements the Publish-Subscribe pattern within the ``time_daemon``. It enables decoupled communication between components by managing topics and distributing messages to interested subscribers.
+The ``Message Broker`` component is the central communication hub that implements the Publish-Subscribe pattern within the ``TimeDaemon``. It enables decoupled communication between components by managing topics and distributing messages to interested subscribers.
 
 The component maintains a registry of topics and their subscribers, delivering messages to all registered subscribers when a component publishes to a topic. This decoupling allows components to evolve independently without direct dependencies on each other.
 
@@ -320,7 +320,7 @@ The ``Message Broker`` can be extended to support configuration-driven subscript
 ControlFlowDivider SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``ControlFlowDivider`` component is responsible for separating control (execution) flows within the ``time_daemon`` and providing the execution control flow for the data processing. It contains dedicated threads where data is published to the ``Message Broker``, ensuring that blocking operations in one component do not affect the execution of other components and data missing is not affecting the data analysis in processing pipeline.
+The ``ControlFlowDivider`` component is responsible for separating control (execution) flows within the ``TimeDaemon`` and providing the execution control flow for the data processing. It contains dedicated threads where data is published to the ``Message Broker``, ensuring that blocking operations in one component do not affect the execution of other components and data missing is not affecting the data analysis in processing pipeline.
 
 This component acts as a crucial intermediary that maintains the responsiveness of the system by decoupling the execution contexts of different operations, particularly between the PTP data retrieval and the time data processing pipelines.
 
@@ -385,7 +385,7 @@ When the ``ControlFlowDivider`` receives new data from the ``PTP Machine`` via t
 4. The worker thread publishes the retrieved data to the `input_ptp_data <#input-ptp-data>`_ topic
 5. if there was no data for some timeout, the worker shall published the empty data to the `input_ptp_data <#input-ptp-data>`_ topic.
 
-This separation of control flows ensures that slow or blocking operations in the PTP stack communication do not affect the responsiveness of time data processing in the ``time_daemon``.
+This separation of control flows ensures that slow or blocking operations in the PTP stack communication do not affect the responsiveness of time data processing in the ``TimeDaemon``.
 
 The execution workflow is represented in the following sequence diagram:
 
@@ -551,7 +551,7 @@ IPC Machine SW component
 
 The ``IPC Machine`` component shall get the `verified-ptp-data <#verified-ptp-data>`_ from the ``Verification Machine`` and provide it to the ``score::time::svt`` through the ``score::communication`` module. As the fast initial implementation, a custom shared memory backend is used.
 
-The component provides two sub components: publisher and receiver to be deployed on the time_daemon and Application sides accordingly.
+The component provides two sub components: publisher and receiver to be deployed on the TimeDaemon and Application sides accordingly.
 
 Component requirements
 ''''''''''''''''''''''
@@ -584,10 +584,10 @@ Component initialization
 
 Initialization is divided to two parts:
 
-1. Initialization on the time_daemon side
+1. Initialization on the TimeDaemon side
 2. Initialization on the Application side
 
-Important thing, the ``score::communication`` publisher shall be created and offered by the ``time_daemon`` before the Application side subscriber can connect. The Application shall retry until the service is found.
+Important thing, the ``score::communication`` publisher shall be created and offered by the ``TimeDaemon`` before the Application side subscriber can connect. The Application shall retry until the service is found.
 
 The main workflow is described below.
 
@@ -737,7 +737,7 @@ The daemon should have the following logging contexts:
    * - component
      - App/Context ID
      - Comments
-   * - time_daemon
+   * - TimeDaemon
      - TDON
      - **T**\ ime\ **D**\ aem\ **ON**
    * - Application
@@ -768,7 +768,7 @@ Variability
 Configuration files
 ^^^^^^^^^^^^^^^^^^^
 
-The ``time_daemon`` uses structured configuration files to enable customization of its runtime behavior. These data could be configured:
+The ``TimeDaemon`` uses structured configuration files to enable customization of its runtime behavior. These data could be configured:
 
 1. Component-specific Configuration:
 
@@ -834,7 +834,7 @@ The ``time_daemon`` uses structured configuration files to enable customization 
 Scalability
 ^^^^^^^^^^^
 
-The ``time_daemon``'s architecture supports scalability in the following ways:
+The ``TimeDaemon``'s architecture supports scalability in the following ways:
 
 Component Extensibility:
 ''''''''''''''''''''''''
@@ -846,7 +846,7 @@ Component Extensibility:
 Example based on Qualified Vehicle Time integration
 '''''''''''''''''''''''''''''''''''''''''''''''''''
 
-The ``Qualified Vehicle Time`` integration extends the standard ``time_daemon`` architecture with:
+The ``Qualified Vehicle Time`` integration extends the standard ``TimeDaemon`` architecture with:
 
 1. A ``Qualified Vehicle Time`` component that performs additional time qualification and provide new topics: ``qualified_ptp_data`` and ``diagnostic_sct_data``
 2. A dedicated IPC channel for SCT diagnostic data
@@ -888,9 +888,9 @@ The extended data flow with Qualified Vehicle Time integration is shown below:
 Example based on Absolute Time integration
 ''''''''''''''''''''''''''''''''''''''''''
 
-Another example of the ``time_daemon`` extension is the integration of an ``Absolute Time`` source, such as GNSS, to provide absolute time information alongside the relative Vehicle Time from PTP.
+Another example of the ``TimeDaemon`` extension is the integration of an ``Absolute Time`` source, such as GNSS, to provide absolute time information alongside the relative Vehicle Time from PTP.
 
-The ``Absolute Time`` integration extends the standard ``time_daemon`` architecture with:
+The ``Absolute Time`` integration extends the standard ``TimeDaemon`` architecture with:
 
 1. An ``SDatMachine`` component that retrieves absolute time from GNSS via SOMEIP or other sources and provide new topics: ``absolute_time_data``
 2. A dedicated verification stage in the ``VerificationMachine`` for Absolute Time qualification
@@ -938,11 +938,11 @@ Using in Component Tests on the host
 Overview
 ''''''''
 
-The ``time_daemon`` can be utilized in the ``Component Tests`` environment to enable comprehensive testing of time-dependent components without relying on physical PTP hardware.
+The ``TimeDaemon`` can be utilized in the ``Component Tests`` environment to enable comprehensive testing of time-dependent components without relying on physical PTP hardware.
 This approach allows test cases to manipulate time values and synchronization states to validate application behavior under various timing conditions.
 
 For the Component tests the ``PtpMachine::PtpEngine`` library is the only one platform-dependent.
-Thus the ``time_daemon`` components remain largely unchanged except for the ``PTPMachine`` component, which is replaced with an test-specific implementation that can be controlled via test cases
+Thus the ``TimeDaemon`` components remain largely unchanged except for the ``PTPMachine`` component, which is replaced with an test-specific implementation that can be controlled via test cases
 This component shall:
 
 1. simulate "normal" ``PTPMachine`` behavior
@@ -951,7 +951,7 @@ This component shall:
 Next steps: plugin system
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``time_daemon`` could be extended with a flexible plugin system that enables dynamic component loading, configuration, subscription and extension without requiring code changes or recompilation.
+The ``TimeDaemon`` could be extended with a flexible plugin system that enables dynamic component loading, configuration, subscription and extension without requiring code changes or recompilation.
 
 Plugin Architecture
 ^^^^^^^^^^^^^^^^^^^
@@ -966,7 +966,7 @@ The plugin system is structured around the following key elements:
 Component Creation Process
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-During ``time_daemon`` initialization:
+During ``TimeDaemon`` initialization:
 
 1. The ``Plugin Manager`` loads all specified plugins from configured directories or bazel targets
 2. Each plugin registers its component factories with the registry
@@ -980,4 +980,4 @@ During ``time_daemon`` initialization:
 ASIL-B qualification
 ~~~~~~~~~~~~~~~~~~~~~
 
-Clean separation of concerns allows ``score::time::svt`` as well as ``time_daemon`` to be qualified according to ASIL-B requirements following ISO 26262 standard.
+Clean separation of concerns allows ``score::time::svt`` as well as ``TimeDaemon`` to be qualified according to ASIL-B requirements following ISO 26262 standard.

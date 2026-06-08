@@ -1,24 +1,24 @@
-Concept for time_slave
+Concept for TimeSlave
 ======================
 
 .. contents:: Table of Contents
    :depth: 3
    :local:
 
-time_slave concept
+TimeSlave concept
 ------------------
 
 Use Cases
 ~~~~~~~~~
 
-time_slave is a standalone gPTP (IEEE 802.1AS) slave endpoint process that implements the low-level time synchronization protocol for the Eclipse SCORE time system. It is deployed as a separate process from the time_daemon to isolate real-time network I/O from the higher-level time validation and distribution logic.
+TimeSlave is a standalone gPTP (IEEE 802.1AS) slave endpoint process that implements the low-level time synchronization protocol for the Eclipse SCORE time system. It is deployed as a separate process from the TimeDaemon to isolate real-time network I/O from the higher-level time validation and distribution logic.
 
-More precisely we can specify the following use cases for the time_slave:
+More precisely we can specify the following use cases for the TimeSlave:
 
 1. Receiving gPTP Sync/FollowUp messages from a Time Master on the Ethernet network
 2. Measuring peer delay via the IEEE 802.1AS PDelayReq/PDelayResp exchange
 3. Optionally adjusting the PTP Hardware Clock (PHC) on the NIC
-4. Publishing the resulting ``GptpIpcData`` to shared memory for consumption by the time_daemon
+4. Publishing the resulting ``GptpIpcData`` to shared memory for consumption by the TimeDaemon
 
 The raw architectural diagram is represented below.
 
@@ -38,14 +38,14 @@ Components decomposition
 
 The design consists of several sw components:
 
-1. `time_slave Application <#timeslave-application-sw-component>`_
+1. `TimeSlave Application <#timeslave-application-sw-component>`_
 2. `GptpEngine <#gptpengine-sw-component>`_
 3. `FrameCodec <#framecodec-sw-component>`_
 4. `MessageParser <#messageparser-sw-component>`_
 5. `SyncStateMachine <#syncstatemachine-sw-component>`_
 6. `PeerDelayMeasurer <#peerdelaymeasurer-sw-component>`_
 7. `PhcAdjuster <#phcadjuster-sw-component>`_
-8. `ts_client <#ts_client/src-sw-component>`_
+8. `libTSClient <#libtsclient-sw-component>`_
 9. `ShmPTPEngine <#shmptpengine-sw-component>`_
 
 Class view
@@ -144,25 +144,25 @@ PDelayResult
 PtpTimeInfo
 ''''''''''''
 
-``PtpTimeInfo`` is the time_daemon-internal aggregated snapshot. It is **not** the shared memory type; it is produced by ``ShmPTPEngine::ReadPTPSnapshot()`` by field-mapping from ``GptpIpcData`` into the format expected by the time_daemon pipeline.
+``PtpTimeInfo`` is the TimeDaemon-internal aggregated snapshot. It is **not** the shared memory type; it is produced by ``ShmPTPEngine::ReadPTPSnapshot()`` by field-mapping from ``GptpIpcData`` into the format expected by the TimeDaemon pipeline.
 
 SW Components decomposition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-time_slave Application SW component
+TimeSlave Application SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``time_slave Application`` component is the main entry point for the time_slave process. It extends ``score::mw::lifecycle::Application`` and is responsible for orchestrating the overall lifecycle of the GptpEngine and the IPC publisher.
+The ``TimeSlave Application`` component is the main entry point for the TimeSlave process. It extends ``score::mw::lifecycle::Application`` and is responsible for orchestrating the overall lifecycle of the GptpEngine and the IPC publisher.
 
 Component requirements
 ''''''''''''''''''''''
 
-The ``time_slave Application`` has the following requirements:
+The ``TimeSlave Application`` has the following requirements:
 
-- The ``time_slave Application`` shall implement the ``Initialize()`` method to create the ``GptpEngine`` with configured options, initialize the ``GptpIpcPublisher`` (creates the shared memory segment), and create the ``HighPrecisionLocalSteadyClock`` for the engine
-- The ``time_slave Application`` shall implement the ``Run()`` method to enter a periodic publish loop (50 ms interval) and monitor the ``stop_token`` for graceful shutdown
-- On each loop iteration, ``time_slave Application`` shall call ``GptpEngine::FinalizeSnapshot()``, then ``GptpEngine::ReadPTPSnapshot(data)``, and publish the resulting ``GptpIpcData`` via ``GptpIpcPublisher::Publish(data)``
-- The ``time_slave Application`` shall call ``GptpEngine::Deinitialize()`` and ``GptpIpcPublisher::Destroy()`` after the ``stop_token`` is set
+- The ``TimeSlave Application`` shall implement the ``Initialize()`` method to create the ``GptpEngine`` with configured options, initialize the ``GptpIpcPublisher`` (creates the shared memory segment), and create the ``HighPrecisionLocalSteadyClock`` for the engine
+- The ``TimeSlave Application`` shall implement the ``Run()`` method to enter a periodic publish loop (50 ms interval) and monitor the ``stop_token`` for graceful shutdown
+- On each loop iteration, ``TimeSlave Application`` shall call ``GptpEngine::FinalizeSnapshot()``, then ``GptpEngine::ReadPTPSnapshot(data)``, and publish the resulting ``GptpIpcData`` via ``GptpIpcPublisher::Publish(data)``
+- The ``TimeSlave Application`` shall call ``GptpEngine::Deinitialize()`` and ``GptpIpcPublisher::Destroy()`` after the ``stop_token`` is set
 
 GptpEngine SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -377,25 +377,25 @@ The ``PhcAdjuster`` degrades gracefully in two scenarios:
 
    - **QNX**: ``qnx_phc_open()`` always returns ``0`` and never fails — it only stores the device name in a thread-local context. There is no ``phc_fd_ < 0`` guard. The adjustment methods always call ``qnx_phc_adjtime_step()`` / ``qnx_phc_adjfreq_ppb()``, which internally create a UDP socket and issue ``SIOCGDRVSPEC`` / ``SIOCSDRVSPEC`` ioctls. If the socket or ioctl fails (e.g., wrong interface name, unsupported hardware), the function returns ``-1``, but the caller discards it with a ``(void)`` cast. There is no explicit skip — the call is always attempted and errors are silently absorbed.
 
-In both scenarios time_slave continues to track the master clock and publish accurate ``GptpIpcData`` snapshots (including offset and status flags) to shared memory. The downstream time_daemon and any applications consuming time are unaffected — only the NIC hardware clock itself will drift relative to PTP time.
+In both scenarios TimeSlave continues to track the master clock and publish accurate ``GptpIpcData`` snapshots (including offset and status flags) to shared memory. The downstream TimeDaemon and any applications consuming time are unaffected — only the NIC hardware clock itself will drift relative to PTP time.
 
-ts_client SW component
+libTSClient SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``ts_client`` component is the shared memory IPC library that connects the time_slave process to the time_daemon process. It provides a lock-free, single-writer/multi-reader communication channel using a seqlock protocol over POSIX shared memory.
+The ``libTSClient`` component is the shared memory IPC library that connects the TimeSlave process to the TimeDaemon process. It provides a lock-free, single-writer/multi-reader communication channel using a seqlock protocol over POSIX shared memory.
 
-The component provides two sub components: publisher and receiver to be deployed on the time_slave and time_daemon sides accordingly.
+The component provides two sub components: publisher and receiver to be deployed on the TimeSlave and TimeDaemon sides accordingly.
 
 Component requirements
 ''''''''''''''''''''''
 
-The ``ts_client`` has the following requirements:
+The ``libTSClient`` has the following requirements:
 
-- The ``ts_client`` shall define a shared memory layout (``GptpIpcRegion``) with a magic number (``0x47505450`` = 'GPTP') for validation, an atomic seqlock counter (``seq``), a confirmation counter (``seq_confirm``), and a ``GptpIpcData`` data payload
-- The ``ts_client`` shall align the shared memory region to 64 bytes (cache line size) to prevent false sharing
-- The ``ts_client`` shall provide a ``GptpIpcPublisher`` component (in ``score::ts::details``) that creates and manages the POSIX shared memory segment and writes ``GptpIpcData`` using the seqlock protocol
-- The ``ts_client`` shall provide a ``GptpIpcReceiver`` component (in ``score::ts::details``) that opens the shared memory segment read-only and reads ``GptpIpcData`` with up to 20 seqlock retries
-- The ``ts_client`` shall use the POSIX shared memory name ``/gptp_ptp_info`` by default
+- The ``libTSClient`` shall define a shared memory layout (``GptpIpcRegion``) with a magic number (``0x47505450`` = 'GPTP') for validation, an atomic seqlock counter (``seq``), a confirmation counter (``seq_confirm``), and a ``GptpIpcData`` data payload
+- The ``libTSClient`` shall align the shared memory region to 64 bytes (cache line size) to prevent false sharing
+- The ``libTSClient`` shall provide a ``GptpIpcPublisher`` component (in ``score::ts::details``) that creates and manages the POSIX shared memory segment and writes ``GptpIpcData`` using the seqlock protocol
+- The ``libTSClient`` shall provide a ``GptpIpcReceiver`` component (in ``score::ts::details``) that opens the shared memory segment read-only and reads ``GptpIpcData`` with up to 20 seqlock retries
+- The ``libTSClient`` shall use the POSIX shared memory name ``/gptp_ptp_info`` by default
 
 Class view
 ''''''''''
@@ -416,7 +416,7 @@ The Class Diagram is presented below:
 Publish new data
 ''''''''''''''''
 
-When ``time_slave Application`` has a new ``GptpIpcData`` snapshot, it publishes to the shared memory via the seqlock protocol:
+When ``TimeSlave Application`` has a new ``GptpIpcData`` snapshot, it publishes to the shared memory via the seqlock protocol:
 
 1. Increment ``seq`` (becomes odd — signals write in progress); a release fence is applied
 2. ``memcpy`` the ``GptpIpcData``
@@ -425,7 +425,7 @@ When ``time_slave Application`` has a new ``GptpIpcData`` snapshot, it publishes
 Receive data
 ''''''''''''
 
-From time_daemon side, the receiver reads from the shared memory using the seqlock protocol with bounded retry:
+From TimeDaemon side, the receiver reads from the shared memory using the seqlock protocol with bounded retry:
 
 1. Read ``seq1`` with acquire ordering (must be even, otherwise retry — write in progress)
 2. ``memcpy`` the ``GptpIpcData``
@@ -449,7 +449,7 @@ The seqlock protocol workflow is presented in the following sequence diagram:
 Platform support
 ~~~~~~~~~~~~~~~~~
 
-time_slave supports two target platforms with platform-specific implementations selected at compile time via Bazel ``select()``:
+TimeSlave supports two target platforms with platform-specific implementations selected at compile time via Bazel ``select()``:
 
 .. list-table:: Platform Implementations
    :header-rows: 1
@@ -575,7 +575,7 @@ Supported ``RecordEvent`` values written to the ``event`` column:
 Logging configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
-The time_slave and its time_daemon-side adapter use the following logging contexts:
+The TimeSlave and its TimeDaemon-side adapter use the following logging contexts:
 
 .. list-table:: Logging Contexts
    :header-rows: 1
@@ -584,15 +584,15 @@ The time_slave and its time_daemon-side adapter use the following logging contex
    * - Component
      - Context ID
      - Comments
-   * - time_slave Application
+   * - TimeSlave Application
      - TSAP
      - **T**\ ime\ **S**\ lave **App**\ lication lifecycle (Initialize / Run)
    * - gPTP Engine (RxThread / PdelayThread)
      - GTPS
      - **GPTP** **SLAVE** engine — low-level protocol processing
-   * - ShmPTPEngine (time_daemon side)
+   * - ShmPTPEngine (TimeDaemon side)
      - GPTP
-     - time_daemon **GPTP** machine adapter (Initialize / ReadPTPSnapshot)
+     - TimeDaemon **GPTP** machine adapter (Initialize / ReadPTPSnapshot)
 
 Variability
 ~~~~~~~~~~~
@@ -650,7 +650,7 @@ The ``PhcConfig`` struct (embedded in ``GptpEngineOptions``) contains:
 Scalability
 ^^^^^^^^^^^
 
-The time_slave architecture supports the following extensibility points:
+The TimeSlave architecture supports the following extensibility points:
 
 Platform extensibility
 ''''''''''''''''''''''
@@ -664,7 +664,7 @@ Protocol extensibility
 1. The ``GptpEngine`` accepts injected ``RawSocket`` and ``NetworkIdentity`` dependencies, making it straightforward to test or replace individual platform abstractions
 2. The shared memory IPC channel name is configurable (``GptpIpcPublisher::Init(name)`` / ``GptpIpcReceiver::Init(name)``), allowing multiple gPTP instances per ECU if needed
 
-time_daemon integration extensibility
+TimeDaemon integration extensibility
 ''''''''''''''''''''''''''''''''''''''
 
 1. The ``ShmPTPEngine`` implements the same ``PTPEngine`` concept as other ``PTPMachine`` backends, making it transparently exchangeable with any other engine implementation
@@ -673,9 +673,9 @@ time_daemon integration extensibility
 ShmPTPEngine SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``ShmPTPEngine`` component (in ``score::td::details``) is the time_daemon-side adapter that reads ``GptpIpcData`` from the shared memory channel written by time_slave and converts it into the ``PtpTimeInfo`` structure expected by the time_daemon pipeline.
+The ``ShmPTPEngine`` component (in ``score::td::details``) is the TimeDaemon-side adapter that reads ``GptpIpcData`` from the shared memory channel written by TimeSlave and converts it into the ``PtpTimeInfo`` structure expected by the TimeDaemon pipeline.
 
-It is instantiated as ``GPTPShmMachine`` — a type alias for ``PTPMachine<details::ShmPTPEngine>`` — which connects ``ShmPTPEngine`` to the time_daemon's internal ``MessageBroker``.
+It is instantiated as ``GPTPShmMachine`` — a type alias for ``PTPMachine<details::ShmPTPEngine>`` — which connects ``ShmPTPEngine`` to the TimeDaemon's internal ``MessageBroker``.
 
 Component requirements
 ''''''''''''''''''''''
@@ -787,7 +787,7 @@ Using in test environment
 Using in ITF
 ^^^^^^^^^^^^
 
-Normal behavior is expected. time_slave runs as a standalone process, communicates over real Ethernet, and writes to ``/gptp_ptp_info`` shared memory as in production.
+Normal behavior is expected. TimeSlave runs as a standalone process, communicates over real Ethernet, and writes to ``/gptp_ptp_info`` shared memory as in production.
 
 Using in Component Tests on the host
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -795,7 +795,7 @@ Using in Component Tests on the host
 Overview
 ''''''''
 
-The ``time_slave`` and its constituent components can be tested on an x86 Linux host without PTP hardware or a real network. The key platform-dependent abstractions all have test-injectable counterparts:
+The ``TimeSlave`` and its constituent components can be tested on an x86 Linux host without PTP hardware or a real network. The key platform-dependent abstractions all have test-injectable counterparts:
 
 .. list-table:: Testable Abstractions
    :header-rows: 1

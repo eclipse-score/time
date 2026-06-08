@@ -9,7 +9,7 @@ autonumber "<font color=red><b>[00]"
 legend top left
     |= Color           |= Description             |
     | <#Wheat>         | GPTPShmMachine           |
-    | <#LightPink>     | ts_client IPC           |
+    | <#LightPink>     | libTSClient IPC           |
     | <#LightCyan>     | Shared Memory             |
     | <#PaleTurquoise> | MessageBroker             |
     | <#LightBlue>     | ControlFlowDivider        |

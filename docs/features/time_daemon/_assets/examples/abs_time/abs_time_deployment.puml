@@ -20,7 +20,7 @@ node "SDat SOMEIP" {
     [Time provider] <<service>> as time_provider
 }
 
-node "time_daemon" {
+node "TimeDaemon" {
     [MessageBroker]  as msg_broker
 
     package "PTP Pipeline" {

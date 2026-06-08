@@ -7,7 +7,7 @@ legend top left
     |= Color          |= Description              |
     | <#Beige>        | Base classes / data types  |
     | <#Wheat>        | PTPMachine / ShmPTPEngine  |
-    | <#LightPink>    | ts_client IPC            |
+    | <#LightPink>    | libTSClient IPC            |
 endlegend
 
 package "score::td" {

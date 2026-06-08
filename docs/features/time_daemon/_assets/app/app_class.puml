@@ -4,7 +4,7 @@ title Application: Class Diagram
 
 legend top left
     |= Color         |= Description              |
-    | <#LightCyan>   | time_daemon members        |
+    | <#LightCyan>   | TimeDaemon members        |
     | <#PaleTurquoise> | MessageBroker           |
     | <#Wheat>       | PtpMachine                |
     | <#LightBlue>   | ControlFlowDivider        |

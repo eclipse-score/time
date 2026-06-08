@@ -9,7 +9,7 @@ autonumber "<font color=red><b>[00]"
 
 legend top left
     |= Color        |= Description           |
-    |<#LightCyan>   | time_daemon members     |
+    |<#LightCyan>   | TimeDaemon members     |
     |<#LightGreen>  | Middleware components  |
     |<#Beige>       | SW components          |
 endlegend

@@ -6,7 +6,7 @@ legend top left
     |= Color          |= Description              |
     | <#LightSalmon>  | RxThread                   |
     | <#LightSkyBlue> | PdelayThread               |
-    | <#LightCyan>    | Main Thread (time_slave)    |
+    | <#LightCyan>    | Main Thread (TimeSlave)    |
 endlegend
 
 |#LightCyan| Main Thread

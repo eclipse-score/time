@@ -8,7 +8,7 @@ autonumber "<font color=red><b>[00]"
 
 legend top left
     |= Color        |= Description                  |
-    |<#LightCyan>   | time_daemon members            |
+    |<#LightCyan>   | TimeDaemon members            |
     |<#PaleTurquoise> | MessageBroker               |
     |<#Beige>       | Base classes                  |
 endlegend

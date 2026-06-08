@@ -8,9 +8,9 @@ autonumber "<font color=red><b>[00]"
 
 legend top left
     |= Color           |= Description         |
-    | <#LightCyan>     | time_daemon           |
+    | <#LightCyan>     | TimeDaemon           |
     | <#Wheat>         | GPTPShmMachine       |
-    | <#LightPink>     | ts_client IPC       |
+    | <#LightPink>     | libTSClient IPC       |
 endlegend
 
 participant "TimeBaseHandler" as tb #LightCyan

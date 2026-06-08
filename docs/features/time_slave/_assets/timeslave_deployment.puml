@@ -4,7 +4,7 @@ skinparam nodesep 40
 skinparam ranksep 50
 skinparam componentStyle rectangle
 
-title time_slave Deployment View
+title TimeSlave Deployment View
 
 node "Time Master" as TM {
     component [PTP Grandmaster\nClock] as GMC
@@ -12,7 +12,7 @@ node "Time Master" as TM {
 
 node "ECU" as ECU {
 
-    package "time_slave Process" as TSP {
+    package "TimeSlave Process" as TSP {
         component [GptpEngine\n«RxThread + PdelayThread»] as GE #LightSalmon
         component [PhcAdjuster] as PHC #Lavender
         component [GptpIpcPublisher] as PUB #LightPink
@@ -23,7 +23,7 @@ node "ECU" as ECU {
 
     database "Shared Memory\n/gptp_ptp_info" as SHM #LightCyan
 
-    package "time_daemon Process" as TDP {
+    package "TimeDaemon Process" as TDP {
         component [ShmPTPEngine] as SHME #LightSalmon
         component [GptpIpcReceiver] as RCV #LightPink
     }
@@ -45,7 +45,7 @@ GE -down-> PUB
 PUB -down[#green]-> SHM : seqlock write\n(GptpIpcData)
 RCV -up[#green]-> SHM : seqlock read\n(GptpIpcData)
 
-' time_daemon internal
+' TimeDaemon internal
 SHME -down-* RCV
 
 ' Instrumentation
