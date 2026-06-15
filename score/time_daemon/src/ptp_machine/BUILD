@@ -21,8 +21,8 @@ alias(
 
 alias(
     name = "shm_ptp_machine",
-    actual = "//score/TimeDaemon/code/ptp_machine/shm:gptp_shm_machine",
-    visibility = ["//score/TimeDaemon:__subpackages__"],
+    actual = "//score/time_daemon/src/ptp_machine/shm:gptp_shm_machine",
+    visibility = ["//score/time_daemon:__subpackages__"],
 )
 
 cc_unit_test_suites_for_host_and_qnx(
