@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_slave/src/gptp/details/raw_socket_impl.h"
 
-#include "score/TimeSlave/code/common/logging_contexts.h"
+#include "score/time_slave/src/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
 
 #include <arpa/inet.h>
