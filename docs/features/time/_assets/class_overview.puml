@@ -1,0 +1,146 @@
+@startuml class_overview
+
+title score::time — Class Overview
+
+skinparam backgroundColor white
+skinparam classBackgroundColor #FAFAFA
+skinparam classBorderColor #888888
+
+legend top left
+    | <#LightGreen>    | Public framework types              |
+    | <#Wheat>         | Time-domain tag structs (public)    |
+    | <#LightBlue>     | PTP notification types (public)     |
+    | <#LightCoral>    | Internal interfaces (details/)      |
+endlegend
+
+' --- Framework ---
+class "Clock<Tag>" as clock #LightGreen {
+    + {static} GetInstance() : Clock<Tag>
+    + Now() : Snapshot
+    + Subscribe<EventType>(cb) : void
+    + Unsubscribe<EventType>() : void
+    + IsAvailable() : bool  [VehicleTime only]
+    + WaitUntilAvailable(token, until) : bool  [VehicleTime only]
+    --
+    - impl_ : shared_ptr<Backend>
+    - {static} instance_cache_ : weak_ptr<Backend>
+    - {static} instance_override_ : shared_ptr<Backend>
+}
+
+class "test_utils::ScopedClockOverride<Tag>" as guard #LightGreen {
+    + ScopedClockOverride(const shared_ptr<Backend>&)
+    + ~ScopedClockOverride()
+    --
+    move-only, non-re-entrant
+}
+
+class "test_utils::ClockTestFactory<Tag>" as factory #LightGreen {
+    + {static} Make(const shared_ptr<Backend>&) : Clock<Tag>
+    --
+    all-static, no global state
+}
+
+class "ClockSnapshot<TimepointT, StatusT>" as snapshot #LightGreen {
+    + TimePoint() : TimepointT
+    + Status() : StatusT
+}
+
+class "ClockStatus<FlagEnumT>" as status #LightGreen {
+    + IsFlagActive(flag) : bool
+    + IsAnyOfFlagsActive(flags) : bool
+    + AddFlag(flag) : void
+    + PrintTo() : ostringstream  [specialization required]
+}
+
+' --- Tags ---
+class "VehicleTime" as vtag #Wheat {
+    + enum StatusFlag
+    + using Duration = nanoseconds
+    + using Timepoint = time_point<VehicleTime, ns>
+    + using TimeSlaveSyncDataReceivedCallback
+    + using PDelayMeasurementFinishedCallback
+}
+
+class "VehicleTimeStatus" as vstatus #Wheat {
+    + flags : ClockStatus<VehicleTime::StatusFlag>
+    + rate_deviation : double
+    .. VehicleTime-specific quality queries ..
+    + IsReliable() : bool
+    + HasBeenSynchronized() : bool
+    + IsConsistent() : bool
+    + RateDeviation() : double
+    + IsFlagActive(flag) : bool
+}
+
+class "HighResSteadyTime" as htag #Wheat {
+    + using Duration = nanoseconds
+    + using Timepoint = time_point<HighResSteadyTime, ns>
+}
+
+note as ntag
+    std::chrono::steady_clock and
+    std::chrono::system_clock are also
+    valid Tag types — built-in specializations
+    provided by clock_traits.h
+end note
+
+' --- PTP types ---
+class "TimeSlaveSyncData<Tag>" as tss #LightBlue {
+    + time_slave_sync_data
+    + port_identity
+    + timestamp
+}
+
+class "PDelayMeasurementData<Tag>" as pdm #LightBlue {
+    + pdelay_result
+    + port_identity
+}
+
+' --- Internal ---
+abstract class "VehicleClockBackend" as viface #LightCoral {
+    + {abstract} Now() : Snapshot
+    + {abstract} IsAvailable() : bool
+    + {abstract} WaitUntilAvailable(token, until) : bool
+    + {abstract} SetTimeSlaveSyncDataReceivedCallback(cb)
+    + {abstract} UnsetTimeSlaveSyncDataReceivedCallback()
+    + {abstract} SetPDelayMeasurementFinishedCallback(cb)
+    + {abstract} UnsetPDelayMeasurementFinishedCallback()
+}
+
+abstract class "HighResSteadyClockBackend" as hiface #LightCoral {
+    + {abstract} Now() : Snapshot
+}
+
+class "VehicleClockMock" as vmock #LightCoral {
+    MOCK_METHOD: Now, IsAvailable,
+    WaitUntilAvailable,
+    SetTimeSlaveSyncDataReceivedCallback,
+    UnsetTimeSlaveSyncDataReceivedCallback,
+    SetPDelayMeasurementFinishedCallback,
+    UnsetPDelayMeasurementFinishedCallback
+}
+
+class "HighResSteadyClockBackendMock" as hmock #LightCoral {
+    MOCK_METHOD: Now
+}
+
+' --- Relationships ---
+clock "1" *--> "1" viface : impl_ (VehicleTime)
+clock "1" *--> "1" hiface : impl_ (HighResSteadyTime)
+guard ..> clock : OverrideForTest / ResetOverride
+factory ..> clock : Make() — private ctor (friend)
+
+clock --> snapshot : returns from Now()
+snapshot *-- vstatus : Status()
+
+viface <|-- vmock : test double
+hiface <|-- hmock : test double
+
+vtag --> vstatus
+vtag --> tss
+vtag --> pdm
+vstatus *-- status
+
+htag .r. ntag
+
+@enduml

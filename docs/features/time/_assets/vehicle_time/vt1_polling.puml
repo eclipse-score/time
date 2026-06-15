@@ -1,0 +1,78 @@
+@startuml vt1_polling
+
+title VT1 — VehicleTime: Time Polling with Status Check
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description               |
+    |<#LightSalmon>        | Application business logic |
+    |<#LightGreen>         | score::time framework      |
+    |<#LightCoral>         | VehicleTime backend        |
+    |<#NavajoWhite>        | score::TimeDaemon          |
+    |<#PaleGoldenRod>      | score::TimeSlave           |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Application\ncode" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "VehicleClock" as clock #LightGreen
+    participant "VehicleClockBackend" as backend #LightCoral
+end box
+
+box "score::TimeDaemon" #fff8f0
+    participant "TimeDaemon" as td #NavajoWhite
+end box
+
+box "score::TimeSlave" #fffff0
+    participant "PTP TimeSlave\n(qgptp daemon)" as ts #PaleGoldenRod
+end box
+
+== Background: PTP synchronization (asynchronous) ==
+
+ts -> td : [IPC] sync data
+activate td
+note right of td
+    TimeDaemon receives sync events
+    from the TimeSlave daemon
+end note
+deactivate td
+
+== Foreground: application polling ==
+
+app -> clock : VehicleClock::GetInstance()
+activate clock
+clock -> clock : check cache / override
+clock --> app : Clock<VehicleTime> handle
+deactivate clock
+
+app -> clock : Now()
+activate clock
+clock -> backend : Now()
+activate backend
+backend -> td : [IPC] get sync data
+activate td
+td --> backend : sync data + status
+deactivate td
+backend --> clock : ClockSnapshot{timepoint, VehicleTimeStatus}
+deactivate backend
+clock --> app : ClockSnapshot<Timepoint, VehicleTimeStatus>
+deactivate clock
+
+alt snapshot.Status().IsReliable()
+    app -> app : snapshot.TimePoint()
+    note right of app
+        use the timepoint value
+    end note
+else not synchronized
+    note right of app
+        time is not synchronized yet —
+        handle this case (e.g. retry later)
+    end note
+end
+
+@enduml
