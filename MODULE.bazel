@@ -78,6 +78,11 @@ bazel_dep(name = "googletest", version = "1.17.0.bcr.2", dev_dependency = True)
 bazel_dep(name = "google_benchmark", version = "1.9.5", dev_dependency = True)
 bazel_dep(name = "score_baselibs", version = "0.2.4", dev_dependency = True)
 bazel_dep(name = "score_lifecycle_health", version = "0.1.0", dev_dependency = True)
+git_override(
+    module_name = "score_lifecycle_health",
+    remote = "https://github.com/eclipse-score/lifecycle.git",
+    commit = "50ca5ca3d635ed69b11f9f348cc1d9ed6dbefa2a",
+)
 
 # TODO: remove once inherited properly from `score_logging`.
 bazel_dep(name = "trlc", version = "0.0.0", dev_dependency = True)

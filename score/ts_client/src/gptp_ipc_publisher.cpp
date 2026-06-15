@@ -42,7 +42,7 @@ bool GptpIpcPublisher::Init(const std::string& ipc_name)
 
     (void)::shm_unlink(ipc_name_.c_str());
 
-    shm_fd_ = ::shm_open(ipc_name_.c_str(), O_CREAT | O_RDWR, 0600);
+    shm_fd_ = ::shm_open(ipc_name_.c_str(), O_CREAT | O_RDWR, 0644);
     if (shm_fd_ < 0)
         return false;
 
