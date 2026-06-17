@@ -42,7 +42,7 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
         return kInitFailure;
     }
 
-    if (!publisher_.Init())
+    if (!publisher_.Open())
     {
         score::mw::log::LogError(kTimeSlaveAppContext) << "TimeSlave: shared memory publisher initialization failed";
         return kInitFailure;
@@ -71,7 +71,7 @@ std::int32_t TimeSlave::Run(const score::cpp::stop_token& token)
     }
 
     engine_->Deinitialize();
-    publisher_.Destroy();
+    publisher_.Close();
 
     score::mw::log::LogInfo(kTimeSlaveAppContext) << "TimeSlave stopped";
     return kInitSuccess;

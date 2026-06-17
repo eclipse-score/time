@@ -41,9 +41,9 @@ class GptpIpcPublisher final
     GptpIpcPublisher(const GptpIpcPublisher&) = delete;
     GptpIpcPublisher& operator=(const GptpIpcPublisher&) = delete;
 
-    bool Init(const std::string& ipc_name = kGptpIpcName);
+    bool Open(const std::string& ipc_name = kGptpIpcName);
     void Publish(const score::ts::GptpIpcData& data);
-    void Destroy();
+    void Close();
 
   private:
     GptpIpcRegion* region_{nullptr};

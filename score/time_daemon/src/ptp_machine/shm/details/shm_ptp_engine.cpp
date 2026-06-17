@@ -30,7 +30,7 @@ bool ShmPTPEngine::Initialize()
     if (initialized_)
         return true;
 
-    initialized_ = receiver_.Init(ipc_name_);
+    initialized_ = receiver_.Open(ipc_name_);
     if (initialized_)
     {
         score::mw::log::LogInfo(kGPtpMachineContext) << "ShmPTPEngine: connected to IPC channel " << ipc_name_;

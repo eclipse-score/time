@@ -29,7 +29,7 @@ GptpIpcReceiver::~GptpIpcReceiver()
     Close();
 }
 
-bool GptpIpcReceiver::Init(const std::string& ipc_name)
+bool GptpIpcReceiver::Open(const std::string& ipc_name)
 {
     if (shm_resource_ != nullptr)
         return true;

@@ -35,7 +35,7 @@ class GptpIpcRoundtripTest : public ::testing::Test
     void TearDown() override
     {
         rx_.Close();
-        pub_.Destroy();
+        pub_.Close();
     }
 
     std::string name_;
@@ -43,16 +43,16 @@ class GptpIpcRoundtripTest : public ::testing::Test
     GptpIpcReceiver rx_;
 };
 
-TEST_F(GptpIpcRoundtripTest, ReceiverInit_AfterPublisherInit_ReturnsTrue)
+TEST_F(GptpIpcRoundtripTest, ReceiverOpen_AfterPublisherOpen_ReturnsTrue)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    EXPECT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    EXPECT_TRUE(rx_.Open(name_));
 }
 
 TEST_F(GptpIpcRoundtripTest, ReceiverReceive_BeforeAnyPublish_ReturnsNullopt)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
     // seq_confirm is initialised to 1 (≠ seq=0) by GptpIpcRegion's constructor,
     // so the seqlock always mismatches before the first Publish() call.
     EXPECT_FALSE(rx_.Receive().has_value());
@@ -60,8 +60,8 @@ TEST_F(GptpIpcRoundtripTest, ReceiverReceive_BeforeAnyPublish_ReturnsNullopt)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_BasicFields_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::ts::GptpIpcData data{};
     data.ptp_assumed_time = std::chrono::nanoseconds{1'234'567'890LL};
@@ -84,8 +84,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_BasicFields_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_StatusFlags_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::ts::GptpIpcData data{};
     data.status.is_timeout = true;
@@ -105,8 +105,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_StatusFlags_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_SyncFupData_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::ts::GptpIpcData data{};
     data.sync_fup_data.precise_origin_timestamp = 100'000'000'000ULL;
@@ -132,8 +132,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_SyncFupData_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_PDelayData_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::ts::GptpIpcData data{};
     data.pdelay_data.request_origin_timestamp = 1'000'000'000ULL;
@@ -158,8 +158,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_PDelayData_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, MultiplePublish_LastValueIsVisible)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     for (int i = 1; i <= 5; ++i)
     {
@@ -175,7 +175,7 @@ TEST_F(GptpIpcRoundtripTest, MultiplePublish_LastValueIsVisible)
 
 // ── Edge cases via ManualShm ──────────────────────────────────────────────────
 
-TEST_F(GptpIpcRoundtripTest, ReceiverInit_WrongMagic_ReturnsFalse)
+TEST_F(GptpIpcRoundtripTest, ReceiverOpen_WrongMagic_ReturnsFalse)
 {
     ManualShm shm{name_};
     ASSERT_TRUE(shm.Valid());
@@ -184,7 +184,7 @@ TEST_F(GptpIpcRoundtripTest, ReceiverInit_WrongMagic_ReturnsFalse)
     const std::uint32_t bad = 0xDEADBEEFU;
     std::memcpy(shm.Region(), &bad, sizeof(bad));
 
-    EXPECT_FALSE(rx_.Init(name_));
+    EXPECT_FALSE(rx_.Open(name_));
 }
 
 TEST_F(GptpIpcRoundtripTest, Receive_PersistentOddSeq_ExhaustsRetriesAndReturnsNullopt)
@@ -196,7 +196,7 @@ TEST_F(GptpIpcRoundtripTest, Receive_PersistentOddSeq_ExhaustsRetriesAndReturnsN
     region->seq.store(1U, std::memory_order_relaxed);
     region->seq_confirm.store(0U, std::memory_order_relaxed);
 
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(rx_.Open(name_));
     EXPECT_FALSE(rx_.Receive().has_value());
 }
 
@@ -209,7 +209,7 @@ TEST_F(GptpIpcRoundtripTest, Receive_SeqConfirmMismatch_ExhaustsRetriesAndReturn
     region->seq.store(4U, std::memory_order_relaxed);
     region->seq_confirm.store(2U, std::memory_order_relaxed);
 
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(rx_.Open(name_));
     EXPECT_FALSE(rx_.Receive().has_value());
 }
 

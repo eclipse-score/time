@@ -42,14 +42,14 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
             "svt_handler",
             False,
             [
-                "//score/time_daemon/src/ptp_machine:stub_ptp_machine",
+                "//score/time_daemon/src/ptp_machine/shm:gptp_shm_machine",
             ],
         ),
         (
             "svt_handler_for_utests",
             True,
             [
-                "//score/time_daemon/src/ptp_machine:stub_ptp_machine",
+                "//score/time_daemon/src/ptp_machine/shm:gptp_shm_machine",
             ],
         ),
     ]

@@ -65,7 +65,7 @@ struct GptpIpcPDelayData
 /**
  * @brief IPC data snapshot written by TimeSlave and read by TimeDaemon.
  *
- * This type is internal to libTSClient and intentionally decoupled from
+ * This type is internal to ts_client and intentionally decoupled from
  * score::td::PtpTimeInfo.  Callers are responsible for mapping between the two.
  */
 struct GptpIpcData

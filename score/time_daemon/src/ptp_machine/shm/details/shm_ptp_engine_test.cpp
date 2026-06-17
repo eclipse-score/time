@@ -86,7 +86,7 @@ class ShmPTPEngineTest : public ::testing::Test
     void TearDown() override
     {
         engine_->Deinitialize();
-        pub_.Destroy();
+        pub_.Close();
     }
 
     std::string name_;
@@ -103,13 +103,13 @@ TEST_F(ShmPTPEngineTest, Initialize_WhenShmNotExist_ReturnsFalse)
 
 TEST_F(ShmPTPEngineTest, Initialize_WhenShmExists_ReturnsTrue)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     EXPECT_TRUE(engine_->Initialize());
 }
 
 TEST_F(ShmPTPEngineTest, Initialize_CalledTwiceWhenInitialized_ReturnsTrue)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(engine_->Initialize());
     EXPECT_TRUE(engine_->Initialize());  // idempotent
 }
@@ -121,14 +121,14 @@ TEST_F(ShmPTPEngineTest, Deinitialize_WhenNotInitialized_ReturnsTrue)
 
 TEST_F(ShmPTPEngineTest, Deinitialize_AfterInitialize_ReturnsTrue)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(engine_->Initialize());
     EXPECT_TRUE(engine_->Deinitialize());
 }
 
 TEST_F(ShmPTPEngineTest, Deinitialize_CalledTwice_BothReturnTrue)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(engine_->Initialize());
     EXPECT_TRUE(engine_->Deinitialize());
     EXPECT_TRUE(engine_->Deinitialize());
@@ -136,7 +136,7 @@ TEST_F(ShmPTPEngineTest, Deinitialize_CalledTwice_BothReturnTrue)
 
 TEST_F(ShmPTPEngineTest, ReInitialize_AfterDeinitialize_Succeeds)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(engine_->Initialize());
     ASSERT_TRUE(engine_->Deinitialize());
     EXPECT_TRUE(engine_->Initialize());
@@ -152,7 +152,7 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_WhenNotInitialized_ReturnsFalse)
 
 TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_WithPublishedData_ReturnsTrue)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     pub_.Publish(MakeTestIpcData());
     ASSERT_TRUE(engine_->Initialize());
 
@@ -162,7 +162,7 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_WithPublishedData_ReturnsTrue)
 
 TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesTimeAndStatusCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     const score::ts::GptpIpcData src = MakeTestIpcData();
     pub_.Publish(src);
     ASSERT_TRUE(engine_->Initialize());
@@ -179,7 +179,7 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesTimeAndStatusCorrectly)
 
 TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesSyncFupDataCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     const score::ts::GptpIpcData src = MakeTestIpcData();
     pub_.Publish(src);
     ASSERT_TRUE(engine_->Initialize());
@@ -196,7 +196,7 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesSyncFupDataCorrectly)
 
 TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesPDelayDataCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
     const score::ts::GptpIpcData src = MakeTestIpcData();
     pub_.Publish(src);
     ASSERT_TRUE(engine_->Initialize());

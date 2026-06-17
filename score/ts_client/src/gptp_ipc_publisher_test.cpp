@@ -27,15 +27,15 @@ class GptpIpcPublisherTest : public ::testing::Test
   protected:
     void TearDown() override
     {
-        pub_.Destroy();
+        pub_.Close();
     }
 
     GptpIpcPublisher pub_;
 };
 
-TEST_F(GptpIpcPublisherTest, Init_ValidName_ReturnsTrue)
+TEST_F(GptpIpcPublisherTest, Open_ValidName_ReturnsTrue)
 {
-    EXPECT_TRUE(pub_.Init(UniqueShmName()));
+    EXPECT_TRUE(pub_.Open(UniqueShmName()));
 }
 
 TEST_F(GptpIpcPublisherTest, Publish_WithoutInit_DoesNotCrash)
@@ -44,23 +44,23 @@ TEST_F(GptpIpcPublisherTest, Publish_WithoutInit_DoesNotCrash)
     EXPECT_NO_THROW(pub_.Publish(data));
 }
 
-TEST_F(GptpIpcPublisherTest, Destroy_CalledTwice_DoesNotCrash)
+TEST_F(GptpIpcPublisherTest, Close_CalledTwice_DoesNotCrash)
 {
-    ASSERT_TRUE(pub_.Init(UniqueShmName()));
-    pub_.Destroy();
-    EXPECT_NO_THROW(pub_.Destroy());
+    ASSERT_TRUE(pub_.Open(UniqueShmName()));
+    pub_.Close();
+    EXPECT_NO_THROW(pub_.Close());
 }
 
-TEST_F(GptpIpcPublisherTest, Destroy_WithoutInit_DoesNotCrash)
+TEST_F(GptpIpcPublisherTest, Close_WithoutOpen_DoesNotCrash)
 {
-    EXPECT_NO_THROW(pub_.Destroy());
+    EXPECT_NO_THROW(pub_.Close());
 }
 
-TEST_F(GptpIpcPublisherTest, Init_CalledTwice_ReturnsTrueOnSecondCall)
+TEST_F(GptpIpcPublisherTest, Open_CalledTwice_ReturnsTrueOnSecondCall)
 {
     // region_ != nullptr after first Init → second call returns true immediately.
-    ASSERT_TRUE(pub_.Init(UniqueShmName()));
-    EXPECT_TRUE(pub_.Init(UniqueShmName()));
+    ASSERT_TRUE(pub_.Open(UniqueShmName()));
+    EXPECT_TRUE(pub_.Open(UniqueShmName()));
 }
 
 }  // namespace details

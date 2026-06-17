@@ -42,7 +42,7 @@ class GptpIpcReceiver final
     GptpIpcReceiver(const GptpIpcReceiver&) = delete;
     GptpIpcReceiver& operator=(const GptpIpcReceiver&) = delete;
 
-    bool Init(const std::string& ipc_name = kGptpIpcName);
+    bool Open(const std::string& ipc_name = kGptpIpcName);
     std::optional<score::ts::GptpIpcData> Receive();
     void Close();
 

@@ -27,10 +27,10 @@ namespace details
 
 GptpIpcPublisher::~GptpIpcPublisher()
 {
-    Destroy();
+    Close();
 }
 
-bool GptpIpcPublisher::Init(const std::string& ipc_name)
+bool GptpIpcPublisher::Open(const std::string& ipc_name)
 {
     if (shm_resource_ != nullptr)
         return true;
@@ -69,7 +69,7 @@ void GptpIpcPublisher::Publish(const score::ts::GptpIpcData& data)
     region_->seq.store(next + 1U, std::memory_order_release);
 }
 
-void GptpIpcPublisher::Destroy()
+void GptpIpcPublisher::Close()
 {
     if (!ipc_name_.empty())
     {

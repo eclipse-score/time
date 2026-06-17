@@ -38,9 +38,9 @@ class GptpIpcReceiverTest : public ::testing::Test
     GptpIpcReceiver rx_;
 };
 
-TEST_F(GptpIpcReceiverTest, Init_ShmNotExist_ReturnsFalse)
+TEST_F(GptpIpcReceiverTest, Open_ShmNotExist_ReturnsFalse)
 {
-    EXPECT_FALSE(rx_.Init("/gptp_nonexistent_" + std::to_string(::getpid())));
+    EXPECT_FALSE(rx_.Open("/gptp_nonexistent_" + std::to_string(::getpid())));
 }
 
 TEST_F(GptpIpcReceiverTest, Close_WithoutInit_DoesNotCrash)
@@ -59,18 +59,18 @@ TEST_F(GptpIpcReceiverTest, Receive_WithoutInit_ReturnsNullopt)
     EXPECT_FALSE(rx_.Receive().has_value());
 }
 
-TEST_F(GptpIpcReceiverTest, Init_CalledTwice_ReturnsTrueOnSecondCall)
+TEST_F(GptpIpcReceiverTest, Open_CalledTwice_ReturnsTrueOnSecondCall)
 {
-    // region_ != nullptr after first Init → second call returns true immediately.
+    // region_ != nullptr after first Open → second call returns true immediately.
     GptpIpcPublisher pub;
     const std::string name = UniqueShmName();
-    ASSERT_TRUE(pub.Init(name));
-    ASSERT_TRUE(rx_.Init(name));
-    EXPECT_TRUE(rx_.Init(name));
-    pub.Destroy();
+    ASSERT_TRUE(pub.Open(name));
+    ASSERT_TRUE(rx_.Open(name));
+    EXPECT_TRUE(rx_.Open(name));
+    pub.Close();
 }
 
-TEST_F(GptpIpcReceiverTest, Init_TooSmallShm_ReturnsFalse)
+TEST_F(GptpIpcReceiverTest, Open_TooSmallShm_ReturnsFalse)
 {
     // Create a shm segment smaller than GptpIpcRegion so the fstat size check fails.
     const std::string name = UniqueShmName();
@@ -79,7 +79,7 @@ TEST_F(GptpIpcReceiverTest, Init_TooSmallShm_ReturnsFalse)
     ASSERT_EQ(::ftruncate(fd, 1), 0);
     ::close(fd);
 
-    EXPECT_FALSE(rx_.Init(name));
+    EXPECT_FALSE(rx_.Open(name));
 
     ::shm_unlink(name.c_str());
 }

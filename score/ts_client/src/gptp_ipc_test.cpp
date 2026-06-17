@@ -88,15 +88,15 @@ class GptpIpcPublisherTest : public ::testing::Test
   protected:
     void TearDown() override
     {
-        pub_.Destroy();
+        pub_.Close();
     }
 
     GptpIpcPublisher pub_;
 };
 
-TEST_F(GptpIpcPublisherTest, Init_ValidName_ReturnsTrue)
+TEST_F(GptpIpcPublisherTest, Open_ValidName_ReturnsTrue)
 {
-    EXPECT_TRUE(pub_.Init(UniqueShmName()));
+    EXPECT_TRUE(pub_.Open(UniqueShmName()));
 }
 
 TEST_F(GptpIpcPublisherTest, Publish_WithoutInit_DoesNotCrash)
@@ -106,23 +106,23 @@ TEST_F(GptpIpcPublisherTest, Publish_WithoutInit_DoesNotCrash)
     EXPECT_NO_THROW(pub_.Publish(info));
 }
 
-TEST_F(GptpIpcPublisherTest, Destroy_CalledTwice_DoesNotCrash)
+TEST_F(GptpIpcPublisherTest, Close_CalledTwice_DoesNotCrash)
 {
-    ASSERT_TRUE(pub_.Init(UniqueShmName()));
-    pub_.Destroy();
-    EXPECT_NO_THROW(pub_.Destroy());
+    ASSERT_TRUE(pub_.Open(UniqueShmName()));
+    pub_.Close();
+    EXPECT_NO_THROW(pub_.Close());
 }
 
-TEST_F(GptpIpcPublisherTest, Destroy_WithoutInit_DoesNotCrash)
+TEST_F(GptpIpcPublisherTest, Close_WithoutOpen_DoesNotCrash)
 {
-    EXPECT_NO_THROW(pub_.Destroy());
+    EXPECT_NO_THROW(pub_.Close());
 }
 
-TEST_F(GptpIpcPublisherTest, Init_CalledTwice_ReturnsTrueOnSecondCall)
+TEST_F(GptpIpcPublisherTest, Open_CalledTwice_ReturnsTrueOnSecondCall)
 {
-    // region_ != nullptr after first Init → second call returns true immediately.
-    ASSERT_TRUE(pub_.Init(UniqueShmName()));
-    EXPECT_TRUE(pub_.Init(UniqueShmName()));
+    // region_ != nullptr after first Open → second call returns true immediately.
+    ASSERT_TRUE(pub_.Open(UniqueShmName()));
+    EXPECT_TRUE(pub_.Open(UniqueShmName()));
 }
 
 // ── GptpIpcReceiver ───────────────────────────────────────────────────────────
@@ -138,9 +138,9 @@ class GptpIpcReceiverTest : public ::testing::Test
     GptpIpcReceiver rx_;
 };
 
-TEST_F(GptpIpcReceiverTest, Init_ShmNotExist_ReturnsFalse)
+TEST_F(GptpIpcReceiverTest, Open_ShmNotExist_ReturnsFalse)
 {
-    EXPECT_FALSE(rx_.Init("/gptp_nonexistent_" + std::to_string(::getpid())));
+    EXPECT_FALSE(rx_.Open("/gptp_nonexistent_" + std::to_string(::getpid())));
 }
 
 TEST_F(GptpIpcReceiverTest, Close_WithoutInit_DoesNotCrash)
@@ -159,18 +159,18 @@ TEST_F(GptpIpcReceiverTest, Receive_WithoutInit_ReturnsNullopt)
     EXPECT_FALSE(rx_.Receive().has_value());
 }
 
-TEST_F(GptpIpcReceiverTest, Init_CalledTwice_ReturnsTrueOnSecondCall)
+TEST_F(GptpIpcReceiverTest, Open_CalledTwice_ReturnsTrueOnSecondCall)
 {
-    // region_ != nullptr after first Init → second call returns true immediately.
+    // region_ != nullptr after first Open → second call returns true immediately.
     GptpIpcPublisher pub;
     const std::string name = UniqueShmName();
-    ASSERT_TRUE(pub.Init(name));
-    ASSERT_TRUE(rx_.Init(name));
-    EXPECT_TRUE(rx_.Init(name));
-    pub.Destroy();
+    ASSERT_TRUE(pub.Open(name));
+    ASSERT_TRUE(rx_.Open(name));
+    EXPECT_TRUE(rx_.Open(name));
+    pub.Close();
 }
 
-TEST_F(GptpIpcReceiverTest, Init_TooSmallShm_ReturnsFalse)
+TEST_F(GptpIpcReceiverTest, Open_TooSmallShm_ReturnsFalse)
 {
     // Create a shm segment smaller than GptpIpcRegion so the fstat size check fails.
     const std::string name = UniqueShmName();
@@ -179,7 +179,7 @@ TEST_F(GptpIpcReceiverTest, Init_TooSmallShm_ReturnsFalse)
     ASSERT_EQ(::ftruncate(fd, 1), 0);
     ::close(fd);
 
-    EXPECT_FALSE(rx_.Init(name));
+    EXPECT_FALSE(rx_.Open(name));
 
     ::shm_unlink(name.c_str());
 }
@@ -196,7 +196,7 @@ class GptpIpcRoundtripTest : public ::testing::Test
     void TearDown() override
     {
         rx_.Close();
-        pub_.Destroy();
+        pub_.Close();
     }
 
     std::string name_;
@@ -204,16 +204,16 @@ class GptpIpcRoundtripTest : public ::testing::Test
     GptpIpcReceiver rx_;
 };
 
-TEST_F(GptpIpcRoundtripTest, ReceiverInit_AfterPublisherInit_ReturnsTrue)
+TEST_F(GptpIpcRoundtripTest, ReceiverOpen_AfterPublisherOpen_ReturnsTrue)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    EXPECT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    EXPECT_TRUE(rx_.Open(name_));
 }
 
 TEST_F(GptpIpcRoundtripTest, ReceiverReceive_BeforeAnyPublish_ReturnsNullopt)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
     // seq_confirm is initialised to 1 (≠ seq=0) by GptpIpcRegion's constructor,
     // so the seqlock always mismatches before the first Publish() call.
     // Receive() must exhaust its retries and return std::nullopt.
@@ -222,8 +222,8 @@ TEST_F(GptpIpcRoundtripTest, ReceiverReceive_BeforeAnyPublish_ReturnsNullopt)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_BasicFields_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::td::PtpTimeInfo info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{1'234'567'890LL};
@@ -246,8 +246,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_BasicFields_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_StatusFlags_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::td::PtpTimeInfo info{};
     info.status.is_timeout = true;
@@ -268,8 +268,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_StatusFlags_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_SyncFupData_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::td::PtpTimeInfo info{};
     info.sync_fup_data.precise_origin_timestamp = 100'000'000'000ULL;
@@ -295,8 +295,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_SyncFupData_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_PDelayData_RoundtripCorrectly)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     score::td::PtpTimeInfo info{};
     info.pdelay_data.request_origin_timestamp = 1'000'000'000ULL;
@@ -321,8 +321,8 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_PDelayData_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, MultiplePublish_LastValueIsVisible)
 {
-    ASSERT_TRUE(pub_.Init(name_));
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(pub_.Open(name_));
+    ASSERT_TRUE(rx_.Open(name_));
 
     for (int i = 1; i <= 5; ++i)
     {
@@ -348,7 +348,7 @@ TEST_F(GptpIpcRoundtripTest, ReceiverInit_WrongMagic_ReturnsFalse)
     const std::uint32_t bad = 0xDEADBEEFU;
     std::memcpy(shm.ptr, &bad, sizeof(bad));
 
-    EXPECT_FALSE(rx_.Init(name_));
+    EXPECT_FALSE(rx_.Open(name_));
 }
 
 TEST_F(GptpIpcRoundtripTest, Receive_PersistentOddSeq_ExhaustsRetriesAndReturnsNullopt)
@@ -361,7 +361,7 @@ TEST_F(GptpIpcRoundtripTest, Receive_PersistentOddSeq_ExhaustsRetriesAndReturnsN
     region->seq.store(1U, std::memory_order_relaxed);
     region->seq_confirm.store(0U, std::memory_order_relaxed);
 
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(rx_.Open(name_));
     EXPECT_FALSE(rx_.Receive().has_value());
 }
 
@@ -375,7 +375,7 @@ TEST_F(GptpIpcRoundtripTest, Receive_SeqConfirmMismatch_ExhaustsRetriesAndReturn
     region->seq.store(4U, std::memory_order_relaxed);
     region->seq_confirm.store(2U, std::memory_order_relaxed);
 
-    ASSERT_TRUE(rx_.Init(name_));
+    ASSERT_TRUE(rx_.Open(name_));
     EXPECT_FALSE(rx_.Receive().has_value());
 }
 

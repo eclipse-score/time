@@ -56,7 +56,7 @@ class GPTPShmMachineIntegrationTest : public ::testing::Test
     void SetUp() override
     {
         name_ = UniqueShmName();
-        ASSERT_TRUE(pub_.Init(name_));
+        ASSERT_TRUE(pub_.Open(name_));
         pub_.Publish(MakePublishedInfo());
 
         machine_ = CreateGPTPShmMachine("ShmPTPMachine", name_);
@@ -73,7 +73,7 @@ class GPTPShmMachineIntegrationTest : public ::testing::Test
     {
         machine_->Stop();
         machine_.reset();
-        pub_.Destroy();
+        pub_.Close();
     }
 
     std::string name_;
