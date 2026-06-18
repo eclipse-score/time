@@ -125,7 +125,7 @@ TEST_F(TestClockStatus, DefaultConstructedStatusHasNoFlagsActive)
 
     EXPECT_FALSE(status.IsAnyOfFlagsActive(
         {StatusFlag::kTimeOut, StatusFlag::kSynchronized, StatusFlag::kSynchToGateway, StatusFlag::kUnknown}));
-    EXPECT_EQ(status.ToUnderlying(), std::uint8_t{0U});
+    EXPECT_EQ(status.ToUnderlying(), std::uint32_t{0U});
 }
 
 TEST_F(TestClockStatus, OutOfRangeFlagAborts)

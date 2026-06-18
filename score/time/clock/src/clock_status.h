@@ -33,11 +33,18 @@ namespace time
 ///
 /// @tparam FlagEnumT  Scoped enum type whose enumerators are **bit positions** (not bitmasks).
 ///                    The underlying type must be an unsigned integer type.
-template <typename FlagEnumT>
+/// @tparam StorageT   Unsigned integer type used as the internal bitmask storage.
+///                    Must be wide enough to hold a set bit at the highest enumerator position
+///                    (i.e. @c sizeof(StorageT)*8 > max_enum_value). Defaults to @c std::uint32_t,
+///                    which accommodates up to 31 distinct flag positions.
+template <typename FlagEnumT, typename StorageT = std::uint32_t>
 class ClockStatus final
 {
     static_assert(std::is_enum<FlagEnumT>::value, "FlagEnumT must be an enum");
-    using StatusFlagT = std::underlying_type_t<FlagEnumT>;
+    static_assert(std::is_unsigned<std::underlying_type_t<FlagEnumT>>::value,
+                  "FlagEnumT underlying type must be unsigned");
+    static_assert(std::is_unsigned<StorageT>::value, "StorageT must be an unsigned integer type");
+    using PositionT = std::underlying_type_t<FlagEnumT>;  ///< Type used to hold a bit-position value.
 
   public:
     /// @brief Constructs a @c ClockStatus with the given set of active flags.
@@ -63,11 +70,11 @@ class ClockStatus final
     /// @param flag  The bit-position to test.
     bool IsFlagActive(const FlagEnumT flag) const noexcept
     {
-        const StatusFlagT flag_position{static_cast<StatusFlagT>(flag)};
+        const PositionT flag_position{static_cast<PositionT>(flag)};
         SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(
-            (flag_position < (sizeof(StatusFlagT) * 8U)),
-            "score::time: IsFlagActive() argument 'flag' exceeds possible size of status_flags_ type");
-        return static_cast<bool>(status_flags_ & (static_cast<StatusFlagT>(1U << flag_position)));
+            (flag_position < (sizeof(StorageT) * 8U)),
+            "score::time: IsFlagActive() argument 'flag' exceeds storage width of ClockStatus");
+        return static_cast<bool>(status_flags_ & (static_cast<StorageT>(1U) << flag_position));
     }
 
     /// @brief Returns @c true if any of the given flag bit-positions is set in this status.
@@ -107,7 +114,7 @@ class ClockStatus final
     }
 
     /// @brief Returns the underlying raw flag bitmask.
-    constexpr StatusFlagT ToUnderlying() const noexcept
+    constexpr StorageT ToUnderlying() const noexcept
     {
         return status_flags_;
     }
@@ -115,30 +122,30 @@ class ClockStatus final
     /// @brief Replaces the internal flag bitmask with the given raw value.
     ///
     /// @param status_flags  New raw bitmask to store.
-    void FromUnderlying(const StatusFlagT status_flags) noexcept
+    void FromUnderlying(const StorageT status_flags) noexcept
     {
         status_flags_ = status_flags;
     }
 
   private:
     /// @brief Adds the bit-position represented by @p flag into @p status_container.
-    static void AddStatusFlagTo(StatusFlagT& status_container, const FlagEnumT flag) noexcept
+    static void AddStatusFlagTo(StorageT& status_container, const FlagEnumT flag) noexcept
     {
-        const StatusFlagT flag_position{static_cast<StatusFlagT>(flag)};
+        const PositionT flag_position{static_cast<PositionT>(flag)};
         SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(
-            (flag_position < (sizeof(status_container) * 8U)),
-            "score::time: AddStatusFlagTo() argument 'flag' exceeds possible size of 'StatusFlagT& status_container'");
-        const StatusFlagT temp{static_cast<StatusFlagT>(1U << flag_position)};
-        status_container = static_cast<StatusFlagT>(status_container | temp);
+            (flag_position < (sizeof(StorageT) * 8U)),
+            "score::time: AddStatusFlagTo() argument 'flag' exceeds storage width of ClockStatus");
+        const StorageT temp{static_cast<StorageT>(1U) << flag_position};
+        status_container = static_cast<StorageT>(status_container | temp);
     }
 
     /// @brief Raw storage for all active flag bits.
-    StatusFlagT status_flags_{};
+    StorageT status_flags_{};
 };
 
 /// @brief Stream insertion operator — delegates to ClockStatus::PrintTo().
-template <typename OutputStream, typename FlagEnumT>
-auto operator<<(OutputStream& output_stream, const ClockStatus<FlagEnumT>& clock_status) -> OutputStream&
+template <typename OutputStream, typename FlagEnumT, typename StorageT>
+auto operator<<(OutputStream& output_stream, const ClockStatus<FlagEnumT, StorageT>& clock_status) -> OutputStream&
 {
     output_stream << clock_status.PrintTo().str();
     return output_stream;
