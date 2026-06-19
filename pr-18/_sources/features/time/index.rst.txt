@@ -390,9 +390,9 @@ Unlike the PTP protocol data callbacks in VT3, ``VehicleTimeStatus`` carries no 
 internals.  It delivers the same status value already available via ``Now().Status()``,
 but pushed proactively on every change rather than polled per call.
 
-The callback fires unconditionally once immediately after registration with the current
-status, and subsequently only when the flag set changes.  Rate deviation is excluded
-from the comparison.
+The callback fires unconditionally on the first PTP status update received after
+registration, and subsequently only when the flag set changes.  Rate deviation is
+excluded from the comparison.
 
 .. raw:: html
 
@@ -443,8 +443,8 @@ from the comparison.
    Callbacks are invoked on the **backend thread** — the callback implementation must be
    thread-safe.
 
-VT5 — Status flag inspection (diagnostics)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+VT5 — Status flag inspection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When mapping ``VehicleTime`` status to diagnostic outputs such as DTC bitmasks, use
 ``IsFlagActive(flag)`` with the ``VehicleTime::StatusFlag`` enum to access individual
