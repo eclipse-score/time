@@ -1,0 +1,815 @@
+..
+   # *******************************************************************************
+   # Copyright (c) 2026 Contributors to the Eclipse Foundation
+   #
+   # See the NOTICE file(s) distributed with this work for additional
+   # information regarding copyright ownership.
+   #
+   # This program and the accompanying materials are made available under the
+   # terms of the Apache License Version 2.0 which is available at
+   # https://www.apache.org/licenses/LICENSE-2.0
+   #
+   # SPDX-License-Identifier: Apache-2.0
+   # *******************************************************************************
+
+.. _time-module-roadmap:
+
+Time Module — Roadmap to S-CORE v1.0
+=====================================
+
+.. rubric:: Document info
+
+- **S-CORE v1.0 Roadmap**: `reference_integration docs <https://github.com/eclipse-score/reference_integration/tree/main/docs/s_core_v_1>`_
+- **Module board**: `TIM - Time FT #57 <https://github.com/orgs/eclipse-score/projects/57>`_
+- **PI tickets**: `#69 <https://github.com/eclipse-score/inc_time/issues/69>`_ (v0.8) · #3011 (v0.9) · #3013 (v0.10) · #3014 (v1.0) in ``eclipse-score/score``
+- **Updated**: 2026-06-23
+
+.. note::
+
+   This is an initial draft plan. Targets will be refined as the module progresses through
+   each release gate. Raise a PR against this file to propose changes.
+
+Context
+-------
+
+The S-CORE v1.0 roadmap is structured around four release gates.
+Each gate has **mandatory minimum deliverables**; teams are free to advance ahead
+but the gate requirements are non-negotiable for the final release.
+
+.. list-table:: Milestone Timeline
+   :header-rows: 1
+   :widths: 12 28 60
+
+   * - Milestone
+     - Period
+     - Project Focus
+   * - **v0.8**
+     - 13 May – 13 Jul 2026
+     - Requirements Engineering (PA2) + Architecture Design (PA3)
+   * - **v0.9**
+     - 14 Jul – 7 Sep 2026
+     - Implementation — Detailed Design (PA4)
+   * - **v0.10**
+     - 8 Sep – 2 Nov 2026
+     - Verification — Coverage & Inspection Completeness (PA5)
+   * - **v1.0**
+     - 3 Nov – 15 Dec 2026
+     - Hardening & Release
+
+**v0.8 is the baseline** for the Time module.
+The actual v0.8 scope for TIM is intentionally narrow: the S-CORE project gate for v0.8 calls
+for requirements and architecture complete, but the Time module is entering that gate with a
+different priority — stabilise the public API, confirm the end-to-end functional chain, and
+integrate into ``reference_integration`` CI
+(`#68 <https://github.com/eclipse-score/inc_time/issues/68>`_ is the only sub-issue under the
+v0.8 PI `#69 <https://github.com/eclipse-score/inc_time/issues/69>`_).
+Existing general documentation (README, examples, informal PlantUML diagrams) and the three
+pre-existing ``comp_req`` sets (time, time_daemon, time_slave) are carried over from prior work
+but are **not formal v0.8 deliverables**.
+
+This roadmap describes a realistic step-by-step plan that achieves all v1.0 gate requirements
+by December 2026, treating v0.9 as the primary catch-up sprint for process artefacts.
+
+**Feature scope for v1.0** — features marked ``deferred`` have no ``valid_from ≤ v1.0`` on their
+``feat_req`` nodes and are automatically excluded from v1.0 coverage statistics; their component
+artefacts (``comp_req``, ``comp_arc``, ``comp_dd_sta``) will be authored in a post-v1.0 PI.
+
+.. list-table:: Feature Scope
+   :header-rows: 1
+   :widths: 40 20 40
+
+   * - Feature
+     - v1.0
+     - Notes
+   * - ``SteadyTime``
+     - ✓
+     -
+   * - ``SystemTime``
+     - ✓
+     -
+   * - ``VehicleTime``
+     - ✓
+     -
+   * - ``HighResSteadyTime``
+     - ✓
+     -
+   * - ``AbsoluteTime``
+     - ``deferred``
+     - post-v1.0 PI
+
+Maturity Level Key
+------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 18 74
+
+   * - Level
+     - Symbol
+     - Meaning
+   * - L0
+     - ``—``
+     - Not started
+   * - L1
+     - ``draft``
+     - File/node exists; content incomplete or not yet consistent
+   * - L2
+     - ``valid``
+     - sphinx-needs ``:status: valid``; all TBDs resolved; fully traceable
+   * - L3
+     - ``filed``
+     - ``valid`` + inspection checklist submitted; all findings tracked with milestone ≤ v1.0
+   * - L4
+     - ``inspected``
+     - ``:status: valid(inspected)``; all findings resolved; approved by a Committer
+
+For CI / quality metrics, target values are stated directly (e.g. ``0 findings``, ``≥ 75%``).
+
+.. note::
+
+   \* = artefact exists from **prior work** before v0.8; not a formal v0.8 deliverable.
+
+Roadmap Overview
+----------------
+
+High-level plan — one row per artefact type across the whole module.
+Agree on this table first; the per-component breakdown lives in :ref:`detailed-breakdown`.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 44 14 14 14 14
+
+   * - Artefact / Process Area
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - **Feature requirements** (``feat_req``)
+     - ``L2`` :sup:`1`
+     - ``L2`` :sup:`4`
+     - ``L4``
+     - ``L4``
+   * - **SW component requirements** (``comp_req``)
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - **Assumption of Use requirements** (``aou_req``)
+     - ``—``
+     - ``L2`` :sup:`2`
+     - ``L3`` :sup:`2`
+     - ``L4``
+   * - Req. inspection checklists
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - **Feature architecture** (``feat_arc_sta/dyn``)
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - **Component architecture** (``comp_arc_sta/dyn``)
+     - ``—``
+     - ``L2`` :sup:`2`
+     - ``L3`` :sup:`2`
+     - ``L4``
+   * - Arch. inspection checklists
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - **SW component detailed design** (``comp_dd_sta``)
+     - ``—``
+     - ``L2`` :sup:`2`
+     - ``L3`` :sup:`2`
+     - ``L4``
+   * - Impl. inspection checklists
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - Static code analysis — SCA (Clang-Tidy)
+     - ``active`` :sup:`1`
+     - ``reducing``
+     - ``0 findings``
+     - ``0 findings``
+   * - Dynamic analysis — sanitizers (ASan/UBSan/TSan)
+     - ``active`` :sup:`1`
+     - ``reducing``
+     - ``0 findings``
+     - ``0 findings``
+   * - ``reference_integration`` CI integration
+     - ``CI integrated`` (`#68 <https://github.com/eclipse-score/inc_time/issues/68>`_)
+     - ``CI integrated``
+     - ``CI integrated``
+     - ``CI integrated``
+   * - Unit tests + ``RecordProperty`` traceability
+     - ``✓`` :sup:`1`, no traceability
+     - ``✓`` + traceability
+     - ``✓ complete``
+     - ``✓ complete``
+   * - C0 / C1 code coverage :sup:`5`
+     - ``≥ 85%`` C0 :sup:`1`
+     - ``≥ 85%`` C0 / ``≥ 50%`` C1 :sup:`5`
+     - ``≥ 90%`` C0 / ``≥ 60%`` C1
+     - ``≥ 90%`` C0 / ``≥ 60%`` C1
+   * - ``comp_req`` test coverage
+     - ``—``
+     - ``≥ 75%``
+     - ``100%``
+     - ``100%``
+   * - Component Integration Tests
+     - ``✓ existing`` :sup:`1`
+     - ``extended``
+     - ``complete``
+     - ``complete``
+   * - Feature Integration Tests
+     - ``—``
+     - ``L1``
+     - ``≥ 75% in-scope``
+     - ``100% in-scope``
+   * - Module Verification Report
+     - ``—``
+     - ``—``
+     - ``L1``
+     - ``approved``
+   * - Platform Verification Report
+     - ``—``
+     - ``—``
+     - ``L1``
+     - ``approved``
+   * - Safety & security analysis
+     - ``—``
+     - ``—``
+     - ``L1``
+     - ``L2``
+
+.. rubric:: Footnotes
+
+:sup:`1` Exists from **prior work** before v0.8; not a formal v0.8 deliverable.
+
+:sup:`2` ``score/time_slave`` lags one milestone: L1 at v0.9 (others L2), L2 at v0.10 (others L3);
+it aligns with the rest at v1.0. See :ref:`detailed-breakdown` for exact per-component values.
+
+:sup:`4` Set the ``valid_from`` attribute on each ``feat_req`` node (v0.9 PA2 task); it marks the
+earliest release from which that requirement is counted in project coverage statistics.
+
+:sup:`5` The existing ``inc_time`` CI enforces ≥ 85% C0 (line) coverage. v0.9 adopts this baseline
+in ``reference_integration`` CI and adds a C1 (branch) coverage gate.
+
+.. _detailed-breakdown:
+
+Detailed Breakdown by Component
+--------------------------------
+
+Rows marked :sup:`2` reflect ``score/time_slave`` lagging one milestone; see footnote 2 above.
+
+PA2 — Requirements Engineering
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**comp_req** — SW Component Requirements
+
+``feat_req`` (module-wide): ``L2`` :sup:`1` at v0.8 → ``L2`` :sup:`4` at v0.9 → ``L4`` at v0.10.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_slave``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/ts_client``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+
+**aou_req** — Assumption of Use Requirements
+
+``score/time_slave`` AoU is L1 at v0.9 (deployment preconditions not yet finalised); reaches L2 at v0.10.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_slave``
+     - ``—``
+     - ``L1``
+     - ``L2``
+     - ``L4``
+   * - ``score/ts_client``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+
+**Requirements Inspection Checklists**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_slave``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/ts_client``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+
+PA3 — Architecture Design
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**comp_arc_sta / comp_arc_dyn** — Component Architecture
+
+``feat_arc_sta / feat_arc_dyn`` (module-wide): ``—`` at v0.8 → ``L2`` at v0.9 → ``L3`` at v0.10 → ``L4`` at v1.0.
+
+``score/time_slave`` is L1 at v0.9 (Linux/QNX platform abstraction not yet finalised); reaches L2 at v0.10.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_slave``
+     - ``—``
+     - ``L1``
+     - ``L2``
+     - ``L4``
+   * - ``score/ts_client``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+
+**Architecture Inspection Checklists**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_slave``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/ts_client``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+
+PA4 — Implementation
+~~~~~~~~~~~~~~~~~~~~~
+
+**comp_dd_sta** — SW Component Detailed Design
+
+:sup:`3` ``score/ts_client`` detailed design authored after PR #54 (SharedMemoryFactory migration) merges.
+``score/time_slave`` is L1 at v0.9; reaches L2 at v0.10.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``L2``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_slave``
+     - ``—``
+     - ``L1``
+     - ``L2``
+     - ``L4``
+   * - ``score/ts_client``
+     - ``—``
+     - ``L2`` :sup:`3`
+     - ``L3``
+     - ``L4``
+
+**req-Id** Source Code Traceability Comments
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``done``
+     - ``done``
+     - ``done``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``done``
+     - ``done``
+     - ``done``
+   * - ``score/time_slave``
+     - ``—``
+     - ``—``
+     - ``done``
+     - ``done``
+   * - ``score/ts_client``
+     - ``—``
+     - ``done`` :sup:`3`
+     - ``done``
+     - ``done``
+
+**Implementation Inspection Checklists**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/time_slave``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+   * - ``score/ts_client``
+     - ``—``
+     - ``—``
+     - ``L3``
+     - ``L4``
+
+**Static & Dynamic Code Analysis**
+
+Applies to both SCA (Clang-Tidy, `#42 <https://github.com/eclipse-score/inc_time/issues/42>`_)
+and dynamic analysis (ASan/UBSan/TSan,
+`#43 <https://github.com/eclipse-score/inc_time/issues/43>`_).
+v0.8: CI enabled in prior work, findings open. v0.9: actively reducing findings.
+v0.10: zero-tolerance gate.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``active`` :sup:`1`
+     - ``reducing``
+     - ``0 findings``
+     - ``0 findings``
+   * - ``score/time_daemon``
+     - ``active`` :sup:`1`
+     - ``reducing``
+     - ``0 findings``
+     - ``0 findings``
+   * - ``score/time_slave``
+     - ``active`` :sup:`1`
+     - ``reducing``
+     - ``0 findings``
+     - ``0 findings``
+   * - ``score/ts_client``
+     - ``active`` :sup:`1`
+     - ``reducing``
+     - ``0 findings``
+     - ``0 findings``
+
+PA5 — Verification
+~~~~~~~~~~~~~~~~~~~
+
+**Unit Tests + RecordProperty Traceability**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 24 20 12 12
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``✓`` :sup:`1`, no traceability
+     - ``✓`` + traceability
+     - ``✓ complete``
+     - ``✓ complete``
+   * - ``score/time_daemon``
+     - ``✓`` :sup:`1`, no traceability
+     - ``✓`` + traceability
+     - ``✓ complete``
+     - ``✓ complete``
+   * - ``score/time_slave``
+     - ``✓`` :sup:`1`, no traceability
+     - ``✓`` + traceability
+     - ``✓ complete``
+     - ``✓ complete``
+   * - ``score/ts_client``
+     - ``✓`` :sup:`1`, no traceability
+     - ``✓`` + traceability
+     - ``✓ complete``
+     - ``✓ complete``
+
+**comp_req Test Coverage** (``FullyVerifies`` / ``PartiallyVerifies``)
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``≥ 75%``
+     - ``100%``
+     - ``100%``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``≥ 75%``
+     - ``100%``
+     - ``100%``
+   * - ``score/time_slave``
+     - ``—``
+     - ``≥ 75%``
+     - ``100%``
+     - ``100%``
+   * - ``score/ts_client``
+     - ``—``
+     - ``≥ 75%``
+     - ``100%``
+     - ``100%``
+
+**Component Integration Tests**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 20 17 17 14
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``✓ existing`` :sup:`1`
+     - ``extended``
+     - ``complete``
+     - ``complete``
+   * - ``score/time_daemon``
+     - ``—``
+     - ``initial``
+     - ``complete``
+     - ``complete``
+   * - ``score/time_slave``
+     - ``—``
+     - ``initial``
+     - ``complete``
+     - ``complete``
+   * - ``score/ts_client``
+     - ``—``
+     - ``initial``
+     - ``complete``
+     - ``complete``
+
+.. note::
+
+   Feature Integration Tests, Module Verification Report, and Platform Verification Report
+   are module-wide artefacts. See the :ref:`overview table <time-module-roadmap>` for their
+   milestone targets.
+
+PA6 — Safety & Security
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+All work depends on ASIL classification being finalised; safety tickets to be created accordingly.
+``score/time_daemon`` and ``score/ts_client`` are QM — no FMEA required.
+DFA and Safety Manual are module-wide; targets: L1 (DFA) and L2 (Safety Manual) at v1.0.
+
+**FMEA / Safety Analysis**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``—``
+     - ``L1``
+     - ``L2``
+   * - ``score/time_slave``
+     - ``—``
+     - ``—``
+     - ``L1``
+     - ``L2``
+
+**Security Analysis**
+
+.. list-table::
+   :header-rows: 1
+   :widths: 32 17 17 17 17
+
+   * - Component
+     - v0.8
+     - v0.9
+     - v0.10
+     - v1.0
+   * - ``score/time``
+     - ``—``
+     - ``—``
+     - ``L1``
+     - ``L2``
+   * - ``score/time_slave``
+     - ``—``
+     - ``—``
+     - ``L1``
+     - ``L2``
+
+Summary: Gate Compliance vs Project Requirements
+-------------------------------------------------
+
+The table below compares what the **project roadmap requires** at each gate against what the
+Time module can **realistically deliver** given the v0.8 baseline state.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 8 28 36 28
+
+   * - Gate
+     - Project Requirement
+     - Time Module Delivery
+     - Gap / Risk
+   * - **v0.8**
+     - All ``comp_req`` + ``feat_arc`` + ``comp_arc`` at L2; MVR draft; SCA/sanitizers clean
+     - Stable API + functional chain; ``reference_integration`` integrated (`#68 <https://github.com/eclipse-score/inc_time/issues/68>`_); all process artefacts ``—``
+     - **High** — PA2 + PA3 not started; SCA findings open; MVR deferred to v0.10
+   * - **v0.9**
+     - Detailed design L2; MVR at 75% ``comp_req`` coverage; impl inspection L3
+     - All ``comp_req`` + AoU L2; all arch L2 (time_slave L1); DD L2 (3/4); SCA reducing; no MVR yet
+     - **Medium** — time_slave arch/DD at L1; MVR + feat IT deferred to v0.10
+   * - **v0.10**
+     - 100% feat-complete; all inspections L3; 100% ``comp_req`` + ``feat_req`` coverage; SCA 0 findings
+     - ``feat_req`` L4; all arch + DD L3 (time_slave L2); all checklists L3; 100% ``comp_req`` cov; 75% in-scope ``feat_req`` cov; SCA 0 findings; MVR L1
+     - **Low** — feat IT at 75%; safety analysis at L1
+   * - **v1.0**
+     - All L4; MVR + PVR approved; release notes
+     - All L4; MVR + PVR approved; safety L2; release notes done
+     - **None** — all gates achieved
+
+Epics & Tracking
+----------------
+
+All work items are tracked on the `TIM - Time FT board <https://github.com/orgs/eclipse-score/projects/57>`_.
+The table below maps roadmap areas to the GitHub epics.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 42 42 16
+
+   * - Roadmap Area
+     - Epic
+     - Release
+   * - ``reference_integration`` integration
+     - `#68 <https://github.com/eclipse-score/inc_time/issues/68>`_ under PI `#69 <https://github.com/eclipse-score/inc_time/issues/69>`_
+     - **v0.8**
+   * - ``comp_req`` — ts_client
+     - `#39 <https://github.com/eclipse-score/inc_time/issues/39>`_ Software Component Requirements
+     - v0.9
+   * - ``aou_req`` — all components
+     - New epic: "Assumption of Use Requirements"
+     - v0.9
+   * - Feature architecture + Component architecture
+     - New epic: "Architecture Documentation"
+     - v0.9
+   * - SCA / sanitizer findings fix (all components)
+     - `#67 <https://github.com/eclipse-score/inc_time/issues/67>`_ Improve Quality KPIs
+     - v0.9
+   * - Detailed design (``comp_dd_sta``) — all components
+     - `#34 <https://github.com/eclipse-score/inc_time/issues/34>`_ Improvement: Documentation
+     - v0.9 / v0.10
+   * - ``RecordProperty`` traceability — all components
+     - New epic: "Test Metadata and Requirements Traceability"
+     - v0.9
+   * - Safety & security analysis
+     - New epic: "Safety and Security Analysis"
+     - v0.10 / v1.0
+   * - Document inspections, MVR/PVR approval
+     - New epic: "Release v1 Preparation"
+     - v1.0
+
+.. note::
+
+   **PI tickets**: v0.8 PI is `#69 <https://github.com/eclipse-score/inc_time/issues/69>`_
+   in ``eclipse-score/inc_time``. v0.9–v1.0 scope is formalised via Product Increment tickets
+   in ``eclipse-score/score`` (#3011 for v0.9, #3013 for v0.10, #3014 for v1.0).
+   All in-scope epics are linked as sub-issues of the corresponding PI ticket.
