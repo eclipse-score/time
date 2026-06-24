@@ -11,6 +11,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 name: Code Coverage (>85%)
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -19,8 +27,6 @@ on:
       - main
   merge_group:
     types: [checks_requested]
-  release:
-    types: [created]
 
 jobs:
   code-coverage:
