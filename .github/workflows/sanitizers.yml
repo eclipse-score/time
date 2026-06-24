@@ -53,9 +53,7 @@ jobs:
           cache-save: ${{ github.event_name == 'push' }}
 
       - name: Run tests with sanitizers
-        # --lockfile_mode=error prevents MODULE.bazel.lock from being
-        # silently regenerated in CI; consistent with other score modules.
-        run: bazel test --lockfile_mode=error --config=${{ matrix.config }} --config=time-x86_64-linux //score/... --verbose_failures
+        run: bazel test --config=${{ matrix.config }} --config=time-x86_64-linux //score/... --verbose_failures
 
       - name: Upload test logs on failure
         if: failure()
