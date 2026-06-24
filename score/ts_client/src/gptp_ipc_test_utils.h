@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TS_CLIENT_GPTP_IPC_TEST_UTILS_H
-#define SCORE_TS_CLIENT_GPTP_IPC_TEST_UTILS_H
+#ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
+#define SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
 
 #include "score/ts_client/src/gptp_ipc_channel.h"
 #include "score/memory/shared/shared_memory_factory.h"
@@ -71,4 +71,4 @@ struct ManualShm
 }  // namespace ts
 }  // namespace score
 
-#endif  // SCORE_TS_CLIENT_GPTP_IPC_TEST_UTILS_H
+#endif  // SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
