@@ -74,8 +74,20 @@ bazel_dep(name = "score_cpp_policies", version = "0.0.1", dev_dependency = True)
 bazel_dep(name = "score_process", version = "1.4.3", dev_dependency = True)
 bazel_dep(name = "score_tooling", version = "1.1.0", dev_dependency = True)
 bazel_dep(name = "buildifier_prebuilt", version = "8.2.0.2", dev_dependency = True)
-bazel_dep(name = "aspect_rules_lint", version = "1.5.3", dev_dependency = True)
+bazel_dep(name = "aspect_rules_lint", version = "2.7.1", dev_dependency = True)
+bazel_dep(name = "toolchains_llvm", version = "1.7.0", dev_dependency = True)
 bazel_dep(name = "googletest", version = "1.17.0.bcr.2", dev_dependency = True)
+
+# LLVM toolchain — provides @llvm_toolchain//:clang-tidy for the clang-tidy aspect.
+llvm = use_extension(
+    "@toolchains_llvm//toolchain/extensions:llvm.bzl",
+    "llvm",
+    dev_dependency = True,
+)
+llvm.toolchain(
+    llvm_version = "19.1.7",
+)
+use_repo(llvm, "llvm_toolchain")
 bazel_dep(name = "google_benchmark", version = "1.9.5", dev_dependency = True)
 bazel_dep(name = "score_baselibs", version = "0.2.4", dev_dependency = True)
 bazel_dep(name = "score_lifecycle_health", version = "0.1.0", dev_dependency = True)

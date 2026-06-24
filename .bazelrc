@@ -79,3 +79,13 @@ test:asan_ubsan_lsan --build_tests_only
 build:asan  --config=asan_ubsan_lsan
 build:ubsan --config=asan_ubsan_lsan
 build:lsan  --config=asan_ubsan_lsan
+
+# -------------------------------------------------------------------------------
+# Clang-tidy static analysis — powered by score_cpp_policies
+# -------------------------------------------------------------------------------
+
+# Run with: bazel test --config=clang-tidy //score/...
+# The LLVM toolchain is used only for the clang-tidy binary; normal builds use GCC.
+test:clang-tidy --aspects=//tools/lint:linters.bzl%clang_tidy_aspect
+test:clang-tidy --output_groups=+rules_lint_report
+test:clang-tidy --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux

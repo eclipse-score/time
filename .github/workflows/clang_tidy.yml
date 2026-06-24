@@ -1,0 +1,69 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+name: Clang-Tidy
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  merge_group:
+    types: [checks_requested]
+  push:
+    branches:
+      - main
+
+jobs:
+  clang-tidy:
+    # Pinned to ubuntu-24.04 — matches the LLVM 19 toolchain from toolchains_llvm.
+    runs-on: ubuntu-24.04
+    # Non-blocking until the codebase is clean.
+    # Remove this line once all clang-tidy violations are resolved.
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+          cache-save: ${{ github.event_name == 'push' }}
+
+      - name: Run clang-tidy via Bazel
+        # continue-on-error so the artifact upload step always runs.
+        continue-on-error: true
+        run: bazel test --config=clang-tidy //score/... 2>&1 | tee clang_tidy.log
+
+      - name: Collect findings
+        if: always()
+        run: |
+          find -L bazel-bin -name "*.AspectRulesLintClangTidy.out" 2>/dev/null \
+            | xargs cat 2>/dev/null > clang_tidy_findings.txt || true
+
+      - name: Upload findings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-tidy-findings-${{ github.run_id }}
+          path: |
+            clang_tidy.log
+            clang_tidy_findings.txt
+          retention-days: 7
