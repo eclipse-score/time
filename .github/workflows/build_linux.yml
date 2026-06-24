@@ -10,7 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-name: Bazel Build (Linux)
+name: Build / Linux
 on:
   pull_request:
     types: [opened, reopened, synchronize]

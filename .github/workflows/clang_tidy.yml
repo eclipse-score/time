@@ -10,7 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-name: Clang-Tidy
+name: QA / Clang-Tidy
 
 permissions:
   contents: read

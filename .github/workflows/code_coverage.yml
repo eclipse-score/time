@@ -10,7 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-name: Code Coverage (>85%)
+name: Test / Code Coverage (>85%)
 
 permissions:
   contents: read
