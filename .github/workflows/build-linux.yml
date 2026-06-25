@@ -10,7 +10,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-name: Bazel Build (Linux)
+name: Build / Linux
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -22,10 +30,10 @@ on:
   workflow_call:
 jobs:
   linux-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4.2.2
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
@@ -35,4 +43,4 @@ jobs:
           cache-save: ${{ github.event_name == 'push' }}
       - name: Bazel Build
         run: |
-          bazel build --config time-x86_64-linux -- //score/... //examples/...
+          bazel build --keep_going --verbose_failures --config time-x86_64-linux -- //score/... //examples/...

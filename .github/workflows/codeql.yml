@@ -1,5 +1,5 @@
 # *******************************************************************************
-# Copyright (c) 2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -10,21 +10,18 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-
-name: Process / Copyright
-
-permissions:
-  contents: read
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+name: QA / CodeQL
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
-  merge_group:
-    types: [checks_requested]
+  schedule:
+    - cron: "0 2 * * *" # Nightly at 2 AM UTC
+  workflow_dispatch:
+
 jobs:
-  copyright-check:
-    uses: eclipse-score/cicd-workflows/.github/workflows/copyright.yml@main
+  codeql:
+    uses: eclipse-score/cicd-workflows/.github/workflows/codeql.yml@main
+    with:
+      build-script: "bazel build --config=time-x86_64-linux //score/..."
+    permissions:
+      security-events: write
+      contents: read

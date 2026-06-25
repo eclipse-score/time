@@ -70,11 +70,34 @@ bazel_dep(name = "score_logging", version = "0.1.0")
 ### Modules that are used internally within the repository but not exposed as part of the public API
 
 bazel_dep(name = "score_docs_as_code", version = "3.0.0", dev_dependency = True)
+bazel_dep(name = "score_cpp_policies", version = "0.0.1", dev_dependency = True)
+
+# git_override needed because clang_tidy/ support was added after the 0.0.1 registry release.
+# Remove once score_cpp_policies >= 0.0.2 is available in the Bazel registry.
+git_override(
+    module_name = "score_cpp_policies",
+    commit = "9e3800913a3a7ac791d5e6fb9e7339d1e65980f9",
+    remote = "https://github.com/eclipse-score/score_cpp_policies.git",
+)
+
 bazel_dep(name = "score_process", version = "1.4.3", dev_dependency = True)
 bazel_dep(name = "score_tooling", version = "1.1.0", dev_dependency = True)
 bazel_dep(name = "buildifier_prebuilt", version = "8.2.0.2", dev_dependency = True)
-bazel_dep(name = "aspect_rules_lint", version = "1.5.3", dev_dependency = True)
+bazel_dep(name = "aspect_rules_lint", version = "2.7.1", dev_dependency = True)
+bazel_dep(name = "toolchains_llvm", version = "1.7.0", dev_dependency = True)
 bazel_dep(name = "googletest", version = "1.17.0.bcr.2", dev_dependency = True)
+
+# LLVM toolchain — provides @llvm_toolchain//:clang-tidy for the clang-tidy aspect.
+llvm = use_extension(
+    "@toolchains_llvm//toolchain/extensions:llvm.bzl",
+    "llvm",
+    dev_dependency = True,
+)
+llvm.toolchain(
+    llvm_version = "19.1.7",
+)
+use_repo(llvm, "llvm_toolchain")
+
 bazel_dep(name = "google_benchmark", version = "1.9.5", dev_dependency = True)
 bazel_dep(name = "score_baselibs", version = "0.2.4", dev_dependency = True)
 bazel_dep(name = "score_lifecycle_health", version = "0.1.0", dev_dependency = True)
@@ -87,6 +110,8 @@ git_override(
     remote = "https://github.com/bmw-software-engineering/trlc.git",
 )
 
+bazel_dep(name = "score_bazel_tools_cc", version = "0.1.0", dev_dependency = True)
+
 ## Configure the python toolchain
 
 bazel_dep(name = "rules_python", version = "1.8.3")
@@ -94,6 +119,18 @@ bazel_dep(name = "rules_python", version = "1.8.3")
 PYTHON_VERSION = "3.12"
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python", dev_dependency = True)
+
+# Required by score_bazel_tools_cc 0.1.0 which registers Python 3.8 toolchains.
+# rules_python 1.8.x removed 3.8 from its default download list; provide it
+# explicitly via the standalone build (same approach as eclipse-score/baselibs).
+python.single_version_override(
+    python_version = "3.8.20",
+    sha256 = {
+        "aarch64-unknown-linux-gnu": "9d8798f9e79e0fc0f36fcb95bfa28a1023407d51a8ea5944b4da711f1f75f1ed",
+        "x86_64-unknown-linux-gnu": "285e141c36f88b2e9357654c5f77d1f8fb29cc25132698fe35bb30d787f38e87",
+    },
+    urls = ["https://github.com/astral-sh/python-build-standalone/releases/download/20241002/cpython-{python_version}+20241002-{platform}-{build}.tar.gz"],
+)
 python.toolchain(
     #configure_coverage_tool = True,
     is_default = True,

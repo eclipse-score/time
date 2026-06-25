@@ -10,25 +10,18 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-name: Code Coverage (>85%)
-on:
-  pull_request:
-    types: [opened, reopened, synchronize]
-  push:
-    branches:
-      - main
-  merge_group:
-    types: [checks_requested]
-  release:
-    types: [created]
 
-jobs:
-  code-coverage:
-    uses: eclipse-score/cicd-workflows/.github/workflows/cpp-coverage.yml@main
-    with:
-      bazel-target: "//score/..."
-      bazel-config: "time-x86_64-linux"
-      extra-bazel-flags: "--test_output=errors --nocache_test_results"
-      artifact-name-suffix: "_cpp"
-      retention-days: 10
-      min-coverage: 85
+"""Clang-tidy aspect for the score_time module.
+
+Uses the S-CORE centralized clang-tidy policy from score_cpp_policies,
+which pre-wires the S-CORE baseline .clang-tidy config and aspect defaults.
+"""
+
+load("@score_cpp_policies//clang_tidy:defs.bzl", "make_clang_tidy_aspect", "make_clang_tidy_test")
+
+clang_tidy_aspect = make_clang_tidy_aspect(
+    binary = Label("@llvm_toolchain//:clang-tidy"),
+    # No local_configs: use only the S-CORE baseline from score_cpp_policies.
+)
+
+clang_tidy_test = make_clang_tidy_test(aspect = clang_tidy_aspect)

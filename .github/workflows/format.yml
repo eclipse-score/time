@@ -11,7 +11,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Formatting checks
+name: Process / Formatting
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -20,3 +28,54 @@ on:
 jobs:
   formatting-check:
     uses: eclipse-score/cicd-workflows/.github/workflows/format.yml@main
+
+  clang-format:
+    name: C++ clang-format check
+    runs-on: ubuntu-24.04
+    # Non-blocking until all C++ files are formatted.
+    # Remove this line once the codebase is clean.
+    continue-on-error: true
+    steps:
+      - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
+        with:
+          level: 4
+
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}-clang-format
+          repository-cache: true
+          cache-save: ${{ github.event_name == 'push' }}
+
+      - name: Run clang-format
+        # --keep_going collects all violations; continue-on-error lets the
+        # artifact collection step run even when violations are found.
+        continue-on-error: true
+        run: >
+          bazel build --keep_going --config=clang_format //score/... //examples/... 2>&1 | tee clang_format_raw.log #magic___^_^___line
+      - name: Filter and report violations
+        if: always()
+        run: |
+          # External dep violations point to bazel cache paths, not the workspace.
+          # Keep only lines that start with the workspace root → our files only.
+          grep "clang-formatted" clang_format_raw.log \
+            | grep "^${{ github.workspace }}" \
+            | sort -u > clang_format_findings.txt || true
+          if [ -s clang_format_findings.txt ]; then
+            echo "::warning::C++ formatting violations found in Module code:"
+            cat clang_format_findings.txt
+          else
+            echo "No Module C++ formatting violations found."
+          fi
+
+      - name: Upload violations related to the module
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-format-findings-${{ github.run_id }}
+          path: clang_format_findings.txt
+          retention-days: 7

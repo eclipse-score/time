@@ -1,5 +1,5 @@
 # *******************************************************************************
-# Copyright (c) 2024 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -11,7 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Process / Commit Messages
+name: Test / Component Tests
 
 permissions:
   contents: read
@@ -22,17 +22,20 @@ concurrency:
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
+  merge_group:
+    types: [checks_requested]
+
 jobs:
-  lint-commits:
-    name: check-commit-messages
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.2.2
-        with:
-          fetch-depth: 0
-      - name: Run Gitlint Action
-        uses: ./.github/actions/gitlint
-        with:
-          pr-number: ${{ github.event.number }}
+  run-comp-tests:
+    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@main
+    permissions:
+      contents: read
+      pull-requests: read
+    with:
+      bazel-target: 'test --config=time-x86_64-linux //score/...'
+      upload-name: 'bazel-testlogs'
+      packages: 'fakechroot'

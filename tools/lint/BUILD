@@ -11,22 +11,6 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: License check
-on:
-  pull_request_target:
-    types: [opened, reopened, synchronize]
-  merge_group:
-    types: [checks_requested]
-
-permissions:
-  pull-requests: write
-  issues: write
-
-
-jobs:
-  license-check:
-    uses: eclipse-score/cicd-workflows/.github/workflows/license-check.yml@main
-    with:
-      repo-url: "${{ github.server_url }}/${{ github.repository }}"
-    secrets:
-      dash-api-token: ${{ secrets.ECLIPSE_GITLAB_API_TOKEN }}
+# Makes tools/lint/ a Bazel package so linters.bzl can be referenced as a
+# label target (//tools/lint:linters.bzl%clang_tidy_aspect) in .bazelrc.
+exports_files(["linters.bzl"])

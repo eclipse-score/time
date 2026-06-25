@@ -56,3 +56,46 @@ try-import %workspace%/user.bazelrc
 coverage --features=coverage
 coverage --combined_report=lcov
 coverage --cache_test_results=no
+
+# -------------------------------------------------------------------------------
+# Sanitizer configurations — powered by score_cpp_policies
+# -------------------------------------------------------------------------------
+
+# Minimal debug info (-g1) for sanitizer stack traces; stripping disabled
+build:with_debug_symbols --copt=-g1
+build:with_debug_symbols --strip=never
+
+# AddressSanitizer + UndefinedBehaviorSanitizer + LeakSanitizer (recommended)
+build:asan_ubsan_lsan --config=with_debug_symbols
+build:asan_ubsan_lsan --copt=-fsanitize=undefined,address,leak
+build:asan_ubsan_lsan --linkopt=-fsanitize=undefined,address,leak
+build:asan_ubsan_lsan --platform_suffix=asan_ubsan_lsan
+build:asan_ubsan_lsan --@score_cpp_policies//sanitizers/flags:sanitizer=asan_ubsan_lsan
+test:asan_ubsan_lsan --run_under=@score_cpp_policies//sanitizers:wrapper
+test:asan_ubsan_lsan --test_tag_filters=-no-asan,-no-lsan,-no-ubsan
+test:asan_ubsan_lsan --build_tests_only
+
+# Convenience aliases (all resolve to asan_ubsan_lsan)
+build:asan  --config=asan_ubsan_lsan
+build:ubsan --config=asan_ubsan_lsan
+build:lsan  --config=asan_ubsan_lsan
+
+# -------------------------------------------------------------------------------
+# C++ formatting — powered by score_bazel_tools_cc
+# -------------------------------------------------------------------------------
+
+# Run with: bazel build --config=clang_format //score/... //examples/...
+build:clang_format --output_groups=clang_format_output
+build:clang_format --aspects=@score_bazel_tools_cc//quality:defs.bzl%clang_format_aspect
+build:clang_format --@score_bazel_tools_cc//quality:clang_format_config=//:clang_format_config
+build:clang_format --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
+
+# -------------------------------------------------------------------------------
+# Clang-tidy static analysis — powered by score_cpp_policies
+# -------------------------------------------------------------------------------
+
+# Run with: bazel test --config=clang-tidy //score/...
+# The LLVM toolchain is used only for the clang-tidy binary; normal builds use GCC.
+test:clang-tidy --aspects=//tools/lint:linters.bzl%clang_tidy_aspect
+test:clang-tidy --output_groups=+rules_lint_report
+test:clang-tidy --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
