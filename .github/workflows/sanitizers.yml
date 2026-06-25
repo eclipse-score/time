@@ -53,7 +53,7 @@ jobs:
           cache-save: ${{ github.event_name == 'push' }}
 
       - name: Run tests with sanitizers
-        run: bazel test --config=${{ matrix.config }} --config=time-x86_64-linux //score/... --verbose_failures
+        run: bazel test --keep_going --config=${{ matrix.config }} --config=time-x86_64-linux //score/... --verbose_failures
 
       - name: Upload test logs on failure
         if: failure()

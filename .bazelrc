@@ -81,14 +81,18 @@ build:ubsan --config=asan_ubsan_lsan
 build:lsan  --config=asan_ubsan_lsan
 
 # -------------------------------------------------------------------------------
-# Clang-tidy static analysis — powered by score_cpp_policies
+# C++ formatting — powered by score_bazel_tools_cc
 # -------------------------------------------------------------------------------
 
-# Run with: bazel build --config=clang_format //score/...
+# Run with: bazel build --config=clang_format //score/... //examples/...
 build:clang_format --output_groups=clang_format_output
 build:clang_format --aspects=@score_bazel_tools_cc//quality:defs.bzl%clang_format_aspect
 build:clang_format --@score_bazel_tools_cc//quality:clang_format_config=//:clang_format_config
 build:clang_format --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
+
+# -------------------------------------------------------------------------------
+# Clang-tidy static analysis — powered by score_cpp_policies
+# -------------------------------------------------------------------------------
 
 # Run with: bazel test --config=clang-tidy //score/...
 # The LLVM toolchain is used only for the clang-tidy binary; normal builds use GCC.

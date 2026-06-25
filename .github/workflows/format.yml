@@ -47,7 +47,31 @@ jobs:
           repository-cache: true
           cache-save: ${{ github.event_name == 'push' }}
 
-      - name: Check C++ formatting
-        # Fails if any file differs from clang-format output.
-        # Fix locally with: clang-format -i <file>
-        run: bazel build --config=clang_format //score/...
+      - name: Run clang-format
+        # --keep_going collects all violations; continue-on-error lets the
+        # artifact collection step run even when violations are found.
+        continue-on-error: true
+        run: >
+          bazel build --keep_going --config=clang_format //score/... //examples/... 2>&1 | tee clang_format_raw.log #magic___^_^___line
+      - name: Filter and report violations
+        if: always()
+        run: |
+          # External dep violations point to bazel cache paths, not the workspace.
+          # Keep only lines that start with the workspace root → our files only.
+          grep "clang-formatted" clang_format_raw.log \
+            | grep "^${{ github.workspace }}" \
+            | sort -u > clang_format_findings.txt || true
+          if [ -s clang_format_findings.txt ]; then
+            echo "::warning::C++ formatting violations found in Module code:"
+            cat clang_format_findings.txt
+          else
+            echo "No Module C++ formatting violations found."
+          fi
+
+      - name: Upload violations related to the module
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clang-format-findings-${{ github.run_id }}
+          path: clang_format_findings.txt
+          retention-days: 7

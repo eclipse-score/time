@@ -11,6 +11,14 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 name: Build / Linux
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -35,4 +43,4 @@ jobs:
           cache-save: ${{ github.event_name == 'push' }}
       - name: Bazel Build
         run: |
-          bazel build --config time-x86_64-linux -- //score/... //examples/...
+          bazel build --keep_going --verbose_failures --config time-x86_64-linux -- //score/... //examples/...

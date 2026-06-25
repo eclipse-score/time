@@ -50,7 +50,7 @@ jobs:
       - name: Run clang-tidy via Bazel
         # continue-on-error so the artifact upload step always runs.
         continue-on-error: true
-        run: bazel test --config=clang-tidy //score/... 2>&1 | tee clang_tidy.log
+        run: bazel test --keep_going --config=clang-tidy //score/... 2>&1 | tee clang_tidy.log
 
       - name: Collect findings
         if: always()

@@ -96,7 +96,7 @@ Check C++ formatting (clang-format):
 
 .. code-block:: bash
 
-   bazel build --config=clang_format //score/...
+   bazel build --config=clang_format //score/... //examples/...
 
 Fix a single C++ file:
 
@@ -104,11 +104,13 @@ Fix a single C++ file:
 
    clang-format -i <file>
 
-Fix all C++ files in the module at once:
+Fix all C++ files with violations at once (Bazel identifies violating files first):
 
 .. code-block:: bash
 
-   find score/ \( -name "*.cpp" -o -name "*.h" \) | xargs clang-format -i
+   bazel build --keep_going --config=clang_format //score/... //examples/... 2>&1 \
+     | grep "clang-formatted" | grep "^$(pwd)" | cut -d: -f1 | sort -u \
+     | xargs clang-format -i
 
 **Static Code Analysis**
 
