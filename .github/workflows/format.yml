@@ -36,6 +36,10 @@ jobs:
     # Remove this line once the codebase is clean.
     continue-on-error: true
     steps:
+      - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
+        with:
+          level: 4
+
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
