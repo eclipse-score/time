@@ -11,6 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
+load("@score_bazel_tools_cc//quality:defs.bzl", "clang_format_config")
 load("@score_docs_as_code//:docs.bzl", "docs")
 load("@score_tooling//:defs.bzl", "copyright_checker", "dash_license_checker", "setup_starpls", "use_format_targets")
 load("//:project_config.bzl", "PROJECT_CONFIG")
@@ -47,6 +48,17 @@ dash_license_checker(
     src = "//examples:cargo_lock",
     file_type = "",  # let it auto-detect based on project_config
     project_config = PROJECT_CONFIG,
+    visibility = ["//visibility:public"],
+)
+
+clang_format_config(
+    name = "clang_format_config",
+    config_file = "//:.clang-format",
+    target_types = [
+        "cc_binary",
+        "cc_library",
+        "cc_test",
+    ],
     visibility = ["//visibility:public"],
 )
 

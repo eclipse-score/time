@@ -28,3 +28,26 @@ on:
 jobs:
   formatting-check:
     uses: eclipse-score/cicd-workflows/.github/workflows/format.yml@main
+
+  clang-format:
+    name: C++ clang-format check
+    runs-on: ubuntu-24.04
+    # Non-blocking until all C++ files are formatted.
+    # Remove this line once the codebase is clean.
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}-clang-format
+          repository-cache: true
+          cache-save: ${{ github.event_name == 'push' }}
+
+      - name: Check C++ formatting
+        # Fails if any file differs from clang-format output.
+        # Fix locally with: clang-format -i <file>
+        run: bazel build --config=clang_format //score/...

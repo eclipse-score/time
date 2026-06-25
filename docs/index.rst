@@ -78,6 +78,56 @@ To build the documentation:
 
    bazel build //:docs
 
+**Formatting**
+
+Check formatting for all non-C++ files (Python, Starlark, YAML):
+
+.. code-block:: bash
+
+   bazel test //:format.check
+
+Auto-fix formatting for all non-C++ files:
+
+.. code-block:: bash
+
+   bazel run //:format.fix
+
+Check C++ formatting (clang-format):
+
+.. code-block:: bash
+
+   bazel build --config=clang_format //score/...
+
+Fix a single C++ file:
+
+.. code-block:: bash
+
+   clang-format -i <file>
+
+Fix all C++ files in the module at once:
+
+.. code-block:: bash
+
+   find score/ \( -name "*.cpp" -o -name "*.h" \) | xargs clang-format -i
+
+**Static Code Analysis**
+
+Run clang-tidy (powered by ``score_cpp_policies``):
+
+.. code-block:: bash
+
+   bazel test --config=clang-tidy //score/...
+
+**Sanitizers**
+
+Run address, undefined-behaviour and leak sanitizers (powered by ``score_cpp_policies``):
+
+.. code-block:: bash
+
+   bazel test --config=asan_ubsan_lsan --config=time-x86_64-linux //score/...
+
+Individual sanitizer aliases are also available: ``--config=asan``, ``--config=ubsan``, ``--config=lsan``.
+
 Configuration
 -------------
 
