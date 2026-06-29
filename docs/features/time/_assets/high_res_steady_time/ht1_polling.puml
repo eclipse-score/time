@@ -1,0 +1,73 @@
+@startuml ht1_polling
+
+title HT1 — HighResSteadyTime: Time Polling
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description               |
+    |<#LightSalmon>        | Application code           |
+    |<#LightGreen>         | score::time framework      |
+    |<#LightCoral>         | HighResSteadyTime backend           |
+    |<#NavajoWhite>        | OS API (platform-specific) |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Application\ncode" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "HighResSteadyClock" as clock #LightGreen
+    participant "HighResSteadyClockBackend" as backend #LightCoral
+end box
+
+box "OS API (platform-specific)" #fff8f0
+    participant "OS API" as os #NavajoWhite
+end box
+
+app -> clock : HighResSteadyClock::GetInstance()
+activate clock
+clock -> clock : check cache / override
+clock --> app : Clock<HighResSteadyTime> handle
+deactivate clock
+
+note right of app
+    No Init() required —
+    HighResSteadyTime is always ready.
+end note
+
+app -> clock : Now()
+activate clock
+clock -> backend : Now()
+activate backend
+
+alt QNX
+    backend -> os : ClockCycles()
+    activate os
+    note right of os
+        reads hardware performance counter
+        (raw CPU cycle count)
+    end note
+    os --> backend : cycle_count (uint64_t)
+    deactivate os
+else Linux
+    backend -> os : high_resolution_clock::now()
+    activate os
+    note right of os
+        delegates to CLOCK_MONOTONIC
+    end note
+    os --> backend : time_point
+    deactivate os
+end
+
+backend -> backend : cast to HighResSteadyTime::Timepoint
+backend --> clock : ClockSnapshot{timepoint, NoStatus}
+deactivate backend
+clock --> app : ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>
+deactivate clock
+
+app -> app : snapshot.TimePoint()
+
+@enduml

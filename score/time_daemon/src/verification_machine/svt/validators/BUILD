@@ -30,7 +30,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score/time_daemon:__subpackages__"],
     deps = [
-        "//score/time/HighPrecisionLocalSteadyClock",
+        "//score/time/high_res_steady_time:interface",
         "//score/time_daemon/src/common:logging_contexts",
         "//score/time_daemon/src/common/data_types:ptp_time_info",
         "//score/time_daemon/src/verification_machine/core:verification_machine",
@@ -56,7 +56,7 @@ cc_test(
     tags = ["unit"],
     deps = [
         ":validators",
-        "//score/time/HighPrecisionLocalSteadyClock:utest_mock",
+        "//score/time/high_res_steady_time:high_res_steady_time_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",
@@ -71,7 +71,7 @@ cc_test(
     tags = ["unit"],
     deps = [
         ":validators",
-        "//score/time/HighPrecisionLocalSteadyClock:utest_mock",
+        "//score/time/high_res_steady_time:high_res_steady_time_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",
@@ -86,7 +86,7 @@ cc_test(
     tags = ["unit"],
     deps = [
         ":validators",
-        "//score/time/HighPrecisionLocalSteadyClock:utest_mock",
+        "//score/time/high_res_steady_time:high_res_steady_time_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",

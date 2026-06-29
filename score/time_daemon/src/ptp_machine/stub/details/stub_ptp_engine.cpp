@@ -13,7 +13,6 @@
 #include "score/time_daemon/src/ptp_machine/stub/details/stub_ptp_engine.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
-#include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
 
 #include <array>
 #include <numeric>
@@ -32,7 +31,7 @@ std::uint16_t sequence_id_{0U};
 
 }  // namespace
 
-StubPTPEngine::StubPTPEngine(std::unique_ptr<PtpTimeInfo::ReferenceClock> local_clock) noexcept
+StubPTPEngine::StubPTPEngine(PtpTimeInfo::ReferenceClock local_clock) noexcept
     : local_clock_{std::move(local_clock)}
 {
     score::mw::log::LogInfo(kGPtpMachineContext) << "StubPTPEngine created!";
@@ -62,9 +61,9 @@ bool StubPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 
 bool StubPTPEngine::ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept
 {
-    const auto now             = local_clock_->Now();
-    time_info.local_time       = now;
-    time_info.ptp_assumed_time = now.time_since_epoch();
+    const auto snapshot       = local_clock_.Now();
+    time_info.local_time       = snapshot.TimePoint();
+    time_info.ptp_assumed_time = snapshot.TimeSinceEpoch();
     time_info.rate_deviation   = 0.0;
     time_info.status           = PtpStatus{true, false, false, false, true};
 
@@ -76,7 +75,7 @@ bool StubPTPEngine::ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept
 bool StubPTPEngine::ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept
 {
     // Stub: timestamps derived from local clock so they increase monotonically
-    const auto now_ns = static_cast<std::uint64_t>(local_clock_->Now().time_since_epoch().count());
+    const auto now_ns = static_cast<std::uint64_t>(local_clock_.Now().TimeSinceEpoch().count());
 
     time_info.sync_fup_data.precise_origin_timestamp   = now_ns;
     time_info.sync_fup_data.reference_global_timestamp = now_ns;
@@ -94,7 +93,7 @@ bool StubPTPEngine::ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexce
 bool StubPTPEngine::ReadPDelayMeasurementData(PtpTimeInfo& time_info) const noexcept
 {
     // Stub: simulate a round-trip with 1 µs one-way pdelay anchored to local clock
-    const auto now_ns = static_cast<std::uint64_t>(local_clock_->Now().time_since_epoch().count());
+    const auto now_ns = static_cast<std::uint64_t>(local_clock_.Now().TimeSinceEpoch().count());
     constexpr std::uint64_t kOnewayDelayNs{1'000U};  // 1 µs simulated one-way pdelay
 
     time_info.pdelay_data.request_origin_timestamp   = now_ns;

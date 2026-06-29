@@ -1,0 +1,92 @@
+@startuml t1_scoped_override
+
+title T1 — Testing: ScopedClockOverride (Scope-Bound Override)
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description                  |
+    |<#LightSalmon>        | Test code                     |
+    |<#LightGreen>         | score::time framework         |
+    |<#PaleGoldenRod>      | Mock backend (GMock)          |
+    |<#LightBlue>          | Application Under Test        |
+endlegend
+
+box "Test" #fafaf0
+    participant "TEST()" as test #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "ScopedClockOverride\n<VehicleTime>" as guard #LightGreen
+    participant "VehicleClock" as clock #LightGreen
+end box
+
+box "Mock" #fffff0
+    participant "VehicleClockMock" as mock #PaleGoldenRod
+end box
+
+box "System Under Test" #e6f0ff
+    participant "MyService\n(calls GetInstance())" as sut #LightBlue
+end box
+
+== Test setup: override clock backend with mock ==
+
+test -> mock : make_shared<VehicleClockMock>()
+activate mock
+mock --> test : shared_ptr<VehicleTimeMock>
+
+test -> guard : test_utils::ScopedClockOverride<VehicleTime>{mock}
+activate guard
+guard -> clock : OverrideForTest(mock)
+activate clock
+note right of clock
+    static override_ = mock
+    next GetInstance() returns mock
+end note
+clock --> guard
+deactivate clock
+
+test -> test : EXPECT_CALL(*mock, Now())\n  .WillOnce(Return(snapshot))
+
+== Test case execution ==
+
+test -> sut : MySvc svc{}\nsvc.DoSomething()
+activate sut
+
+sut -> clock : VehicleClock::GetInstance()
+activate clock
+note right of clock
+    override_ is set → returns mock
+end note
+clock --> sut : Clock<VehicleTime> wrapping mock
+deactivate clock
+
+sut -> clock : Now()
+activate clock
+clock -> mock : Now()
+activate mock
+mock --> clock : ClockSnapshot{...}
+deactivate mock
+clock --> sut : snapshot
+deactivate clock
+
+sut --> test
+deactivate sut
+
+== Test teardown: guard goes out of scope, backend override is reset ==
+
+test -> guard : (destructor)
+guard -> clock : ResetOverride()
+activate clock
+note right of clock
+    static override_ = nullptr
+    production backend resumes
+end note
+clock --> guard
+deactivate clock
+deactivate guard
+deactivate mock
+
+@enduml

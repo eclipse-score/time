@@ -36,6 +36,7 @@ cc_library(
     deps = [
         "//score/time_daemon/src/common/data_types:ptp_time_info",
         "//score/time_daemon/src/ipc:data_converter",
+        "@score_baselibs//score/language/futurecpp",
     ],
 )
 

@@ -1,0 +1,61 @@
+@startuml sc1_polling
+
+title SC1 — SystemClock: Time Polling
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description               |
+    |<#LightSalmon>        | Application code           |
+    |<#LightGreen>         | score::time framework      |
+    |<#LightCoral>         | SystemClock backend        |
+    |<#NavajoWhite>        | OS / std::chrono           |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Application\ncode" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "SystemClock" as clock #LightGreen
+    participant "SystemClockBackend" as backend #LightCoral
+end box
+
+box "OS / std::chrono" #fff8f0
+    participant "system_clock\n(CLOCK_REALTIME)" as os #NavajoWhite
+end box
+
+app -> clock : SystemClock::GetInstance()
+activate clock
+clock -> clock : check cache / override
+clock --> app : Clock<system_clock> handle
+deactivate clock
+
+note right of app
+    No Init() required —
+    SystemClock is always ready.
+end note
+
+app -> clock : Now()
+activate clock
+clock -> backend : Now()
+activate backend
+backend -> os : system_clock::now()
+activate os
+note right of os
+    CLOCK_REALTIME — wall-clock time;
+    may be adjusted by privileged processes
+    (e.g. sdat, clock_settime)
+end note
+os --> backend : system_clock::time_point
+deactivate os
+backend --> clock : ClockSnapshot{timepoint, NoStatus}
+deactivate backend
+clock --> app : ClockSnapshot<system_clock::time_point, NoStatus>
+deactivate clock
+
+app -> app : snapshot.TimePoint()
+
+@enduml

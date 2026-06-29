@@ -19,7 +19,7 @@ namespace score
 namespace td
 {
 
-TimeJumpsValidator::TimeJumpsValidator(std::unique_ptr<PtpTimeInfo::ReferenceClock> debouncing_clock,
+TimeJumpsValidator::TimeJumpsValidator(PtpTimeInfo::ReferenceClock debouncing_clock,
                                        std::chrono::nanoseconds max_time_jump_allowed,
                                        std::chrono::nanoseconds sync_debounce_threshold,
                                        std::uint8_t valid_frames_threshold)
@@ -122,7 +122,7 @@ void TimeJumpsValidator::HandleIdleState(const PtpTimeInfo& data)
 
 void TimeJumpsValidator::HandleInitialSyncDebouncingState()
 {
-    if ((sync_debouncing_init_time_ + sync_debounce_threshold_) < debouncing_clock_->Now().time_since_epoch())
+    if ((sync_debouncing_init_time_ + sync_debounce_threshold_) < debouncing_clock_.Now().TimeSinceEpoch())
     {
         GoToTimeJumpHandling();
     }
@@ -177,7 +177,7 @@ void TimeJumpsValidator::UpdateStatus(PtpTimeInfo& data)
 void TimeJumpsValidator::GoToInitialSyncDebouncing()
 {
     // Set debouncing timer, so we will calculate sync debouncing time from this point
-    sync_debouncing_init_time_ = debouncing_clock_->Now().time_since_epoch();
+    sync_debouncing_init_time_ = debouncing_clock_.Now().TimeSinceEpoch();
     current_state_ = ProcessingStates::kInitialSyncDebouncing;
     score::mw::log::LogDebug(kVerificationMachineContext)
         << "TimeJumpsValidator: Switch to kInitialSyncDebouncing state";

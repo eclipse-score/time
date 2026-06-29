@@ -14,7 +14,7 @@
 #include "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
-#include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 
 namespace score
 {
@@ -23,18 +23,17 @@ namespace td
 
 std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::string& name)
 {
-    const auto hplsc_factory = score::time::HighPrecisionLocalSteadyClock::FactoryImpl();
     auto machine = std::make_shared<SvtVerificationMachine>(
         name,
         []() {
             return std::make_unique<SynchronizationValidator>(/*args for validation*/);
         },
-        [&hplsc_factory]() {
-            return std::make_unique<TimeoutValidator>(hplsc_factory.CreateHighPrecisionLocalSteadyClock(),
+        []() {
+            return std::make_unique<TimeoutValidator>(score::time::HighResSteadyClock::GetInstance(),
                                                       std::chrono::nanoseconds{3'300'000'000});
         },
-        [&hplsc_factory]() {
-            return std::make_unique<TimeJumpsValidator>(hplsc_factory.CreateHighPrecisionLocalSteadyClock(),
+        []() {
+            return std::make_unique<TimeJumpsValidator>(score::time::HighResSteadyClock::GetInstance(),
                                                         std::chrono::nanoseconds(500'000),
                                                         std::chrono::nanoseconds(5'000'000'000),
                                                         2U);

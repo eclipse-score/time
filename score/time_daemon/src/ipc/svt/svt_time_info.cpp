@@ -12,6 +12,8 @@
  ********************************************************************************/
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
+#include <score/assert.hpp>
+
 #include <algorithm>
 #include <cmath>
 #include <limits>
@@ -116,7 +118,13 @@ bool operator!=(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) n
 
 void TimeBaseSnapshot::CreateFrom(const PtpTimeInfo& info)
 {
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(
+        info.ptp_assumed_time.count() >= 0,
+        "score::td: CreateFrom(): ptp_assumed_time is negative");
     ptp_assumed_time = static_cast<uint64_t>(info.ptp_assumed_time.count());
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(
+        info.local_time.time_since_epoch().count() >= 0,
+        "score::td: CreateFrom(): local_time is negative");
     local_time = static_cast<uint64_t>(info.local_time.time_since_epoch().count());
     rate_deviation = info.rate_deviation;
     status.is_correct = info.status.is_correct;

@@ -36,7 +36,7 @@ namespace td
 class TimeJumpsValidator : public VerificationStage<PtpTimeInfo>
 {
   public:
-    TimeJumpsValidator(std::unique_ptr<PtpTimeInfo::ReferenceClock> debouncing_clock,
+    TimeJumpsValidator(PtpTimeInfo::ReferenceClock debouncing_clock,
                        std::chrono::nanoseconds max_time_jump_allowed,
                        std::chrono::nanoseconds sync_debounce_threshold,
                        std::uint8_t valid_frames_threshold);
@@ -74,7 +74,7 @@ class TimeJumpsValidator : public VerificationStage<PtpTimeInfo>
     ProcessingStates current_state_;
     std::optional<PtpTimeInfo> last_sync_frame_;
     PtpTimeInfo::ReferenceClock::duration sync_debouncing_init_time_;
-    std::unique_ptr<PtpTimeInfo::ReferenceClock> debouncing_clock_;
+    PtpTimeInfo::ReferenceClock debouncing_clock_;
     std::uint8_t valid_frames_cnt_;
 };
 

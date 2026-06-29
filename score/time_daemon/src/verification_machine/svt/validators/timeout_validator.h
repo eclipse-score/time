@@ -25,13 +25,13 @@ namespace td
 
 /**
  * @brief Validation stage that checks if PTP frames are received, and raise TIMEOUT flag accordingly
- * @param debouncing_clock - reference clock object - used to calculate timeout
+ * @param timeout_clock - reference clock object - used to calculate timeout
  * @param reception_timeout - threshold in nanoseconds to define max timeout threshold
  */
 class TimeoutValidator : public VerificationStage<PtpTimeInfo>
 {
   public:
-    explicit TimeoutValidator(std::unique_ptr<PtpTimeInfo::ReferenceClock> timeout_clock,
+    explicit TimeoutValidator(PtpTimeInfo::ReferenceClock timeout_clock,
                               std::chrono::nanoseconds reception_timeout);
     virtual ~TimeoutValidator() = default;
 
@@ -42,7 +42,7 @@ class TimeoutValidator : public VerificationStage<PtpTimeInfo>
     bool IsNewFrameReceived(const PtpTimeInfo& data);
 
     const std::chrono::nanoseconds threshold_;
-    std::unique_ptr<PtpTimeInfo::ReferenceClock> timeout_clock_;
+    PtpTimeInfo::ReferenceClock timeout_clock_;
     PtpTimeInfo::ReferenceClock::duration reception_time_;
     std::optional<PtpTimeInfo> last_received_data_;
 };

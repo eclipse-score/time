@@ -44,7 +44,7 @@ The design consists of several sw components:
 4. `PTP Machine <#ptp-machine-sw-component>`_
 5. `Verification Machine <#verification-machine-sw-component>`_
 6. `IPC Machine <#ipc-machine-sw-component>`_
-7. `score::time::svt <#score-time-synchronizedvehicletime-sw-component>`_
+7. `VehicleClock (score::time) <#vehicleclock-sw-component>`_
 
 Deployment view
 ~~~~~~~~~~~~~~~
@@ -332,7 +332,7 @@ The ``ControlFlowDivider`` has the following requirements:
 - The ``ControlFlowDivider`` shall provide separate execution threads for different control flows
 - The ``ControlFlowDivider`` shall isolate components from execution time variations in other components
 - The ``ControlFlowDivider`` shall maintain consistent data publishing rates to the subscribers
-- - The ``ControlFlowDivider`` shall push the last received data to the subscribers if there is no new data for some time with the predefined rate, to avoid data missing in the processing pipeline
+- The ``ControlFlowDivider`` shall push the last received data to the subscribers if there is no new data for some time with the predefined rate, to avoid data missing in the processing pipeline
 - The ``ControlFlowDivider`` shall enable periodic processing of the pipeline through consistent event generation
 - The ``ControlFlowDivider`` shall buffer incoming data from fast producers
 
@@ -413,7 +413,7 @@ The ``PTP Machine`` has the following requirements:
 
 - The ``PTP Machine`` shall retrieve the latest time information from the PTP stack (e.g., ``ptpd``)
 - The ``PTP Machine`` shall publish retrieved time information to the ``Message Broker`` using the defined topic
-- The ``PTP Machine`` shall format data according to the ``PTPTimeInfo`` structure required by downstream components
+- The ``PTP Machine`` shall format data according to the ``PtpTimeInfo`` structure required by downstream components
 - The ``PTP Machine`` shall retrieve time information at a consistent rate to maintain time synchronization
 - The ``PTP Machine`` shall maintain consistent publishing rates for time data even when experiencing delays in PTP stack communication.
 - The ``PTP Machine`` shall support exchangeability with different PTP stack implementations
@@ -549,7 +549,7 @@ When the ``Verification Machine`` receives new PTP data, it processes it through
 IPC Machine SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``IPC Machine`` component shall get the `verified-ptp-data <#verified-ptp-data>`_ from the ``Verification Machine`` and provide it to the ``score::time::svt`` through the ``score::communication`` module. As the fast initial implementation, a custom shared memory backend is used.
+The ``IPC Machine`` component shall get the `verified-ptp-data <#verified-ptp-data>`_ from the ``Verification Machine`` and provide it to the ``VehicleClock`` backend (see :doc:`score::time — Unified Clock Interface <../time/index>`) through a custom shared memory channel.
 
 The component provides two sub components: publisher and receiver to be deployed on the TimeDaemon and Application sides accordingly.
 
@@ -558,7 +558,7 @@ Component requirements
 
 The ``IPC Machine`` has the following requirements:
 
-- The ``IPC Machine`` shall provide verified time data to the ``score::time::svt`` component through the ``score::communication`` module
+- The ``IPC Machine`` shall provide verified time data to the ``VehicleClock`` backend component through a custom shared memory channel
 - The ``IPC Machine`` shall create and initialize the IPC
 - The ``IPC Machine`` shall support multiple client applications accessing the same time data
 - The ``IPC Machine`` shall subscribe to the `verified_ptp_data <#verified-ptp-data>`_ topic via the ``Message Broker``
@@ -587,7 +587,7 @@ Initialization is divided to two parts:
 1. Initialization on the TimeDaemon side
 2. Initialization on the Application side
 
-Important thing, the ``score::communication`` publisher shall be created and offered by the ``TimeDaemon`` before the Application side subscriber can connect. The Application shall retry until the service is found.
+Important thing, the shared memory IPC publisher shall be created and offered by the ``TimeDaemon`` before the Application side subscriber can connect. The Application shall retry until the service is found.
 
 The main workflow is described below.
 
@@ -607,14 +607,14 @@ The component shall be subscribed during initialization by the ``Application`` o
 Publish new data
 ''''''''''''''''
 
-When ``IPC Machine`` receives the new `verified-ptp-data <#verified-ptp-data>`_ from Message Broker, it shall serialize data and publish it via ``score::communication``.
+When ``IPC Machine`` receives the new `verified-ptp-data <#verified-ptp-data>`_ from Message Broker, it shall serialize data and write it to shared memory.
 
 As long as there are different use cases by using it, like:
 
 1. Get current Vehicle time
 2. Get data for diagnostics
 
-All ``PTPTimeInfo`` data (or almost all) shall be published to the subscribed applications.
+All ``PtpTimeInfo`` data (or almost all) shall be published to the subscribed applications.
 
 The publish workflow is described below.
 
@@ -632,7 +632,7 @@ The publish workflow is described below.
 Receive data
 ''''''''''''
 
-From Application side the receiver shall subscribe via ``score::communication`` and provide the data to the caller.
+From Application side the receiver shall read from shared memory via the IPC receiver component and provide the data to the caller.
 
 The receive workflow is described below.
 
@@ -647,20 +647,25 @@ The receive workflow is described below.
 
    </div>
 
-score::time::SynchronizedVehicleTime SW Component
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+VehicleClock SW component
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``score::time::svt`` is the interface towards Applications, how they could get the access to the Vehicle Time.
+``VehicleClock`` (``score::time::Clock<score::time::VehicleTime>``) is the client-side API through which
+applications access vehicle time.  Its ``td_impl`` backend connects to the ``IPC Machine`` receiver
+to receive the time data published by the ``TimeDaemon``.
+
+For the full API description, test patterns, and Bazel dependencies, see
+:doc:`score::time — Unified Clock Interface <../time/index>`.
 
 Component requirements
 ''''''''''''''''''''''
 
-The ``score::time::svt`` has the following requirements:
+The ``VehicleClock`` has the following requirements:
 
-- The ``score::time::svt`` shall expose vehicle time amd it synchronization status to applications
-- The ``score::time::svt`` shall retrieve time data from ``IPC Machine`` receiver component
-- The ``score::time::svt`` shall adjust vehicle time with local clock to provide accurate timestamps
-- The ``score::time::svt`` shall support fast and low-latency time access via the ``Now()`` method
+- The ``VehicleClock`` backend shall expose vehicle time and its synchronization status to applications
+- The ``VehicleClock`` backend shall retrieve time data from the ``IPC Machine`` receiver component
+- The ``VehicleClock`` backend shall adjust vehicle time with local clock to provide accurate timestamps
+- The ``VehicleClock`` backend shall support fast and low-latency time access via the ``Now()`` method
 
 Class view
 ''''''''''
@@ -681,9 +686,9 @@ The Class Diagram is presented below.
 Receive data
 ''''''''''''
 
-In case of receiving data, the ``Application`` shall just call ``score::time::svt::Now()`` and it shall return the latest published Vehicle Time, which is already adjusted with local clock.
+In case of receiving data, the ``Application`` shall just call ``VehicleClock::GetInstance().Now()`` (see :doc:`score::time <../time/index>`) and it shall return the latest published Vehicle Time, which is already adjusted with local clock.
 
-To do so, in the ``score::time::svt`` there is a thread, who polls for new data the ``IPCMachine::receiver`` and put the data to the process-internal shared buffer (memory), from where it is being read on ``score::time::svt::Now()`` call.
+To do so, in the ``VehicleClock`` ``td_impl`` backend there is a thread, who polls for new data the ``IPCMachine::receiver`` and put the data to the process-internal shared buffer (memory), from where it is being read on ``VehicleClock::GetInstance().Now()`` call.
 
 The main workflow is described below.
 
@@ -698,12 +703,12 @@ The main workflow is described below.
 
    </div>
 
-This design guarantees very low latency of the executing the ``score::time::svt::Now()`` function but brings additional efforts for the thread, memory buffer, synchronizing and so on.
+This design guarantees very low latency of the executing the ``VehicleClock::GetInstance().Now()`` function but brings additional efforts for the thread, memory buffer, synchronizing and so on.
 
 Receive data (simplified)
 ''''''''''''''''''''''''''
 
-As an alternative design, the receiving concept could be simplified and ``score::time::svt::Now()`` could directly invoke the ``IPCMachine::receiver`` call, adjust the ``Vehicle time`` and return it to the ``Application``.
+As an alternative design, the receiving concept could be simplified and ``VehicleClock::GetInstance().Now()`` could directly invoke the ``IPCMachine::receiver`` call, adjust the ``Vehicle time`` and return it to the ``Application``.
 
 The design is represented below.
 
@@ -718,12 +723,12 @@ The design is represented below.
 
    </div>
 
-In this case, there will be no need for additional thread, shared buffer and synchronization, but the ``score::time::svt::Now()`` call will take longer. To decide which approach to use, additional tests shall be
+In this case, there will be no need for additional thread, shared buffer and synchronization, but the ``VehicleClock::GetInstance().Now()`` call will take longer. To decide which approach to use, additional performance tests shall be conducted.
 
 Deployment
 ''''''''''
 
-The implementation of ``score::time::svt::details::timed`` could be placed in parallel to other implementations, like ``score::time::svt::details::mocked`` one and could be selected by Bazel select. Also it will ease the integration process.
+The ``td_impl`` backend of ``VehicleClock`` can be placed in parallel to other backends, like the stub implementation, and can be selected by Bazel ``select()``. This eases the integration process.
 
 Logging configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -980,4 +985,4 @@ During ``TimeDaemon`` initialization:
 ASIL-B qualification
 ~~~~~~~~~~~~~~~~~~~~~
 
-Clean separation of concerns allows ``score::time::svt`` as well as ``TimeDaemon`` to be qualified according to ASIL-B requirements following ISO 26262 standard.
+Clean separation of concerns allows the ``VehicleClock`` ``td_impl`` backend as well as ``TimeDaemon`` to be qualified according to ASIL-B requirements following ISO 26262 standard.
