@@ -51,7 +51,8 @@ TEST_F(SystemTimeHandlerTest, ReportContainsUnixTimeFromMock)
 {
     // 2026-01-01 00:00:00 UTC in nanoseconds since Unix epoch
     constexpr std::int64_t kYear2026Ns = 1'767'225'600LL * 1'000'000'000LL;
-    const std::chrono::system_clock::time_point tp{std::chrono::nanoseconds{kYear2026Ns}};
+    const std::chrono::system_clock::time_point tp{
+        std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::nanoseconds{kYear2026Ns})};
     EXPECT_CALL(*mock_, Now()).WillOnce(Return(
         score::time::ClockSnapshot<std::chrono::system_clock::time_point, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));
@@ -64,7 +65,8 @@ TEST_F(SystemTimeHandlerTest, ReportContainsUnixTimeFromMock)
 
 TEST_F(SystemTimeHandlerTest, ReportContainsZeroForEpochTimepoint)
 {
-    const std::chrono::system_clock::time_point tp{std::chrono::nanoseconds{0}};
+    const std::chrono::system_clock::time_point tp{
+        std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::nanoseconds{0})};
     EXPECT_CALL(*mock_, Now()).WillOnce(Return(
         score::time::ClockSnapshot<std::chrono::system_clock::time_point, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));

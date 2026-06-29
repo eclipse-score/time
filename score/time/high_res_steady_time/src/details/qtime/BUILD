@@ -53,7 +53,8 @@ cc_test(
         "//score/time/high_res_steady_time/src:high_res_steady_clock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
-        "@score_baselibs//score/os/qnx:neutrino_qnx_mock",
+        "@score_baselibs//score/mw/log:console_only_backend",
+        "@score_baselibs//score/os/mocklib/qnx:neutrino_qnx_mock",
     ],
 )
 
@@ -84,6 +85,7 @@ cc_test(
         ":qclock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
 

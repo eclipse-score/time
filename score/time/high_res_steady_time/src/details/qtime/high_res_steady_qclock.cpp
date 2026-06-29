@@ -16,7 +16,7 @@
 #include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 
-#include "score/lib/os/qnx/neutrino.h"
+#include "score/os/qnx/neutrino.h"
 
 #include <chrono>
 #include <memory>
