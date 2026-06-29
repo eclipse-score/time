@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TS_CLIENT_GPTP_IPC_RECEIVER_H
-#define SCORE_TS_CLIENT_GPTP_IPC_RECEIVER_H
+#ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H
+#define SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H
 
 #include "score/ts_client/src/gptp_ipc_channel.h"
 #include "score/memory/shared/shared_memory_factory.h"
@@ -55,4 +55,4 @@ class GptpIpcReceiver final
 }  // namespace ts
 }  // namespace score
 
-#endif  // SCORE_TS_CLIENT_GPTP_IPC_RECEIVER_H
+#endif  // SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H

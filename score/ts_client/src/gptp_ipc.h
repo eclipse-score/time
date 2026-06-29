@@ -10,11 +10,11 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TS_CLIENT_GPTP_IPC_H
-#define SCORE_TS_CLIENT_GPTP_IPC_H
+#ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_H
+#define SCORE_TS_CLIENT_SRC_GPTP_IPC_H
 
 #include "score/ts_client/src/gptp_ipc_channel.h"
 #include "score/ts_client/src/gptp_ipc_publisher.h"
 #include "score/ts_client/src/gptp_ipc_receiver.h"
 
-#endif  // SCORE_TS_CLIENT_GPTP_IPC_H
+#endif  // SCORE_TS_CLIENT_SRC_GPTP_IPC_H
