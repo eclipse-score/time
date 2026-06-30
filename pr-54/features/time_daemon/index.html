@@ -27,14 +27,14 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=6e51530f" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=e97392eb" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=d9fd870c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=bb63a8e1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=82a1844f" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=8048e6ee" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
@@ -46,16 +46,16 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
     <script src="../../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
@@ -64,27 +64,32 @@
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'features/time_daemon/index';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             false;
         </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Concept for TimeSlave" href="../time_slave/index.html" />
-    <link rel="prev" title="Features" href="../index.html" />
+    <link rel="prev" title="score::time — Unified Clock Interface" href="../time/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.1" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
+  <body data-default-mode="">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
@@ -116,7 +121,7 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -332,12 +337,20 @@
   </div>
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
         <div class="sidebar-primary-item">
+
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Features:</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../time/index.html">score::time — Unified Clock Interface</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Concept for TimeDaemon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../time_slave/index.html">Concept for TimeSlave</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../test_cases.html">Test Cases</a></li>
@@ -426,7 +439,7 @@
 <li><p><a class="reference internal" href="#ptp-machine-sw-component" id="id49">PTP Machine SW component</a></p></li>
 <li><p><a class="reference internal" href="#verification-machine-sw-component" id="id50">Verification Machine SW component</a></p></li>
 <li><p><a class="reference internal" href="#ipc-machine-sw-component" id="id51">IPC Machine SW component</a></p></li>
-<li><p><a class="reference internal" href="#score-time-synchronizedvehicletime-sw-component" id="id52">score::time::SynchronizedVehicleTime SW Component</a></p></li>
+<li><p><a class="reference internal" href="#vehicleclock-sw-component" id="id52">VehicleClock SW component</a></p></li>
 </ul>
 </li>
 <li><p><a class="reference internal" href="#logging-configuration" id="id53">Logging configuration</a></p></li>
@@ -479,7 +492,7 @@
 <li><p><a class="reference external" href="#ptp-machine-sw-component">PTP Machine</a></p></li>
 <li><p><a class="reference external" href="#verification-machine-sw-component">Verification Machine</a></p></li>
 <li><p><a class="reference external" href="#ipc-machine-sw-component">IPC Machine</a></p></li>
-<li><p><a class="reference external" href="#score-time-synchronizedvehicletime-sw-component">score::time::svt</a></p></li>
+<li><p><a class="reference external" href="#vehicleclock-sw-component">VehicleClock (score::time)</a></p></li>
 </ol>
 </section>
 <section id="deployment-view">
@@ -664,10 +677,7 @@ To separate the control flows, the <a class="reference external" href="#controlf
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ControlFlowDivider</span></code> shall provide separate execution threads for different control flows</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ControlFlowDivider</span></code> shall isolate components from execution time variations in other components</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ControlFlowDivider</span></code> shall maintain consistent data publishing rates to the subscribers</p></li>
-<li><ul>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ControlFlowDivider</span></code> shall push the last received data to the subscribers if there is no new data for some time with the predefined rate, to avoid data missing in the processing pipeline</p></li>
-</ul>
-</li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ControlFlowDivider</span></code> shall enable periodic processing of the pipeline through consistent event generation</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">ControlFlowDivider</span></code> shall buffer incoming data from fast producers</p></li>
 </ul>
@@ -716,7 +726,7 @@ All communication with the ptp stack ight use <code class="docutils literal notr
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PTP</span> <span class="pre">Machine</span></code> shall retrieve the latest time information from the PTP stack (e.g., <code class="docutils literal notranslate"><span class="pre">ptpd</span></code>)</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PTP</span> <span class="pre">Machine</span></code> shall publish retrieved time information to the <code class="docutils literal notranslate"><span class="pre">Message</span> <span class="pre">Broker</span></code> using the defined topic</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">PTP</span> <span class="pre">Machine</span></code> shall format data according to the <code class="docutils literal notranslate"><span class="pre">PTPTimeInfo</span></code> structure required by downstream components</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">PTP</span> <span class="pre">Machine</span></code> shall format data according to the <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> structure required by downstream components</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PTP</span> <span class="pre">Machine</span></code> shall retrieve time information at a consistent rate to maintain time synchronization</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PTP</span> <span class="pre">Machine</span></code> shall maintain consistent publishing rates for time data even when experiencing delays in PTP stack communication.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">PTP</span> <span class="pre">Machine</span></code> shall support exchangeability with different PTP stack implementations</p></li>
@@ -787,13 +797,13 @@ All communication with the ptp stack ight use <code class="docutils literal notr
 </section>
 <section id="ipc-machine-sw-component">
 <h4><a class="toc-backref" href="#id51" role="doc-backlink">IPC Machine SW component</a><a class="headerlink" href="#ipc-machine-sw-component" title="Link to this heading">#</a></h4>
-<p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> component shall get the <a class="reference external" href="#verified-ptp-data">verified-ptp-data</a> from the <code class="docutils literal notranslate"><span class="pre">Verification</span> <span class="pre">Machine</span></code> and provide it to the <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> through the <code class="docutils literal notranslate"><span class="pre">score::communication</span></code> module. As the fast initial implementation, a custom shared memory backend is used.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> component shall get the <a class="reference external" href="#verified-ptp-data">verified-ptp-data</a> from the <code class="docutils literal notranslate"><span class="pre">Verification</span> <span class="pre">Machine</span></code> and provide it to the <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> backend (see <a class="reference internal" href="../time/index.html"><span class="doc">score::time — Unified Clock Interface</span></a>) through a custom shared memory channel.</p>
 <p>The component provides two sub components: publisher and receiver to be deployed on the TimeDaemon and Application sides accordingly.</p>
 <section id="id24">
 <h5>Component requirements<a class="headerlink" href="#id24" title="Link to this heading">#</a></h5>
 <p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> has the following requirements:</p>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> shall provide verified time data to the <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> component through the <code class="docutils literal notranslate"><span class="pre">score::communication</span></code> module</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> shall provide verified time data to the <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> backend component through a custom shared memory channel</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> shall create and initialize the IPC</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> shall support multiple client applications accessing the same time data</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> shall subscribe to the <a class="reference external" href="#verified-ptp-data">verified_ptp_data</a> topic via the <code class="docutils literal notranslate"><span class="pre">Message</span> <span class="pre">Broker</span></code></p></li>
@@ -812,7 +822,7 @@ All communication with the ptp stack ight use <code class="docutils literal notr
 <li><p>Initialization on the TimeDaemon side</p></li>
 <li><p>Initialization on the Application side</p></li>
 </ol>
-<p>Important thing, the <code class="docutils literal notranslate"><span class="pre">score::communication</span></code> publisher shall be created and offered by the <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> before the Application side subscriber can connect. The Application shall retry until the service is found.</p>
+<p>Important thing, the shared memory IPC publisher shall be created and offered by the <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> before the Application side subscriber can connect. The Application shall retry until the service is found.</p>
 <p>The main workflow is described below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../_images/plantuml-4296e5579e5c620e5a374c1b70aeca0b7795ac6d.svg" type="image/svg+xml" style="width:1412px;height:650px;background:#FFFFFF;"></object></p>
@@ -820,36 +830,40 @@ All communication with the ptp stack ight use <code class="docutils literal notr
 </section>
 <section id="id29">
 <h5>Publish new data<a class="headerlink" href="#id29" title="Link to this heading">#</a></h5>
-<p>When <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> receives the new <a class="reference external" href="#verified-ptp-data">verified-ptp-data</a> from Message Broker, it shall serialize data and publish it via <code class="docutils literal notranslate"><span class="pre">score::communication</span></code>.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> receives the new <a class="reference external" href="#verified-ptp-data">verified-ptp-data</a> from Message Broker, it shall serialize data and write it to shared memory.</p>
 <p>As long as there are different use cases by using it, like:</p>
 <ol class="arabic simple">
 <li><p>Get current Vehicle time</p></li>
 <li><p>Get data for diagnostics</p></li>
 </ol>
-<p>All <code class="docutils literal notranslate"><span class="pre">PTPTimeInfo</span></code> data (or almost all) shall be published to the subscribed applications.</p>
+<p>All <code class="docutils literal notranslate"><span class="pre">PtpTimeInfo</span></code> data (or almost all) shall be published to the subscribed applications.</p>
 <p>The publish workflow is described below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../_images/plantuml-a7786403cc02a36eb9f53e06892861be767cde5e.svg" type="image/svg+xml" style="width:775px;height:511px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="receive-data">
 <h5>Receive data<a class="headerlink" href="#receive-data" title="Link to this heading">#</a></h5>
-<p>From Application side the receiver shall subscribe via <code class="docutils literal notranslate"><span class="pre">score::communication</span></code> and provide the data to the caller.</p>
+<p>From Application side the receiver shall read from shared memory via the IPC receiver component and provide the data to the caller.</p>
 <p>The receive workflow is described below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../_images/plantuml-be8d0316bab00c5ed44aea008f0de28652b57b76.svg" type="image/svg+xml" style="width:470px;height:341px;background:#FFFFFF;"></object></p>
 </div></section>
 </section>
-<section id="score-time-synchronizedvehicletime-sw-component">
-<h4><a class="toc-backref" href="#id52" role="doc-backlink">score::time::SynchronizedVehicleTime SW Component</a><a class="headerlink" href="#score-time-synchronizedvehicletime-sw-component" title="Link to this heading">#</a></h4>
-<p><code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> is the interface towards Applications, how they could get the access to the Vehicle Time.</p>
+<section id="vehicleclock-sw-component">
+<h4><a class="toc-backref" href="#id52" role="doc-backlink">VehicleClock SW component</a><a class="headerlink" href="#vehicleclock-sw-component" title="Link to this heading">#</a></h4>
+<p><code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> (<code class="docutils literal notranslate"><span class="pre">score::time::Clock&lt;score::time::VehicleTime&gt;</span></code>) is the client-side API through which
+applications access vehicle time.  Its <code class="docutils literal notranslate"><span class="pre">td_impl</span></code> backend connects to the <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> receiver
+to receive the time data published by the <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code>.</p>
+<p>For the full API description, test patterns, and Bazel dependencies, see
+<a class="reference internal" href="../time/index.html"><span class="doc">score::time — Unified Clock Interface</span></a>.</p>
 <section id="id31">
 <h5>Component requirements<a class="headerlink" href="#id31" title="Link to this heading">#</a></h5>
-<p>The <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> has the following requirements:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> has the following requirements:</p>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> shall expose vehicle time amd it synchronization status to applications</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> shall retrieve time data from <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> receiver component</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> shall adjust vehicle time with local clock to provide accurate timestamps</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> shall support fast and low-latency time access via the <code class="docutils literal notranslate"><span class="pre">Now()</span></code> method</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> backend shall expose vehicle time and its synchronization status to applications</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> backend shall retrieve time data from the <code class="docutils literal notranslate"><span class="pre">IPC</span> <span class="pre">Machine</span></code> receiver component</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> backend shall adjust vehicle time with local clock to provide accurate timestamps</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> backend shall support fast and low-latency time access via the <code class="docutils literal notranslate"><span class="pre">Now()</span></code> method</p></li>
 </ul>
 </section>
 <section id="id32">
@@ -860,24 +874,24 @@ All communication with the ptp stack ight use <code class="docutils literal notr
 </div></section>
 <section id="id33">
 <h5>Receive data<a class="headerlink" href="#id33" title="Link to this heading">#</a></h5>
-<p>In case of receiving data, the <code class="docutils literal notranslate"><span class="pre">Application</span></code> shall just call <code class="docutils literal notranslate"><span class="pre">score::time::svt::Now()</span></code> and it shall return the latest published Vehicle Time, which is already adjusted with local clock.</p>
-<p>To do so, in the <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> there is a thread, who polls for new data the <code class="docutils literal notranslate"><span class="pre">IPCMachine::receiver</span></code> and put the data to the process-internal shared buffer (memory), from where it is being read on <code class="docutils literal notranslate"><span class="pre">score::time::svt::Now()</span></code> call.</p>
+<p>In case of receiving data, the <code class="docutils literal notranslate"><span class="pre">Application</span></code> shall just call <code class="docutils literal notranslate"><span class="pre">VehicleClock::GetInstance().Now()</span></code> (see <a class="reference internal" href="../time/index.html"><span class="doc">score::time</span></a>) and it shall return the latest published Vehicle Time, which is already adjusted with local clock.</p>
+<p>To do so, in the <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> <code class="docutils literal notranslate"><span class="pre">td_impl</span></code> backend there is a thread, who polls for new data the <code class="docutils literal notranslate"><span class="pre">IPCMachine::receiver</span></code> and put the data to the process-internal shared buffer (memory), from where it is being read on <code class="docutils literal notranslate"><span class="pre">VehicleClock::GetInstance().Now()</span></code> call.</p>
 <p>The main workflow is described below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../_images/plantuml-e557cb2f9a5a220c6a04657bf68a545998986e5f.svg" type="image/svg+xml" style="width:809px;height:526px;background:#FFFFFF;"></object></p>
-</div><p>This design guarantees very low latency of the executing the <code class="docutils literal notranslate"><span class="pre">score::time::svt::Now()</span></code> function but brings additional efforts for the thread, memory buffer, synchronizing and so on.</p>
+</div><p>This design guarantees very low latency of the executing the <code class="docutils literal notranslate"><span class="pre">VehicleClock::GetInstance().Now()</span></code> function but brings additional efforts for the thread, memory buffer, synchronizing and so on.</p>
 </section>
 <section id="receive-data-simplified">
 <h5>Receive data (simplified)<a class="headerlink" href="#receive-data-simplified" title="Link to this heading">#</a></h5>
-<p>As an alternative design, the receiving concept could be simplified and <code class="docutils literal notranslate"><span class="pre">score::time::svt::Now()</span></code> could directly invoke the <code class="docutils literal notranslate"><span class="pre">IPCMachine::receiver</span></code> call, adjust the <code class="docutils literal notranslate"><span class="pre">Vehicle</span> <span class="pre">time</span></code> and return it to the <code class="docutils literal notranslate"><span class="pre">Application</span></code>.</p>
+<p>As an alternative design, the receiving concept could be simplified and <code class="docutils literal notranslate"><span class="pre">VehicleClock::GetInstance().Now()</span></code> could directly invoke the <code class="docutils literal notranslate"><span class="pre">IPCMachine::receiver</span></code> call, adjust the <code class="docutils literal notranslate"><span class="pre">Vehicle</span> <span class="pre">time</span></code> and return it to the <code class="docutils literal notranslate"><span class="pre">Application</span></code>.</p>
 <p>The design is represented below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../_images/plantuml-cce25d99e2cfcd1413ff988b57438eca4615a804.svg" type="image/svg+xml" style="width:792px;height:391px;background:#FFFFFF;"></object></p>
-</div><p>In this case, there will be no need for additional thread, shared buffer and synchronization, but the <code class="docutils literal notranslate"><span class="pre">score::time::svt::Now()</span></code> call will take longer. To decide which approach to use, additional tests shall be</p>
+</div><p>In this case, there will be no need for additional thread, shared buffer and synchronization, but the <code class="docutils literal notranslate"><span class="pre">VehicleClock::GetInstance().Now()</span></code> call will take longer. To decide which approach to use, additional performance tests shall be conducted.</p>
 </section>
 <section id="deployment">
 <h5>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">#</a></h5>
-<p>The implementation of <code class="docutils literal notranslate"><span class="pre">score::time::svt::details::timed</span></code> could be placed in parallel to other implementations, like <code class="docutils literal notranslate"><span class="pre">score::time::svt::details::mocked</span></code> one and could be selected by Bazel select. Also it will ease the integration process.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">td_impl</span></code> backend of <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> can be placed in parallel to other backends, like the stub implementation, and can be selected by Bazel <code class="docutils literal notranslate"><span class="pre">select()</span></code>. This eases the integration process.</p>
 </section>
 </section>
 </section>
@@ -1112,7 +1126,7 @@ This component shall:</p>
 </section>
 <section id="asil-b-qualification">
 <h3><a class="toc-backref" href="#id63" role="doc-backlink">ASIL-B qualification</a><a class="headerlink" href="#asil-b-qualification" title="Link to this heading">#</a></h3>
-<p>Clean separation of concerns allows <code class="docutils literal notranslate"><span class="pre">score::time::svt</span></code> as well as <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> to be qualified according to ASIL-B requirements following ISO 26262 standard.</p>
+<p>Clean separation of concerns allows the <code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> <code class="docutils literal notranslate"><span class="pre">td_impl</span></code> backend as well as <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> to be qualified according to ASIL-B requirements following ISO 26262 standard.</p>
 </section>
 </section>
 </section>
@@ -1128,12 +1142,12 @@ This component shall:</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="../time/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Features</p>
+        <p class="prev-next-title">score::time — Unified Clock Interface</p>
       </div>
     </a>
     <a class="right-next"
@@ -1162,8 +1176,8 @@ This component shall:</p>
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#timedaemon-concept">TimeDaemon concept</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#components-decomposition">Components decomposition</a></li>
@@ -1230,7 +1244,7 @@ This component shall:</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#receive-data">Receive data</a></li>
 </ul>
 </li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#score-time-synchronizedvehicletime-sw-component">score::time::SynchronizedVehicleTime SW Component</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#vehicleclock-sw-component">VehicleClock SW component</a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">Component requirements</a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">Class view</a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">Receive data</a></li>
@@ -1287,13 +1301,13 @@ This component shall:</p>
 </div>
 
   <div class="sidebar-secondary-item">
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/features/time_daemon/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div></div>
+
+  <div class="tocsection sourcelink">
+    <a href="../../_sources/features/time_daemon/index.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
 
 </div></div>
               
@@ -1308,8 +1322,8 @@ This component shall:</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1319,7 +1333,7 @@ This component shall:</p>
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>
@@ -1333,7 +1347,7 @@ This component shall:</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
 </p></div>
       
     </div>
