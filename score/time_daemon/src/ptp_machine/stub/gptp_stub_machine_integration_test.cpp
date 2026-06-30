@@ -12,8 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/stub/factory.h"
 #include "score/time_daemon/src/ptp_machine/stub/details/stub_ptp_engine.h"
-#include "score/time/HighPrecisionLocalSteadyClock/high_precision_local_steady_clock.h"
-#include "score/time/HighPrecisionLocalSteadyClock/details/factory_impl.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -32,9 +31,6 @@ class GPTPStubMachineIntegrationTest : public ::testing::Test
   protected:
     void SetUp() override
     {
-        score::time::HighPrecisionLocalSteadyClock::FactoryImpl hplsc_factory{};
-        clock_ = hplsc_factory.CreateHighPrecisionLocalSteadyClock();
-
         machine_ = CreateGPTPStubMachine("StubPTPMachine");
 
         machine_->SetPublishCallback([this](const PtpTimeInfo& data) {
@@ -52,7 +48,6 @@ class GPTPStubMachineIntegrationTest : public ::testing::Test
         machine_.reset();
     }
 
-    std::unique_ptr<score::time::HighPrecisionLocalSteadyClock> clock_;
     std::shared_ptr<GPTPStubMachine> machine_;
     std::promise<void> promise_data_published_;
     PtpTimeInfo published_data_;
@@ -73,13 +68,14 @@ TEST_F(GPTPStubMachineIntegrationTest, GetSynchronizedDataTest)
 {
     EXPECT_TRUE(machine_->Init());
 
-    const auto time_before_start = clock_->Now().time_since_epoch();
+    auto clock = score::time::HighResSteadyClock::GetInstance();
+    const auto time_before_start = clock.Now().TimeSinceEpoch();
 
     machine_->Start();
     auto future = promise_data_published_.get_future();
     ASSERT_EQ(future.wait_for(std::chrono::milliseconds(300)), std::future_status::ready);
 
-    const auto time_after_publish = clock_->Now().time_since_epoch();
+    const auto time_after_publish = clock.Now().TimeSinceEpoch();
 
     {
         std::lock_guard<std::mutex> lock(publish_data_guard_);

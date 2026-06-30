@@ -1,0 +1,87 @@
+@startuml architecture_layers
+
+title score::time — Architecture Layers
+
+skinparam packageStyle rectangle
+skinparam backgroundColor white
+skinparam linetype ortho
+
+legend top left
+    | <#LightBlue>   | Public headers (clients include these)       |
+    | <#LightGreen>  | Framework layer (clock/ package)             |
+    | <#Wheat>       | Time-domain tag packages                     |
+    | <#LightCoral>  | Internal details (clients never include)     |
+endlegend
+
+package "Client Code" #LightYellow {
+    [Application] as app
+    [Unit Test] as test
+}
+
+package "Public Interface — clock/" #LightGreen {
+    [Clock<Tag>] as clock
+    [VehicleClock alias] as vclock
+    [HighResSteadyClock alias] as hclock
+    [SteadyClock alias] as sclock
+    [SystemClock alias] as sysclock
+}
+
+package "Test utilities — clock/ (testonly)" #LightYellow {
+    [test_utils::ScopedClockOverride<Tag>] as guard
+    [test_utils::ClockTestFactory<Tag>] as factory
+}
+
+package "Time-Domain Tags" #Wheat {
+    package "vehicle_time/" {
+        [VehicleTime tag] as vtag
+        [VehicleTimeStatus] as vstatus
+        [PTP callback types] as vcb
+    }
+    package "high_res_steady_time/" {
+        [HighResSteadyTime tag] as htag
+    }
+    package "steady_time/" {
+        [std::chrono::steady_clock tag] as stag
+    }
+    package "system_time/" {
+        [std::chrono::system_clock tag] as systag
+    }
+    package "ptp/" {
+        [TimeSlaveSyncData<Tag>] as tss
+        [PDelayMeasurementData<Tag>] as pdm
+    }
+}
+
+package "Internal — details/ (never included by clients)" #LightCoral {
+    [VehicleClockBackend] as viface
+    [HighResSteadyClockBackend] as hiface
+    [Production backend] as prod
+    [Stub backend] as stub
+}
+
+app --> vclock : #include vehicle_clock.h
+app --> hclock : #include high_res_steady_clock.h
+test --> guard : ScopedClockOverride<VehicleTime>
+test --> factory : ClockTestFactory<HighResSteadyTime>::Make(mock)
+
+vclock --> clock
+hclock --> clock
+sclock --> clock
+sysclock --> clock
+
+clock --> vtag
+clock --> htag
+clock --> stag
+clock --> systag
+
+vtag --> vstatus
+vtag --> vcb
+vcb --> tss
+vcb --> pdm
+
+clock ..> viface : uses (via shared_ptr)
+clock ..> hiface : uses (via shared_ptr)
+viface <|-- prod
+viface <|-- stub
+
+@enduml

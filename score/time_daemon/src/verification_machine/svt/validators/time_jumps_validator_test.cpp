@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 
-#include "score/time/HighPrecisionLocalSteadyClock/high_precision_local_steady_clock_mock.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
 
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
@@ -61,21 +61,22 @@ INSTANTIATE_TEST_CASE_P(
 
 TEST_P(TimeJumpsValidatorParamTest, ValidationTest)
 {
-    auto timeout_clock = std::make_unique<score::time::HighPrecisionLocalSteadyClockMock>();
-    // Get a raw pointer to the mock object before moving it
-    const auto& timeout_clock_mock = timeout_clock.get();
+    auto mock = std::make_shared<score::time::HighResSteadyClockBackendMock>();
 
     TimeJumpsValidator validator(
-        std::move(timeout_clock), std::chrono::nanoseconds(500'000), std::chrono::nanoseconds(5'000'000), 2U);
+        score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
+        std::chrono::nanoseconds(500'000), std::chrono::nanoseconds(5'000'000), 2U);
 
     // Pass synchronized state debouncing
-    EXPECT_CALL(*timeout_clock_mock, Now())
+    EXPECT_CALL(*mock, Now())
         // For initial time
-        .WillOnce(
-            ::testing::Return(score::time::HighPrecisionLocalSteadyClock::time_point{std::chrono::nanoseconds(0)}))
+        .WillOnce(::testing::Return(
+            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(0)}, {}}))
         // For threshold pass
         .WillOnce(::testing::Return(
-            score::time::HighPrecisionLocalSteadyClock::time_point{std::chrono::nanoseconds(6'000'000'000)}));
+            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(6'000'000'000)}, {}}));
 
     PtpTimeInfo entry_data{};
     entry_data.status.is_synchronized = true;

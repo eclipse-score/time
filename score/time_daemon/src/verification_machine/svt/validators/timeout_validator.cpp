@@ -19,11 +19,11 @@ namespace score
 namespace td
 {
 
-TimeoutValidator::TimeoutValidator(std::unique_ptr<PtpTimeInfo::ReferenceClock> timeout_clock,
+TimeoutValidator::TimeoutValidator(PtpTimeInfo::ReferenceClock timeout_clock,
                                    std::chrono::nanoseconds reception_timeout)
     : threshold_{reception_timeout}, timeout_clock_{std::move(timeout_clock)}
 {
-    reception_time_ = timeout_clock_->Now().time_since_epoch();
+    reception_time_ = timeout_clock_.Now().TimeSinceEpoch();
 }
 
 void TimeoutValidator::DoValidation(PtpTimeInfo& data)
@@ -31,7 +31,7 @@ void TimeoutValidator::DoValidation(PtpTimeInfo& data)
     if (IsNewFrameReceived(data))
     {
         // As long as we receive new frames, we update the reception time
-        reception_time_ = timeout_clock_->Now().time_since_epoch();
+        reception_time_ = timeout_clock_.Now().TimeSinceEpoch();
 
         // reset timeout flag
         data.status.is_timeout = false;
@@ -41,7 +41,7 @@ void TimeoutValidator::DoValidation(PtpTimeInfo& data)
     else
     {
         // In case no new frame -> check if timeout occurs
-        const auto now = timeout_clock_->Now().time_since_epoch();
+        const auto now = timeout_clock_.Now().TimeSinceEpoch();
         const auto now_nano = std::chrono::duration_cast<std::chrono::nanoseconds>(now);
         const auto reception_time_nano = std::chrono::duration_cast<std::chrono::nanoseconds>(reception_time_);
         score::mw::log::LogDebug(kVerificationMachineContext)

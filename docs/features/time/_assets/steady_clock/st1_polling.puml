@@ -1,0 +1,60 @@
+@startuml st1_polling
+
+title ST1 — SteadyClock: Time Polling
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description               |
+    |<#LightSalmon>        | Application code           |
+    |<#LightGreen>         | score::time framework      |
+    |<#LightCoral>         | SteadyClock backend        |
+    |<#NavajoWhite>        | OS / std::chrono           |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Application\ncode" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "SteadyClock" as clock #LightGreen
+    participant "SteadyClockBackend" as backend #LightCoral
+end box
+
+box "OS / std::chrono" #fff8f0
+    participant "steady_clock\n(CLOCK_MONOTONIC)" as os #NavajoWhite
+end box
+
+app -> clock : SteadyClock::GetInstance()
+activate clock
+clock -> clock : check cache / override
+clock --> app : Clock<steady_clock> handle
+deactivate clock
+
+note right of app
+    No Init() required —
+    SteadyClock is always ready.
+end note
+
+app -> clock : Now()
+activate clock
+clock -> backend : Now()
+activate backend
+backend -> os : steady_clock::now()
+activate os
+note right of os
+    CLOCK_MONOTONIC — monotonic,
+    may be NTP-slewed, never goes backward
+end note
+os --> backend : steady_clock::time_point
+deactivate os
+backend --> clock : ClockSnapshot{timepoint, NoStatus}
+deactivate backend
+clock --> app : ClockSnapshot<steady_clock::time_point, NoStatus>
+deactivate clock
+
+app -> app : snapshot.TimePoint()
+
+@enduml

@@ -1,0 +1,82 @@
+@startuml vt4_status_subscription
+
+title VT4 — VehicleTime: Synchronization Status Subscription
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description              |
+    |<#LightSalmon>        | Application code          |
+    |<#LightGreen>         | score::time framework     |
+    |<#LightCoral>         | VehicleTime backend       |
+    |<#NavajoWhite>        | score::TimeDaemon         |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Application\ncomponent" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "VehicleClock" as clock #LightGreen
+    participant "VehicleClockBackend" as backend #LightCoral
+end box
+
+box "score::TimeDaemon" #fff8f0
+    participant "TimeDaemon" as td #NavajoWhite
+end box
+
+== Register callback once at init ==
+
+app -> clock : Subscribe<VehicleTimeStatus>(cb)
+activate clock
+clock -> backend : SetStatusChangedCallback(cb)
+activate backend
+backend --> clock
+deactivate backend
+clock --> app
+deactivate clock
+
+== PTP status update received (called on backend thread) ==
+
+td -> backend : new status data
+activate backend
+
+alt first update after registration
+    backend -> app : cb(VehicleTimeStatus)
+    activate app
+    note right of app
+        Unconditional — delivers the current
+        flag state to the new subscriber.
+    end note
+    deactivate app
+else flag bits changed since last delivery
+    backend -> app : cb(VehicleTimeStatus)
+    activate app
+    note right of app
+        Only when flags differ;
+        rate_deviation excluded.
+    end note
+    deactivate app
+end
+
+note left of backend
+    Callback on backend thread —
+    cb must be thread-safe.
+end note
+
+deactivate backend
+
+== Unsubscribe when no longer needed ==
+
+app -> clock : Unsubscribe<VehicleTimeStatus>()
+activate clock
+clock -> backend : UnsetStatusChangedCallback()
+activate backend
+backend --> clock
+deactivate backend
+clock --> app
+deactivate clock
+
+@enduml

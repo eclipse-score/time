@@ -1,0 +1,122 @@
+@startuml vt3_subscription
+
+title VT3 — VehicleTime: Async PTP Protocol Data Subscription
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description              |
+    |<#LightSalmon>        | Application code          |
+    |<#LightGreen>         | score::time framework     |
+    |<#LightCoral>         | VehicleTime backend       |
+    |<#NavajoWhite>        | score::TimeDaemon         |
+    |<#PaleGoldenRod>      | score::TimeSlave          |
+    |<#LightGray>          | Network / PTP Master      |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Application\ncomponent" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "VehicleClock" as clock #LightGreen
+    participant "VehicleClockBackend" as backend #LightCoral
+end box
+
+box "score::TimeDaemon" #fff8f0
+    participant "TimeDaemon" as td #NavajoWhite
+end box
+
+box "score::TimeSlave" #fffff0
+    participant "PTP TimeSlave\n(qgptp daemon)" as ts #PaleGoldenRod
+end box
+
+box "Network" #f5f5f5
+    participant "PTP\nTimeMaster" as master #LightGray
+end box
+
+== Register callbacks once at init ==
+
+app -> clock : Subscribe<TimeSlaveSyncData<VehicleTime>>(cb)
+activate clock
+clock -> backend : SetTimeSlaveSyncDataReceivedCallback(cb)
+activate backend
+backend --> clock
+deactivate backend
+clock --> app
+deactivate clock
+
+app -> clock : Subscribe<PDelayMeasurementData<VehicleTime>>(cb)
+activate clock
+clock -> backend : SetPDelayMeasurementFinishedCallback(cb)
+activate backend
+backend --> clock
+deactivate backend
+clock --> app
+deactivate clock
+
+== Event: PTP Sync (called on backend thread) ==
+
+master -> ts : Sync / Follow_Up messages
+activate ts
+note right of ts
+    TimeSlave computes offset and
+    rate correction from Sync messages
+end note
+ts -> td : TimeSlaveSyncData\n{offset, rate, timestamps}
+activate td
+td -> backend : TimeSlaveSyncData
+activate backend
+deactivate td
+deactivate ts
+backend -> app : cb(TimeSlaveSyncData<VehicleTime>)
+activate app
+note right of app
+    called on backend thread —
+    callback must be thread-safe
+end note
+deactivate app
+deactivate backend
+
+== Event: Peer-delay measurement (called on backend thread) ==
+
+ts -> ts : Pdelay_Req / Pdelay_Resp\nexchange with peer
+activate ts
+ts -> td : PDelayMeasurementData\n{peer_delay, timestamps}
+activate td
+td -> backend : PDelayMeasurementData
+activate backend
+deactivate td
+deactivate ts
+backend -> app : cb(PDelayMeasurementData<VehicleTime>)
+activate app
+note right of app
+    called on backend thread —
+    callback must be thread-safe
+end note
+deactivate app
+deactivate backend
+
+== Unsubscribe when no longer needed ==
+
+app -> clock : Unsubscribe<TimeSlaveSyncData<VehicleTime>>()
+activate clock
+clock -> backend : UnsetTimeSlaveSyncDataReceivedCallback()
+activate backend
+backend --> clock
+deactivate backend
+clock --> app
+deactivate clock
+
+app -> clock : Unsubscribe<PDelayMeasurementData<VehicleTime>>()
+activate clock
+clock -> backend : UnsetPDelayMeasurementFinishedCallback()
+activate backend
+backend --> clock
+deactivate backend
+clock --> app
+deactivate clock
+
+@enduml

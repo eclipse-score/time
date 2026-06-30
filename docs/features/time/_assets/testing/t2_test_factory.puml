@@ -1,0 +1,68 @@
+@startuml t2_test_factory
+
+title T2 — Testing: ClockTestFactory (Constructor Injection)
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description                  |
+    |<#LightSalmon>        | Test code                     |
+    |<#LightGreen>         | score::time framework         |
+    |<#PaleGoldenRod>      | Mock backend (GMock)          |
+    |<#LightBlue>          | Application Under Test        |
+endlegend
+
+box "Test" #fafaf0
+    participant "TEST()" as test #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "ClockTestFactory\n<VehicleTime>" as factory #LightGreen
+end box
+
+box "Mock" #fffff0
+    participant "VehicleClockMock" as mock #PaleGoldenRod
+end box
+
+box "System Under Test" #e6f0ff
+    participant "MyService\n(accepts Clock<Tag>)" as sut #LightBlue
+end box
+
+note over test, sut
+    VehicleTime used as the example domain — the same pattern applies to any Clock<Tag>.
+    No global state is modified — safe for parallel tests.
+end note
+
+== Test setup ==
+
+test -> mock : make_shared<VehicleClockMock>()
+activate mock
+mock --> test : shared_ptr<VehicleClockMock>
+
+test -> factory : ClockTestFactory<VehicleTime>::Make(mock)
+activate factory
+factory --> test : Clock<VehicleTime> wrapping mock
+deactivate factory
+
+test -> test : EXPECT_CALL(*mock, Now())\n  .WillOnce(Return(snapshot))
+
+== Test execution — no global state touched ==
+
+test -> sut : MyService svc{clock}\nsvc.DoSomething()
+activate sut
+sut -> sut : clock.Now()
+note right of sut
+    calls mock directly —
+    no GetInstance() involved
+end note
+sut --> test
+deactivate sut
+
+== Teardown — shared_ptr goes out of scope ==
+
+test -> mock : (destructor via shared_ptr)
+deactivate mock
+
+@enduml

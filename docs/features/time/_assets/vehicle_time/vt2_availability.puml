@@ -1,0 +1,80 @@
+@startuml vt2_availability
+
+title VT2 — VehicleTime: Initialization and Readiness Check
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description                  |
+    |<#LightSalmon>        | Application business logic    |
+    |<#LightGreen>         | score::time framework         |
+    |<#LightCoral>         | VehicleTime backend           |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Business\nlogic" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "VehicleClock" as clock #LightGreen
+    participant "VehicleClockBackend" as backend #LightCoral
+end box
+
+app -> clock : GetInstance()
+activate clock
+clock --> app : handle
+deactivate clock
+
+== Step 1 — Init: open the IPC channel ==
+
+app -> clock : Init()
+activate clock
+clock -> backend : Init()
+activate backend
+backend --> clock : true  (IPC channel open)
+deactivate backend
+clock --> app : true
+deactivate clock
+
+note right of clock
+    is_ready_ = true.
+    IsAvailable() now returns true.
+    Now() returns real data.
+end note
+
+== Step 2 — Optional: non-blocking readiness probe ==
+
+app -> clock : IsAvailable()
+activate clock
+clock -> backend : IsAvailable()
+activate backend
+backend --> clock : true
+deactivate backend
+clock --> app : true
+deactivate clock
+
+== Alternative: blocking wait with stop_token + deadline ==
+
+app -> clock : WaitUntilAvailable(stop_token,\n  steady_clock::now() + 30s)
+activate clock
+loop until available OR deadline OR stop requested
+    clock -> backend : IsAvailable()
+    activate backend
+    backend --> clock : bool
+    deactivate backend
+end
+clock --> app : true (became available)
+deactivate clock
+
+note left of app
+    Only Clock<Tag> domains that require
+    explicit initialization expose Init(),
+    IsAvailable() and WaitUntilAvailable().
+    HighResSteadyTime / SteadyClock / SystemClock
+    are always ready — calling these methods
+    on them is a compile error.
+end note
+
+@enduml

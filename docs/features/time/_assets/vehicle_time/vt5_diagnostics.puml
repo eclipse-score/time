@@ -1,0 +1,45 @@
+@startuml vt5_diagnostics
+
+title VT5 — VehicleTime: Status Flag Inspection
+
+skinparam backgroundColor white
+hide footbox
+autonumber "<font color=navy><b>[00]"
+
+legend top left
+    |= Color               |= Description               |
+    |<#LightSalmon>        | Application code           |
+    |<#LightGreen>         | score::time framework      |
+    |<#LightCoral>         | VehicleTime backend        |
+endlegend
+
+box "Application" #e6f0ff
+    participant "Diagnostics\ncomponent" as app #LightSalmon
+end box
+
+box "score::time" #f0fff0
+    participant "VehicleClock" as clock #LightGreen
+    participant "VehicleClockBackend" as backend #LightCoral
+end box
+
+app -> clock : Now()
+activate clock
+clock -> backend : Now()
+activate backend
+backend --> clock : ClockSnapshot{timepoint, VehicleTimeStatus}
+deactivate backend
+clock --> app : snapshot
+deactivate clock
+
+app -> app : status = snapshot.Status()
+note right of app
+    VehicleTimeStatus returned by value
+end note
+
+app -> app : status.IsFlagActive(SvtFlag)
+note right of app
+    inspect individual bits
+    for DTC / diagnostic mapping
+end note
+
+@enduml
