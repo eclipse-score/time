@@ -21,6 +21,7 @@ common --registry=https://bcr.bazel.build
 common --@score_logging//score/mw/log/flags:KRemote_Logging=False
 
 build --@score_baselibs//score/json:base_library=nlohmann
+build --@score_baselibs//score/memory/shared/flags:use_typedshmd=False
 build --credential_helper="*.qnx.com=%workspace%/.github/tools/qnx_credential_helper.py"
 
 # -------------------------------------------------------------------------------
@@ -35,20 +36,28 @@ build:time_shared --host_platform=@score_bazel_platforms//:x86_64-linux
 # -------------------------------------------------------------------------------
 build:time-x86_64-linux --config=time_shared
 build:time-x86_64-linux --platforms=@score_bazel_platforms//:x86_64-linux-gcc_12.2.0-posix
-build:time-x86_64-linux --extra_toolchains=@score_gcc_x86_64_toolchain//:x86_64-linux-gcc_12.2.0-posix
+build:time-x86_64-linux --extra_toolchains=@score_gcc_x86_64_toolchain//:x86_64-linux-gcc_12.2.0
+
+# -------------------------------------------------------------------------------
+# Config dedicated to host platform CPU:arm64 and OS:Linux
+# -------------------------------------------------------------------------------
+build:time-arm64-linux --config=time_shared
+build:time-arm64-linux --platforms=@score_bazel_platforms//:aarch64-linux-gcc_12.2.0-posix
+build:time-arm64-linux --extra_toolchains=@score_gcc_aarch64_toolchain//:aarch64-linux-gcc_12.2.0
+
 # -------------------------------------------------------------------------------
 # Config dedicated to target platform CPU:x86_64 and OS:QNX
 # -------------------------------------------------------------------------------
 build:time-x86_64-qnx --config=time_shared
 build:time-x86_64-qnx --platforms=@score_bazel_platforms//:x86_64-qnx-sdp_8.0.0-posix
-build:time-x86_64-qnx --extra_toolchains=@score_qcc_x86_64_toolchain//:x86_64-qnx-sdp_8.0.0-posix
+build:time-x86_64-qnx --extra_toolchains=@score_qcc_x86_64_toolchain//:x86_64-qnx-sdp_8.0.0
 
 # -------------------------------------------------------------------------------
 # Config dedicated to target platform CPU:arm64 and OS:QNX
 # -------------------------------------------------------------------------------
 build:time-arm64-qnx --config=time_shared
 build:time-arm64-qnx --platforms=@score_bazel_platforms//:aarch64-qnx-sdp_8.0.0-posix
-build:time-arm64-qnx --extra_toolchains=@score_qcc_aarch64_toolchain//:aarch64-qnx-sdp_8.0.0-posix
+build:time-arm64-qnx --extra_toolchains=@score_qcc_aarch64_toolchain//:aarch64-qnx-sdp_8.0.0
 
 # -------------------------------------------------------------------------------
 # Import local user workspace file, if exists

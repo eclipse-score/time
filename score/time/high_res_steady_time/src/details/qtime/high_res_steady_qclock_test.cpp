@@ -13,7 +13,7 @@
 #include "score/time/high_res_steady_time/src/details/qtime/high_res_steady_qclock.h"
 #include "score/time/high_res_steady_time/src/details/qtime/tick_provider_mock.h"
 
-#include "score/lib/os/mocklib/qnx/neutrino_qnx_mock.h"
+#include "score/os/mocklib/qnx/neutrino_qnx_mock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
