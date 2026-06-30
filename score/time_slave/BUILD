@@ -21,3 +21,9 @@ cc_unit_test_suites_for_host_and_qnx(
     ],
     visibility = ["//score:__subpackages__"],
 )
+
+alias(
+    name = "time_slave",
+    actual = "//score/time_slave/src/application:time_slave",
+    visibility = ["//visibility:public"],
+)
