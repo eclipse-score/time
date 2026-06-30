@@ -17,6 +17,7 @@ load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and
 alias(
     name = "steady_time",
     actual = "//examples/time/steady_time/src:steady_time",
+    visibility = ["//visibility:public"],
 )
 
 cc_unit_test_suites_for_host_and_qnx(
