@@ -26,7 +26,7 @@ jobs:
   code-coverage:
     uses: eclipse-score/cicd-workflows/.github/workflows/cpp-coverage.yml@main
     with:
-      bazel-target: "//score/..."
+      bazel-target: "--lockfile_mode=error //score/..."
       bazel-config: "time-x86_64-linux"
       extra-bazel-flags: "--test_output=errors --nocache_test_results"
       artifact-name-suffix: "_cpp"
