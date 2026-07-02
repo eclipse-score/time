@@ -431,6 +431,14 @@ verifies and validates the timepoints, and distributes this time information acr
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>build<span class="w"> </span>//:docs
 </pre></div>
 </div>
+<p><strong>Dependency lock file</strong></p>
+<p>After modifying <code class="docutils literal notranslate"><span class="pre">MODULE.bazel</span></code> (adding or bumping a dependency), update the lock file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>mod<span class="w"> </span>tidy
+</pre></div>
+</div>
+<p>Commit both <code class="docutils literal notranslate"><span class="pre">MODULE.bazel</span></code> and <code class="docutils literal notranslate"><span class="pre">MODULE.bazel.lock</span></code> together. The
+<code class="docutils literal notranslate"><span class="pre">Process</span> <span class="pre">/</span> <span class="pre">Bzlmod</span> <span class="pre">Lock</span> <span class="pre">Check</span></code> CI job enforces this — see
+<a class="reference external" href="https://github.com/eclipse-score/score/issues/2628">eclipse-score/score#2628</a>.</p>
 <p><strong>Formatting</strong></p>
 <p>Check formatting for all non-C++ files (Python, Starlark, YAML):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>//:format.check

@@ -78,6 +78,18 @@ To build the documentation:
 
    bazel build //:docs
 
+**Dependency lock file**
+
+After modifying ``MODULE.bazel`` (adding or bumping a dependency), update the lock file:
+
+.. code-block:: bash
+
+   bazel mod tidy
+
+Commit both ``MODULE.bazel`` and ``MODULE.bazel.lock`` together. The
+``Process / Bzlmod Lock Check`` CI job enforces this — see
+`eclipse-score/score#2628 <https://github.com/eclipse-score/score/issues/2628>`_.
+
 **Formatting**
 
 Check formatting for all non-C++ files (Python, Starlark, YAML):
