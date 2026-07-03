@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_STEADY_TIME_SRC_STEADY_CLOCK_BACKEND_MOCK_H
 #define SCORE_TIME_STEADY_TIME_SRC_STEADY_CLOCK_BACKEND_MOCK_H
 
-#include "score/time/steady_time/src/steady_clock_backend.h"
 #include "score/time/steady_time/src/steady_clock.h"
+#include "score/time/steady_time/src/steady_clock_backend.h"
 
 #include <gmock/gmock.h>
 
@@ -37,17 +37,14 @@ namespace time
 class SteadyClockBackendMock : public SteadyClockBackend
 {
   public:
-    SteadyClockBackendMock()                                    = default;
-    ~SteadyClockBackendMock() noexcept override                 = default;
-    SteadyClockBackendMock(const SteadyClockBackendMock&)              = delete;
-    SteadyClockBackendMock& operator=(const SteadyClockBackendMock&)   = delete;
-    SteadyClockBackendMock(SteadyClockBackendMock&&)                   = delete;
-    SteadyClockBackendMock& operator=(SteadyClockBackendMock&&)        = delete;
+    SteadyClockBackendMock() = default;
+    ~SteadyClockBackendMock() noexcept override = default;
+    SteadyClockBackendMock(const SteadyClockBackendMock&) = delete;
+    SteadyClockBackendMock& operator=(const SteadyClockBackendMock&) = delete;
+    SteadyClockBackendMock(SteadyClockBackendMock&&) = delete;
+    SteadyClockBackendMock& operator=(SteadyClockBackendMock&&) = delete;
 
-    MOCK_METHOD((ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>),
-                Now,
-                (),
-                (const, noexcept, override));
+    MOCK_METHOD((ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>), Now, (), (const, noexcept, override));
 };
 
 }  // namespace time

@@ -20,6 +20,12 @@ common --registry=https://raw.githubusercontent.com/eclipse-score/bazel_registry
 common --registry=https://bcr.bazel.build
 common --@score_logging//score/mw/log/flags:KRemote_Logging=False
 
+# rules_android is pulled in transitively: lobster -> rules_jvm_external -> rules_android.
+# The android_sdk_repository extension fails on machines without Android SDK APIs
+# installed (including GitHub Actions ubuntu-24.04 runners). This project does not
+# use Android; unset ANDROID_HOME to prevent the extension from attempting the lookup.
+common --repo_env=ANDROID_HOME=
+
 build --@score_baselibs//score/json:base_library=nlohmann
 build --@score_baselibs//score/memory/shared/flags:use_typedshmd=False
 build --credential_helper="*.qnx.com=%workspace%/.github/tools/qnx_credential_helper.py"
@@ -91,16 +97,6 @@ test:asan_ubsan_lsan --build_tests_only
 build:asan  --config=asan_ubsan_lsan
 build:ubsan --config=asan_ubsan_lsan
 build:lsan  --config=asan_ubsan_lsan
-
-# -------------------------------------------------------------------------------
-# C++ formatting — powered by score_bazel_tools_cc
-# -------------------------------------------------------------------------------
-
-# Run with: bazel build --config=clang_format //score/... //examples/...
-build:clang_format --output_groups=clang_format_output
-build:clang_format --aspects=@score_bazel_tools_cc//quality:defs.bzl%clang_format_aspect
-build:clang_format --@score_bazel_tools_cc//quality:clang_format_config=//:clang_format_config
-build:clang_format --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
 
 # -------------------------------------------------------------------------------
 # Clang-tidy static analysis — powered by score_cpp_policies

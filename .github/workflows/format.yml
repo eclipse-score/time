@@ -26,13 +26,10 @@ on:
   merge_group:
     types: [checks_requested]
 jobs:
-  # Checks Python, Starlark, YAML and Rust formatting via the shared cicd-workflow.
-  formatting-check:
-    uses: eclipse-score/cicd-workflows/.github/workflows/format.yml@main
-
-  # Checks C++ formatting via clang-format (score_bazel_tools_cc aspect).
-  clang-format:
-    name: C++ clang-format check
+  # Checks Python, Starlark, YAML, Rust and C++ (clang-format) formatting via
+  # the unified format.check target from score_tooling's format_checker.
+  format-check:
+    name: Format check (all languages)
     runs-on: ubuntu-24.04
     steps:
       - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
@@ -46,35 +43,9 @@ jobs:
         uses: bazel-contrib/setup-bazel@0.18.0
         with:
           bazelisk-cache: true
-          disk-cache: ${{ github.workflow }}-clang-format
+          disk-cache: ${{ github.workflow }}-format-check
           repository-cache: true
           cache-save: ${{ github.event_name == 'push' }}
 
-      - name: Run clang-format
-        # continue-on-error is required: bazel exits non-zero when violations exist.
-        # Remove once https://github.com/eclipse-score/time/issues/103 is resolved.
-        continue-on-error: true
-        run: >
-          bazel build --keep_going --config=clang_format //score/... //examples/... 2>&1 | tee clang_format_raw.log
-      - name: Filter and report violations
-        if: always()
-        run: |
-          # External dep violations point to bazel cache paths, not the workspace.
-          # Keep only lines that start with the workspace root → our files only.
-          grep "clang-formatted" clang_format_raw.log \
-            | grep "^${{ github.workspace }}" \
-            | sort -u > clang_format_findings.txt || true
-          if [ -s clang_format_findings.txt ]; then
-            echo "::warning::C++ formatting violations found in Module code:"
-            cat clang_format_findings.txt
-          else
-            echo "No Module C++ formatting violations found."
-          fi
-
-      - name: Upload violations related to the module
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: clang-format-findings-${{ github.run_id }}
-          path: clang_format_findings.txt
-          retention-days: 7
+      - name: Run format check
+        run: bazel test //:format.check

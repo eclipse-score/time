@@ -11,12 +11,12 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_slave/src/gptp/gptp_engine.h"
-#include "score/time_slave/src/gptp/details/raw_socket_impl.h"
-#include "score/time_slave/src/gptp/details/network_identity_impl.h"
 #include "score/time_slave/src/gptp/details/clock_util.h"
+#include "score/time_slave/src/gptp/details/network_identity_impl.h"
+#include "score/time_slave/src/gptp/details/raw_socket_impl.h"
 
-#include "score/time_slave/src/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
+#include "score/time_slave/src/common/logging_contexts.h"
 
 #include <arpa/inet.h>
 #include <cstring>
@@ -101,11 +101,14 @@ bool GptpEngine::Initialize()
     {
         // std::thread constructor throws std::system_error if the OS cannot
         // create a new thread (e.g. EAGAIN — thread limit reached).
-        rx_thread_ = std::thread([this]() noexcept { RxLoop(); });
+        rx_thread_ = std::thread([this]() noexcept {
+            RxLoop();
+        });
     }
     catch (const std::system_error& e)
     {
-        score::mw::log::LogError(kTimeSlaveAppContext) << "GptpEngine: failed to create RxThread: " << std::string_view{e.what()};
+        score::mw::log::LogError(kTimeSlaveAppContext)
+            << "GptpEngine: failed to create RxThread: " << std::string_view{e.what()};
         running_.store(false, std::memory_order_release);
         socket_->Close();
         return false;
@@ -113,11 +116,14 @@ bool GptpEngine::Initialize()
 
     try
     {
-        pdelay_thread_ = std::thread([this]() noexcept { PdelayLoop(); });
+        pdelay_thread_ = std::thread([this]() noexcept {
+            PdelayLoop();
+        });
     }
     catch (const std::system_error& e)
     {
-        score::mw::log::LogError(kTimeSlaveAppContext) << "GptpEngine: failed to create PdelayThread: " << std::string_view{e.what()};
+        score::mw::log::LogError(kTimeSlaveAppContext)
+            << "GptpEngine: failed to create PdelayThread: " << std::string_view{e.what()};
         Deinitialize();
         return false;
     }
@@ -207,8 +213,7 @@ void GptpEngine::PdelayLoop() noexcept
 
     while (running_.load(std::memory_order_acquire))
     {
-        const std::int64_t target_ns =
-            static_cast<std::int64_t>(next.tv_sec) * 1'000'000'000LL + next.tv_nsec;
+        const std::int64_t target_ns = static_cast<std::int64_t>(next.tv_sec) * 1'000'000'000LL + next.tv_nsec;
 
         while (running_.load(std::memory_order_acquire))
         {
@@ -331,23 +336,20 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
 
     if (phc_.IsEnabled())
     {
-        const bool is_step =
-            (sync.offset_ns >= opts_.phc_config.step_threshold_ns) ||
-            (sync.offset_ns <= -opts_.phc_config.step_threshold_ns);
+        const bool is_step = (sync.offset_ns >= opts_.phc_config.step_threshold_ns) ||
+                             (sync.offset_ns <= -opts_.phc_config.step_threshold_ns);
 
         phc_.AdjustOffset(sync.offset_ns);
         phc_.AdjustFrequency(rate_ratio);
 
         if (is_step)
         {
-            score::mw::log::LogInfo(kGPtpMachineContext)
-                << "PHC step applied: offset=" << sync.offset_ns << " ns";
+            score::mw::log::LogInfo(kGPtpMachineContext) << "PHC step applied: offset=" << sync.offset_ns << " ns";
         }
         else
         {
-            score::mw::log::LogInfo(kGPtpMachineContext)
-                << "PHC slew: offset=" << sync.offset_ns << " ns"
-                << " rate_ratio=" << rate_ratio;
+            score::mw::log::LogInfo(kGPtpMachineContext) << "PHC slew: offset=" << sync.offset_ns << " ns"
+                                                         << " rate_ratio=" << rate_ratio;
         }
     }
 }
@@ -355,26 +357,25 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
 void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) noexcept
 {
     const ClockIdentity& ci = identity_->GetClockIdentity();
-    const std::array<std::uint8_t, kMacAddrLen> src_mac = {
-        ci.id[0], ci.id[1], ci.id[2], ci.id[5], ci.id[6], ci.id[7]};
+    const std::array<std::uint8_t, kMacAddrLen> src_mac = {ci.id[0], ci.id[1], ci.id[2], ci.id[5], ci.id[6], ci.id[7]};
 
     // --- PDelayResp ---
     PTPMessage resp{};
-    resp.ptpHdr.tsmt        = kPtpMsgtypePdelayResp | kPtpTransportSpecific;
-    resp.ptpHdr.version     = kPtpVersion;
+    resp.ptpHdr.tsmt = kPtpMsgtypePdelayResp | kPtpTransportSpecific;
+    resp.ptpHdr.version = kPtpVersion;
     resp.ptpHdr.domainNumber = opts_.domain_number;
     resp.ptpHdr.messageLength = htons(static_cast<std::uint16_t>(sizeof(PdelayRespBody)));
     resp.ptpHdr.flagField[0] = 0x02U;  // twoStepFlag
     resp.ptpHdr.correctionField = 0;
     resp.ptpHdr.reserved2 = 0;
     resp.ptpHdr.sourcePortIdentity.clockIdentity = ci;
-    resp.ptpHdr.sourcePortIdentity.portNumber    = htons(0x0001U);
-    resp.ptpHdr.sequenceId    = htons(req.ptpHdr.sequenceId);
-    resp.ptpHdr.controlField  = static_cast<std::uint8_t>(ControlField::kOther);
+    resp.ptpHdr.sourcePortIdentity.portNumber = htons(0x0001U);
+    resp.ptpHdr.sequenceId = htons(req.ptpHdr.sequenceId);
+    resp.ptpHdr.controlField = static_cast<std::uint8_t>(ControlField::kOther);
     resp.ptpHdr.logMessageInterval = 0x7F;
     resp.pdelay_resp.requestReceiptTimestamp = TmvToTimestamp(t2);
     resp.pdelay_resp.requestingPortIdentity.clockIdentity = req.ptpHdr.sourcePortIdentity.clockIdentity;
-    resp.pdelay_resp.requestingPortIdentity.portNumber    = htons(req.ptpHdr.sourcePortIdentity.portNumber);
+    resp.pdelay_resp.requestingPortIdentity.portNumber = htons(req.ptpHdr.sourcePortIdentity.portNumber);
 
     std::uint8_t buf[2048]{};
     unsigned int len = sizeof(PdelayRespBody);
@@ -389,20 +390,20 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
 
     // --- PDelayRespFollowUp ---
     PTPMessage fup{};
-    fup.ptpHdr.tsmt        = kPtpMsgtypePdelayRespFollowUp | kPtpTransportSpecific;
-    fup.ptpHdr.version     = kPtpVersion;
+    fup.ptpHdr.tsmt = kPtpMsgtypePdelayRespFollowUp | kPtpTransportSpecific;
+    fup.ptpHdr.version = kPtpVersion;
     fup.ptpHdr.domainNumber = opts_.domain_number;
     fup.ptpHdr.messageLength = htons(static_cast<std::uint16_t>(sizeof(PdelayRespFollowUpBody)));
     fup.ptpHdr.correctionField = 0;
     fup.ptpHdr.reserved2 = 0;
     fup.ptpHdr.sourcePortIdentity.clockIdentity = ci;
-    fup.ptpHdr.sourcePortIdentity.portNumber    = htons(0x0001U);
-    fup.ptpHdr.sequenceId    = htons(req.ptpHdr.sequenceId);
-    fup.ptpHdr.controlField  = static_cast<std::uint8_t>(ControlField::kOther);
+    fup.ptpHdr.sourcePortIdentity.portNumber = htons(0x0001U);
+    fup.ptpHdr.sequenceId = htons(req.ptpHdr.sequenceId);
+    fup.ptpHdr.controlField = static_cast<std::uint8_t>(ControlField::kOther);
     fup.ptpHdr.logMessageInterval = 0x7F;
     fup.pdelay_resp_fup.responseOriginReceiptTimestamp = TmvToTimestamp(t3);
     fup.pdelay_resp_fup.requestingPortIdentity.clockIdentity = req.ptpHdr.sourcePortIdentity.clockIdentity;
-    fup.pdelay_resp_fup.requestingPortIdentity.portNumber    = htons(req.ptpHdr.sourcePortIdentity.portNumber);
+    fup.pdelay_resp_fup.requestingPortIdentity.portNumber = htons(req.ptpHdr.sourcePortIdentity.portNumber);
 
     std::uint8_t buf2[2048]{};
     unsigned int len2 = sizeof(PdelayRespFollowUpBody);

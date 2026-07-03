@@ -50,7 +50,7 @@ extern "C" void HandleSignal(int /*signal*/) noexcept
  */
 void PrintReport(const examples::time::steady_time::TimeReport& report, std::uint64_t seq) noexcept
 {
-    const auto seconds     = report.monotonic_ns / 1'000'000'000LL;
+    const auto seconds = report.monotonic_ns / 1'000'000'000LL;
     const auto nanoseconds = report.monotonic_ns % 1'000'000'000LL;
 
     std::cout << "[" << seq << "]"
@@ -61,7 +61,7 @@ void PrintReport(const examples::time::steady_time::TimeReport& report, std::uin
 
 int main()
 {
-    static_cast<void>(std::signal(SIGINT,  HandleSignal));
+    static_cast<void>(std::signal(SIGINT, HandleSignal));
     static_cast<void>(std::signal(SIGTERM, HandleSignal));
 
     examples::time::steady_time::SteadyTimeHandler handler;

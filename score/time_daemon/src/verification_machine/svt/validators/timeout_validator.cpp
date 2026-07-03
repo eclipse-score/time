@@ -11,8 +11,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
-#include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
+#include "score/time_daemon/src/common/logging_contexts.h"
 
 namespace score
 {

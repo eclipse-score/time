@@ -13,8 +13,8 @@
 #ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
 #define SCORE_TS_CLIENT_SRC_GPTP_IPC_TEST_UTILS_H
 
-#include "score/ts_client/src/gptp_ipc_channel.h"
 #include "score/memory/shared/shared_memory_factory.h"
+#include "score/ts_client/src/gptp_ipc_channel.h"
 
 #include <unistd.h>
 #include <atomic>
@@ -63,8 +63,14 @@ struct ManualShm
         score::memory::shared::SharedMemoryFactory::Remove(name_);
     }
 
-    bool Valid() const { return resource_ != nullptr && region_ != nullptr; }
-    GptpIpcRegion* Region() { return region_; }
+    bool Valid() const
+    {
+        return resource_ != nullptr && region_ != nullptr;
+    }
+    GptpIpcRegion* Region()
+    {
+        return region_;
+    }
 };
 
 }  // namespace details

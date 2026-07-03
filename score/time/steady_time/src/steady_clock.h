@@ -29,18 +29,18 @@ class SteadyClockBackend;
 template <>
 struct ClockTraits<std::chrono::steady_clock>
 {
-    using Backend        = SteadyClockBackend;
-    using Duration       = std::chrono::steady_clock::duration;
-    using Timepoint      = std::chrono::steady_clock::time_point;
-    using Snapshot       = ClockSnapshot<Timepoint, NoStatus>;
+    using Backend = SteadyClockBackend;
+    using Duration = std::chrono::steady_clock::duration;
+    using Timepoint = std::chrono::steady_clock::time_point;
+    using Snapshot = ClockSnapshot<Timepoint, NoStatus>;
 
     /// \brief Obtains the current steady-clock snapshot from the backend.
     static Snapshot CallNow(const Backend& impl) noexcept;
 };
 
-using SteadyClock     = Clock<std::chrono::steady_clock>;
+using SteadyClock = Clock<std::chrono::steady_clock>;
 using SteadyTimePoint = ClockTraits<std::chrono::steady_clock>::Timepoint;
-using SteadySnapshot  = ClockTraits<std::chrono::steady_clock>::Snapshot;
+using SteadySnapshot = ClockTraits<std::chrono::steady_clock>::Snapshot;
 
 }  // namespace time
 }  // namespace score

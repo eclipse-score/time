@@ -52,12 +52,12 @@ class ClockTestFactory
         return Clock<Tag>{backend};  // friend access to private ctor
     }
 
-    ClockTestFactory()                                   = delete;
-    ~ClockTestFactory()                                  = delete;
-    ClockTestFactory(const ClockTestFactory&)            = delete;
+    ClockTestFactory() = delete;
+    ~ClockTestFactory() = delete;
+    ClockTestFactory(const ClockTestFactory&) = delete;
     ClockTestFactory& operator=(const ClockTestFactory&) = delete;
-    ClockTestFactory(ClockTestFactory&&)                 = delete;
-    ClockTestFactory& operator=(ClockTestFactory&&)      = delete;
+    ClockTestFactory(ClockTestFactory&&) = delete;
+    ClockTestFactory& operator=(ClockTestFactory&&) = delete;
 };
 
 }  // namespace test_utils

@@ -13,9 +13,9 @@
 #ifndef SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_TIME_H
 #define SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_TIME_H
 
+#include "score/time/clock/src/clock_status.h"
 #include "score/time/ptp/src/pdelay_measurement_data.h"
 #include "score/time/ptp/src/time_slave_sync_data.h"
-#include "score/time/clock/src/clock_status.h"
 
 #include <score/callback.hpp>
 
@@ -45,14 +45,14 @@ struct VehicleTime
     ///
     enum class StatusFlag : std::uint8_t
     {
-        kTimeOut        = 0U, /*!< TB was not synchronized within a certain time frame. */
-        kSynchronized   = 1U, /*!< The TB was synchronized at least once. */
+        kTimeOut = 0U,      /*!< TB was not synchronized within a certain time frame. */
+        kSynchronized = 1U, /*!< The TB was synchronized at least once. */
         // 2U — reserved
         kTimeLeapFuture = 3U, /*!< An adjustment greater than a certain threshold has been made. */
-        kTimeLeapPast   = 4U, /*!< An adjustment back in time greater than a certain threshold has been made. */
+        kTimeLeapPast = 4U,   /*!< An adjustment back in time greater than a certain threshold has been made. */
     };
 
-    using Duration  = std::chrono::nanoseconds;
+    using Duration = std::chrono::nanoseconds;
     using Timepoint = std::chrono::time_point<VehicleTime, Duration>;
 
     static constexpr std::uint64_t kCallbackCapacity{64U};
@@ -61,8 +61,7 @@ struct VehicleTime
         score::cpp::callback<void(const TimeSlaveSyncData<VehicleTime>&), kCallbackCapacity>;
     using PDelayMeasurementFinishedCallback =
         score::cpp::callback<void(const PDelayMeasurementData<VehicleTime>&), kCallbackCapacity>;
-    using StatusChangedCallback =
-        score::cpp::callback<void(const VehicleTimeStatus&), kCallbackCapacity>;
+    using StatusChangedCallback = score::cpp::callback<void(const VehicleTimeStatus&), kCallbackCapacity>;
 };
 
 /// \brief Formats all active VehicleTime status flags into an ostringstream for diagnostics.

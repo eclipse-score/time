@@ -50,9 +50,7 @@ struct HasInitialization : std::false_type
 };
 
 template <typename Tag>
-struct HasInitialization<Tag,
-                         std::void_t<decltype(&InitializationHook<Tag>::CallInit)>>
-    : std::true_type
+struct HasInitialization<Tag, std::void_t<decltype(&InitializationHook<Tag>::CallInit)>> : std::true_type
 {
 };
 

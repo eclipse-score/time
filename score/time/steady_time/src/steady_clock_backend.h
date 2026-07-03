@@ -34,9 +34,7 @@ class SteadyClockBackend
     virtual ~SteadyClockBackend() noexcept = default;
 
     /// \brief Returns the current steady-clock snapshot.
-    virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>
-    Now() const noexcept = 0;
-
+    virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept = 0;
 };
 
 }  // namespace time

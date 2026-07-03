@@ -36,7 +36,7 @@ namespace td
  * @return          A fully configured GPTPShmMachine instance.
  */
 std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(const std::string& name,
-                                                       const std::string& ipc_name = score::ts::details::kGptpIpcName);
+                                                     const std::string& ipc_name = score::ts::details::kGptpIpcName);
 
 }  // namespace td
 }  // namespace score

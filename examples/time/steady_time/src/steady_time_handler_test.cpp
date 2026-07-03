@@ -12,10 +12,10 @@
  ********************************************************************************/
 #include "examples/time/steady_time/src/steady_time_handler.h"
 
-#include "score/time/steady_time/src/steady_clock_backend_mock.h"
-#include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/clock/src/clock_snapshot.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/steady_time/src/steady_clock_backend_mock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -37,11 +37,7 @@ namespace test
 class SteadyTimeHandlerTest : public ::testing::Test
 {
   protected:
-    SteadyTimeHandlerTest()
-        : mock_{std::make_shared<score::time::SteadyClockBackendMock>()}
-        , guard_{mock_}
-    {
-    }
+    SteadyTimeHandlerTest() : mock_{std::make_shared<score::time::SteadyClockBackendMock>()}, guard_{mock_} {}
 
     std::shared_ptr<score::time::SteadyClockBackendMock> mock_;
     score::time::test_utils::ScopedClockOverride<std::chrono::steady_clock> guard_;
@@ -50,8 +46,8 @@ class SteadyTimeHandlerTest : public ::testing::Test
 TEST_F(SteadyTimeHandlerTest, ReportContainsMonotonicTimeFromMock)
 {
     const std::chrono::steady_clock::time_point tp{std::chrono::nanoseconds{3'000'000'000LL}};
-    EXPECT_CALL(*mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<std::chrono::steady_clock::time_point, score::time::NoStatus>{
+    EXPECT_CALL(*mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<std::chrono::steady_clock::time_point, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));
 
     SteadyTimeHandler handler;
@@ -63,8 +59,8 @@ TEST_F(SteadyTimeHandlerTest, ReportContainsMonotonicTimeFromMock)
 TEST_F(SteadyTimeHandlerTest, ReportContainsZeroForEpochTimepoint)
 {
     const std::chrono::steady_clock::time_point tp{std::chrono::nanoseconds{0}};
-    EXPECT_CALL(*mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<std::chrono::steady_clock::time_point, score::time::NoStatus>{
+    EXPECT_CALL(*mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<std::chrono::steady_clock::time_point, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));
 
     SteadyTimeHandler handler;

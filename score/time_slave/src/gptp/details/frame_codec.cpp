@@ -26,8 +26,7 @@ namespace details
 namespace
 {
 
-constexpr std::array<std::uint8_t, kMacAddrLen> kPtpDstMacBytes = {
-    0x01U, 0x80U, 0xC2U, 0x00U, 0x00U, 0x0EU};
+constexpr std::array<std::uint8_t, kMacAddrLen> kPtpDstMacBytes = {0x01U, 0x80U, 0xC2U, 0x00U, 0x00U, 0x0EU};
 
 constexpr std::size_t kVlanTciLen = 2U;
 

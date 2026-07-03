@@ -55,7 +55,7 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
         req_ = req;
         req_.ptpHdr.sequenceId = seqnum_;
         req_.ptpHdr.sourcePortIdentity.portNumber = 0x0001U;  // host byte order
-        req_.sendHardwareTS = TmvT{-1};  // sentinel: TX timestamp pending
+        req_.sendHardwareTS = TmvT{-1};                       // sentinel: TX timestamp pending
         resp_count_ = 0U;
         ++seqnum_;  // uint16_t: wraps naturally at 0xFFFF
     }
@@ -63,11 +63,11 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
     // Derive the source MAC from the EUI-64 ClockIdentity (reverse EUI-48→EUI-64
     // expansion: OUI = id[0..2], vendor = id[5..7]).
     const std::array<std::uint8_t, kMacAddrLen> src_mac = {local_identity_.id[0],
-                                                            local_identity_.id[1],
-                                                            local_identity_.id[2],
-                                                            local_identity_.id[5],
-                                                            local_identity_.id[6],
-                                                            local_identity_.id[7]};
+                                                           local_identity_.id[1],
+                                                           local_identity_.id[2],
+                                                           local_identity_.id[5],
+                                                           local_identity_.id[6],
+                                                           local_identity_.id[7]};
 
     // Use a separate stack buffer — never alias the PTPMessage object itself as a
     // raw frame buffer; AddEthernetHeader() shifts the payload in-place and would
@@ -124,9 +124,8 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
     if (req_.sendHardwareTS.ns < 0)
         return;
 
-    if (std::memcmp(&resp_.pdelay_resp.requestingPortIdentity,
-                    &req_.ptpHdr.sourcePortIdentity,
-                    sizeof(PortIdentity)) != 0)
+    if (std::memcmp(&resp_.pdelay_resp.requestingPortIdentity, &req_.ptpHdr.sourcePortIdentity, sizeof(PortIdentity)) !=
+        0)
         return;
     if (std::memcmp(&resp_fup_.pdelay_resp_fup.requestingPortIdentity,
                     &req_.ptpHdr.sourcePortIdentity,

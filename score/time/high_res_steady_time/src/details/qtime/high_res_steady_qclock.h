@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_QTIME_HIGH_RES_STEADY_QCLOCK_H
 #define SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_QTIME_HIGH_RES_STEADY_QCLOCK_H
 
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 
 #include <cstdint>
 
@@ -36,12 +36,12 @@ namespace qtime
 class HighResSteadyQClock final : public HighResSteadyClockBackend
 {
   public:
-    HighResSteadyQClock() noexcept                          = default;
-    HighResSteadyQClock(const HighResSteadyQClock&) noexcept         = delete;
-    HighResSteadyQClock& operator=(const HighResSteadyQClock&)       = delete;
-    HighResSteadyQClock(HighResSteadyQClock&&) noexcept              = delete;
-    HighResSteadyQClock& operator=(HighResSteadyQClock&&)            = delete;
-    ~HighResSteadyQClock() noexcept override                = default;
+    HighResSteadyQClock() noexcept = default;
+    HighResSteadyQClock(const HighResSteadyQClock&) noexcept = delete;
+    HighResSteadyQClock& operator=(const HighResSteadyQClock&) = delete;
+    HighResSteadyQClock(HighResSteadyQClock&&) noexcept = delete;
+    HighResSteadyQClock& operator=(HighResSteadyQClock&&) = delete;
+    ~HighResSteadyQClock() noexcept override = default;
 
     /// \brief Returns the current HIRS snapshot from the QNX hardware clock.
     ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override;

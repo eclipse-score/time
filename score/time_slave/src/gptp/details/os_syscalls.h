@@ -37,11 +37,7 @@ class OsSyscalls
     virtual int socket_call(int domain, int type, int protocol) noexcept = 0;
     virtual int ioctl_call(int fd, unsigned long req, void* arg) noexcept = 0;
     virtual int bind_call(int fd, const ::sockaddr* addr, ::socklen_t addrlen) noexcept = 0;
-    virtual int setsockopt_call(int fd,
-                                int level,
-                                int optname,
-                                const void* optval,
-                                ::socklen_t optlen) noexcept = 0;
+    virtual int setsockopt_call(int fd, int level, int optname, const void* optval, ::socklen_t optlen) noexcept = 0;
     virtual int close_call(int fd) noexcept = 0;
     virtual int poll_call(::pollfd* fds, ::nfds_t nfds, int timeout) noexcept = 0;
     virtual ::ssize_t recvmsg_call(int fd, ::msghdr* msg, int flags) noexcept = 0;

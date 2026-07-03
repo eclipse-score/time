@@ -13,8 +13,8 @@
 #ifndef EXAMPLES_TIME_VEHICLE_TIME_VEHICLE_TIME_HANDLER_H
 #define EXAMPLES_TIME_VEHICLE_TIME_VEHICLE_TIME_HANDLER_H
 
-#include "score/time/vehicle_time/src/vehicle_clock.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/vehicle_time/src/vehicle_clock.h"
 
 #include <cstdint>
 
@@ -69,16 +69,16 @@ class VehicleTimeHandler
 {
   public:
     VehicleTimeHandler()
-        : clock_{score::time::VehicleClock::GetInstance()}
-        , high_res_steady_clock_{score::time::HighResSteadyClock::GetInstance()}
+        : clock_{score::time::VehicleClock::GetInstance()},
+          high_res_steady_clock_{score::time::HighResSteadyClock::GetInstance()}
     {
     }
     ~VehicleTimeHandler() = default;
 
-    VehicleTimeHandler(const VehicleTimeHandler&)             = delete;
-    VehicleTimeHandler& operator=(const VehicleTimeHandler&)  = delete;
-    VehicleTimeHandler(VehicleTimeHandler&&)                  = delete;
-    VehicleTimeHandler& operator=(VehicleTimeHandler&&)       = delete;
+    VehicleTimeHandler(const VehicleTimeHandler&) = delete;
+    VehicleTimeHandler& operator=(const VehicleTimeHandler&) = delete;
+    VehicleTimeHandler(VehicleTimeHandler&&) = delete;
+    VehicleTimeHandler& operator=(VehicleTimeHandler&&) = delete;
 
     /// @brief Initialises the VehicleTime backend.
     ///
@@ -96,7 +96,7 @@ class VehicleTimeHandler
     [[nodiscard]] TimeReport GetCurrentTime() const noexcept
     {
         const auto vehicle_snapshot = clock_.Now();
-        const auto hirs_snapshot    = high_res_steady_clock_.Now();
+        const auto hirs_snapshot = high_res_steady_clock_.Now();
 
         return TimeReport{
             vehicle_snapshot.TimePointNs().count(),
@@ -112,8 +112,7 @@ class VehicleTimeHandler
     /// @note Delivery is not yet implemented in the backend.  The callback can
     ///       be registered now; it will be invoked once background-thread
     ///       delivery is wired up in a future change.
-    void RegisterStatusCallback(
-        score::time::VehicleTime::StatusChangedCallback callback) noexcept
+    void RegisterStatusCallback(score::time::VehicleTime::StatusChangedCallback callback) noexcept
     {
         clock_.Subscribe<score::time::VehicleTimeStatus>(std::move(callback));
     }
@@ -125,8 +124,8 @@ class VehicleTimeHandler
     }
 
   private:
-    score::time::VehicleClock        clock_;
-    score::time::HighResSteadyClock  high_res_steady_clock_;
+    score::time::VehicleClock clock_;
+    score::time::HighResSteadyClock high_res_steady_clock_;
 };
 
 }  // namespace vehicle_time

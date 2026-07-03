@@ -62,7 +62,7 @@ class ScopedClockOverride final
         }
     }
 
-    ScopedClockOverride(const ScopedClockOverride&)            = delete;
+    ScopedClockOverride(const ScopedClockOverride&) = delete;
     ScopedClockOverride& operator=(const ScopedClockOverride&) = delete;
 
     /// @brief Transfers ownership; source guard is disarmed.

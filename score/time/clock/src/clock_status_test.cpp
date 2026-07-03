@@ -27,10 +27,10 @@ class TestClockStatus : public ::testing::Test
   public:
     enum class StatusFlag : std::uint8_t
     {
-        kTimeOut        = 0U,
-        kSynchronized   = 1U,
+        kTimeOut = 0U,
+        kSynchronized = 1U,
         kSynchToGateway = 2U,
-        kUnknown        = 3U,
+        kUnknown = 3U,
     };
 };
 
@@ -132,10 +132,10 @@ TEST_F(TestClockStatus, OutOfRangeFlagAborts)
 {
     enum class StatusFlagOutOfRange : std::uint8_t
     {
-        kTimeOut        = 0U,
-        kSynchronized   = 1U,
+        kTimeOut = 0U,
+        kSynchronized = 1U,
         kSynchToGateway = 200U,
-        kUnknown        = 255U,
+        kUnknown = 255U,
     };
 
     ClockStatus<StatusFlagOutOfRange> status{};

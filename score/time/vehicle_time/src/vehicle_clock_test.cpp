@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time/vehicle_time/src/vehicle_clock_backend_mock.h"
 #include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/vehicle_time/src/vehicle_clock_backend_mock.h"
 
 #include <score/stop_token.hpp>
 
@@ -56,7 +56,7 @@ TEST(VehicleClockTest, NowReturnsSynchronizedStatusAndTimepoint)
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     VehicleTimeStatus status;
-    status.flags = ClockStatus<VehicleTime::StatusFlag>{{VehicleTime::StatusFlag::kSynchronized}};
+    status.flags = ClockStatus<VehicleTime::StatusFlag>{VehicleTime::StatusFlag::kSynchronized};
     const ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> snapshot{
         VehicleTime::Timepoint{std::chrono::nanoseconds{42LL}}, status};
 
@@ -74,9 +74,9 @@ TEST(VehicleClockTest, NowIsReliableReturnsTrueWhenFlagSet)
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
     VehicleTimeStatus status;
-    status.flags = ClockStatus<VehicleTime::StatusFlag>{{VehicleTime::StatusFlag::kSynchronized}};
-    EXPECT_CALL(*mock, Now()).WillOnce(Return(
-        ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{VehicleTime::Timepoint{}, status}));
+    status.flags = ClockStatus<VehicleTime::StatusFlag>{VehicleTime::StatusFlag::kSynchronized};
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(Return(ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{VehicleTime::Timepoint{}, status}));
 
     EXPECT_TRUE(VehicleClock::GetInstance().Now().Status().IsReliable());
 }
@@ -89,8 +89,8 @@ TEST(VehicleClockTest, NowIsReliableReturnsFalseWhenTimeoutSet)
     VehicleTimeStatus status;
     status.flags = ClockStatus<VehicleTime::StatusFlag>{
         {VehicleTime::StatusFlag::kSynchronized, VehicleTime::StatusFlag::kTimeOut}};
-    EXPECT_CALL(*mock, Now()).WillOnce(Return(
-        ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{VehicleTime::Timepoint{}, status}));
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(Return(ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{VehicleTime::Timepoint{}, status}));
 
     EXPECT_FALSE(VehicleClock::GetInstance().Now().Status().IsReliable());
 }
@@ -151,7 +151,9 @@ TEST(VehicleClockTest, SubscribeTimeSlaveSyncDataCapturesAndInvokesCallback)
 
     bool invoked{false};
     VehicleClock::GetInstance().Subscribe<TimeSlaveSyncData<VehicleTime>>(
-        [&invoked](const TimeSlaveSyncData<VehicleTime>&) { invoked = true; });
+        [&invoked](const TimeSlaveSyncData<VehicleTime>&) {
+            invoked = true;
+        });
 
     TimeSlaveSyncData<VehicleTime> data{};
     captured_cb(data);
@@ -182,7 +184,9 @@ TEST(VehicleClockTest, SubscribePDelayMeasurementDataCapturesAndInvokesCallback)
 
     bool invoked{false};
     VehicleClock::GetInstance().Subscribe<PDelayMeasurementData<VehicleTime>>(
-        [&invoked](const PDelayMeasurementData<VehicleTime>&) { invoked = true; });
+        [&invoked](const PDelayMeasurementData<VehicleTime>&) {
+            invoked = true;
+        });
 
     PDelayMeasurementData<VehicleTime> data{};
     captured_cb(data);
@@ -215,8 +219,8 @@ TEST(VehicleClockTest, ScopedClockOverrideInjectsMockIntoSut)
     const VehicleTime::Timepoint expected_tp{std::chrono::nanoseconds{999LL}};
 
     EXPECT_CALL(*mock, IsAvailable()).WillOnce(Return(true));
-    EXPECT_CALL(*mock, Now()).WillOnce(Return(
-        ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{expected_tp, VehicleTimeStatus{}}));
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(Return(ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{expected_tp, VehicleTimeStatus{}}));
 
     SampleVehicleService sut;
     EXPECT_TRUE(sut.CheckAvailable());

@@ -12,10 +12,10 @@
  ********************************************************************************/
 #include "examples/time/system_time/src/system_time_handler.h"
 
-#include "score/time/system_time/src/system_clock_backend_mock.h"
-#include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/clock/src/clock_snapshot.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/system_time/src/system_clock_backend_mock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -37,11 +37,7 @@ namespace test
 class SystemTimeHandlerTest : public ::testing::Test
 {
   protected:
-    SystemTimeHandlerTest()
-        : mock_{std::make_shared<score::time::SystemClockBackendMock>()}
-        , guard_{mock_}
-    {
-    }
+    SystemTimeHandlerTest() : mock_{std::make_shared<score::time::SystemClockBackendMock>()}, guard_{mock_} {}
 
     std::shared_ptr<score::time::SystemClockBackendMock> mock_;
     score::time::test_utils::ScopedClockOverride<std::chrono::system_clock> guard_;
@@ -53,8 +49,8 @@ TEST_F(SystemTimeHandlerTest, ReportContainsUnixTimeFromMock)
     constexpr std::int64_t kYear2026Ns = 1'767'225'600LL * 1'000'000'000LL;
     const std::chrono::system_clock::time_point tp{
         std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::nanoseconds{kYear2026Ns})};
-    EXPECT_CALL(*mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<std::chrono::system_clock::time_point, score::time::NoStatus>{
+    EXPECT_CALL(*mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<std::chrono::system_clock::time_point, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));
 
     SystemTimeHandler handler;
@@ -67,8 +63,8 @@ TEST_F(SystemTimeHandlerTest, ReportContainsZeroForEpochTimepoint)
 {
     const std::chrono::system_clock::time_point tp{
         std::chrono::duration_cast<std::chrono::system_clock::duration>(std::chrono::nanoseconds{0})};
-    EXPECT_CALL(*mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<std::chrono::system_clock::time_point, score::time::NoStatus>{
+    EXPECT_CALL(*mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<std::chrono::system_clock::time_point, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));
 
     SystemTimeHandler handler;

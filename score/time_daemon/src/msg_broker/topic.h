@@ -57,7 +57,7 @@ namespace std
 template <>
 struct hash<score::td::Topic>
 {
-  std::size_t operator()(const score::td::Topic& t) const noexcept
+    std::size_t operator()(const score::td::Topic& t) const noexcept
     {
         return std::hash<std::string>()(t.Name());
     }

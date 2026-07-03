@@ -10,9 +10,9 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_daemon/src/ptp_machine/stub/factory.h"
-#include "score/time_daemon/src/ptp_machine/stub/details/stub_ptp_engine.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time_daemon/src/ptp_machine/stub/details/stub_ptp_engine.h"
+#include "score/time_daemon/src/ptp_machine/stub/factory.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>

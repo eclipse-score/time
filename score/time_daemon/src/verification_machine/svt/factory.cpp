@@ -11,10 +11,10 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/factory.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
-#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 
 namespace score
 {

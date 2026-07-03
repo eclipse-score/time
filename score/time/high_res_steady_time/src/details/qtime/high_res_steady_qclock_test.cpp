@@ -39,8 +39,7 @@ struct TestCaseParams
 
     friend void PrintTo(const TestCaseParams& p, std::ostream* os)
     {
-        *os << "tickCount=" << p.tickCount << ", tickPerSec=" << p.tickPerSec
-            << ", tickInNano=" << p.tickInNano;
+        *os << "tickCount=" << p.tickCount << ", tickPerSec=" << p.tickPerSec << ", tickInNano=" << p.tickInNano;
     }
 };
 
@@ -123,12 +122,11 @@ TEST_P(HighResSteadyQClockTest, ConvertsCyclesToNanoseconds)
 
 TEST(HighResSteadyQClockTest, WhenClockCyclesReturnZeroNowReturnsZero)
 {
-    RecordProperty("Description",
-                   "Fault injection: Neutrino::ClockCycles() returns 0 — Now() must return 0 ns.");
+    RecordProperty("Description", "Fault injection: Neutrino::ClockCycles() returns 0 — Now() must return 0 ns.");
     RecordProperty("TestType", "Fault injection test");
     RecordProperty("ASIL", "QM");
 
-    constexpr std::uint64_t kZeroCycles    = 0U;
+    constexpr std::uint64_t kZeroCycles = 0U;
     constexpr std::uint64_t kValidCpsValue = 10U;
 
     TickProviderMock::CreateMockInstance();
@@ -152,7 +150,7 @@ TEST(HighResSteadyQClockTest, WhenClockCyclesAreValidNowReturnsCorrectNanosecond
                    "Verifies that HighResSteadyQClock::Now() returns the correct ns for known valid inputs.");
     RecordProperty("ASIL", "QM");
 
-    constexpr std::uint64_t kCps    = 100U;
+    constexpr std::uint64_t kCps = 100U;
     constexpr std::uint64_t kCycles = 25U;
 
     TickProviderMock::CreateMockInstance();
@@ -165,8 +163,7 @@ TEST(HighResSteadyQClockTest, WhenClockCyclesAreValidNowReturnsCorrectNanosecond
     EXPECT_CALL(neutrino_mock, ClockCycles()).WillOnce(Return(kCycles));
 
     HighResSteadyQClock clock;
-    EXPECT_EQ(clock.Now().TimePointNs().count(),
-              kCycles * 1'000'000'000U / kCps);
+    EXPECT_EQ(clock.Now().TimePointNs().count(), kCycles * 1'000'000'000U / kCps);
 
     TickProviderMock::DestroyMockInstance();
 }

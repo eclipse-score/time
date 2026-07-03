@@ -13,10 +13,10 @@
 #ifndef SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_HIGH_RES_STEADY_CLOCK_BACKEND_MOCK_H
 #define SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_HIGH_RES_STEADY_CLOCK_BACKEND_MOCK_H
 
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
-#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
-#include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/clock/src/clock_test_factory.h"
+#include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 
 #include <gmock/gmock.h>
 
@@ -28,7 +28,8 @@ namespace time
 /// @brief GMock test double for the HIRS clock domain.
 ///
 /// Implements @c HighResSteadyClockBackend so it can be injected via
-/// @c test_utils::ScopedClockOverride<HighResSteadyTime> or @c test_utils::ClockTestFactory<HighResSteadyTime> in unit tests.
+/// @c test_utils::ScopedClockOverride<HighResSteadyTime> or @c test_utils::ClockTestFactory<HighResSteadyTime> in unit
+/// tests.
 ///
 /// Constructor injection (preferred — no global state):
 /// @code
@@ -48,17 +49,14 @@ namespace time
 class HighResSteadyClockBackendMock : public HighResSteadyClockBackend
 {
   public:
-    HighResSteadyClockBackendMock()                                    = default;
-    ~HighResSteadyClockBackendMock() noexcept override                 = default;
-    HighResSteadyClockBackendMock(const HighResSteadyClockBackendMock&)                = delete;
-    HighResSteadyClockBackendMock& operator=(const HighResSteadyClockBackendMock&)     = delete;
-    HighResSteadyClockBackendMock(HighResSteadyClockBackendMock&&)                     = delete;
-    HighResSteadyClockBackendMock& operator=(HighResSteadyClockBackendMock&&)          = delete;
+    HighResSteadyClockBackendMock() = default;
+    ~HighResSteadyClockBackendMock() noexcept override = default;
+    HighResSteadyClockBackendMock(const HighResSteadyClockBackendMock&) = delete;
+    HighResSteadyClockBackendMock& operator=(const HighResSteadyClockBackendMock&) = delete;
+    HighResSteadyClockBackendMock(HighResSteadyClockBackendMock&&) = delete;
+    HighResSteadyClockBackendMock& operator=(HighResSteadyClockBackendMock&&) = delete;
 
-    MOCK_METHOD((ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>),
-                Now,
-                (),
-                (const, noexcept, override));
+    MOCK_METHOD((ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>), Now, (), (const, noexcept, override));
 };
 
 }  // namespace time

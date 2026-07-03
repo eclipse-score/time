@@ -15,8 +15,8 @@
 
 // Internal header — include ONLY from system_time_impl/system_clock_backend_impl.cpp.
 
-#include "score/time/system_time/src/system_clock_backend.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/system_time/src/system_clock_backend.h"
 
 #include <chrono>
 
@@ -33,17 +33,17 @@ namespace detail
 class SystemClockBackendImpl final : public SystemClockBackend
 {
   public:
-    SystemClockBackendImpl() noexcept                           = default;
-    ~SystemClockBackendImpl() noexcept override                 = default;
-    SystemClockBackendImpl(const SystemClockBackendImpl&)              = delete;
-    SystemClockBackendImpl& operator=(const SystemClockBackendImpl&)   = delete;
-    SystemClockBackendImpl(SystemClockBackendImpl&&)                   = delete;
-    SystemClockBackendImpl& operator=(SystemClockBackendImpl&&)        = delete;
+    SystemClockBackendImpl() noexcept = default;
+    ~SystemClockBackendImpl() noexcept override = default;
+    SystemClockBackendImpl(const SystemClockBackendImpl&) = delete;
+    SystemClockBackendImpl& operator=(const SystemClockBackendImpl&) = delete;
+    SystemClockBackendImpl(SystemClockBackendImpl&&) = delete;
+    SystemClockBackendImpl& operator=(SystemClockBackendImpl&&) = delete;
 
     ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept override
     {
-        return ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>{
-            std::chrono::system_clock::now(), NoStatus{}};
+        return ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>{std::chrono::system_clock::now(),
+                                                                              NoStatus{}};
     }
 };
 

@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_BACKEND_H
 #define SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_BACKEND_H
 
-#include "score/time/vehicle_time/src/vehicle_time.h"
 #include "score/time/clock/src/clock_snapshot.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
 
 #include <score/stop_token.hpp>
 
@@ -81,8 +81,7 @@ class VehicleClockBackend
     ///
     /// The callback is invoked on the thread that calls \c Now() — typically
     /// a background polling thread.  The implementation must be thread-safe.
-    virtual void SetStatusChangedCallback(
-        VehicleTime::StatusChangedCallback&& callback) noexcept = 0;
+    virtual void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept = 0;
 
     /// \brief Removes the status-changed callback.
     virtual void UnsetStatusChangedCallback() noexcept = 0;

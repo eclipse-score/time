@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_SYNC_STATE_MACHINE_H
 #define SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_SYNC_STATE_MACHINE_H
 
-#include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/time_slave/src/gptp/details/ptp_types.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 
 #include <atomic>
 #include <cstdint>
@@ -30,9 +30,9 @@ namespace details
 /// Output produced by a successful Sync+FollowUp pairing.
 struct SyncResult
 {
-    std::int64_t master_ns{0};               ///< Grandmaster time (ns since epoch)
-    std::int64_t offset_ns{0};               ///< local hw_ts − master_ns
-    std::int64_t sync_mono_ns{0};            ///< CLOCK_MONOTONIC when the Sync frame was received
+    std::int64_t master_ns{0};                      ///< Grandmaster time (ns since epoch)
+    std::int64_t offset_ns{0};                      ///< local hw_ts − master_ns
+    std::int64_t sync_mono_ns{0};                   ///< CLOCK_MONOTONIC when the Sync frame was received
     score::ts::GptpIpcSyncFupData sync_fup_data{};  ///< Ready to copy into GptpIpcData (pdelay field filled by engine)
     bool is_time_jump_future{false};
     bool is_time_jump_past{false};

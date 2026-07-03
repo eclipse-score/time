@@ -43,7 +43,7 @@ class FakeOsSyscalls final : public OsSyscalls
 {
   public:
     // ── socket ────────────────────────────────────────────────────────────────
-    int socket_fd{42};       // fd returned on success
+    int socket_fd{42};        // fd returned on success
     bool socket_fail{false};  // true → return -1
 
     int socket_call(int /*domain*/, int /*type*/, int /*protocol*/) noexcept override
@@ -57,7 +57,7 @@ class FakeOsSyscalls final : public OsSyscalls
     }
 
     // ── ioctl ─────────────────────────────────────────────────────────────────
-    bool ioctl_siocgifindex_fail{false};  // SIOCGIFINDEX failure
+    bool ioctl_siocgifindex_fail{false};   // SIOCGIFINDEX failure
     bool ioctl_siocshwtstamp_fail{false};  // first SIOCSHWTSTAMP failure (fallback exercised)
 
     int ioctl_call(int /*fd*/, unsigned long req, void* /*arg*/) noexcept override
@@ -128,9 +128,9 @@ class FakeOsSyscalls final : public OsSyscalls
     //   calls 0 .. errqueue_drain_count-1  → return 1 (drain loop body runs)
     //   call  errqueue_drain_count         → return -1 (terminates DrainErrQueue loop)
     //   call  errqueue_drain_count+1       → TX timestamp: fill hwts if tx_fill_hwts, return tx_result
-    int errqueue_drain_count{0};   // how many drain entries to simulate
-    bool tx_fill_hwts{false};      // fill SO_TIMESTAMPING cmsg in TX-timestamp recvmsg
-    ::ssize_t tx_result{14};       // TX-timestamp recvmsg return value
+    int errqueue_drain_count{0};  // how many drain entries to simulate
+    bool tx_fill_hwts{false};     // fill SO_TIMESTAMPING cmsg in TX-timestamp recvmsg
+    ::ssize_t tx_result{14};      // TX-timestamp recvmsg return value
 
     int recvmsg_call_count{0};
 
@@ -183,8 +183,7 @@ class FakeOsSyscalls final : public OsSyscalls
 
         if (msg != nullptr && msg->msg_iov != nullptr && recvmsg_result > 0)
         {
-            const std::size_t n =
-                std::min(static_cast<std::size_t>(recvmsg_result), msg->msg_iov[0].iov_len);
+            const std::size_t n = std::min(static_cast<std::size_t>(recvmsg_result), msg->msg_iov[0].iov_len);
             std::memset(msg->msg_iov[0].iov_base, 0, n);
         }
         return recvmsg_result;
@@ -197,10 +196,7 @@ class FakeOsSyscalls final : public OsSyscalls
     // ── send ──────────────────────────────────────────────────────────────────
     ::ssize_t send_result{14};  // bytes "sent"; -1 = error
 
-    ::ssize_t send_call(int /*fd*/,
-                        const void* /*buf*/,
-                        ::size_t len,
-                        int /*flags*/) noexcept override
+    ::ssize_t send_call(int /*fd*/, const void* /*buf*/, ::size_t len, int /*flags*/) noexcept override
     {
         if (send_result < 0)
             return -1;
@@ -527,7 +523,7 @@ TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
     fake.send_result = 14;
     fake.poll_result = 1;
     fake.poll_revents = POLLERR;
-    fake.tx_result = 14;      // TX recvmsg succeeds
+    fake.tx_result = 14;       // TX recvmsg succeeds
     fake.tx_fill_hwts = true;  // inject ts[2]={1,500_000_000}
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);

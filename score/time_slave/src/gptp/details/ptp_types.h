@@ -40,7 +40,7 @@ namespace details
 {
 
 // ─── EtherType constants ────────────────────────────────────────────────────
-constexpr std::uint16_t kEthP1588  = 0x88F7U;
+constexpr std::uint16_t kEthP1588 = 0x88F7U;
 constexpr std::uint16_t kEthP8021Q = 0x8100U;
 
 // ─── MAC / buffer sizes ─────────────────────────────────────────────────────
@@ -185,8 +185,7 @@ inline TmvT TimestampToTmv(const Timestamp& ts) noexcept
 {
     const std::uint64_t sec =
         (static_cast<std::uint64_t>(ts.seconds_msb) << 32U) | static_cast<std::uint64_t>(ts.seconds_lsb);
-    constexpr std::uint64_t kMaxNs =
-        static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max());
+    constexpr std::uint64_t kMaxNs = static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max());
     constexpr std::uint64_t kMaxSec = kMaxNs / static_cast<std::uint64_t>(kNsPerSec);
     if (sec > kMaxSec)
         return TmvT{};

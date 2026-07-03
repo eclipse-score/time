@@ -11,6 +11,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/application/svt/svt_handler.h"
+#include "score/concurrency/interruptible_wait.h"
+#include "score/mw/log/logging.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/time_daemon/src/control_flow_divider/ptp/factory.h"
 #include "score/time_daemon/src/ipc/svt/publisher/factory.h"
@@ -18,8 +20,6 @@
 #include "score/time_daemon/src/msg_broker/topic.h"
 #include "score/time_daemon/src/ptp_machine/shm/factory.h"
 #include "score/time_daemon/src/verification_machine/svt/factory.h"
-#include "score/concurrency/interruptible_wait.h"
-#include "score/mw/log/logging.h"
 
 #include <chrono>
 #include <future>
@@ -106,8 +106,7 @@ void SvtHandler::RunOnce(const score::cpp::stop_token& token) noexcept
             {
                 case JobRunner::Result::kSucceed:
                 {
-                    score::mw::log::LogInfo(kTimeBaseHandlerSvt)
-                        << "Initialization done, starting proactive machines!";
+                    score::mw::log::LogInfo(kTimeBaseHandlerSvt) << "Initialization done, starting proactive machines!";
                     job_runner_.reset();
                     // start flow divider before ptp, as ptp might already try to publish some data
                     ctrl_flow_divider_->Start();

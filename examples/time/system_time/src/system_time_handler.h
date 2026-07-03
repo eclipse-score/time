@@ -44,13 +44,13 @@ struct TimeReport
 class SystemTimeHandler
 {
   public:
-    SystemTimeHandler()  = default;
+    SystemTimeHandler() = default;
     ~SystemTimeHandler() = default;
 
-    SystemTimeHandler(const SystemTimeHandler&)             = delete;
-    SystemTimeHandler& operator=(const SystemTimeHandler&)  = delete;
-    SystemTimeHandler(SystemTimeHandler&&)                  = delete;
-    SystemTimeHandler& operator=(SystemTimeHandler&&)       = delete;
+    SystemTimeHandler(const SystemTimeHandler&) = delete;
+    SystemTimeHandler& operator=(const SystemTimeHandler&) = delete;
+    SystemTimeHandler(SystemTimeHandler&&) = delete;
+    SystemTimeHandler& operator=(SystemTimeHandler&&) = delete;
 
     /// @brief Reads the current system (wall-clock) time and returns a report.
     [[nodiscard]] TimeReport GetCurrentTime() const noexcept

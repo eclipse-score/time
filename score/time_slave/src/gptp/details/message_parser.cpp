@@ -121,8 +121,7 @@ bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_l
                 constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);  // = 44
                 if (payload_len >= kPidOffset + 10U)
                 {
-                    std::memcpy(msg.pdelay_resp.requestingPortIdentity.clockIdentity.id,
-                                payload + kPidOffset, 8);
+                    std::memcpy(msg.pdelay_resp.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
                     msg.pdelay_resp.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
                 }
             }
@@ -135,10 +134,8 @@ bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_l
                 constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);  // = 44
                 if (payload_len >= kPidOffset + 10U)
                 {
-                    std::memcpy(msg.pdelay_resp_fup.requestingPortIdentity.clockIdentity.id,
-                                payload + kPidOffset, 8);
-                    msg.pdelay_resp_fup.requestingPortIdentity.portNumber =
-                        LoadU16(payload + kPidOffset + 8U);
+                    std::memcpy(msg.pdelay_resp_fup.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
+                    msg.pdelay_resp_fup.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
                 }
             }
             break;

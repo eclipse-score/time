@@ -13,8 +13,8 @@
 #ifndef SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H
 #define SCORE_TS_CLIENT_SRC_GPTP_IPC_RECEIVER_H
 
-#include "score/ts_client/src/gptp_ipc_channel.h"
 #include "score/memory/shared/shared_memory_factory.h"
+#include "score/ts_client/src/gptp_ipc_channel.h"
 
 #include <memory>
 #include <optional>

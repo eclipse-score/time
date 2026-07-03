@@ -12,12 +12,12 @@
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.h"
 
-#include "score/time_daemon/src/ipc/receiver_mock.h"
-#include "score/time_daemon/src/ipc/svt/svt_time_info.h"
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
-#include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/clock/src/clock_snapshot.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
+#include "score/time_daemon/src/ipc/receiver_mock.h"
+#include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
 #include <gtest/gtest.h>
 
@@ -42,10 +42,10 @@ class VehicleClockBackendImplTest : public ::testing::Test
 {
   protected:
     VehicleClockBackendImplTest()
-        : mock_hirs_{std::make_shared<HighResSteadyClockBackendMock>()}
-        , hirs_guard_{mock_hirs_}
-        , mock_svt_{std::make_shared<SvtMock>()}
-        , impl_{std::make_unique<detail::VehicleClockBackendImpl>(mock_svt_, HighResSteadyClock::GetInstance())}
+        : mock_hirs_{std::make_shared<HighResSteadyClockBackendMock>()},
+          hirs_guard_{mock_hirs_},
+          mock_svt_{std::make_shared<SvtMock>()},
+          impl_{std::make_unique<detail::VehicleClockBackendImpl>(mock_svt_, HighResSteadyClock::GetInstance())}
     {
     }
 
@@ -91,7 +91,8 @@ TEST_F(VehicleClockBackendImplTest, InitTrueAllowsNowToReturnData)
     const SvtSnapshot data{1000ULL, 0ULL, 0.0, {true, false, false, false, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
     EXPECT_CALL(*mock_hirs_, Now())
-        .WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
+        .WillOnce(Return(
+            ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
 
     const auto snapshot = impl_->Now();
     EXPECT_TRUE(snapshot.Status().IsConsistent());
@@ -155,7 +156,8 @@ TEST_F(VehicleClockBackendImplTest, NowSetsSynchronizedFlagFromSvtStatus)
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {true, false, false, false, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
     EXPECT_CALL(*mock_hirs_, Now())
-        .WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
+        .WillOnce(Return(
+            ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
 
     const auto snapshot = impl_->Now();
     EXPECT_TRUE(snapshot.Status().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
@@ -169,7 +171,8 @@ TEST_F(VehicleClockBackendImplTest, NowSetsTimeOutFlagFromSvtStatus)
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, true, false, false, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
     EXPECT_CALL(*mock_hirs_, Now())
-        .WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
+        .WillOnce(Return(
+            ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
 
     const auto snapshot = impl_->Now();
     EXPECT_TRUE(snapshot.Status().IsFlagActive(VehicleTime::StatusFlag::kTimeOut));
@@ -183,7 +186,8 @@ TEST_F(VehicleClockBackendImplTest, NowSetsTimeLeapFutureFlagFromSvtStatus)
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, false, true, false, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
     EXPECT_CALL(*mock_hirs_, Now())
-        .WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
+        .WillOnce(Return(
+            ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
 
     const auto snapshot = impl_->Now();
     EXPECT_TRUE(snapshot.Status().IsFlagActive(VehicleTime::StatusFlag::kTimeLeapFuture));
@@ -197,7 +201,8 @@ TEST_F(VehicleClockBackendImplTest, NowSetsTimeLeapPastFlagFromSvtStatus)
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, false, false, true, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
     EXPECT_CALL(*mock_hirs_, Now())
-        .WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
+        .WillOnce(Return(
+            ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
 
     const auto snapshot = impl_->Now();
     EXPECT_TRUE(snapshot.Status().IsFlagActive(VehicleTime::StatusFlag::kTimeLeapPast));
@@ -211,7 +216,8 @@ TEST_F(VehicleClockBackendImplTest, NowReturnsInconsistentStatusWhenIsCorrectIsF
     const SvtSnapshot data{0ULL, 0ULL, 0.0, {false, false, false, false, false}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
     EXPECT_CALL(*mock_hirs_, Now())
-        .WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
+        .WillOnce(Return(
+            ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
 
     const auto snapshot = impl_->Now();
     EXPECT_FALSE(snapshot.Status().IsConsistent());
@@ -225,7 +231,8 @@ TEST_F(VehicleClockBackendImplTest, NowForwardsRateDeviation)
     const SvtSnapshot data{0ULL, 0ULL, 2.5, {false, false, false, false, true}, {}, {}};
     EXPECT_CALL(*mock_svt_, Receive()).WillOnce(Return(data));
     EXPECT_CALL(*mock_hirs_, Now())
-        .WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
+        .WillOnce(Return(
+            ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{0ns}, NoStatus{}}));
 
     const auto snapshot = impl_->Now();
     EXPECT_DOUBLE_EQ(snapshot.Status().RateDeviation(), 2.5);
@@ -255,11 +262,9 @@ TEST_F(VehicleClockBackendImplTest, WaitUntilAvailableReturnsFalseWhenDeadlinePa
 
 TEST_F(VehicleClockBackendImplTest, CallbackMethodsAreNoOps)
 {
-    impl_->SetTimeSlaveSyncDataReceivedCallback(
-        [](const TimeSlaveSyncData<VehicleTime>&) {});
+    impl_->SetTimeSlaveSyncDataReceivedCallback([](const TimeSlaveSyncData<VehicleTime>&) {});
     impl_->UnsetTimeSlaveSyncDataReceivedCallback();
-    impl_->SetPDelayMeasurementFinishedCallback(
-        [](const PDelayMeasurementData<VehicleTime>&) {});
+    impl_->SetPDelayMeasurementFinishedCallback([](const PDelayMeasurementData<VehicleTime>&) {});
     impl_->UnsetPDelayMeasurementFinishedCallback();
     impl_->SetStatusChangedCallback([](const VehicleTimeStatus&) {});
     impl_->UnsetStatusChangedCallback();

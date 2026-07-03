@@ -70,8 +70,8 @@ struct TimeSlaveSyncData
                              << reference_global_timestamp.time_since_epoch().count() << ", "
                              << reference_local_timestamp.time_since_epoch().count() << ", "
                              << sync_ingress_timestamp.time_since_epoch().count() << ", " << correction_field
-                             << " / 0x10000, " << sequence_id << ", " << pdelay.count() << ", "
-                             << source_port_identity << "]";
+                             << " / 0x10000, " << sequence_id << ", " << pdelay.count() << ", " << source_port_identity
+                             << "]";
     }
 };
 

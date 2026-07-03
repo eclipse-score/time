@@ -29,18 +29,18 @@ class SystemClockBackend;
 template <>
 struct ClockTraits<std::chrono::system_clock>
 {
-    using Backend        = SystemClockBackend;
-    using Duration       = std::chrono::system_clock::duration;
-    using Timepoint      = std::chrono::system_clock::time_point;
-    using Snapshot       = ClockSnapshot<Timepoint, NoStatus>;
+    using Backend = SystemClockBackend;
+    using Duration = std::chrono::system_clock::duration;
+    using Timepoint = std::chrono::system_clock::time_point;
+    using Snapshot = ClockSnapshot<Timepoint, NoStatus>;
 
     /// \brief Obtains the current system-clock snapshot from the backend.
     static Snapshot CallNow(const Backend& impl) noexcept;
 };
 
-using SystemClock     = Clock<std::chrono::system_clock>;
+using SystemClock = Clock<std::chrono::system_clock>;
 using SystemTimePoint = ClockTraits<std::chrono::system_clock>::Timepoint;
-using SystemSnapshot  = ClockTraits<std::chrono::system_clock>::Snapshot;
+using SystemSnapshot = ClockTraits<std::chrono::system_clock>::Snapshot;
 
 }  // namespace time
 }  // namespace score

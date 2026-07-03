@@ -15,8 +15,8 @@
 
 // Internal header — include ONLY from steady_time_impl/steady_clock_backend_impl.cpp.
 
-#include "score/time/steady_time/src/steady_clock_backend.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/steady_time/src/steady_clock_backend.h"
 
 #include <chrono>
 
@@ -33,17 +33,17 @@ namespace detail
 class SteadyClockBackendImpl final : public SteadyClockBackend
 {
   public:
-    SteadyClockBackendImpl() noexcept                           = default;
-    ~SteadyClockBackendImpl() noexcept override                 = default;
-    SteadyClockBackendImpl(const SteadyClockBackendImpl&)              = delete;
-    SteadyClockBackendImpl& operator=(const SteadyClockBackendImpl&)   = delete;
-    SteadyClockBackendImpl(SteadyClockBackendImpl&&)                   = delete;
-    SteadyClockBackendImpl& operator=(SteadyClockBackendImpl&&)        = delete;
+    SteadyClockBackendImpl() noexcept = default;
+    ~SteadyClockBackendImpl() noexcept override = default;
+    SteadyClockBackendImpl(const SteadyClockBackendImpl&) = delete;
+    SteadyClockBackendImpl& operator=(const SteadyClockBackendImpl&) = delete;
+    SteadyClockBackendImpl(SteadyClockBackendImpl&&) = delete;
+    SteadyClockBackendImpl& operator=(SteadyClockBackendImpl&&) = delete;
 
     ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept override
     {
-        return ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{
-            std::chrono::steady_clock::now(), NoStatus{}};
+        return ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{std::chrono::steady_clock::now(),
+                                                                              NoStatus{}};
     }
 };
 

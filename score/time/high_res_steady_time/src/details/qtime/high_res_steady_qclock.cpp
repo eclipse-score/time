@@ -13,8 +13,8 @@
 #include "score/time/high_res_steady_time/src/details/qtime/high_res_steady_qclock.h"
 
 #include "score/time/high_res_steady_time/src/details/qtime/tick_provider.h"
-#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
 #include "score/os/qnx/neutrino.h"
 
@@ -32,13 +32,11 @@ namespace qtime
 
 ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> HighResSteadyQClock::Now() const noexcept
 {
-    const HighResSteadyTime::Timepoint tp{
-        ClockCyclesToNanoseconds(score::os::qnx::Neutrino::instance().ClockCycles())};
+    const HighResSteadyTime::Timepoint tp{ClockCyclesToNanoseconds(score::os::qnx::Neutrino::instance().ClockCycles())};
     return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{tp, NoStatus{}};
 }
 
-std::chrono::nanoseconds HighResSteadyQClock::ClockCyclesToNanoseconds(
-    const std::uint64_t clock_cycles) const noexcept
+std::chrono::nanoseconds HighResSteadyQClock::ClockCyclesToNanoseconds(const std::uint64_t clock_cycles) const noexcept
 {
     const std::uint64_t cycles_per_sec = GetClockCyclesPerSec();
     std::chrono::nanoseconds converted{0};
@@ -52,8 +50,7 @@ std::chrono::nanoseconds HighResSteadyQClock::ClockCyclesToNanoseconds(
         const std::uint64_t division_rest{clock_cycles % cycles_per_sec};
         if ((division_result <= upper_bound) && (division_rest <= upper_bound))
         {
-            converted = std::chrono::nanoseconds{division_result * billion +
-                                                 division_rest * billion / cycles_per_sec};
+            converted = std::chrono::nanoseconds{division_result * billion + division_rest * billion / cycles_per_sec};
         }
     }
 
