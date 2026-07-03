@@ -32,9 +32,6 @@ jobs:
   clang-tidy:
     # Pinned to ubuntu-24.04 — matches the LLVM 19 toolchain from toolchains_llvm.
     runs-on: ubuntu-24.04
-    # Non-blocking until all clang-tidy SCA violations are resolved.
-    # Remove once https://github.com/eclipse-score/time/issues/111 is resolved.
-    continue-on-error: true
     steps:
       - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
         with:
@@ -51,8 +48,9 @@ jobs:
           repository-cache: true
           cache-save: ${{ github.event_name == 'push' }}
 
-      - name: Run clang-tidy via Bazel
-        # continue-on-error so the artifact upload step always runs.
+      - name: Run clang-tidy
+        # continue-on-error is required: bazel exits non-zero when violations exist.
+        # Remove once https://github.com/eclipse-score/time/issues/111 is resolved.
         continue-on-error: true
         run: bazel test --keep_going --config=clang-tidy //score/... 2>&1 | tee clang_tidy.log
 
@@ -61,6 +59,19 @@ jobs:
         run: |
           find -L bazel-bin -name "*.AspectRulesLintClangTidy.out" 2>/dev/null \
             | xargs cat 2>/dev/null > clang_tidy_findings.txt || true
+
+      - name: Check violation baseline
+        # Baseline recorded on 2026-07-03. Decrease when violations are fixed.
+        # Remove this step once https://github.com/eclipse-score/time/issues/111 is resolved.
+        if: always()
+        run: |
+          BASELINE=85
+          COUNT=$(wc -l < clang_tidy_findings.txt 2>/dev/null || echo 0)
+          echo "Clang-tidy violations: $COUNT (baseline: $BASELINE)"
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::Clang-tidy violations grew: $COUNT > baseline $BASELINE. Fix new violations before merging."
+            exit 1
+          fi
 
       - name: Upload findings
         if: always()

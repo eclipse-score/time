@@ -26,15 +26,14 @@ on:
   merge_group:
     types: [checks_requested]
 jobs:
+  # Checks Python, Starlark, YAML and Rust formatting via the shared cicd-workflow.
   formatting-check:
     uses: eclipse-score/cicd-workflows/.github/workflows/format.yml@main
 
+  # Checks C++ formatting via clang-format (score_bazel_tools_cc aspect).
   clang-format:
     name: C++ clang-format check
     runs-on: ubuntu-24.04
-    # Non-blocking until all C++ formatting violations are fixed.
-    # Remove once https://github.com/eclipse-score/time/issues/103 is resolved.
-    continue-on-error: true
     steps:
       - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
         with:
@@ -52,11 +51,11 @@ jobs:
           cache-save: ${{ github.event_name == 'push' }}
 
       - name: Run clang-format
-        # --keep_going collects all violations; continue-on-error lets the
-        # artifact collection step run even when violations are found.
+        # continue-on-error is required: bazel exits non-zero when violations exist.
+        # Remove once https://github.com/eclipse-score/time/issues/103 is resolved.
         continue-on-error: true
         run: >
-          bazel build --keep_going --config=clang_format //score/... //examples/... 2>&1 | tee clang_format_raw.log #magic___^_^___line
+          bazel build --keep_going --config=clang_format //score/... //examples/... 2>&1 | tee clang_format_raw.log
       - name: Filter and report violations
         if: always()
         run: |

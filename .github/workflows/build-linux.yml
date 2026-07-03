@@ -10,6 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+
 name: Build / Linux
 
 permissions:
@@ -29,7 +30,7 @@ on:
     types: [checks_requested]
   workflow_call:
 jobs:
-  linux-build:
+  build:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
@@ -47,4 +48,4 @@ jobs:
 
       - name: Build with Bazel
         run: |
-          bazel build --keep_going --verbose_failures --config ${{ matrix.config }} -- //score/... //examples/...
+          bazel build --keep_going --verbose_failures --config ${{ matrix.config }} //score/... //examples/...

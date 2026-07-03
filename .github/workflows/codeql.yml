@@ -12,6 +12,10 @@
 # *******************************************************************************
 name: QA / CodeQL
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   schedule:
     - cron: "0 2 * * *" # Nightly at 2 AM UTC
