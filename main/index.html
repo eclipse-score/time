@@ -431,6 +431,48 @@ verifies and validates the timepoints, and distributes this time information acr
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>build<span class="w"> </span>//:docs
 </pre></div>
 </div>
+<p><strong>Dependency lock file</strong></p>
+<p>After modifying <code class="docutils literal notranslate"><span class="pre">MODULE.bazel</span></code> (adding or bumping a dependency), update the lock file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>mod<span class="w"> </span>tidy
+</pre></div>
+</div>
+<p>Commit both <code class="docutils literal notranslate"><span class="pre">MODULE.bazel</span></code> and <code class="docutils literal notranslate"><span class="pre">MODULE.bazel.lock</span></code> together. The
+<code class="docutils literal notranslate"><span class="pre">Process</span> <span class="pre">/</span> <span class="pre">Bzlmod</span> <span class="pre">Lock</span> <span class="pre">Check</span></code> CI job enforces this — see
+<a class="reference external" href="https://github.com/eclipse-score/score/issues/2628">eclipse-score/score#2628</a>.</p>
+<p><strong>Formatting</strong></p>
+<p>Check formatting for all non-C++ files (Python, Starlark, YAML):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>//:format.check
+</pre></div>
+</div>
+<p>Auto-fix formatting for all non-C++ files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>run<span class="w"> </span>//:format.fix
+</pre></div>
+</div>
+<p>Check C++ formatting (clang-format):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>build<span class="w"> </span>--config<span class="o">=</span>clang_format<span class="w"> </span>//score/...<span class="w"> </span>//examples/...
+</pre></div>
+</div>
+<p>Fix a single C++ file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>clang-format<span class="w"> </span>-i<span class="w"> </span>&lt;file&gt;
+</pre></div>
+</div>
+<p>Fix all C++ files with violations at once (Bazel identifies violating files first):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>build<span class="w"> </span>--keep_going<span class="w"> </span>--config<span class="o">=</span>clang_format<span class="w"> </span>//score/...<span class="w"> </span>//examples/...<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;clang-formatted&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;^</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d:<span class="w"> </span>-f1<span class="w"> </span><span class="p">|</span><span class="w"> </span>sort<span class="w"> </span>-u<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="p">|</span><span class="w"> </span>xargs<span class="w"> </span>clang-format<span class="w"> </span>-i
+</pre></div>
+</div>
+<p><strong>Static Code Analysis</strong></p>
+<p>Run clang-tidy (powered by <code class="docutils literal notranslate"><span class="pre">score_cpp_policies</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>clang-tidy<span class="w"> </span>//score/...
+</pre></div>
+</div>
+<p><strong>Sanitizers</strong></p>
+<p>Run address, undefined-behaviour and leak sanitizers (powered by <code class="docutils literal notranslate"><span class="pre">score_cpp_policies</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>asan_ubsan_lsan<span class="w"> </span>--config<span class="o">=</span>time-x86_64-linux<span class="w"> </span>//score/...
+</pre></div>
+</div>
+<p>Individual sanitizer aliases are also available: <code class="docutils literal notranslate"><span class="pre">--config=asan</span></code>, <code class="docutils literal notranslate"><span class="pre">--config=ubsan</span></code>, <code class="docutils literal notranslate"><span class="pre">--config=lsan</span></code>.</p>
 </section>
 <section id="configuration">
 <h2><a class="toc-backref" href="#id4" role="doc-backlink">Configuration</a><a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
