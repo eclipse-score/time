@@ -32,8 +32,8 @@ jobs:
   clang-tidy:
     # Pinned to ubuntu-24.04 — matches the LLVM 19 toolchain from toolchains_llvm.
     runs-on: ubuntu-24.04
-    # Non-blocking until the codebase is clean.
-    # Remove this line once all clang-tidy violations are resolved.
+    # Non-blocking until all clang-tidy SCA violations are resolved.
+    # Remove once https://github.com/eclipse-score/time/issues/111 is resolved.
     continue-on-error: true
     steps:
       - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1

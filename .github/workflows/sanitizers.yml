@@ -33,8 +33,8 @@ jobs:
     # Pinned to ubuntu-24.04 (not ubuntu-latest) — sanitizers require a stable
     # glibc/runtime version; avoids breakage when ubuntu-latest rolls forward.
     runs-on: ubuntu-24.04
-    # Non-blocking until known sanitizer failures in the code are resolved.
-    # Remove this line once the code is clean.
+    # Non-blocking until all sanitizer findings are resolved.
+    # Remove once https://github.com/eclipse-score/time/issues/112 is resolved.
     continue-on-error: true
     strategy:
       fail-fast: false

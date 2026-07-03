@@ -32,8 +32,8 @@ jobs:
   clang-format:
     name: C++ clang-format check
     runs-on: ubuntu-24.04
-    # Non-blocking until all C++ files are formatted.
-    # Remove this line once the codebase is clean.
+    # Non-blocking until all C++ formatting violations are fixed.
+    # Remove once https://github.com/eclipse-score/time/issues/103 is resolved.
     continue-on-error: true
     steps:
       - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
