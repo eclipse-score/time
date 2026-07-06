@@ -30,7 +30,7 @@ on:
 
 jobs:
   code-coverage:
-    uses: eclipse-score/cicd-workflows/.github/workflows/cpp-coverage.yml@main
+    uses: eclipse-score/cicd-workflows/.github/workflows/cpp-coverage.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     with:
       bazel-target: "//score/..."
       bazel-config: "time-x86_64-linux"

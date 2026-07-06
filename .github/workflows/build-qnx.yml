@@ -30,7 +30,7 @@ on:
       - main
 jobs:
   qnx-build:
-    uses: eclipse-score/cicd-workflows/.github/workflows/qnx-build.yml@main
+    uses: eclipse-score/cicd-workflows/.github/workflows/qnx-build.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     permissions:
       contents: read
       pull-requests: read

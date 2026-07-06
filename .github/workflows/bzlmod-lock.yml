@@ -33,6 +33,6 @@ on:
 
 jobs:
   bzlmod-lock:
-    uses: eclipse-score/cicd-workflows/.github/workflows/bzlmod-lock-check.yml@main
+    uses: eclipse-score/cicd-workflows/.github/workflows/bzlmod-lock-check.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     with:
       working-directory: .

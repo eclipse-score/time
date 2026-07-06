@@ -31,7 +31,7 @@ on:
 
 jobs:
   run-comp-tests:
-    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@main
+    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     permissions:
       contents: read
       pull-requests: read
