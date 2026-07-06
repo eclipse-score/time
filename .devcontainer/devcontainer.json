@@ -14,12 +14,12 @@
       "remoteUser": "${localEnv:USER}",
   "mounts": [
     {
-      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.qnx/license/licenses",
+      "source": "${localEnv:HOME}/.qnx/license/licenses",
       "target": "/opt/score_qnx/license/licenses",
       "type": "bind"
     },
     {
-      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.netrc",
+      "source": "${localEnv:HOME}/.netrc",
       "target": "/home/${localEnv:USER}/.netrc",
       "type": "bind"
     }
