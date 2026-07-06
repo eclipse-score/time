@@ -92,37 +92,17 @@ Commit both ``MODULE.bazel`` and ``MODULE.bazel.lock`` together. The
 
 **Formatting**
 
-Check formatting for all non-C++ files (Python, Starlark, YAML):
+Check formatting for all files (Python, Starlark, YAML, C++):
 
 .. code-block:: bash
 
    bazel test //:format.check
 
-Auto-fix formatting for all non-C++ files:
+Auto-fix formatting for all files:
 
 .. code-block:: bash
 
    bazel run //:format.fix
-
-Check C++ formatting (clang-format):
-
-.. code-block:: bash
-
-   bazel build --config=clang_format //score/... //examples/...
-
-Fix a single C++ file:
-
-.. code-block:: bash
-
-   clang-format -i <file>
-
-Fix all C++ files with violations at once (Bazel identifies violating files first):
-
-.. code-block:: bash
-
-   bazel build --keep_going --config=clang_format //score/... //examples/... 2>&1 \
-     | grep "clang-formatted" | grep "^$(pwd)" | cut -d: -f1 | sort -u \
-     | xargs clang-format -i
 
 **Static Code Analysis**
 
@@ -152,8 +132,8 @@ Example:
 .. code-block:: python
 
    PROJECT_CONFIG = {
-       "asil_level": "QM",
-       "source_code": ["cpp", "rust"]
+      "asil_level": "QM",
+      "source_code": ["cpp", "rust"]
    }
 
 This enables conditional behavior (e.g., choosing `clang-tidy` for C++ or `clippy` for Rust).
