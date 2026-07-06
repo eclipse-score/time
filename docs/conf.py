@@ -39,7 +39,7 @@ extensions = [
     "score_draw_uml_funcs",
     "score_source_code_linker",
     "score_layout",
-    "score_metrics"
+    "score_metrics",
 ]
 
 exclude_patterns = [
