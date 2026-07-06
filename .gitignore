@@ -53,3 +53,8 @@ styles/
 .venv
 __pycache__/
 /.coverage
+
+# Compilation databases for code completion in IDEs
+.cache/*
+compile_commands.json
+rust-project.json
