@@ -32,6 +32,20 @@ It provides a **standardized project structure**, ensuring best practices for:
 
 ## 🚀 Getting Started
 
+### 0️⃣ Set up development environment
+
+Use devcontainer as default path. It includes Bazel tooling and dependencies.
+
+1. Install Docker.
+2. Open repository in a devcontainer-capable editor (for example VS Code with Dev Containers extension).
+3. Reopen workspace in container.
+
+Official setup guide:
+https://eclipse-score.github.io/score/main/contribute/development/development_environment.html
+
+If devcontainer not available, follow manual setup steps in same guide.
+
+
 ### 1️⃣ Clone the Repository
 
 ```sh
