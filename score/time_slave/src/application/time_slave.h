@@ -48,7 +48,7 @@ class TimeSlave final : public score::mw::lifecycle::Application
     std::int32_t Run(const score::cpp::stop_token& token) override;
 
   private:
-    bool ParseCmdLineArgs(const score::mw::lifecycle::ApplicationContext& context);
+    bool ParseAndApplyCmdLineArgs(const score::mw::lifecycle::ApplicationContext& context);
 
     details::GptpEngineOptions opts_;
     std::unique_ptr<details::GptpEngine> engine_;

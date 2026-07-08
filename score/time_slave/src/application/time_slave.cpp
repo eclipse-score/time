@@ -45,7 +45,7 @@ TimeSlave::TimeSlave() = default;
 
 std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContext& context)
 {
-    if (!ParseCmdLineArgs(context))
+    if (!ParseAndApplyCmdLineArgs(context))
         return kInitFailure;
 
     engine_ = std::make_unique<details::GptpEngine>(opts_);
@@ -66,7 +66,7 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     return kInitSuccess;
 }
 
-bool TimeSlave::ParseCmdLineArgs(const score::mw::lifecycle::ApplicationContext& context)
+bool TimeSlave::ParseAndApplyCmdLineArgs(const score::mw::lifecycle::ApplicationContext& context)
 {
     const auto& args = context.get_arguments();
     auto iter = args.cbegin();
