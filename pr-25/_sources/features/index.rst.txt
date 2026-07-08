@@ -1,6 +1,6 @@
 ..
    # *******************************************************************************
-   # Copyright (c) 2024 Contributors to the Eclipse Foundation
+   # Copyright (c) 2026 Contributors to the Eclipse Foundation
    #
    # See the NOTICE file(s) distributed with this work for additional
    # information regarding copyright ownership.
@@ -19,6 +19,7 @@ Features
    :maxdepth: 2
    :caption: Features:
 
+   time/index
    time_daemon/index
    time_slave/index
    test_cases
