@@ -28,7 +28,7 @@ common --repo_env=ANDROID_HOME=
 
 build --@score_baselibs//score/json:base_library=nlohmann
 build --@score_baselibs//score/memory/shared/flags:use_typedshmd=False
-build --credential_helper="*.qnx.com=%workspace%/.github/tools/qnx_credential_helper.py"
+build --credential_helper="*.qnx.com=%workspace%/tools/qnx_credential_helper.py"
 
 # -------------------------------------------------------------------------------
 # Shared configuration for simple test execution
