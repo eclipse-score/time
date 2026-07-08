@@ -80,7 +80,7 @@ bool GptpEngine::Initialize()
     if (!identity_->Resolve(opts_.iface_name))
     {
         score::mw::log::LogError(kTimeSlaveAppContext)
-            << "GptpEngine::Initialize: Failed to resolve ClockIdentity";
+            << "GptpEngine::Initialize: Failed to resolve ClockIdentity for " << opts_.iface_name;
         return false;
     }
 
@@ -89,14 +89,14 @@ bool GptpEngine::Initialize()
     if (!socket_->Open(opts_.iface_name))
     {
         score::mw::log::LogError(kTimeSlaveAppContext)
-            << "GptpEngine::Initialize: Failed to open raw socket";
+            << "GptpEngine::Initialize: Failed to open raw socket on " << opts_.iface_name;
         return false;
     }
 
     if (!socket_->EnableHwTimestamping())
     {
         score::mw::log::LogWarn(kTimeSlaveAppContext)
-            << "GptpEngine::Initialize: HW timestamping not available, falling back to SW timestamps";
+            << "GptpEngine::Initialize: HW timestamping not available on " << opts_.iface_name << ", falling back to SW timestamps";
     }
 
     running_.store(true, std::memory_order_release);
@@ -132,7 +132,7 @@ bool GptpEngine::Initialize()
         return false;
     }
 
-    score::mw::log::LogInfo(kTimeSlaveAppContext) << "GptpEngine initialized";
+    score::mw::log::LogInfo(kTimeSlaveAppContext) << "GptpEngine initialized on " << opts_.iface_name;
     return true;
 }
 

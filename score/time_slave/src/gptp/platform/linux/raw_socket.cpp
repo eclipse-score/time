@@ -116,10 +116,10 @@ bool RawSocketImpl::Open(const std::string& iface)
     // (outer EtherType is 0x8100, not 0x88F7). The BPF filter runs in-kernel before delivery
     // to userspace, so non-PTP frames are dropped with zero overhead in the application.
     static const ::sock_filter kPtpBpfCode[] = {
-        BPF_STMT(BPF_LD  | BPF_H   | BPF_ABS, 12),                          // load EtherType
-        BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,   ETH_P_1588,          1, 0),  // == 0x88F7 → PASS
-        BPF_STMT(BPF_RET | BPF_K,              0U),                          // FAIL: drop
-        BPF_STMT(BPF_RET | BPF_K,              static_cast<unsigned int>(-1)), // PASS: accept
+        BPF_STMT(BPF_LD  | BPF_H   | BPF_ABS, 12),                            // load EtherType
+        BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,   ETH_P_1588, 1, 0),              // == 0x88F7 → PASS
+        BPF_STMT(BPF_RET | BPF_K,             0U),                            // FAIL: drop
+        BPF_STMT(BPF_RET | BPF_K,             static_cast<unsigned int>(-1)), // PASS: accept
     };
     ::sock_fprog prog{};
     prog.len    = static_cast<unsigned short>(sizeof(kPtpBpfCode) / sizeof(kPtpBpfCode[0]));
