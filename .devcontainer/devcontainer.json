@@ -1,17 +1,18 @@
 {
-    "name": "eclipse-s-core",
-    "build": {
-        "dockerfile": "Dockerfile",
-        "args": {
-        "USERNAME": "${localEnv:USER}"
-        }
-    },
-    "features": { "ghcr.io/devcontainers/features/docker-in-docker:4.0.0": {} },
-
-    "runArgs": [
-        "--privileged"
-    ],
-      "remoteUser": "${localEnv:USER}",
+  "name": "eclipse-s-core",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "${localEnv:USER}"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4.0.0": {}
+  },
+  "runArgs": [
+    "--privileged"
+  ],
+  "remoteUser": "${localEnv:USER}",
   "mounts": [
     {
       "source": "${localEnv:HOME}/.qnx/license/licenses",
