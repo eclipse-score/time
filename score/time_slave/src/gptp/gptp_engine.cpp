@@ -95,8 +95,8 @@ bool GptpEngine::Initialize()
 
     if (!socket_->EnableHwTimestamping())
     {
-        score::mw::log::LogWarn(kTimeSlaveAppContext)
-            << "GptpEngine::Initialize: HW timestamping not available on " << opts_.iface_name << ", falling back to SW timestamps";
+        score::mw::log::LogWarn(kTimeSlaveAppContext) << "GptpEngine::Initialize: HW timestamping not available on "
+                                                      << opts_.iface_name << ", falling back to SW timestamps";
     }
 
     running_.store(true, std::memory_order_release);
@@ -310,14 +310,16 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             break;
 
         case kPtpMsgtypePdelayRespFollowUp:
-            mw::log::LogDebug(kGPtpMachineContext) << "PdelayRespFollowUp message received, hw_ts=" << hw_ts.ns << " ns";
+            mw::log::LogDebug(kGPtpMachineContext)
+                << "PdelayRespFollowUp message received, hw_ts=" << hw_ts.ns << " ns";
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp_fup.responseOriginReceiptTimestamp);
             if (pdelay_)
                 pdelay_->OnResponseFollowUp(msg);
             break;
 
         default:
-            mw::log::LogDebug(kGPtpMachineContext) << "Unhandled message received: " << static_cast<int>(msg.msgtype) << ", hw_ts=" << hw_ts.ns << " ns";
+            mw::log::LogDebug(kGPtpMachineContext)
+                << "Unhandled message received: " << static_cast<int>(msg.msgtype) << ", hw_ts=" << hw_ts.ns << " ns";
             break;
     }
 }

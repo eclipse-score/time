@@ -12,8 +12,8 @@
  ********************************************************************************/
 #include "score/time_slave/src/gptp/details/raw_socket_impl.h"
 
-#include "score/time_slave/src/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
+#include "score/time_slave/src/common/logging_contexts.h"
 
 #include <arpa/inet.h>
 #include <linux/filter.h>
@@ -69,7 +69,8 @@ bool RawSocketImpl::Open(const std::string& iface)
     Close();
 
     const int fd = sys_->socket_call(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
-    if (fd < 0) {
+    if (fd < 0)
+    {
         score::mw::log::LogError(kTimeSlaveAppContext)
             << "RawSocket::Open: Failed to create raw socket endpoint (errno=" << errno << ")";
         return false;
@@ -94,7 +95,8 @@ bool RawSocketImpl::Open(const std::string& iface)
     {
         sys_->close_call(fd);
         score::mw::log::LogError(kTimeSlaveAppContext)
-            << "RawSocket::Open: Failed to bind raw socket endpoint to interface " << iface << " (errno=" << errno << ")";
+            << "RawSocket::Open: Failed to bind raw socket endpoint to interface " << iface << " (errno=" << errno
+            << ")";
         return false;
     }
 
@@ -104,7 +106,7 @@ bool RawSocketImpl::Open(const std::string& iface)
     // Enable promiscuous mode so the NIC passes all frames (including PTP multicast) to the kernel.
     ::packet_mreq mr{};
     mr.mr_ifindex = ifr.ifr_ifindex;
-    mr.mr_type    = PACKET_MR_PROMISC;
+    mr.mr_type = PACKET_MR_PROMISC;
     if (sys_->setsockopt_call(fd, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &mr, sizeof(mr)) < 0)
     {
         score::mw::log::LogWarn(kTimeSlaveAppContext)
@@ -116,13 +118,13 @@ bool RawSocketImpl::Open(const std::string& iface)
     // (outer EtherType is 0x8100, not 0x88F7). The BPF filter runs in-kernel before delivery
     // to userspace, so non-PTP frames are dropped with zero overhead in the application.
     static const ::sock_filter kPtpBpfCode[] = {
-        BPF_STMT(BPF_LD  | BPF_H   | BPF_ABS, 12),                            // load EtherType
-        BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K,   ETH_P_1588, 1, 0),              // == 0x88F7 → PASS
-        BPF_STMT(BPF_RET | BPF_K,             0U),                            // FAIL: drop
-        BPF_STMT(BPF_RET | BPF_K,             static_cast<unsigned int>(-1)), // PASS: accept
+        BPF_STMT(BPF_LD | BPF_H | BPF_ABS, 12),                    // load EtherType
+        BPF_JUMP(BPF_JMP | BPF_JEQ | BPF_K, ETH_P_1588, 1, 0),     // == 0x88F7 → PASS
+        BPF_STMT(BPF_RET | BPF_K, 0U),                             // FAIL: drop
+        BPF_STMT(BPF_RET | BPF_K, static_cast<unsigned int>(-1)),  // PASS: accept
     };
     ::sock_fprog prog{};
-    prog.len    = static_cast<unsigned short>(sizeof(kPtpBpfCode) / sizeof(kPtpBpfCode[0]));
+    prog.len = static_cast<unsigned short>(sizeof(kPtpBpfCode) / sizeof(kPtpBpfCode[0]));
     prog.filter = const_cast<::sock_filter*>(kPtpBpfCode);
     if (sys_->setsockopt_call(fd, SOL_SOCKET, SO_ATTACH_FILTER, &prog, sizeof(prog)) < 0)
     {
@@ -221,7 +223,7 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
             if (ts[2].tv_sec != 0 || ts[2].tv_nsec != 0)
             {
                 hwts = ts[2];
-                break; // Prefer raw HW timestamp if available
+                break;  // Prefer raw HW timestamp if available
             }
         }
         else if (cm->cmsg_type == SO_TIMESTAMPNS)

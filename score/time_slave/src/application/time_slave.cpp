@@ -31,13 +31,12 @@ constexpr std::int32_t kInitFailure = -1;
 
 void PrintUsage(const std::string& app_name)
 {
-    std::cout
-        << "Usage: " << app_name
-        << " [options]\n"
-           "Options:\n"
-           "  -h, --help Print this message and exit.\n"
-           "  -i, --interface <iface> Define the ethernet interface to be used (default is \""
-              << details::GptpEngineOptions().iface_name <<"\").\n";
+    std::cout << "Usage: " << app_name
+              << " [options]\n"
+                 "Options:\n"
+                 "  -h, --help Print this message and exit.\n"
+                 "  -i, --interface <iface> Define the ethernet interface to be used (default is \""
+              << details::GptpEngineOptions().iface_name << "\").\n";
 }
 
 }  // namespace
