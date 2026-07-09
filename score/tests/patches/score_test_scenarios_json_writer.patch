@@ -1,0 +1,11 @@
+--- a/test_scenarios_cpp/BUILD
++++ b/test_scenarios_cpp/BUILD
+@@ -35,5 +35,8 @@
+     includes = ["include/"],
+     visibility = ["//visibility:public"],
+-    deps = ["@score_baselibs//score/json:json_parser"],
++    deps = [
++        "@score_baselibs//score/json:json",
++        "@score_baselibs//score/json:json_parser",
++    ],
+ )
