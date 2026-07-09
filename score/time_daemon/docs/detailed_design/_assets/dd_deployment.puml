@@ -6,20 +6,20 @@ node "Application Layer" {
     [Business logic] as app_bl
     [mw::time::svt] <<library>> as mw
 }
-node "PTP Daemon" {
-    [ptpd] <<daemon>> as ptpd
+node "time_slave" <<daemon>> {
+    [gptp_engine] as gptp_engine
 }
-node "VehicleTimeDaemon" {
+node "time_daemon" <<daemon>> {
     [MessageBroker]  as msg_broker
     [VerificationMachine]  as verification_machine
     [PTP machine] as ptp_machine
     [IPC] <<score::communication>> as ipc
 }
 
-ptpd -[#blue]-> ptp_machine : PTP time updates\n(via shmem and devctl)
+gptp_engine -[#blue]-> ptp_machine : gPTP time updates\n(via score::memory::shared)
 ptp_machine -[#green]-> verification_machine: Time information
 verification_machine -[#green]-> ipc: Time information
-ipc -[#green]-> mw: Time information
+ipc -[#green]-> mw: Time information\n(via score::memory::shared)
 mw-[#orange]-> app_bl : Now()
 
 @enduml

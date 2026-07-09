@@ -1,0 +1,39 @@
+@startuml sad_deployment_diagram
+
+title Deployment view
+
+node "S-CORE based host/guest machine" <<execution environment>> {
+    node "Application Layer" {
+        [Business logic] as app_bl
+        [score::time] <<library>> as mw
+    }
+    node "Diagnostic App Layer" {
+        [Diag jobs business logic] as diag_bl
+        [score::time] <<library>> as mw_ext
+    }
+    node [time_salve] <<daemon>> {
+        [gptp_engine]
+    }
+    node [time_daemon] <<daemon>> {
+        [VerificationMachine]  as verification_machine
+        [PTP machine] as ptp_machine
+    }
+    [EMAC] <<hw clock>> as hw_counter
+}
+node "Time Master ECU" <<device>> {
+    [gPTP Grand Master Clock] as ptp_gm
+}
+[DLT] <<records>> as dlt_records
+
+
+ptp_gm -[#purple]-> gptp_engine : gPTP sync messages
+gptp_engine ..> hw_counter : Updates local hw timer
+gptp_engine -[#blue]-> ptp_machine : PTP time updates\n(via score::memory::shared)
+ptp_machine -[#green]-> verification_machine: Time information
+verification_machine -[#green]-> mw: Time information\n(via score::memory::shared)
+verification_machine -[#green]-> mw_ext: Time information\n(via score::memory::shared)
+verification_machine -[#green]-> dlt_records: Data for post analysis
+mw-[#orange]-> app_bl : Now()
+mw_ext-[#orange]-> diag_bl : Now(), Callbacks()
+
+@enduml
