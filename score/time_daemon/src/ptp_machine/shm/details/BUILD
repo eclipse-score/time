@@ -24,7 +24,10 @@ cc_library(
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
-    visibility = ["//score/time_daemon:__subpackages__"],
+    visibility = [
+        "//score/tests/test_scenarios/cpp:__pkg__",
+        "//score/time_daemon:__subpackages__",
+    ],
     deps = [
         "//score/time_daemon/src/common:logging_contexts",
         "//score/time_daemon/src/common/data_types:ptp_time_info",
