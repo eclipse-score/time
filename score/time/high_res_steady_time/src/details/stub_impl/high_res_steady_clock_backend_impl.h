@@ -15,8 +15,8 @@
 
 // Internal header — include ONLY from stub_impl/high_res_steady_clock_backend_impl.cpp.
 
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 
 #include <chrono>
 
@@ -34,12 +34,12 @@ namespace detail
 class HighResSteadyClockBackendImpl final : public HighResSteadyClockBackend
 {
   public:
-    HighResSteadyClockBackendImpl() noexcept                           = default;
-    ~HighResSteadyClockBackendImpl() noexcept override                 = default;
-    HighResSteadyClockBackendImpl(const HighResSteadyClockBackendImpl&)                = delete;
-    HighResSteadyClockBackendImpl& operator=(const HighResSteadyClockBackendImpl&)     = delete;
-    HighResSteadyClockBackendImpl(HighResSteadyClockBackendImpl&&)                     = delete;
-    HighResSteadyClockBackendImpl& operator=(HighResSteadyClockBackendImpl&&)          = delete;
+    HighResSteadyClockBackendImpl() noexcept = default;
+    ~HighResSteadyClockBackendImpl() noexcept override = default;
+    HighResSteadyClockBackendImpl(const HighResSteadyClockBackendImpl&) = delete;
+    HighResSteadyClockBackendImpl& operator=(const HighResSteadyClockBackendImpl&) = delete;
+    HighResSteadyClockBackendImpl(HighResSteadyClockBackendImpl&&) = delete;
+    HighResSteadyClockBackendImpl& operator=(HighResSteadyClockBackendImpl&&) = delete;
 
     ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override
     {

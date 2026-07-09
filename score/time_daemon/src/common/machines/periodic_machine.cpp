@@ -25,9 +25,10 @@ PeriodicMachine::PeriodicMachine(const std::string& name, const std::chrono::mil
 void PeriodicMachine::Start() noexcept
 {
     const auto thread_name = "td_" + GetName() + "_worker";
-    worker_ = score::cpp::jthread{score::cpp::jthread::name_hint{thread_name}, [this](const score::cpp::stop_token token) noexcept {
-                               WorkerFunction(token);
-                           }};
+    worker_ = score::cpp::jthread{score::cpp::jthread::name_hint{thread_name},
+                                  [this](const score::cpp::stop_token token) noexcept {
+                                      WorkerFunction(token);
+                                  }};
 }
 
 void PeriodicMachine::Stop() noexcept

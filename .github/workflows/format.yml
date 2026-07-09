@@ -11,12 +11,41 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Formatting checks
+name: Process / Formatting
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
   merge_group:
     types: [checks_requested]
 jobs:
-  formatting-check:
-    uses: eclipse-score/cicd-workflows/.github/workflows/format.yml@main
+  # Checks Python, Starlark, YAML, Rust and C++ (clang-format) formatting via
+  # the unified format.check target from score_tooling's format_checker.
+  format-check:
+    name: Format check (all languages)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
+        with:
+          level: 4
+
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}-format-check
+          repository-cache: true
+          cache-save: ${{ github.event_name == 'push' }}
+
+      - name: Run format check
+        run: bazel test //:format.check

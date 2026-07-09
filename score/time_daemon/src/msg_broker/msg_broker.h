@@ -13,11 +13,11 @@
 #ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_MSG_BROKER_H
 #define SCORE_TIME_DAEMON_SRC_MSG_BROKER_MSG_BROKER_H
 
+#include "score/mw/log/logging.h"
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/data_flow/producer.h"
 #include "score/time_daemon/src/msg_broker/subscription.h"
 #include "score/time_daemon/src/msg_broker/topic.h"
-#include "score/mw/log/logging.h"
 
 #include <memory>
 #include <unordered_map>

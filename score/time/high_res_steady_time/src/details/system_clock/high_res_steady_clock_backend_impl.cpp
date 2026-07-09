@@ -12,8 +12,8 @@
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.h"
 
-#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
 #include <chrono>
 #include <memory>
@@ -27,7 +27,7 @@ namespace high_res_steady_time
 namespace sys_time
 {
 
-HighResSteadyClockBackendImpl::HighResSteadyClockBackendImpl() noexcept  = default;
+HighResSteadyClockBackendImpl::HighResSteadyClockBackendImpl() noexcept = default;
 HighResSteadyClockBackendImpl::~HighResSteadyClockBackendImpl() noexcept = default;
 
 ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> HighResSteadyClockBackendImpl::Now() const noexcept

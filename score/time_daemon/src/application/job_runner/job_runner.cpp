@@ -11,9 +11,9 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/application/job_runner/job_runner.h"
-#include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/concurrency/interruptible_wait.h"
 #include "score/mw/log/logging.h"
+#include "score/time_daemon/src/common/logging_contexts.h"
 
 namespace score
 {

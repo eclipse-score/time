@@ -51,25 +51,24 @@ extern "C" void HandleSignal(int /*signal*/) noexcept
  */
 void PrintReport(const examples::time::vehicle_time::TimeReport& report, std::uint64_t seq) noexcept
 {
-    const auto v_sec  = report.vehicle_time_ns / 1'000'000'000LL;
-    const auto v_ns   = report.vehicle_time_ns % 1'000'000'000LL;
-    const auto h_sec  = report.high_res_steady_time_ns    / 1'000'000'000LL;
-    const auto h_ns   = report.high_res_steady_time_ns    % 1'000'000'000LL;
+    const auto v_sec = report.vehicle_time_ns / 1'000'000'000LL;
+    const auto v_ns = report.vehicle_time_ns % 1'000'000'000LL;
+    const auto h_sec = report.high_res_steady_time_ns / 1'000'000'000LL;
+    const auto h_ns = report.high_res_steady_time_ns % 1'000'000'000LL;
 
     std::cout << "[" << seq << "]"
               << "  vehicle=" << v_sec << "." << v_ns << " s"
-              << "  hirs="    << h_sec << "." << h_ns << " s"
-              << "  is_reliable="   << (report.is_reliable   ? "yes" : "no")
+              << "  hirs=" << h_sec << "." << h_ns << " s"
+              << "  is_reliable=" << (report.is_reliable ? "yes" : "no")
               << "  is_consistent=" << (report.is_consistent ? "yes" : "no")
-              << "  rate_deviation=" << report.rate_deviation
-              << "\n";
+              << "  rate_deviation=" << report.rate_deviation << "\n";
 }
 
 }  // namespace
 
 int main()
 {
-    static_cast<void>(std::signal(SIGINT,  HandleSignal));
+    static_cast<void>(std::signal(SIGINT, HandleSignal));
     static_cast<void>(std::signal(SIGTERM, HandleSignal));
 
     examples::time::vehicle_time::VehicleTimeHandler handler;

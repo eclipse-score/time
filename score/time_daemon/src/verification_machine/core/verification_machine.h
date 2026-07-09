@@ -13,12 +13,12 @@
 #ifndef SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H
 #define SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H
 
+#include "score/mw/log/logging.h"
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/data_flow/producer.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/time_daemon/src/common/machines/reactive_machine.h"
 #include "score/time_daemon/src/verification_machine/core/verification_stage.h"
-#include "score/mw/log/logging.h"
 
 #include <memory>
 #include <string>
@@ -169,14 +169,16 @@ bool VerificationMachine<DataType>::Init()
 template <typename DataType>
 auto VerificationMachine<DataType>::ProcessMessage(DataType data) -> DataType
 {
-    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(pipeline_ != nullptr, "ProcessMessage shall only be called when pipeline is setup");
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(pipeline_ != nullptr,
+                                                "ProcessMessage shall only be called when pipeline is setup");
     return pipeline_->Process(std::move(data));
 }
 
 template <typename DataType>
 void VerificationMachine<DataType>::SetupPipeline(const std::vector<StageFactory>& factories)
 {
-    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!factories.empty(), "SetupPipeline shall be called with provided stage factories");
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!factories.empty(),
+                                                "SetupPipeline shall be called with provided stage factories");
 
     std::vector<StagePtr> stages;
     stages.reserve(factories.size());

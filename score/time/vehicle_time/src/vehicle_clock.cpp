@@ -26,10 +26,10 @@ template <>
 std::ostringstream ClockStatus<VehicleTime::StatusFlag>::PrintTo() const
 {
     static const std::map<VehicleTime::StatusFlag, std::string> kFlagNames = {
-        {VehicleTime::StatusFlag::kTimeOut,        "kTimeOut"},
-        {VehicleTime::StatusFlag::kSynchronized,   "kSynchronized"},
+        {VehicleTime::StatusFlag::kTimeOut, "kTimeOut"},
+        {VehicleTime::StatusFlag::kSynchronized, "kSynchronized"},
         {VehicleTime::StatusFlag::kTimeLeapFuture, "kTimeLeapFuture"},
-        {VehicleTime::StatusFlag::kTimeLeapPast,   "kTimeLeapPast"},
+        {VehicleTime::StatusFlag::kTimeLeapPast, "kTimeLeapPast"},
     };
     std::ostringstream oss;
     oss << "[";
@@ -56,10 +56,9 @@ bool AvailabilityHook<VehicleTime>::CallIsAvailable(const Backend& impl) noexcep
     return impl.IsAvailable();
 }
 
-bool AvailabilityHook<VehicleTime>::CallWaitUntilAvailable(
-    const Backend& impl,
-    const score::cpp::stop_token& token,
-    std::chrono::steady_clock::time_point until) noexcept
+bool AvailabilityHook<VehicleTime>::CallWaitUntilAvailable(const Backend& impl,
+                                                           const score::cpp::stop_token& token,
+                                                           std::chrono::steady_clock::time_point until) noexcept
 {
     return impl.WaitUntilAvailable(token, until);
 }
@@ -71,8 +70,7 @@ void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Subscribe(
     impl.SetTimeSlaveSyncDataReceivedCallback(std::move(cb));
 }
 
-void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Unsubscribe(
-    Backend& impl) noexcept
+void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Unsubscribe(Backend& impl) noexcept
 {
     impl.UnsetTimeSlaveSyncDataReceivedCallback();
 }
@@ -84,21 +82,18 @@ void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Subscrib
     impl.SetPDelayMeasurementFinishedCallback(std::move(cb));
 }
 
-void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Unsubscribe(
-    Backend& impl) noexcept
+void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Unsubscribe(Backend& impl) noexcept
 {
     impl.UnsetPDelayMeasurementFinishedCallback();
 }
 
-void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Subscribe(
-    Backend& impl,
-    VehicleTime::StatusChangedCallback cb) noexcept
+void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Subscribe(Backend& impl,
+                                                                 VehicleTime::StatusChangedCallback cb) noexcept
 {
     impl.SetStatusChangedCallback(std::move(cb));
 }
 
-void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Unsubscribe(
-    Backend& impl) noexcept
+void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Unsubscribe(Backend& impl) noexcept
 {
     impl.UnsetStatusChangedCallback();
 }

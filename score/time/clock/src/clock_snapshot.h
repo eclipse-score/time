@@ -41,10 +41,16 @@ class ClockSnapshot
     explicit ClockSnapshot(TimepointT tp, StatusT st) noexcept : time_point_{tp}, status_{st} {}
 
     /// @brief Returns the time-point obtained from the clock.
-    TimepointT TimePoint() const noexcept { return time_point_; }
+    TimepointT TimePoint() const noexcept
+    {
+        return time_point_;
+    }
 
     /// @brief Returns the quality status associated with the reading.
-    StatusT Status() const noexcept { return status_; }
+    StatusT Status() const noexcept
+    {
+        return status_;
+    }
 
     /// @brief Returns the duration elapsed since the clock's epoch in the clock's native resolution.
     typename TimepointT::duration TimeSinceEpoch() const noexcept

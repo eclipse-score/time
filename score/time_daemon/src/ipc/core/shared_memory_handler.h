@@ -13,10 +13,10 @@
 #ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H
 #define SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H
 
-#include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/memory/shared/managed_memory_resource.h"
 #include "score/memory/shared/shared_memory_factory.h"
 #include "score/memory/shared/shared_memory_resource.h"
+#include "score/time_daemon/src/common/logging_contexts.h"
 
 #include <atomic>
 #include <cstdint>

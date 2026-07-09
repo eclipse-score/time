@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_SYSTEM_CLOCK_HIGH_RES_STEADY_CLOCK_BACKEND_IMPL_H
 #define SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_SYSTEM_CLOCK_HIGH_RES_STEADY_CLOCK_BACKEND_IMPL_H
 
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 
 namespace score
 {
@@ -35,10 +35,10 @@ class HighResSteadyClockBackendImpl final : public HighResSteadyClockBackend
 {
   public:
     HighResSteadyClockBackendImpl() noexcept;
-    HighResSteadyClockBackendImpl(const HighResSteadyClockBackendImpl&) noexcept            = delete;
+    HighResSteadyClockBackendImpl(const HighResSteadyClockBackendImpl&) noexcept = delete;
     HighResSteadyClockBackendImpl& operator=(const HighResSteadyClockBackendImpl&) noexcept = delete;
-    HighResSteadyClockBackendImpl(HighResSteadyClockBackendImpl&&) noexcept                 = delete;
-    HighResSteadyClockBackendImpl& operator=(HighResSteadyClockBackendImpl&&) noexcept      = delete;
+    HighResSteadyClockBackendImpl(HighResSteadyClockBackendImpl&&) noexcept = delete;
+    HighResSteadyClockBackendImpl& operator=(HighResSteadyClockBackendImpl&&) noexcept = delete;
     ~HighResSteadyClockBackendImpl() noexcept override;
 
     /// \brief Returns the current HIRS snapshot using @c high_resolution_clock.

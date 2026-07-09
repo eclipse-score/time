@@ -78,6 +78,50 @@ To build the documentation:
 
    bazel build //:docs
 
+**Dependency lock file**
+
+After modifying ``MODULE.bazel`` (adding or bumping a dependency), update the lock file:
+
+.. code-block:: bash
+
+   bazel mod tidy
+
+Commit both ``MODULE.bazel`` and ``MODULE.bazel.lock`` together. The
+``Process / Bzlmod Lock Check`` CI job enforces this — see
+`eclipse-score/score#2628 <https://github.com/eclipse-score/score/issues/2628>`_.
+
+**Formatting**
+
+Check formatting for all files (Python, Starlark, YAML, C++):
+
+.. code-block:: bash
+
+   bazel test //:format.check
+
+Auto-fix formatting for all files:
+
+.. code-block:: bash
+
+   bazel run //:format.fix
+
+**Static Code Analysis**
+
+Run clang-tidy (powered by ``score_cpp_policies``):
+
+.. code-block:: bash
+
+   bazel test --config=clang-tidy //score/...
+
+**Sanitizers**
+
+Run address, undefined-behaviour and leak sanitizers (powered by ``score_cpp_policies``):
+
+.. code-block:: bash
+
+   bazel test --config=asan_ubsan_lsan --config=time-x86_64-linux //score/...
+
+Individual sanitizer aliases are also available: ``--config=asan``, ``--config=ubsan``, ``--config=lsan``.
+
 Configuration
 -------------
 
@@ -88,8 +132,8 @@ Example:
 .. code-block:: python
 
    PROJECT_CONFIG = {
-       "asil_level": "QM",
-       "source_code": ["cpp", "rust"]
+      "asil_level": "QM",
+      "source_code": ["cpp", "rust"]
    }
 
 This enables conditional behavior (e.g., choosing `clang-tidy` for C++ or `clippy` for Rust).

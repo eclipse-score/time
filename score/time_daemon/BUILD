@@ -26,3 +26,9 @@ cc_unit_test_suites_for_host_and_qnx(
     ],
     visibility = ["//score:__pkg__"],
 )
+
+alias(
+    name = "time_daemon",
+    actual = "//score/time_daemon/src/application:time_daemon",
+    visibility = ["//visibility:public"],
+)

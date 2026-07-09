@@ -10,7 +10,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-name: Code Coverage (>85%)
+name: Test / Code Coverage (>85%)
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -19,12 +27,10 @@ on:
       - main
   merge_group:
     types: [checks_requested]
-  release:
-    types: [created]
 
 jobs:
   code-coverage:
-    uses: eclipse-score/cicd-workflows/.github/workflows/cpp-coverage.yml@main
+    uses: eclipse-score/cicd-workflows/.github/workflows/cpp-coverage.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     with:
       bazel-target: "//score/..."
       bazel-config: "time-x86_64-linux"

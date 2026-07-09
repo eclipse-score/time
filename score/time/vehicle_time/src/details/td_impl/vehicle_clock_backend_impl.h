@@ -16,9 +16,9 @@
 // Internal header — include ONLY from vehicle_clock_backend_impl.cpp and vehicle_clock_backend_impl_test.cpp.
 // NOT part of the public API of td_impl.
 
-#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
-#include "score/time/vehicle_time/src/vehicle_clock.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/vehicle_time/src/vehicle_clock.h"
+#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 
 #include <score/stop_token.hpp>
@@ -54,8 +54,7 @@ namespace detail
 class VehicleClockBackendImpl final : public VehicleClockBackend
 {
   public:
-    VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver,
-                            HighResSteadyClock local_clock) noexcept;
+    VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver, HighResSteadyClock local_clock) noexcept;
 
     ~VehicleClockBackendImpl() noexcept override = default;
     VehicleClockBackendImpl(const VehicleClockBackendImpl&) = delete;
@@ -82,8 +81,7 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
 
     void UnsetPDelayMeasurementFinishedCallback() noexcept override;
 
-    void SetStatusChangedCallback(
-        VehicleTime::StatusChangedCallback&& callback) noexcept override;
+    void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept override;
 
     void UnsetStatusChangedCallback() noexcept override;
 

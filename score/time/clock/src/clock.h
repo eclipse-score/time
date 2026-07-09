@@ -73,11 +73,11 @@ std::shared_ptr<typename ClockTraits<Tag>::Backend> CreateBackend();
 template <typename Tag>
 class Clock
 {
-    using Trait    = ClockTraits<Tag>;
-    using Backend  = typename Trait::Backend;
+    using Trait = ClockTraits<Tag>;
+    using Backend = typename Trait::Backend;
 
   public:
-    using duration   = typename Trait::Duration;
+    using duration = typename Trait::Duration;
     using time_point = typename Trait::Timepoint;
 
     /// @brief Snapshot type returned by @c Now().
@@ -96,7 +96,7 @@ class Clock
             return Clock{shared};
         }
         auto fresh = detail::CreateBackend<Tag>();
-        instance_cache_     = fresh;
+        instance_cache_ = fresh;
         return Clock{fresh};
     }
 

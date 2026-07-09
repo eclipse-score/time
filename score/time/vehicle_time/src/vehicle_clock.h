@@ -13,14 +13,14 @@
 #ifndef SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_H
 #define SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_H
 
-#include "score/time/ptp/src/pdelay_measurement_data.h"
-#include "score/time/ptp/src/time_slave_sync_data.h"
-#include "score/time/vehicle_time/src/vehicle_time.h"
 #include "score/time/clock/src/availability_hook.h"
 #include "score/time/clock/src/clock.h"
 #include "score/time/clock/src/clock_snapshot.h"
 #include "score/time/clock/src/clock_status.h"
 #include "score/time/clock/src/initialization_hook.h"
+#include "score/time/ptp/src/pdelay_measurement_data.h"
+#include "score/time/ptp/src/time_slave_sync_data.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
 
 #include <score/stop_token.hpp>
 
@@ -36,10 +36,10 @@ class VehicleClockBackend;
 template <>
 struct ClockTraits<VehicleTime>
 {
-    using Backend        = VehicleClockBackend;
-    using Duration       = VehicleTime::Duration;
-    using Timepoint      = VehicleTime::Timepoint;
-    using Snapshot       = ClockSnapshot<Timepoint, VehicleTimeStatus>;
+    using Backend = VehicleClockBackend;
+    using Duration = VehicleTime::Duration;
+    using Timepoint = VehicleTime::Timepoint;
+    using Snapshot = ClockSnapshot<Timepoint, VehicleTimeStatus>;
 
     /// \brief Obtains the current vehicle time snapshot from the backend.
     static Snapshot CallNow(const Backend& impl) noexcept;
@@ -71,7 +71,7 @@ struct AvailabilityHook<VehicleTime>
 template <>
 struct SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>
 {
-    using Backend  = ClockTraits<VehicleTime>::Backend;
+    using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::TimeSlaveSyncDataReceivedCallback;
 
     static void Subscribe(Backend& impl, Callback cb) noexcept;
@@ -81,7 +81,7 @@ struct SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>
 template <>
 struct SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>
 {
-    using Backend  = ClockTraits<VehicleTime>::Backend;
+    using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::PDelayMeasurementFinishedCallback;
 
     static void Subscribe(Backend& impl, Callback cb) noexcept;
@@ -91,16 +91,16 @@ struct SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>
 template <>
 struct SubscriptionHook<VehicleTime, VehicleTimeStatus>
 {
-    using Backend  = ClockTraits<VehicleTime>::Backend;
+    using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::StatusChangedCallback;
 
     static void Subscribe(Backend& impl, Callback cb) noexcept;
     static void Unsubscribe(Backend& impl) noexcept;
 };
 
-using VehicleClock     = Clock<VehicleTime>;
+using VehicleClock = Clock<VehicleTime>;
 using VehicleTimePoint = ClockTraits<VehicleTime>::Timepoint;
-using VehicleSnapshot  = ClockTraits<VehicleTime>::Snapshot;
+using VehicleSnapshot = ClockTraits<VehicleTime>::Snapshot;
 
 }  // namespace time
 }  // namespace score

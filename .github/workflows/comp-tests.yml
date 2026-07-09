@@ -1,5 +1,5 @@
 # *******************************************************************************
-# Copyright (c) 2025 Contributors to the Eclipse Foundation
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
 #
 # See the NOTICE file(s) distributed with this work for additional
 # information regarding copyright ownership.
@@ -11,28 +11,27 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Component Tests execution (Linux)
+name: Test / Component Tests
 
 permissions:
-  contents: write
-  pages: write
-  pull-requests: write
-  id-token: write
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize] # Allows forks to trigger the docs build
+    types: [opened, reopened, synchronize]
   push:
     branches:
       - main
   merge_group:
     types: [checks_requested]
-  release:
-    types: [created]
 
 jobs:
   run-comp-tests:
-    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@main
+    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     permissions:
       contents: read
       pull-requests: read

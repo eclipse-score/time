@@ -12,8 +12,8 @@
  ********************************************************************************/
 #include "score/time_slave/src/application/time_slave.h"
 
-#include "score/time_slave/src/common/logging_contexts.h"
 #include "score/mw/log/logging.h"
+#include "score/time_slave/src/common/logging_contexts.h"
 
 #include <thread>
 

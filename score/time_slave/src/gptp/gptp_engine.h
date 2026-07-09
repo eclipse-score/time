@@ -13,15 +13,15 @@
 #ifndef SCORE_TIME_SLAVE_SRC_GPTP_GPTP_ENGINE_H
 #define SCORE_TIME_SLAVE_SRC_GPTP_GPTP_ENGINE_H
 
-#include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/time_slave/src/gptp/details/frame_codec.h"
-#include "score/time_slave/src/gptp/details/network_identity.h"
-#include "score/time_slave/src/gptp/details/raw_socket.h"
 #include "score/time_slave/src/gptp/details/message_parser.h"
+#include "score/time_slave/src/gptp/details/network_identity.h"
 #include "score/time_slave/src/gptp/details/pdelay_measurer.h"
 #include "score/time_slave/src/gptp/details/ptp_types.h"
+#include "score/time_slave/src/gptp/details/raw_socket.h"
 #include "score/time_slave/src/gptp/details/sync_state_machine.h"
 #include "score/time_slave/src/gptp/phc/phc_adjuster.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 
 #include <atomic>
 #include <cstdint>

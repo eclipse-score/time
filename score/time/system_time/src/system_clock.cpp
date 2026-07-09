@@ -18,8 +18,8 @@ namespace score
 namespace time
 {
 
-ClockTraits<std::chrono::system_clock>::Snapshot
-ClockTraits<std::chrono::system_clock>::CallNow(const Backend& impl) noexcept
+ClockTraits<std::chrono::system_clock>::Snapshot ClockTraits<std::chrono::system_clock>::CallNow(
+    const Backend& impl) noexcept
 {
     return impl.Now();
 }

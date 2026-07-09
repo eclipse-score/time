@@ -44,13 +44,13 @@ struct TimeReport
 class HighResSteadyTimeHandler
 {
   public:
-    HighResSteadyTimeHandler()  = default;
+    HighResSteadyTimeHandler() = default;
     ~HighResSteadyTimeHandler() = default;
 
-    HighResSteadyTimeHandler(const HighResSteadyTimeHandler&)             = delete;
-    HighResSteadyTimeHandler& operator=(const HighResSteadyTimeHandler&)  = delete;
-    HighResSteadyTimeHandler(HighResSteadyTimeHandler&&)                  = delete;
-    HighResSteadyTimeHandler& operator=(HighResSteadyTimeHandler&&)       = delete;
+    HighResSteadyTimeHandler(const HighResSteadyTimeHandler&) = delete;
+    HighResSteadyTimeHandler& operator=(const HighResSteadyTimeHandler&) = delete;
+    HighResSteadyTimeHandler(HighResSteadyTimeHandler&&) = delete;
+    HighResSteadyTimeHandler& operator=(HighResSteadyTimeHandler&&) = delete;
 
     /// @brief Reads the current HIRS time and returns a report.
     [[nodiscard]] TimeReport GetCurrentTime() const noexcept

@@ -12,10 +12,10 @@
  ********************************************************************************/
 #include "examples/time/high_res_steady_time/src/high_res_steady_time_handler.h"
 
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
-#include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/clock/src/clock_snapshot.h"
 #include "score/time/clock/src/no_status.h"
+#include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -38,8 +38,7 @@ class HighResSteadyTimeHandlerTest : public ::testing::Test
 {
   protected:
     HighResSteadyTimeHandlerTest()
-        : mock_{std::make_shared<score::time::HighResSteadyClockBackendMock>()}
-        , guard_{mock_}
+        : mock_{std::make_shared<score::time::HighResSteadyClockBackendMock>()}, guard_{mock_}
     {
     }
 
@@ -50,8 +49,8 @@ class HighResSteadyTimeHandlerTest : public ::testing::Test
 TEST_F(HighResSteadyTimeHandlerTest, ReportContainsTimePointFromMock)
 {
     const score::time::HighResSteadyTime::Timepoint tp{std::chrono::nanoseconds{7'654'321'000LL}};
-    EXPECT_CALL(*mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+    EXPECT_CALL(*mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));
 
     HighResSteadyTimeHandler handler;
@@ -63,8 +62,8 @@ TEST_F(HighResSteadyTimeHandlerTest, ReportContainsTimePointFromMock)
 TEST_F(HighResSteadyTimeHandlerTest, ReportContainsZeroForEpochTimepoint)
 {
     const score::time::HighResSteadyTime::Timepoint tp{std::chrono::nanoseconds{0}};
-    EXPECT_CALL(*mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+    EXPECT_CALL(*mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
             tp, score::time::NoStatus{}}));
 
     HighResSteadyTimeHandler handler;

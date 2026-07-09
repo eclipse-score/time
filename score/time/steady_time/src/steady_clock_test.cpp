@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time/steady_time/src/steady_clock_backend_mock.h"
 #include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/steady_time/src/steady_clock_backend_mock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -47,14 +47,13 @@ TEST(SteadyClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
     test_utils::ScopedClockOverride<std::chrono::steady_clock> guard{mock};
 
     const std::chrono::steady_clock::time_point tp{std::chrono::nanoseconds{1'000'000LL}};
-    EXPECT_CALL(*mock, Now()).WillOnce(Return(
-        ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp, NoStatus{}}));
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp, NoStatus{}}));
 
-    const auto result  = SteadyClock::GetInstance().Now();
+    const auto result = SteadyClock::GetInstance().Now();
     const auto deadline = result.TimePoint() + std::chrono::seconds{5};
 
-    EXPECT_EQ(deadline.time_since_epoch(),
-              std::chrono::nanoseconds{1'000'000LL} + std::chrono::seconds{5});
+    EXPECT_EQ(deadline.time_since_epoch(), std::chrono::nanoseconds{1'000'000LL} + std::chrono::seconds{5});
 }
 
 TEST(SteadyClockTest, NowReturnsExactTimepointFromMock)
@@ -63,8 +62,8 @@ TEST(SteadyClockTest, NowReturnsExactTimepointFromMock)
     test_utils::ScopedClockOverride<std::chrono::steady_clock> guard{mock};
 
     const std::chrono::steady_clock::time_point tp{std::chrono::seconds{42}};
-    EXPECT_CALL(*mock, Now()).WillOnce(Return(
-        ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp, NoStatus{}}));
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp, NoStatus{}}));
 
     EXPECT_EQ(SteadyClock::GetInstance().Now().TimePoint(), tp);
 }
@@ -74,11 +73,11 @@ TEST(SteadyClockTest, NowSnapshotCarriesNoStatus)
     auto mock = std::make_shared<SteadyClockBackendMock>();
     test_utils::ScopedClockOverride<std::chrono::steady_clock> guard{mock};
 
-    EXPECT_CALL(*mock, Now()).WillOnce(Return(
-        ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{
             std::chrono::steady_clock::time_point{}, NoStatus{}}));
 
-    const auto result   = SteadyClock::GetInstance().Now();
+    const auto result = SteadyClock::GetInstance().Now();
     const NoStatus status = result.Status();
     (void)status;
     SUCCEED();
@@ -90,8 +89,8 @@ TEST(SteadyClockTest, ScopedClockOverrideInjectsMockIntoSut)
     test_utils::ScopedClockOverride<std::chrono::steady_clock> guard{mock};
 
     const std::chrono::steady_clock::time_point expected{std::chrono::nanoseconds{999LL}};
-    EXPECT_CALL(*mock, Now()).WillOnce(Return(
-        ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{expected, NoStatus{}}));
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{expected, NoStatus{}}));
 
     SampleSteadyService sut;
     EXPECT_EQ(sut.GetCurrentTime(), expected);
@@ -103,16 +102,16 @@ TEST(SteadyClockTest, ScopedClockOverrideRestoresBackendAfterScope)
     {
         test_utils::ScopedClockOverride<std::chrono::steady_clock> guard{mock};
         const std::chrono::steady_clock::time_point tp{std::chrono::seconds{1}};
-        EXPECT_CALL(*mock, Now()).WillOnce(Return(
-            ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp, NoStatus{}}));
+        EXPECT_CALL(*mock, Now())
+            .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp, NoStatus{}}));
         EXPECT_EQ(SteadyClock::GetInstance().Now().TimePoint(), tp);
     }
     // After guard goes out of scope, a new guard must succeed without assertion.
     auto mock2 = std::make_shared<SteadyClockBackendMock>();
     test_utils::ScopedClockOverride<std::chrono::steady_clock> guard2{mock2};
     const std::chrono::steady_clock::time_point tp2{std::chrono::seconds{2}};
-    EXPECT_CALL(*mock2, Now()).WillOnce(Return(
-        ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp2, NoStatus{}}));
+    EXPECT_CALL(*mock2, Now())
+        .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp2, NoStatus{}}));
     EXPECT_EQ(SteadyClock::GetInstance().Now().TimePoint(), tp2);
 }
 

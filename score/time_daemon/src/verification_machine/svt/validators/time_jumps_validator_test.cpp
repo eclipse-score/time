@@ -63,9 +63,10 @@ TEST_P(TimeJumpsValidatorParamTest, ValidationTest)
 {
     auto mock = std::make_shared<score::time::HighResSteadyClockBackendMock>();
 
-    TimeJumpsValidator validator(
-        score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
-        std::chrono::nanoseconds(500'000), std::chrono::nanoseconds(5'000'000), 2U);
+    TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
+                                 std::chrono::nanoseconds(500'000),
+                                 std::chrono::nanoseconds(5'000'000),
+                                 2U);
 
     // Pass synchronized state debouncing
     EXPECT_CALL(*mock, Now())

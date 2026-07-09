@@ -25,6 +25,7 @@ cc_library(
     deps = [
         "//score/time_daemon/src/common:logging_contexts",
         "@score_baselibs//score/memory/shared",
+        "@score_baselibs//score/memory/shared/typedshm/typedshm_wrapper:typedmemory",
         "@score_baselibs//score/mw/log:frontend",
     ],
 )

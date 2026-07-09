@@ -14,8 +14,8 @@
 #ifndef SCORE_TIME_CLOCK_SRC_CLOCK_STATUS_H
 #define SCORE_TIME_CLOCK_SRC_CLOCK_STATUS_H
 
-#include <sstream>
 #include <cstdint>
+#include <sstream>
 #include <type_traits>
 
 #include <score/assert.hpp>

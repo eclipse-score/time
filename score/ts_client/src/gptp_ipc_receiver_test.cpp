@@ -10,15 +10,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/ts_client/src/gptp_ipc_publisher.h"
 #include "score/ts_client/src/gptp_ipc_receiver.h"
+#include "score/ts_client/src/gptp_ipc_publisher.h"
 #include "score/ts_client/src/gptp_ipc_test_utils.h"
 
 #include <gtest/gtest.h>
 
 #include <fcntl.h>
-#include <unistd.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
 namespace score
 {

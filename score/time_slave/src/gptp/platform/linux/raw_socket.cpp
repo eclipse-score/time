@@ -53,10 +53,7 @@ void DrainErrQueue(int fd, OsSyscalls& sys) noexcept
 
 }  // namespace
 
-RawSocketImpl::RawSocketImpl(OsSyscalls* sys) noexcept
-    : sys_{sys != nullptr ? sys : &RealOsSyscalls::Instance()}
-{
-}
+RawSocketImpl::RawSocketImpl(OsSyscalls* sys) noexcept : sys_{sys != nullptr ? sys : &RealOsSyscalls::Instance()} {}
 
 RawSocketImpl::~RawSocketImpl()
 {
@@ -91,8 +88,7 @@ bool RawSocketImpl::Open(const std::string& iface)
     }
 
     // SO_BINDTODEVICE: best-effort, don't fail if it doesn't work
-    (void)sys_->setsockopt_call(
-        fd, SOL_SOCKET, SO_BINDTODEVICE, iface.c_str(), static_cast<socklen_t>(iface.size()));
+    (void)sys_->setsockopt_call(fd, SOL_SOCKET, SO_BINDTODEVICE, iface.c_str(), static_cast<socklen_t>(iface.size()));
 
     fd_.store(fd, std::memory_order_release);
     iface_ = iface;
@@ -121,8 +117,7 @@ bool RawSocketImpl::EnableHwTimestamping()
         (void)sys_->ioctl_call(fd, SIOCSHWTSTAMP, &ifr);
     }
 
-    const int ts_opts =
-        SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE;
+    const int ts_opts = SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE;
     if (sys_->setsockopt_call(fd, SOL_SOCKET, SO_TIMESTAMPING, &ts_opts, sizeof(ts_opts)) < 0)
     {
         return false;

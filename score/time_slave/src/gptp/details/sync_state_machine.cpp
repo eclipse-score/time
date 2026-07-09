@@ -20,10 +20,8 @@ namespace ts
 namespace details
 {
 
-
 SyncStateMachine::SyncStateMachine(std::int64_t jump_future_threshold_ns) noexcept
-    : jump_future_threshold_ns_{jump_future_threshold_ns},
-      created_mono_ns_{MonoNs()}
+    : jump_future_threshold_ns_{jump_future_threshold_ns}, created_mono_ns_{MonoNs()}
 {
 }
 

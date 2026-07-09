@@ -31,8 +31,7 @@ namespace td
 class TimeoutValidator : public VerificationStage<PtpTimeInfo>
 {
   public:
-    explicit TimeoutValidator(PtpTimeInfo::ReferenceClock timeout_clock,
-                              std::chrono::nanoseconds reception_timeout);
+    explicit TimeoutValidator(PtpTimeInfo::ReferenceClock timeout_clock, std::chrono::nanoseconds reception_timeout);
     virtual ~TimeoutValidator() = default;
 
   protected:

@@ -50,5 +50,11 @@ dash_license_checker(
     visibility = ["//visibility:public"],
 )
 
-# Add target for formatting checks
-use_format_targets()
+# Add targets for formatting checks
+use_format_targets(languages = [
+    "python",
+    "rust",
+    "starlark",
+    "yaml",
+    "cpp",
+])

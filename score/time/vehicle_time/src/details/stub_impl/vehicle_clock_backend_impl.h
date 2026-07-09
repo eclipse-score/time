@@ -34,12 +34,12 @@ namespace detail
 class VehicleClockBackendImpl final : public VehicleClockBackend
 {
   public:
-    VehicleClockBackendImpl() noexcept                            = default;
-    ~VehicleClockBackendImpl() noexcept override                  = default;
-    VehicleClockBackendImpl(const VehicleClockBackendImpl&)              = delete;
-    VehicleClockBackendImpl& operator=(const VehicleClockBackendImpl&)   = delete;
-    VehicleClockBackendImpl(VehicleClockBackendImpl&&)                   = delete;
-    VehicleClockBackendImpl& operator=(VehicleClockBackendImpl&&)        = delete;
+    VehicleClockBackendImpl() noexcept = default;
+    ~VehicleClockBackendImpl() noexcept override = default;
+    VehicleClockBackendImpl(const VehicleClockBackendImpl&) = delete;
+    VehicleClockBackendImpl& operator=(const VehicleClockBackendImpl&) = delete;
+    VehicleClockBackendImpl(VehicleClockBackendImpl&&) = delete;
+    VehicleClockBackendImpl& operator=(VehicleClockBackendImpl&&) = delete;
 
     ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept override
     {
@@ -76,10 +76,7 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
 
     void UnsetPDelayMeasurementFinishedCallback() noexcept override {}
 
-    void SetStatusChangedCallback(
-        VehicleTime::StatusChangedCallback&& /*callback*/) noexcept override
-    {
-    }
+    void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& /*callback*/) noexcept override {}
 
     void UnsetStatusChangedCallback() noexcept override {}
 };

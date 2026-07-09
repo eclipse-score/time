@@ -13,11 +13,10 @@
 #ifndef SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_HIGH_RES_STEADY_CLOCK_H
 #define SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_HIGH_RES_STEADY_CLOCK_H
 
-#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 #include "score/time/clock/src/clock.h"
 #include "score/time/clock/src/clock_snapshot.h"
 #include "score/time/clock/src/no_status.h"
-
+#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
 namespace score
 {
@@ -29,10 +28,10 @@ class HighResSteadyClockBackend;
 template <>
 struct ClockTraits<HighResSteadyTime>
 {
-    using Backend        = HighResSteadyClockBackend;
-    using Duration       = HighResSteadyTime::Duration;
-    using Timepoint      = HighResSteadyTime::Timepoint;
-    using Snapshot       = ClockSnapshot<Timepoint, NoStatus>;
+    using Backend = HighResSteadyClockBackend;
+    using Duration = HighResSteadyTime::Duration;
+    using Timepoint = HighResSteadyTime::Timepoint;
+    using Snapshot = ClockSnapshot<Timepoint, NoStatus>;
 
     /// \brief Obtains the current HIRS clock snapshot from the backend.
     static Snapshot CallNow(const Backend& impl) noexcept;

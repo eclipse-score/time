@@ -71,9 +71,7 @@ void PhcAdjuster::AdjustOffset(std::int64_t offset_ns)
     if (std::abs(offset_ns) < cfg_.step_threshold_ns)
         return;
 
-    struct timex tx
-    {
-    };
+    struct timex tx{};
     tx.modes = ADJ_SETOFFSET | ADJ_NANO;
     tx.time.tv_sec = static_cast<long>(offset_ns / 1'000'000'000LL);
     tx.time.tv_usec = static_cast<long>(offset_ns % 1'000'000'000LL);
@@ -102,9 +100,7 @@ void PhcAdjuster::AdjustFrequency(double rate_ratio)
     const double clamped = raw_scaled < -kMaxScaled ? -kMaxScaled : (raw_scaled > kMaxScaled ? kMaxScaled : raw_scaled);
     const long scaled_ppm = static_cast<long>(clamped);
 
-    struct timex tx
-    {
-    };
+    struct timex tx{};
     tx.modes = ADJ_FREQUENCY;
     tx.freq = scaled_ppm;
 

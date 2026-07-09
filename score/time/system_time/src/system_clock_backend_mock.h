@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_SYSTEM_TIME_SRC_SYSTEM_CLOCK_BACKEND_MOCK_H
 #define SCORE_TIME_SYSTEM_TIME_SRC_SYSTEM_CLOCK_BACKEND_MOCK_H
 
-#include "score/time/system_time/src/system_clock_backend.h"
 #include "score/time/system_time/src/system_clock.h"
+#include "score/time/system_time/src/system_clock_backend.h"
 
 #include <gmock/gmock.h>
 
@@ -37,17 +37,14 @@ namespace time
 class SystemClockBackendMock : public SystemClockBackend
 {
   public:
-    SystemClockBackendMock()                                    = default;
-    ~SystemClockBackendMock() noexcept override                 = default;
-    SystemClockBackendMock(const SystemClockBackendMock&)              = delete;
-    SystemClockBackendMock& operator=(const SystemClockBackendMock&)   = delete;
-    SystemClockBackendMock(SystemClockBackendMock&&)                   = delete;
-    SystemClockBackendMock& operator=(SystemClockBackendMock&&)        = delete;
+    SystemClockBackendMock() = default;
+    ~SystemClockBackendMock() noexcept override = default;
+    SystemClockBackendMock(const SystemClockBackendMock&) = delete;
+    SystemClockBackendMock& operator=(const SystemClockBackendMock&) = delete;
+    SystemClockBackendMock(SystemClockBackendMock&&) = delete;
+    SystemClockBackendMock& operator=(SystemClockBackendMock&&) = delete;
 
-    MOCK_METHOD((ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>),
-                Now,
-                (),
-                (const, noexcept, override));
+    MOCK_METHOD((ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>), Now, (), (const, noexcept, override));
 };
 
 }  // namespace time

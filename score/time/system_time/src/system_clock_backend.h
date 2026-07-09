@@ -38,9 +38,7 @@ class SystemClockBackend
     virtual ~SystemClockBackend() noexcept = default;
 
     /// \brief Returns the current system-clock snapshot.
-    virtual ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>
-    Now() const noexcept = 0;
-
+    virtual ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept = 0;
 };
 
 }  // namespace time

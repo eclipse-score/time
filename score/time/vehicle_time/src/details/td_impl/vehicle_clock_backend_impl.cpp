@@ -28,22 +28,16 @@ namespace time
 namespace detail
 {
 
-VehicleClockBackendImpl::VehicleClockBackendImpl(
-    std::shared_ptr<score::td::SvtReceiver> receiver,
-    HighResSteadyClock local_clock) noexcept
-    : is_ready_{false}
-    , init_mutex_{}
-    , svt_receiver_{std::move(receiver)}
-    , local_clock_{std::move(local_clock)}
+VehicleClockBackendImpl::VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver,
+                                                 HighResSteadyClock local_clock) noexcept
+    : is_ready_{false}, init_mutex_{}, svt_receiver_{std::move(receiver)}, local_clock_{std::move(local_clock)}
 {
 }
 
-ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>
-VehicleClockBackendImpl::Now() const noexcept
+ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl::Now() const noexcept
 {
-    const ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> kEmptySnapshot{
-        VehicleTime::Timepoint{},
-        VehicleTimeStatus{}};
+    const ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> kEmptySnapshot{VehicleTime::Timepoint{},
+                                                                                  VehicleTimeStatus{}};
 
     if (!is_ready_)
     {
@@ -56,9 +50,9 @@ VehicleClockBackendImpl::Now() const noexcept
         return kEmptySnapshot;
     }
 
-    const auto now_local        = local_clock_.Now().TimePoint().time_since_epoch();
+    const auto now_local = local_clock_.Now().TimePoint().time_since_epoch();
     const auto local_at_capture = std::chrono::nanoseconds{rx_data.value().local_time};
-    const auto ptp_at_capture   = std::chrono::nanoseconds{rx_data.value().ptp_assumed_time};
+    const auto ptp_at_capture = std::chrono::nanoseconds{rx_data.value().ptp_assumed_time};
 
     if (now_local < local_at_capture)
     {
@@ -69,8 +63,7 @@ VehicleClockBackendImpl::Now() const noexcept
 
     const VehicleTime::Timepoint adjusted_tp{ptp_at_capture + (now_local - local_at_capture)};
 
-    const VehicleTimeStatus vehicle_status{
-        ConvertPtpStatus(rx_data.value().status), rx_data.value().rate_deviation};
+    const VehicleTimeStatus vehicle_status{ConvertPtpStatus(rx_data.value().status), rx_data.value().rate_deviation};
     return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, vehicle_status};
 }
 
@@ -106,9 +99,8 @@ bool VehicleClockBackendImpl::IsAvailable() const noexcept
     return is_ready_.load(std::memory_order_acquire);
 }
 
-bool VehicleClockBackendImpl::WaitUntilAvailable(
-    const score::cpp::stop_token& token,
-    std::chrono::steady_clock::time_point until) const noexcept
+bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& token,
+                                                 std::chrono::steady_clock::time_point until) const noexcept
 {
     bool should_poll = false;
     do
@@ -123,8 +115,7 @@ bool VehicleClockBackendImpl::WaitUntilAvailable(
         should_poll = (!token.stop_requested()) && (std::chrono::steady_clock::now() <= until);
     } while (should_poll);
 
-    score::mw::log::LogError(kVehicleTimeLogContext)
-        << "Vehicle time IPC to TimeDaemon not ready within deadline.";
+    score::mw::log::LogError(kVehicleTimeLogContext) << "Vehicle time IPC to TimeDaemon not ready within deadline.";
     return false;
 }
 
@@ -150,8 +141,7 @@ void VehicleClockBackendImpl::UnsetPDelayMeasurementFinishedCallback() noexcept
     // TODO(https://github.com/eclipse-score/inc_time/issues/59): implement callback delivery.
 }
 
-void VehicleClockBackendImpl::SetStatusChangedCallback(
-    VehicleTime::StatusChangedCallback&& /*callback*/) noexcept
+void VehicleClockBackendImpl::SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& /*callback*/) noexcept
 {
     // TODO(https://github.com/eclipse-score/inc_time/issues/59): implement callback delivery.
 }
@@ -195,7 +185,7 @@ template <>
 std::shared_ptr<VehicleClockBackend> detail::CreateBackend<VehicleTime>()
 {
     return std::make_shared<detail::VehicleClockBackendImpl>(score::td::CreateSvtReceiver(),
-                                                      HighResSteadyClock::GetInstance());
+                                                             HighResSteadyClock::GetInstance());
 }
 
 }  // namespace time

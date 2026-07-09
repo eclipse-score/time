@@ -14,8 +14,8 @@
 #include "score/time_daemon/src/application/svt/factory.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 
-#include "score/mw/log/logging.h"
 #include "score/concurrency/interruptible_wait.h"
+#include "score/mw/log/logging.h"
 
 namespace score
 {

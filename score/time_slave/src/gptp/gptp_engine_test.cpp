@@ -290,8 +290,7 @@ class GptpEngineFakeTest : public ::testing::Test
         auto sock = std::make_unique<FakeSocket>();
         auto identity = std::make_unique<FakeIdentity>();
         socket_raw_ = sock.get();
-        engine_ = std::make_unique<GptpEngine>(
-            FastOptions(), std::move(sock), std::move(identity));
+        engine_ = std::make_unique<GptpEngine>(FastOptions(), std::move(sock), std::move(identity));
     }
 
     void TearDown() override
@@ -559,8 +558,9 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpFuture_Detected)
     socket_raw_->Push(MakeSyncFrame(2U), hwts2);
     socket_raw_->Push(MakeFollowUpFrame(2U, /*sec=*/3U, /*ns=*/0U));
 
-    const bool got =
-        WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) { return d.status.is_time_jump_future; });
+    const bool got = WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) {
+        return d.status.is_time_jump_future;
+    });
     EXPECT_TRUE(got);
 
     engine_->FinalizeSnapshot();
@@ -584,8 +584,9 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
     socket_raw_->Push(MakeSyncFrame(2U), hwts2);
     socket_raw_->Push(MakeFollowUpFrame(2U, /*sec=*/2U, /*ns=*/0U));
 
-    const bool got =
-        WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) { return d.status.is_time_jump_past; });
+    const bool got = WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) {
+        return d.status.is_time_jump_past;
+    });
     EXPECT_TRUE(got);
 
     engine_->FinalizeSnapshot();

@@ -12,10 +12,10 @@
  ********************************************************************************/
 #include "examples/time/vehicle_time/src/vehicle_time_handler.h"
 
-#include "score/time/vehicle_time/src/vehicle_clock_backend_mock.h"
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
-#include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/clock/src/clock_snapshot.h"
+#include "score/time/clock/src/scoped_clock_override.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
+#include "score/time/vehicle_time/src/vehicle_clock_backend_mock.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
@@ -43,10 +43,10 @@ class VehicleTimeHandlerTest : public ::testing::Test
 {
   protected:
     VehicleTimeHandlerTest()
-        : vehicle_mock_{std::make_shared<score::time::VehicleClockBackendMock>()}
-        , hirs_mock_{std::make_shared<score::time::HighResSteadyClockBackendMock>()}
-        , vehicle_guard_{vehicle_mock_}
-        , hirs_guard_{hirs_mock_}
+        : vehicle_mock_{std::make_shared<score::time::VehicleClockBackendMock>()},
+          hirs_mock_{std::make_shared<score::time::HighResSteadyClockBackendMock>()},
+          vehicle_guard_{vehicle_mock_},
+          hirs_guard_{hirs_mock_}
     {
     }
 
@@ -82,17 +82,17 @@ TEST_F(VehicleTimeHandlerTest, ReportContainsSynchronizedVehicleTimeAndHighResSt
         vehicle_snapshot{vehicle_tp, status};
 
     const score::time::HighResSteadyTime::Timepoint hirs_tp{std::chrono::nanoseconds{1'234'567'890LL}};
-    const score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>
-        hirs_snapshot{hirs_tp, score::time::NoStatus{}};
+    const score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus> hirs_snapshot{
+        hirs_tp, score::time::NoStatus{}};
 
     EXPECT_CALL(*vehicle_mock_, Now()).WillOnce(Return(vehicle_snapshot));
-    EXPECT_CALL(*hirs_mock_,    Now()).WillOnce(Return(hirs_snapshot));
+    EXPECT_CALL(*hirs_mock_, Now()).WillOnce(Return(hirs_snapshot));
 
     VehicleTimeHandler handler;
     const TimeReport report = handler.GetCurrentTime();
 
     EXPECT_EQ(report.vehicle_time_ns, 5'000'000'000LL);
-    EXPECT_EQ(report.high_res_steady_time_ns,    1'234'567'890LL);
+    EXPECT_EQ(report.high_res_steady_time_ns, 1'234'567'890LL);
     EXPECT_TRUE(report.is_reliable);
     EXPECT_TRUE(report.is_consistent);
     EXPECT_DOUBLE_EQ(report.rate_deviation, 1.5e-9);
@@ -104,11 +104,12 @@ TEST_F(VehicleTimeHandlerTest, ReportShowsNotSynchronizedWhenTimeOutFlagIsSet)
     status.flags = score::time::ClockStatus<score::time::VehicleTime::StatusFlag>{
         {score::time::VehicleTime::StatusFlag::kTimeOut}};
 
-    EXPECT_CALL(*vehicle_mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<score::time::VehicleTime::Timepoint, score::time::VehicleTimeStatus>{
-            score::time::VehicleTime::Timepoint{}, status}));
-    EXPECT_CALL(*hirs_mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+    EXPECT_CALL(*vehicle_mock_, Now())
+        .WillOnce(
+            Return(score::time::ClockSnapshot<score::time::VehicleTime::Timepoint, score::time::VehicleTimeStatus>{
+                score::time::VehicleTime::Timepoint{}, status}));
+    EXPECT_CALL(*hirs_mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
             score::time::HighResSteadyTime::Timepoint{}, score::time::NoStatus{}}));
 
     VehicleTimeHandler handler;
@@ -126,11 +127,12 @@ TEST_F(VehicleTimeHandlerTest, HighResSteadyTimeIsIndependentFromVehicleTimeSync
 
     const score::time::HighResSteadyTime::Timepoint hirs_tp{std::chrono::nanoseconds{99'000'000LL}};
 
-    EXPECT_CALL(*vehicle_mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<score::time::VehicleTime::Timepoint, score::time::VehicleTimeStatus>{
-            score::time::VehicleTime::Timepoint{}, unsync_status}));
-    EXPECT_CALL(*hirs_mock_, Now()).WillOnce(Return(
-        score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+    EXPECT_CALL(*vehicle_mock_, Now())
+        .WillOnce(
+            Return(score::time::ClockSnapshot<score::time::VehicleTime::Timepoint, score::time::VehicleTimeStatus>{
+                score::time::VehicleTime::Timepoint{}, unsync_status}));
+    EXPECT_CALL(*hirs_mock_, Now())
+        .WillOnce(Return(score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
             hirs_tp, score::time::NoStatus{}}));
 
     VehicleTimeHandler handler;
@@ -142,9 +144,7 @@ TEST_F(VehicleTimeHandlerTest, HighResSteadyTimeIsIndependentFromVehicleTimeSync
 
 TEST_F(VehicleTimeHandlerTest, RegisterStatusCallbackForwardsToBackend)
 {
-    EXPECT_CALL(*vehicle_mock_,
-                SetStatusChangedCallback(::testing::_))
-        .Times(1);
+    EXPECT_CALL(*vehicle_mock_, SetStatusChangedCallback(::testing::_)).Times(1);
 
     VehicleTimeHandler handler;
     handler.RegisterStatusCallback([](const score::time::VehicleTimeStatus&) {});

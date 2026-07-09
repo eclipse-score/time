@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_BACKEND_MOCK_H
 #define SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_BACKEND_MOCK_H
 
-#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
 #include "score/time/vehicle_time/src/vehicle_clock.h"
+#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
 
 #include <gmock/gmock.h>
 
@@ -37,17 +37,14 @@ namespace time
 class VehicleClockBackendMock : public VehicleClockBackend
 {
   public:
-    VehicleClockBackendMock()                                     = default;
-    ~VehicleClockBackendMock() noexcept override                  = default;
-    VehicleClockBackendMock(const VehicleClockBackendMock&)              = delete;
-    VehicleClockBackendMock& operator=(const VehicleClockBackendMock&)   = delete;
-    VehicleClockBackendMock(VehicleClockBackendMock&&)                   = delete;
-    VehicleClockBackendMock& operator=(VehicleClockBackendMock&&)        = delete;
+    VehicleClockBackendMock() = default;
+    ~VehicleClockBackendMock() noexcept override = default;
+    VehicleClockBackendMock(const VehicleClockBackendMock&) = delete;
+    VehicleClockBackendMock& operator=(const VehicleClockBackendMock&) = delete;
+    VehicleClockBackendMock(VehicleClockBackendMock&&) = delete;
+    VehicleClockBackendMock& operator=(VehicleClockBackendMock&&) = delete;
 
-    MOCK_METHOD((ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>),
-                Now,
-                (),
-                (const, noexcept, override));
+    MOCK_METHOD((ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>), Now, (), (const, noexcept, override));
 
     MOCK_METHOD(bool, Init, (), (noexcept, override));
 
@@ -55,8 +52,7 @@ class VehicleClockBackendMock : public VehicleClockBackend
 
     MOCK_METHOD(bool,
                 WaitUntilAvailable,
-                (const score::cpp::stop_token& token,
-                 std::chrono::steady_clock::time_point until),
+                (const score::cpp::stop_token& token, std::chrono::steady_clock::time_point until),
                 (const, noexcept, override));
 
     MOCK_METHOD(void,
@@ -73,10 +69,7 @@ class VehicleClockBackendMock : public VehicleClockBackend
 
     MOCK_METHOD(void, UnsetPDelayMeasurementFinishedCallback, (), (noexcept, override));
 
-    MOCK_METHOD(void,
-                SetStatusChangedCallback,
-                (VehicleTime::StatusChangedCallback && callback),
-                (noexcept, override));
+    MOCK_METHOD(void, SetStatusChangedCallback, (VehicleTime::StatusChangedCallback && callback), (noexcept, override));
 
     MOCK_METHOD(void, UnsetStatusChangedCallback, (), (noexcept, override));
 };

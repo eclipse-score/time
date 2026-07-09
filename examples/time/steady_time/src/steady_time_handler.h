@@ -44,13 +44,13 @@ struct TimeReport
 class SteadyTimeHandler
 {
   public:
-    SteadyTimeHandler()  = default;
+    SteadyTimeHandler() = default;
     ~SteadyTimeHandler() = default;
 
-    SteadyTimeHandler(const SteadyTimeHandler&)             = delete;
-    SteadyTimeHandler& operator=(const SteadyTimeHandler&)  = delete;
-    SteadyTimeHandler(SteadyTimeHandler&&)                  = delete;
-    SteadyTimeHandler& operator=(SteadyTimeHandler&&)       = delete;
+    SteadyTimeHandler(const SteadyTimeHandler&) = delete;
+    SteadyTimeHandler& operator=(const SteadyTimeHandler&) = delete;
+    SteadyTimeHandler(SteadyTimeHandler&&) = delete;
+    SteadyTimeHandler& operator=(SteadyTimeHandler&&) = delete;
 
     /// @brief Reads the current steady time and returns a report.
     [[nodiscard]] TimeReport GetCurrentTime() const noexcept

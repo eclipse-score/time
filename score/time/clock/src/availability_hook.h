@@ -50,9 +50,7 @@ struct HasAvailability : std::false_type
 };
 
 template <typename Tag>
-struct HasAvailability<Tag,
-                       std::void_t<decltype(&AvailabilityHook<Tag>::CallIsAvailable)>>
-    : std::true_type
+struct HasAvailability<Tag, std::void_t<decltype(&AvailabilityHook<Tag>::CallIsAvailable)>> : std::true_type
 {
 };
 

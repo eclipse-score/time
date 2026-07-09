@@ -13,9 +13,9 @@
 #ifndef SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_PDELAY_MEASURER_H
 #define SCORE_TIME_SLAVE_SRC_GPTP_DETAILS_PDELAY_MEASURER_H
 
-#include "score/ts_client/src/gptp_ipc_data.h"
-#include "score/time_slave/src/gptp/details/raw_socket.h"
 #include "score/time_slave/src/gptp/details/ptp_types.h"
+#include "score/time_slave/src/gptp/details/raw_socket.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 
 #include <cstdint>
 #include <mutex>

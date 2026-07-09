@@ -11,7 +11,15 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Bazel Build (QNX8)
+name: Build / QNX8
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]
@@ -22,7 +30,7 @@ on:
       - main
 jobs:
   qnx-build:
-    uses: eclipse-score/cicd-workflows/.github/workflows/qnx-build.yml@main
+    uses: eclipse-score/cicd-workflows/.github/workflows/qnx-build.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     permissions:
       contents: read
       pull-requests: read

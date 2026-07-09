@@ -13,8 +13,8 @@
 #ifndef SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H
 #define SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H
 
-#include "score/time_daemon/src/common/machines/proactive_machine.h"
 #include "score/concurrency/condition_variable.h"
+#include "score/time_daemon/src/common/machines/proactive_machine.h"
 
 #include <score/jthread.hpp>
 #include <chrono>
