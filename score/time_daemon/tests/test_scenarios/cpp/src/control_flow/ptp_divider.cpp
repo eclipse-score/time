@@ -27,7 +27,7 @@ namespace
 {
 const std::string kTargetName{"test_scenarios::control_flow::ptp_divider"};
 constexpr auto kOutputPublishTimeout = std::chrono::seconds{2};
-}
+}  // namespace
 
 // Verifies that PtpControlFlowDivider forwards a PtpTimeInfo message intact to its
 // publish callback.  The divider runs on its own EventDrivenMachine worker thread, so
@@ -44,8 +44,7 @@ class PtpDivider final : public Scenario
 
     void run(const std::string& /*input*/) const final
     {
-        auto divider = score::td::CreatePtpControlFlowDivider("cit_ptp_divider",
-                                                               std::chrono::milliseconds{100});
+        auto divider = score::td::CreatePtpControlFlowDivider("cit_ptp_divider", std::chrono::milliseconds{100});
 
         std::promise<score::td::PtpTimeInfo> output_promise;
         auto output_future = output_promise.get_future();
@@ -68,9 +67,9 @@ class PtpDivider final : public Scenario
         divider->Start();
 
         score::td::PtpTimeInfo input{};
-        input.ptp_assumed_time          = std::chrono::nanoseconds{2'500'000'000};  // 2.5 s
-        input.status.is_synchronized    = true;
-        input.status.is_correct         = true;
+        input.ptp_assumed_time = std::chrono::nanoseconds{2'500'000'000};  // 2.5 s
+        input.status.is_synchronized = true;
+        input.status.is_correct = true;
         input.sync_fup_data.sequence_id = 1U;
         divider->OnMessage(input);
 
@@ -84,24 +83,18 @@ class PtpDivider final : public Scenario
 
         const auto output = output_future.get();
 
-        const bool ptp_time_preserved =
-            (output.ptp_assumed_time == input.ptp_assumed_time);
-        const bool sync_status_preserved =
-            (output.status.is_synchronized == input.status.is_synchronized);
+        const bool ptp_time_preserved = (output.ptp_assumed_time == input.ptp_assumed_time);
+        const bool sync_status_preserved = (output.status.is_synchronized == input.status.is_synchronized);
 
-        TRACING_INFO(kTargetName,
-                     std::pair{std::string{"ptp_divider_active"}, std::string{"true"}},
-                     std::pair{std::string{"ptp_time_preserved"},
-                               std::string{ptp_time_preserved ? "true" : "false"}},
-                     std::pair{std::string{"sync_status_preserved"},
-                               std::string{sync_status_preserved ? "true" : "false"}});
+        TRACING_INFO(
+            kTargetName,
+            std::pair{std::string{"ptp_divider_active"}, std::string{"true"}},
+            std::pair{std::string{"ptp_time_preserved"}, std::string{ptp_time_preserved ? "true" : "false"}},
+            std::pair{std::string{"sync_status_preserved"}, std::string{sync_status_preserved ? "true" : "false"}});
     }
 };
 
 ScenarioGroup::Ptr control_flow_scenario_group()
 {
-    return ScenarioGroup::Ptr{new ScenarioGroupImpl{
-        "control_flow",
-        {std::make_shared<PtpDivider>()},
-        {}}};
+    return ScenarioGroup::Ptr{new ScenarioGroupImpl{"control_flow", {std::make_shared<PtpDivider>()}, {}}};
 }

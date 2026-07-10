@@ -27,7 +27,7 @@ namespace
 {
 const std::string kTargetName{"test_scenarios::svt::stub_publishes_data"};
 constexpr auto kDataPublishTimeout = std::chrono::seconds{5};
-}
+}  // namespace
 
 class StubPublishesData final : public Scenario
 {
@@ -73,18 +73,17 @@ class StubPublishesData final : public Scenario
 
         const auto data = data_future.get();
 
-        TRACING_INFO(kTargetName,
-                     std::pair{std::string{"is_synchronized"},
-                               std::string{data.status.is_synchronized ? "true" : "false"}},
-                     std::pair{std::string{"is_correct"}, std::string{data.status.is_correct ? "true" : "false"}},
-                     std::pair{std::string{"is_timeout"}, std::string{data.status.is_timeout ? "true" : "false"}},
-                     std::pair{std::string{"ptp_time_positive"},
-                               std::string{data.ptp_assumed_time.count() > 0 ? "true" : "false"}});
+        TRACING_INFO(
+            kTargetName,
+            std::pair{std::string{"is_synchronized"}, std::string{data.status.is_synchronized ? "true" : "false"}},
+            std::pair{std::string{"is_correct"}, std::string{data.status.is_correct ? "true" : "false"}},
+            std::pair{std::string{"is_timeout"}, std::string{data.status.is_timeout ? "true" : "false"}},
+            std::pair{std::string{"ptp_time_positive"},
+                      std::string{data.ptp_assumed_time.count() > 0 ? "true" : "false"}});
     }
 };
 
 ScenarioGroup::Ptr svt_scenario_group()
 {
-    return ScenarioGroup::Ptr{
-        new ScenarioGroupImpl{"svt", {std::make_shared<StubPublishesData>()}, {}}};
+    return ScenarioGroup::Ptr{new ScenarioGroupImpl{"svt", {std::make_shared<StubPublishesData>()}, {}}};
 }
