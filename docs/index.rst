@@ -39,6 +39,16 @@ The main responsibilities of time_daemon include:
 
 For a detailed concept and architectural design, please refer to the :doc:`Time Feature Arichitecture Documentation <architecture/index>`.
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   architecture/index
+   ../score/time/docs/index
+   ../score/time_daemon/docs/index
+   ../score/time_slave/docs/index
+   test_cases
+
 
 Project Layout
 --------------

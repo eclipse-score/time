@@ -56,7 +56,7 @@ The resulting data and timestamp information is forwarded via an IPC interface t
 The :doc:`**time_daemon** component <../../score/time_daemon/docs/index>` is the heart of the Time Feature. It is responsible for getting the sync data received by the time_slave and determine the synchronization status of the current vehicle time.
 The IPC interfaces to the adjacent components, time_slave and API libraries linked to the applications, need to be FFI to be able to guarantee the ASIL qualification of the synchronization status.
 
-The :doc:`**time library** component <../../score/time_daemon/docs/index>` offers language specific APIs (currently C++ only, later Rust also) to the applications and handling the IPC with FFI to the time_daemon.
+The :doc:`**time library** component <../../score/time/docs/index>` offers language specific APIs (currently C++ only, later Rust also) to the applications and handling the IPC with FFI to the time_daemon.
 It is a library to be linked into the respective application processes.
 
 The :doc:`**ts_client** component <../../score/ts_client/docs>` is an internal library abstracting the IPC between time_slave and time_daemon.
