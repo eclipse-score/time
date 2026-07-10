@@ -113,9 +113,8 @@ bool RawSocketImpl::Open(const std::string& iface)
             << "RawSocket::Open: Failed to set promiscuous mode (errno=" << errno << ")";
     }
 
-    // BPF filter: pass only frames with EtherType 0x88F7 (PTP/gPTP).
-    // ETH_P_ALL is used for socket/bind because ETH_P_1588 misses VLAN-tagged PTP frames
-    // (outer EtherType is 0x8100, not 0x88F7). The BPF filter runs in-kernel before delivery
+    // BPF filter: pass only frames with EtherType 0x88F7 (PTP/gPTP). This is fine ss gPTP frames
+    // are n9ot VLAN (nor priority) tagged. The BPF filter runs in-kernel before delivery
     // to userspace, so non-PTP frames are dropped with zero overhead in the application.
     static const ::sock_filter kPtpBpfCode[] = {
         BPF_STMT(BPF_LD | BPF_H | BPF_ABS, 12),                    // load EtherType
