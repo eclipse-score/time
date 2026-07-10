@@ -33,9 +33,9 @@ constexpr auto kTimeoutThresholdWait = std::chrono::milliseconds{3600};
 score::td::PtpTimeInfo make_ptp_frame(std::uint16_t seq_id)
 {
     score::td::PtpTimeInfo data{};
-    data.ptp_assumed_time          = std::chrono::nanoseconds{1'000'000'000};
-    data.status.is_synchronized    = true;
-    data.status.is_correct         = true;
+    data.ptp_assumed_time = std::chrono::nanoseconds{1'000'000'000};
+    data.status.is_synchronized = true;
+    data.status.is_correct = true;
     data.sync_fup_data.sequence_id = seq_id;
     return data;
 }
@@ -80,12 +80,10 @@ void TimeoutDetection::run(const std::string& /*input*/) const
     });
     verifier->OnMessage(make_ptp_frame(2U));
 
-    TRACING_INFO(kTargetName,
-                 std::pair{std::string{"timeout_detection_active"}, std::string{"true"}},
-                 std::pair{std::string{"first_frame_not_timeout"},
-                           std::string{!phase1_is_timeout ? "true" : "false"}},
-                 std::pair{std::string{"timeout_detected"},
-                           std::string{phase3_is_timeout ? "true" : "false"}},
-                 std::pair{std::string{"timeout_cleared_on_new_frame"},
-                           std::string{!phase4_is_timeout ? "true" : "false"}});
+    TRACING_INFO(
+        kTargetName,
+        std::pair{std::string{"timeout_detection_active"}, std::string{"true"}},
+        std::pair{std::string{"first_frame_not_timeout"}, std::string{!phase1_is_timeout ? "true" : "false"}},
+        std::pair{std::string{"timeout_detected"}, std::string{phase3_is_timeout ? "true" : "false"}},
+        std::pair{std::string{"timeout_cleared_on_new_frame"}, std::string{!phase4_is_timeout ? "true" : "false"}});
 }

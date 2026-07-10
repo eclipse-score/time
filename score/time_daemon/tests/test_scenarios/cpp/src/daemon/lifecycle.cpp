@@ -59,8 +59,5 @@ class DaemonLifecycle final : public Scenario
 
 ScenarioGroup::Ptr daemon_scenario_group()
 {
-    return ScenarioGroup::Ptr{new ScenarioGroupImpl{
-        "daemon",
-        {std::make_shared<DaemonLifecycle>()},
-        {}}};
+    return ScenarioGroup::Ptr{new ScenarioGroupImpl{"daemon", {std::make_shared<DaemonLifecycle>()}, {}}};
 }
