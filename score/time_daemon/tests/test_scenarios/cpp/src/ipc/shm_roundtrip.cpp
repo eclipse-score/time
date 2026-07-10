@@ -41,7 +41,7 @@ class ShmRoundtrip final : public Scenario
     void run(const std::string& /*input*/) const final
     {
         auto publisher = score::td::CreateSvtPublisher("cit_ipc_pub");
-        auto receiver  = score::td::CreateSvtReceiver();
+        auto receiver = score::td::CreateSvtReceiver();
 
         if (!publisher->Init())
         {
@@ -54,28 +54,27 @@ class ShmRoundtrip final : public Scenario
 
         score::td::PtpTimeInfo info{};
         info.ptp_assumed_time = std::chrono::nanoseconds{1'000'000'000LL};
-        info.local_time =
-            score::td::PtpTimeInfo::ReferenceClock::time_point{std::chrono::nanoseconds{500'000'000LL}};
-        info.rate_deviation    = 0.0;
-        info.status            = {true, false, false, false, true};
-        info.sync_fup_data.sequence_id              = 42U;
+        info.local_time = score::td::PtpTimeInfo::ReferenceClock::time_point{std::chrono::nanoseconds{500'000'000LL}};
+        info.rate_deviation = 0.0;
+        info.status = {true, false, false, false, true};
+        info.sync_fup_data.sequence_id = 42U;
         info.sync_fup_data.precise_origin_timestamp = 1'000'000'000ULL;
 
         publisher->OnMessage(info);
 
-        const auto result  = receiver->Receive();
+        const auto result = receiver->Receive();
         const bool read_ok = result.has_value();
 
         bool ptp_time_ok = false;
-        bool status_ok   = false;
-        bool seq_ok      = false;
+        bool status_ok = false;
+        bool seq_ok = false;
 
         if (read_ok)
         {
             const auto& snap = result.value();
-            ptp_time_ok      = snap.ptp_assumed_time == static_cast<uint64_t>(1'000'000'000LL);
-            status_ok        = snap.status.is_synchronized && snap.status.is_correct;
-            seq_ok           = snap.sync_fup_data.sequence_id == 42U;
+            ptp_time_ok = snap.ptp_assumed_time == static_cast<uint64_t>(1'000'000'000LL);
+            status_ok = snap.status.is_synchronized && snap.status.is_correct;
+            seq_ok = snap.sync_fup_data.sequence_id == 42U;
         }
 
         TRACING_INFO(kTargetName,

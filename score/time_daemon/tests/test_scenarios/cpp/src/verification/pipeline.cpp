@@ -48,7 +48,7 @@ class VerificationPipeline final : public Scenario
     void run(const std::string& /*input*/) const final
     {
         auto ptp_machine = score::td::CreateGPTPStubMachine("cit_verif_ptp");
-        auto verifier    = score::td::CreateSvtVerificationMachine("cit_verif");
+        auto verifier = score::td::CreateSvtVerificationMachine("cit_verif");
 
         std::promise<score::td::PtpTimeInfo> verified_promise;
         auto verified_future = verified_promise.get_future();
@@ -88,26 +88,23 @@ class VerificationPipeline final : public Scenario
 
         const auto data = verified_future.get();
 
-        TRACING_INFO(kTargetName,
-                     std::pair{std::string{"pipeline_active"}, std::string{"true"}},
-                     std::pair{std::string{"is_synchronized"},
-                               std::string{data.status.is_synchronized ? "true" : "false"}},
-                     std::pair{std::string{"is_correct"},
-                               std::string{data.status.is_correct ? "true" : "false"}},
-                     std::pair{std::string{"is_timeout"},
-                               std::string{data.status.is_timeout ? "true" : "false"}},
-                     std::pair{std::string{"ptp_time_positive"},
-                               std::string{data.ptp_assumed_time.count() > 0 ? "true" : "false"}});
+        TRACING_INFO(
+            kTargetName,
+            std::pair{std::string{"pipeline_active"}, std::string{"true"}},
+            std::pair{std::string{"is_synchronized"}, std::string{data.status.is_synchronized ? "true" : "false"}},
+            std::pair{std::string{"is_correct"}, std::string{data.status.is_correct ? "true" : "false"}},
+            std::pair{std::string{"is_timeout"}, std::string{data.status.is_timeout ? "true" : "false"}},
+            std::pair{std::string{"ptp_time_positive"},
+                      std::string{data.ptp_assumed_time.count() > 0 ? "true" : "false"}});
     }
 };
 
 ScenarioGroup::Ptr verification_scenario_group()
 {
-    return ScenarioGroup::Ptr{new ScenarioGroupImpl{
-        "verification",
-        {std::make_shared<VerificationPipeline>(),
-         std::make_shared<SyncDetection>(),
-         std::make_shared<TimeJumpDetection>(),
-         std::make_shared<TimeoutDetection>()},
-        {}}};
+    return ScenarioGroup::Ptr{new ScenarioGroupImpl{"verification",
+                                                    {std::make_shared<VerificationPipeline>(),
+                                                     std::make_shared<SyncDetection>(),
+                                                     std::make_shared<TimeJumpDetection>(),
+                                                     std::make_shared<TimeoutDetection>()},
+                                                    {}}};
 }

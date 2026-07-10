@@ -30,10 +30,10 @@ const std::string kTargetName{"test_scenarios::verification::sync_detection"};
 score::td::PtpTimeInfo make_ptp_data(bool synchronized, std::uint16_t seq_id)
 {
     score::td::PtpTimeInfo data{};
-    data.ptp_assumed_time               = std::chrono::nanoseconds{1'000'000'000};
-    data.status.is_synchronized         = synchronized;
-    data.status.is_correct              = synchronized;
-    data.sync_fup_data.sequence_id      = seq_id;
+    data.ptp_assumed_time = std::chrono::nanoseconds{1'000'000'000};
+    data.status.is_synchronized = synchronized;
+    data.status.is_correct = synchronized;
+    data.sync_fup_data.sequence_id = seq_id;
     return data;
 }
 }  // namespace
