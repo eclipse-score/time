@@ -547,64 +547,6 @@ Shutdown requested. Exiting.
 </pre></div>
 </div>
 </section>
-<section id="vehicle-time-concepts">
-<h2>Vehicle Time Concepts<a class="headerlink" href="#vehicle-time-concepts" title="Link to this heading">#</a></h2>
-<p><strong>PTP Synchronization (Precision Time Protocol):</strong></p>
-<ul class="simple">
-<li><p>Provides network-wide time synchronization across vehicle systems</p></li>
-<li><p>Typically accurate to microseconds or better across the network</p></li>
-<li><p>Requires a Grand Master clock and PTP-capable network infrastructure</p></li>
-<li><p>Subject to network latency variations and synchronization loss</p></li>
-</ul>
-<p><strong>Status Flags:</strong></p>
-<ul class="simple">
-<li><p><strong>is_reliable</strong>: Time is synchronized and no faults detected</p></li>
-<li><p><strong>is_consistent</strong>: Status flags don’t contain contradictory information</p></li>
-<li><p><strong>rate_deviation</strong>: Local clock frequency difference from Grand Master (parts per billion)</p></li>
-</ul>
-<p><strong>Combined Time Sources:</strong></p>
-<p>Using both vehicle time and local steady time provides:
-- <strong>Vehicle time</strong>: For coordination with other vehicle systems
-- <strong>Local steady time</strong>: For local timing that’s unaffected by network issues
-- <strong>Comparison</strong>: Ability to detect synchronization problems</p>
-</section>
-<section id="vehicle-time-vs-other-time-sources">
-<h2>Vehicle Time vs Other Time Sources<a class="headerlink" href="#vehicle-time-vs-other-time-sources" title="Link to this heading">#</a></h2>
-<p><strong>Vehicle Time characteristics:</strong></p>
-<ul class="simple">
-<li><p><strong>Network synchronized</strong>: Coordinated across vehicle ECUs</p></li>
-<li><p><strong>Can become unreliable</strong>: Network issues, Grand Master failures</p></li>
-<li><p><strong>May have gaps</strong>: Synchronization loss periods</p></li>
-<li><p><strong>Best for</strong>: Cross-ECU coordination, distributed logging</p></li>
-</ul>
-<p><strong>When to use Vehicle Time:</strong></p>
-<ul class="simple">
-<li><p>Coordinating events across multiple ECUs</p></li>
-<li><p>Distributed system logging with consistent timestamps</p></li>
-<li><p>Safety-critical applications requiring time correlation</p></li>
-<li><p>AUTOSAR Classic/Adaptive compliance</p></li>
-</ul>
-<p><strong>When to fallback to Local Time:</strong></p>
-<ul class="simple">
-<li><p>Vehicle time becomes unreliable (is_reliable=false)</p></li>
-<li><p>Network synchronization is lost</p></li>
-<li><p>Local-only timing requirements</p></li>
-<li><p>Backup timing for safety applications</p></li>
-</ul>
-</section>
-<section id="use-cases">
-<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading">#</a></h2>
-<p>This example demonstrates patterns for:</p>
-<ul class="simple">
-<li><p><strong>Automotive ECU applications</strong> requiring time synchronization</p></li>
-<li><p><strong>Distributed logging systems</strong> with consistent timestamps</p></li>
-<li><p><strong>Safety-critical systems</strong> with redundant time sources</p></li>
-<li><p><strong>Performance monitoring</strong> of network time synchronization</p></li>
-<li><p><strong>AUTOSAR applications</strong> using synchronized time services</p></li>
-</ul>
-<p>The dual time source approach provides robustness: use vehicle time when reliable,
-fall back to local time when network synchronization is lost.</p>
-</section>
 <section id="bazel-build-setup">
 <h2>Bazel Build Setup<a class="headerlink" href="#bazel-build-setup" title="Link to this heading">#</a></h2>
 <p>The vehicle_time example has more complex dependencies due to dual time sources and initialization.</p>
@@ -802,9 +744,6 @@ testing with independent clock control.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vehicle-time-concepts">Vehicle Time Concepts</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vehicle-time-vs-other-time-sources">Vehicle Time vs Other Time Sources</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bazel-build-setup">Bazel Build Setup</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#target-structure">Target Structure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dual-clock-dependencies">Dual Clock Dependencies</a></li>
