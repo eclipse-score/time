@@ -97,44 +97,6 @@ Each example prints time in a similar format:
    [2]  time=12347.345678901 s
    ...
 
-Clock Type Differences
-----------------------
-
-While the implementation pattern is identical, each clock type serves different use cases:
-
-System Time (``system_time``)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Purpose**: Wall-clock time for timestamps and user-visible time displays
-- **Characteristics**:
-  - Unix epoch time (seconds since 1970-01-01 00:00:00 UTC)
-  - Can jump forward/backward when system clock is adjusted
-  - Affected by NTP corrections, manual time changes
-- **Use when**: Logging timestamps, displaying current time, scheduling events
-- **Don't use for**: Duration measurement, timeouts, performance timing
-
-Steady Time (``steady_time``)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Purpose**: Monotonic time for duration measurements and timeouts
-- **Characteristics**:
-  - Always moves forward, never jumps backward
-  - Unaffected by system clock adjustments
-  - Arbitrary epoch (typically boot time)
-- **Use when**: Measuring elapsed time, implementing timeouts, rate limiting
-- **Best for**: General-purpose timing where precision beyond milliseconds is not critical
-
-High-Resolution Steady Time (``high_res_steady_time``)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Purpose**: High-precision monotonic time for precise timing applications
-- **Characteristics**:
-  - Highest available timing resolution (nanosecond on modern systems)
-  - May have higher overhead than standard steady clock
-  - Platform-dependent actual resolution
-- **Use when**: Precise performance measurements, sub-millisecond timing, real-time control
-- **Trade-off**: Higher precision may cost more CPU cycles per call
-
 Code Structure
 --------------
 
@@ -201,37 +163,6 @@ All examples use the same mocking approach:
 
    Tests using ``ScopedClockOverride`` must declare ``tags = ["exclusive", "unit"]``
    in their Bazel BUILD file to prevent parallel execution conflicts.
-
-When to Use Each Example
-------------------------
-
-Choose the appropriate clock type based on your application needs:
-
-.. list-table::
-   :header-rows: 1
-   :widths: 25 35 40
-
-   * - Use Case
-     - Recommended Clock
-     - Example
-   * - User-visible timestamps
-     - System Time
-     - Log file entries, UI clock displays
-   * - Duration measurement
-     - Steady Time
-     - Function execution time, timeout implementation
-   * - High-precision timing
-     - High-Res Steady Time
-     - Performance profiling, real-time control loops
-   * - Rate limiting
-     - Steady Time
-     - Request throttling, periodic tasks
-   * - Scheduling
-     - System Time
-     - Calendar-based events, cron-like scheduling
-
-The examples provide a solid foundation that can be extended with additional features
-like configuration, multiple output formats, or integration with larger applications.
 
 Bazel Build Setup
 -----------------
