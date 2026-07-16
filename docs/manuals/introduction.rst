@@ -22,8 +22,6 @@ The S-CORE ``time`` module provides a robust, high-precision time base for appli
 .. uml:: ../features/time_slave/_assets/timeslave_deployment.puml
    :alt: Deployment Diagram
 
-   The deployment view shows the key components and their interactions.
-
 Component Overview
 ------------------
 
