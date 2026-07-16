@@ -87,7 +87,7 @@ Add to your `MODULE.bazel`:
 bazel_dep(name = "score_time", version = "x.x.x")
 ```
 
-Check available versions in the [S-CORE Bazel Registry](https://github.com/eclipse-score/bazel_registry/tree/main/modules/score_time).
+Check available versions in the [S-CORE Bazel Registry](https://eclipse-score.github.io/bazel_registry_ui/modules/score_time).
 
 ### Using Unreleased Versions
 
