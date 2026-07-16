@@ -32,12 +32,8 @@ This section contains all user-facing manuals for the sCore ``time`` module, com
    integration_guide
    troubleshooting_guide
 
-..
-.. The following toctree is for the examples manual. It is commented out
-.. temporarily until the corresponding files are checked in.
-..
-.. .. toctree::
-..    :maxdepth: 2
-..    :caption: Examples:
-..
-..    examples/index
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples:
+
+   examples/index
