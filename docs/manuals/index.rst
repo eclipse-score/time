@@ -12,17 +12,18 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-sCore::time User Manual
-=======================
+.. _manuals_main:
 
-This manual describes the architecture, usage, and configuration of the sCore ``time`` module.
+Manuals
+=======
+
+This section contains all user-facing manuals for the sCore ``time`` module, combining the main User Manual with all relevant examples.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Chapters:
+   :caption: User Manual:
 
    introduction
-   api_description/choosing_a_clock
    api_description/api_usage
    api_description/lifecycle
    api_description/testing_guide
@@ -30,3 +31,13 @@ This manual describes the architecture, usage, and configuration of the sCore ``
    config/configuration_guide
    integration_guide
    troubleshooting_guide
+
+..
+.. The following toctree is for the examples manual. It is commented out
+.. temporarily until the corresponding files are checked in.
+..
+.. .. toctree::
+..    :maxdepth: 2
+..    :caption: Examples:
+..
+..    examples/index

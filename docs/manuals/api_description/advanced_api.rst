@@ -12,7 +12,7 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _manual_time_advanced_api
+.. _manual_time_advanced_api:
 
 Advanced API Usage: Subscribing to PTP Protocol Events
 ======================================================

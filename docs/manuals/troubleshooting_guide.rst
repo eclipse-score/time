@@ -12,13 +12,13 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _manual_time_troubleshooting
+.. _manual_time_troubleshooting:
 
 *********************
 Troubleshooting Guide
 *********************
 
-This guide provides solutions to common problems encountered when using or integrating the sCore ``time`` module.
+This guide provides solutions to common problems encountered when using or integrating the S-CORE ``time`` module.
 
 Clock is Not Reliable or Not Available
 ======================================

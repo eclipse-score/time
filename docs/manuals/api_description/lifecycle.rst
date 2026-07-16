@@ -12,7 +12,7 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _manual_time_lifecycle
+.. _manual_time_lifecycle:
 
 Clock Lifecycle Management
 ==========================

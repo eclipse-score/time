@@ -17,7 +17,7 @@
 Configuration Guide
 ===================
 
-This guide describes the configuration of the sCore ``time`` module components.
+This guide describes the configuration of the S-CORE ``time`` module components.
 
 TimeSlave Daemon (`time_slave`)
 ===============================

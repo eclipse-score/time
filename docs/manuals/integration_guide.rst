@@ -23,7 +23,7 @@ This guide is intended for system integrators who are responsible for deploying 
 System Services
 ===============
 
-The sCore ``time`` module consists of two essential system services that must be running for the client library to function:
+The S-CORE ``time`` module consists of two essential system services that must be running for the client library to function:
 
 1.  ``time_slave``: The PTP slave process that communicates with the network master clock.
 2.  ``time_daemon``: The daemon that processes the data from the ``time_slave`` and provides it to client applications.

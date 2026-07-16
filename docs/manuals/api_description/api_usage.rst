@@ -12,7 +12,7 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _manual_time_api_usage
+.. _manual_time_api_usage:
 
 API Usage: Accessing Vehicle Time
 =================================

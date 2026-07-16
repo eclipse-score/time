@@ -12,16 +12,15 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _manual_time_introduction
+.. _manual_time_introduction:
 
 Architecture and Components
 ===========================
 
-The sCore ``time`` module provides a robust, high-precision time base for applications on an ECU, synchronized to a network-wide PTP (Precision Time Protocol) Grandmaster Clock. The architecture is split into two main processes, the **TimeSlave** and the **TimeDaemon**, which communicate via a highly efficient shared memory channel.
+The S-CORE ``time`` module provides a robust, high-precision time base for applications on an ECU, synchronized to a network-wide PTP (Precision Time Protocol) Grandmaster Clock. The architecture is split into two main processes, the **TimeSlave** and the **TimeDaemon**, which communicate via a highly efficient shared memory channel.
 
-.. figure:: /docs/features/time_slave/_assets/timeslave_deployment.png
-   :align: center
-   :alt: TimeSlave Deployment View
+.. uml:: ../features/time_slave/_assets/timeslave_deployment.puml
+   :alt: Deployment Diagram
 
    The deployment view shows the key components and their interactions.
 
@@ -44,7 +43,7 @@ Component Overview
 
 **3. TimeDaemon Process**
 
-*   The ``TimeDaemon`` is responsible for quality assurance and providing the synchronized time to all local applications on the ECU. It acts as the server for the sCore time service.
+*   The ``TimeDaemon`` is responsible for quality assurance and providing the synchronized time to all local applications on the ECU. It acts as the server for the S-CORE time service.
 *   **GptpIpcReceiver**: Reads the raw data from the shared memory segment published by the ``TimeSlave``.
 *   **ShmPTPEngine**: The core of the TimeDaemon. It wraps the ``GptpIpcReceiver``, processes the raw ``GptpIpcData``, performs quality checks and plausibility assessments, and converts it into the final, high-level ``PtpTimeInfo`` format that client applications will consume.
 
@@ -67,7 +66,7 @@ Data Flow Summary
 Choosing the Right Clock
 ========================
 
-The sCore ``time`` module provides several clock types, each designed for a specific use case. Understanding their differences is crucial for writing robust and correct applications.
+The S-CORE ``time`` module provides several clock types, each designed for a specific use case. Understanding their differences is crucial for writing robust and correct applications.
 
 In general, you should **always prefer ``VehicleTime``** unless you have a specific reason to measure a local time interval or need a simple wall-clock timestamp for purely informational purposes.
 
