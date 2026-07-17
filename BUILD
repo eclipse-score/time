@@ -31,12 +31,12 @@ copyright_checker(
     name = "copyright",
     srcs = [
         ".github",
-        "//:docs_sources",
         "examples",
         "score",
         "tools",
         "//:BUILD",
         "//:MODULE.bazel",
+        "//:docs_sources",
     ],
     config = "@score_tooling//cr_checker/resources:config",
     template = "@score_tooling//cr_checker/resources:templates",
