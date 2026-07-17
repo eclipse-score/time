@@ -31,7 +31,7 @@ copyright_checker(
     name = "copyright",
     srcs = [
         ".github",
-        "docs",
+        "//:docs_sources",
         "examples",
         "score",
         "tools",
