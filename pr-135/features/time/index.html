@@ -582,7 +582,7 @@ timestamp is needed — not for measuring elapsed time or computing timeouts.</p
 <section id="architecture">
 <h2><a class="toc-backref" href="#id11" role="doc-backlink">Architecture</a><a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-b4e474114cacb21ea121ecfb36b760877c849ea4.svg" type="image/svg+xml" style="width:2019px;height:893px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-14ec1a289c5024237165a7e2aee2908598683c42.svg" type="image/svg+xml" style="width:2019px;height:893px;background:#FFFFFF;"></object></p>
 </div><p>The library has three layers:</p>
 <ul class="simple">
 <li><p><strong>Public headers</strong> under <code class="docutils literal notranslate"><span class="pre">score/time/&lt;domain&gt;/</span></code> — tag structs and callback types that
@@ -600,7 +600,7 @@ production implementations.  <em>Clients must never include anything from a</em>
 <h3><a class="toc-backref" href="#id12" role="doc-backlink">Class overview</a><a class="headerlink" href="#class-overview" title="Link to this heading">#</a></h3>
 <div style="overflow-x: auto; max-width: 100%;"><figure class="align-center">
 <p class="plantuml">
-<object data="../../_images/plantuml-c866dc8b94b2e4eaf088da6b84044977d7c04011.svg" type="image/svg+xml" style="width:1669px;height:1240px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-5120809d63e86c0dd93b0d5b74dbd721d46b229d.svg" type="image/svg+xml" style="width:1669px;height:1240px;background:#FFFFFF;"></object></p>
 </figure>
 </div></section>
 <section id="core-types">
@@ -658,7 +658,7 @@ unlocks <code class="docutils literal notranslate"><span class="pre">Subscribe</
 <code class="docutils literal notranslate"><span class="pre">Now()</span></code> returns a single immutable <code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> — the timepoint and its
 <code class="docutils literal notranslate"><span class="pre">VehicleTimeStatus</span></code> are always fetched together, with no separate status call needed.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-f5abf96af0a2a34f61634cd85fc16e66c80d506b.svg" type="image/svg+xml" style="width:1287px;height:918px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-f36ec6501280493190c3c432547feccf738c8f3a.svg" type="image/svg+xml" style="width:1287px;height:918px;background:#FFFFFF;"></object></p>
 </div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">MyComponent::CheckTime</span><span class="p">()</span>
@@ -726,7 +726,7 @@ semantics.  <code class="docutils literal notranslate"><span class="pre">ClockSt
 non-blocking <code class="docutils literal notranslate"><span class="pre">IsAvailable()</span></code> probe and the blocking <code class="docutils literal notranslate"><span class="pre">WaitUntilAvailable()</span></code> are useful
 when <code class="docutils literal notranslate"><span class="pre">Init()</span></code> is retried on a background thread.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-a751499ca6c60f4463bff77520bebfea83db7b15.svg" type="image/svg+xml" style="width:960px;height:1000px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-23cd53b2c679f58ffd6c88636e806bd7a9c5afb1.svg" type="image/svg+xml" style="width:960px;height:1000px;background:#FFFFFF;"></object></p>
 </div><p><strong>Simple startup (same thread):</strong></p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
 
@@ -780,7 +780,7 @@ carries the offset, rate correction, and raw timestamps computed by the TimeSlav
 completes; carries the measured peer delay and associated timestamps.</p></li>
 </ul>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-0daa5aa75c9844545288a18960c4c3f436b23a23.svg" type="image/svg+xml" style="width:1642px;height:1491px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-7a6364db7f757e0933c199992db3c56769fa6f74.svg" type="image/svg+xml" style="width:1642px;height:1491px;background:#FFFFFF;"></object></p>
 </div><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Both PTP data callbacks (<code class="docutils literal notranslate"><span class="pre">TimeSlaveSyncData</span></code> and <code class="docutils literal notranslate"><span class="pre">PDelayMeasurementData</span></code>) are
@@ -830,7 +830,7 @@ but pushed proactively on every change rather than polled per call.</p>
 registration, and subsequently only when the flag set changes.  Rate deviation is
 excluded from the comparison.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-cf135e6c44ceef065f42aa2eeae2e60134bffdf1.svg" type="image/svg+xml" style="width:887px;height:964px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-48995037c64bc00b71ca4de896855ff3e43a354b.svg" type="image/svg+xml" style="width:887px;height:964px;background:#FFFFFF;"></object></p>
 </div><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">VehicleTimeStatus</span></code> callback is <strong>not yet delivered</strong>.  Calling
@@ -876,7 +876,7 @@ thread-safe.</p>
 bits.  For the higher-level reliability predicates (<code class="docutils literal notranslate"><span class="pre">IsReliable()</span></code>,
 <code class="docutils literal notranslate"><span class="pre">HasBeenSynchronized()</span></code>), see the status flag table and method descriptions in VT1.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-79aa67cb531b00a535e42b1f7a4005636a40d316.svg" type="image/svg+xml" style="width:745px;height:527px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-9c7391651a853bf099e49b3fbae003ed9fdbff90.svg" type="image/svg+xml" style="width:745px;height:527px;background:#FFFFFF;"></object></p>
 </div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;map&gt;</span>
 
@@ -913,7 +913,7 @@ bits.  For the higher-level reliability predicates (<code class="docutils litera
 directly — the same <code class="docutils literal notranslate"><span class="pre">Now()</span></code> snapshot pattern used for all clock domains, with no status
 check required.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-e1788330a13482b6fcedf580f8d1ca4b31a92178.svg" type="image/svg+xml" style="width:1491px;height:856px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-2d425bac3428654ab4bc7e927b2c2a43999184b1.svg" type="image/svg+xml" style="width:1491px;height:856px;background:#FFFFFF;"></object></p>
 </div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/high_res_steady_time/src/high_res_steady_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;chrono&gt;</span>
 
@@ -939,7 +939,7 @@ check required.</p>
 <p>Measure elapsed time between two points, or derive a deadline, using a clock that is
 guaranteed never to go backward regardless of external time adjustments.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-c3fd4d77d9f4acecc28dfe66f2df05c3bc4323dc.svg" type="image/svg+xml" style="width:1314px;height:675px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-2b0b513e3c310da3967e5a9072f785e1d517560c.svg" type="image/svg+xml" style="width:1314px;height:675px;background:#FFFFFF;"></object></p>
 </div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/steady_time/src/steady_clock.h&quot;</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">MyComponent::MeasureElapsed</span><span class="p">()</span>
@@ -963,7 +963,7 @@ guaranteed never to go backward regardless of external time adjustments.</p>
 time matters.  Do not use <code class="docutils literal notranslate"><span class="pre">SystemClock</span></code> for elapsed time or timeouts — the timepoint
 may jump.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-850ed7cfe87213f9928f3d54035f66f0ffa1f20d.svg" type="image/svg+xml" style="width:1312px;height:690px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-d9496782e883f9ca4dde3f977d9e88940b43ac6f.svg" type="image/svg+xml" style="width:1312px;height:690px;background:#FFFFFF;"></object></p>
 </div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/system_time/src/system_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;chrono&gt;</span>
 
@@ -1004,7 +1004,7 @@ No global state is touched — safe for parallel tests.</p></td>
 <section id="t1-scopedclockoverride-scope-bound-override">
 <h4><a class="toc-backref" href="#id33" role="doc-backlink">T1 — ScopedClockOverride (scope-bound override)</a><a class="headerlink" href="#t1-scopedclockoverride-scope-bound-override" title="Link to this heading">#</a></h4>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-029282fc8d9a2efdef741e4f685ecad16a7179aa.svg" type="image/svg+xml" style="width:1107px;height:1061px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-9ffe4f1a9cbab4b54dfa1268074fadd6131d373f.svg" type="image/svg+xml" style="width:1107px;height:1061px;background:#FFFFFF;"></object></p>
 </div><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p><code class="docutils literal notranslate"><span class="pre">ScopedClockOverride</span></code> modifies a <strong>process-wide singleton</strong>. Any <code class="docutils literal notranslate"><span class="pre">cc_test</span></code> target that
@@ -1042,7 +1042,7 @@ requires no special tag.</p>
 <section id="t2-clocktestfactory-constructor-injection">
 <h4><a class="toc-backref" href="#id34" role="doc-backlink">T2 — ClockTestFactory (constructor injection)</a><a class="headerlink" href="#t2-clocktestfactory-constructor-injection" title="Link to this heading">#</a></h4>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-f95c90cf59386aea93870bca395687ca22e470f3.svg" type="image/svg+xml" style="width:943px;height:805px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-23ea0c136c4fc0a74f1a2171fe08614fd32b9fde.svg" type="image/svg+xml" style="width:943px;height:805px;background:#FFFFFF;"></object></p>
 </div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock_backend_mock.h&quot;</span>
 
