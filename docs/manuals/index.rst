@@ -12,28 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _manuals_main:
-
 Manuals
-=======
-
-This section contains all user-facing manuals for the sCore ``time`` module, combining the main User Manual with all relevant examples.
+#######
 
 .. toctree::
-   :maxdepth: 2
-   :caption: User Manual:
+   :titlesonly:
 
-   introduction
-   api_description/api_usage
-   api_description/lifecycle
-   api_description/testing_guide
-   api_description/advanced_api
-   config/configuration_guide
-   integration_guide
-   troubleshooting_guide
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Examples:
-
-   examples/index
+   user_manual

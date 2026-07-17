@@ -52,7 +52,6 @@ Your application calls ``clock.Now()``, but ``snapshot.Status().IsReliable()`` a
 The `time_slave` process fails to start with an error message similar to "Permission denied", "Operation not permitted", or a socket creation error.
 
 **Cause & Solution:**
-This typically indicates that the ``time_slave`` executable is missing the required Linux Capabilities to run. Please refer to the section on **Operating System Privileges** in the :ref:`Integration Guide <manual_time_integration>` for detailed setup instructions.
 
 Understanding Log Messages
 ==========================
