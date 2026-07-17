@@ -12,20 +12,15 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _manual_time_configuration:
+.. _time_slave_configuration:
 
-Configuration Guide
-===================
-
-This guide describes the configuration of the S-CORE ``time`` module components.
-
-TimeSlave Daemon (`time_slave`)
-===============================
+TimeSlave Configuration
+=======================
 
 The behavior of the ``TimeSlave`` is controlled by the ``GptpEngineOptions`` structure. Currently, only a subset of these options can be overridden at runtime via command-line arguments. For all other options, the hard-coded default values are used.
 
 Command-Line Arguments
-----------------------
+-----------------------
 
 The following argument is available to configure the ``TimeSlave`` at runtime:
 
@@ -42,7 +37,7 @@ The following argument is available to configure the ``TimeSlave`` at runtime:
 
 
 Default Configuration (`GptpEngineOptions`)
--------------------------------------------
+--------------------------------------------
 
 The following table lists all available options and their default values as defined in the source code. Currently, only ``iface_name`` can be changed without recompiling the application.
 
@@ -86,9 +81,3 @@ Example Invocation
 
 .. attention::
    The command-line parsing is currently incomplete. To change parameters other than the interface name, you must modify the default values in the ``GptpEngineOptions`` structure and recompile the application. A comprehensive configuration mechanism (e.g., via a JSON file) is planned for future versions.
-
-
-TimeDaemon (`time_daemon`) & Client Applications
-================================================
-
-The ``TimeDaemon`` process and all client applications using the ``score::time`` library currently operate **without any external configuration**. They rely on the default, built-in settings for IPC communication.

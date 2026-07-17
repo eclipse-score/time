@@ -24,7 +24,7 @@ docs(
     data = [
         "@score_process//:needs_json",
     ],
-    source_dir = "docs",
+    source_dir = ".",
 )
 
 copyright_checker(

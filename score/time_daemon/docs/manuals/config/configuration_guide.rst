@@ -12,10 +12,19 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-time_slave Component
-====================
+.. _time_daemon_configuration:
 
-.. toctree::
-   :maxdepth: 1
+TimeDaemon Configuration
+=========================
 
-   component_classification
+The ``TimeDaemon`` process currently operates **without any external configuration**. It relies on default, built-in settings for IPC communication.
+
+Shared Memory Configuration
+----------------------------
+
+The daemon reads from the shared memory segment published by ``TimeSlave``:
+
+* **Shared memory path**: ``/gptp_ptp_info``
+* **IPC mechanism**: POSIX shared memory with seqlock protection
+
+No runtime configuration options are exposed at this time. All settings are compiled into the binary.

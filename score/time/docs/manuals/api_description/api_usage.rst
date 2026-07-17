@@ -70,19 +70,6 @@ This method involves actively requesting the current time from the ``score::time
        }
    }
 
-Workflow Explanation
---------------------
-
-The sequence diagram "VT1 — VehicleTime: Time Polling with Status Check" illustrates the following steps:
-
-1.  **Get Instance**: The application first obtains a singleton instance of the ``VehicleClock``. This is a lightweight operation and the clock handle can be stored and reused.
-2.  **Now()**: The application calls the ``Now()`` method on the clock instance. This triggers an IPC call to the ``TimeDaemon`` to fetch the latest synchronized time data.
-3.  **Return Snapshot**: The framework returns a ``ClockSnapshot`` object. This object contains not just the timepoint, but also a crucial ``VehicleTimeStatus`` payload.
-4.  **Status Check**: The application **must** call the ``Status().IsReliable()`` method on the snapshot. This boolean flag consolidates all underlying quality metrics (e.g., is PTP master available? is shared memory data fresh? has the time passed plausibility checks?).
-5.  **Conditional Logic**:
-    *   If ``IsReliable()`` returns ``true``, the timepoint is valid and can be safely used by the application logic.
-    *   If ``IsReliable()`` returns ``false``, the application must discard the timepoint value and handle the failure case (e.g., by logging a warning and retrying the operation after a short delay).
-
 .. attention::
 
    Never use the ``TimePoint`` from a ``ClockSnapshot`` without first verifying that ``Status().IsReliable()`` is true. Using an unreliable timepoint can lead to incorrect or inconsistent behavior in safety-critical applications.
