@@ -476,6 +476,16 @@ Your application calls <code class="docutils literal notranslate"><span class="p
 <p><strong>Symptom:</strong>
 The <cite>time_slave</cite> process fails to start with an error message similar to “Permission denied”, “Operation not permitted”, or a socket creation error.</p>
 <p><strong>Cause &amp; Solution:</strong></p>
+<p>The <cite>time_slave</cite> requires elevated network privileges to open a raw PTP socket on the specified network interface.</p>
+<ul>
+<li><p><strong>On Linux:</strong> Grant the <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code> capability to the <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> binary instead of running it as root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>setcap<span class="w"> </span>cap_net_raw+ep<span class="w"> </span>/path/to/time_slave
+</pre></div>
+</div>
+</li>
+<li><p><strong>On QNX:</strong> The <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> opens <code class="docutils literal notranslate"><span class="pre">/dev/bpf</span></code> (Berkeley Packet Filter device) to capture raw PTP frames. Ensure the process user has read/write permission on <code class="docutils literal notranslate"><span class="pre">/dev/bpf</span></code>. If a PHC device is configured (<code class="docutils literal notranslate"><span class="pre">phc_device</span></code> option), the process also needs read/write access to that device node.</p></li>
+<li><p><strong>Shared memory access:</strong> If the error refers to <code class="docutils literal notranslate"><span class="pre">/gptp_ptp_info</span></code>, verify that the user running <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> has read/write permission on the shared memory path (<code class="docutils literal notranslate"><span class="pre">/dev/shm/</span></code> on Linux). Adjust the file permissions or run both <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> and <code class="docutils literal notranslate"><span class="pre">time_daemon</span></code> under the same user/group.</p></li>
+</ul>
 </section>
 <section id="understanding-log-messages">
 <h2>Understanding Log Messages<a class="headerlink" href="#understanding-log-messages" title="Link to this heading">#</a></h2>

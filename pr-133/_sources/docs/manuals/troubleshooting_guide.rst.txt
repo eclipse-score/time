@@ -53,6 +53,17 @@ The `time_slave` process fails to start with an error message similar to "Permis
 
 **Cause & Solution:**
 
+The `time_slave` requires elevated network privileges to open a raw PTP socket on the specified network interface.
+
+*   **On Linux:** Grant the ``CAP_NET_RAW`` capability to the ``time_slave`` binary instead of running it as root:
+
+    .. code-block:: bash
+
+        sudo setcap cap_net_raw+ep /path/to/time_slave
+
+*   **On QNX:** The ``time_slave`` opens ``/dev/bpf`` (Berkeley Packet Filter device) to capture raw PTP frames. Ensure the process user has read/write permission on ``/dev/bpf``. If a PHC device is configured (``phc_device`` option), the process also needs read/write access to that device node.
+*   **Shared memory access:** If the error refers to ``/gptp_ptp_info``, verify that the user running ``time_slave`` has read/write permission on the shared memory path (``/dev/shm/`` on Linux). Adjust the file permissions or run both ``time_slave`` and ``time_daemon`` under the same user/group.
+
 Understanding Log Messages
 ==========================
 
