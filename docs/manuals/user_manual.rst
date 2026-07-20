@@ -41,6 +41,8 @@ This module manual covers module-level integration, deployment, and troubleshoot
 
 For build and test of the module itself, please refer to the main documentation.
 
+.. _component_manuals:
+
 Component Manuals
 -----------------
 
@@ -107,8 +109,6 @@ Integrating with Your Project
       )
 
 3. Include headers and compile your code
-
-.. For detailed API usage and examples, refer to the :doc:`/score/time/docs/manuals/user_manual`.
 
 System Services Deployment
 ---------------------------
