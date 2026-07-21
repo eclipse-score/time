@@ -65,7 +65,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     cookies = {c.name: c.value for c in list(cookie_jar)}
-    if not "myQNX" in cookies:
+    if "myQNX" not in cookies:
         eprint("Failed to get myQNX cookie from login page")
         sys.exit(1)
 

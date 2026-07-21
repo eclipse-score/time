@@ -1,0 +1,7 @@
+self-hosted-runner:
+  labels: []
+
+paths:
+  .github/workflows/**/*.{yml,yaml}:
+    ignore:
+      - 'file "/bin/sh" does not exist.*entrypoint'
