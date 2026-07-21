@@ -83,6 +83,14 @@ artifacts of the module.
 bazel test //tests/...
 ```
 
+### 4️⃣ Run pre-commit Checks
+
+```sh
+pre-commit run -a
+```
+
+This runs all configured pre-commit hooks (formatting, linting, etc.) against all files in the repository.
+
 ---
 
 ## 🛠 Tools & Linters
