@@ -51,5 +51,6 @@ styles/
 
 # Python
 .venv
+.venv_docs
 __pycache__/
 /.coverage

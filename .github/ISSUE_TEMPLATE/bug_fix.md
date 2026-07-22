@@ -22,5 +22,3 @@ assignees: ''
 
 > [!IMPORTANT]
 > Make sure to link this issue with the PR for your bugfix.
-
-
