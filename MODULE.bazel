@@ -156,4 +156,4 @@ python.toolchain(
 bazel_dep(name = "score_tools", version = "0.0.1", dev_dependency = True)
 
 # Provide the tools from the devcontainer to Bazel
-bazel_dep(name = "score_devcontainer", version = "1.8.0")
+bazel_dep(name = "score_devcontainer", version = "1.8.0", dev_dependency = True)
