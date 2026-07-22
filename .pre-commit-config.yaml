@@ -70,7 +70,7 @@ repos:
     hooks:
       - id: BasedPyright
         name: BasedPyright
-        entry: bash -c '. .venv_docs/bin/activate && bazel run //:ide_support && .venv_docs/bin/python3 -m basedpyright && deactivate'
+        entry: bash -c 'bazel run //:ide_support && .venv_docs/bin/python3 -m basedpyright'
         language: system
         pass_filenames: false
 
