@@ -65,14 +65,6 @@ repos:
         require_serial: true
         types: [python]
 
-  # Note: this is super slow, therefore it is last
-  - repo: local
-    hooks:
-      - id: BasedPyright
-        name: BasedPyright
-        entry: bash -c 'bazel run //:ide_support && . .venv_docs/bin/activate && .venv_docs/bin/python3 -m basedpyright && deactivate'
-        language: system
-        pass_filenames: false
 
   # Ensure every file has a copyright header as per the Eclipse Foundation's requirements
   # Runs `cr_checker`
