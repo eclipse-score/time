@@ -17,14 +17,13 @@ High-level functionality provided by the Time module:
   - **SteadyTime**: Monotonic time for duration measurements and timeouts
   - **HighResSteadyTime**: High-precision monotonic time for precise timing applications
   - **VehicleTime**: PTP-synchronized time for distributed automotive applications requiring initialization
-- **Unified API**: Type-safe `Clock<Tag>::GetInstance().Now()` returns `ClockSnapshot<TimePoint, Status>` with atomic time + metadata reads
-- **Event Subscription**: `Subscribe<EventType>()` / `Unsubscribe<EventType>()` for status changes and PTP protocol data
+  - Clock domains support nanosecond precision and compile-time domain selection preventing cross-domain timing errors
+  - Mock backends and `ScopedClockOverride` available for testing
+- **Clock API**: Type-safe `Clock<Tag>::GetInstance().Now()` returns time and status information
+- **Event Subscription**: `Subscribe<EventType>()` / `Unsubscribe<EventType>()` for status changes and PTP timebase data
 - **Time Infrastructure**
-  - **TimeDaemon**: Plugin-based time distribution daemon with IPC message broker
-  - **TimeSlave**: PTP protocol implementation with offset calculation and rate adjustment
-- **Test Utilities**: Mock backends and `ScopedClockOverride` for comprehensive testing
-
-All clock domains support nanosecond precision and compile-time domain selection preventing cross-domain timing errors.
+  - **TimeDaemon**: Standalone daemon that retrieves synchronized time from TimeSlave, validates timepoints, sets synchronization status, and distributes VehicleTime to applications via shared memory
+  - **TimeSlave**: gPTP (IEEE 802.1AS) slave endpoint that implements network synchronization protocol, calculates time offset, and publishes synchronized time data to shared memory
 
 ---
 
@@ -64,13 +63,6 @@ All clock domains support nanosecond precision and compile-time domain selection
 | `//score/time/vehicle_time:vehicle_time_mock` | Mock backend for VehicleTime testing |
 | `//score/time/vehicle_time:interface` | Header-only interface (no backend) |
 
-### Time Infrastructure
-
-| Target | Purpose |
-|--------|---------|
-| `//score/time_daemon:time_daemon` | TimeDaemon binary for time distribution |
-| `//score/time_slave:time_slave` | TimeSlave binary for PTP synchronization |
-
 ### Test Utilities
 
 | Target | Purpose |
@@ -103,6 +95,24 @@ git_override(
 
 Replace the `commit` value with the specific git hash you want to use.
 
+### Executable Artifacts
+
+For deployment, use these executable targets:
+
+Available binaries:
+
+- `@score_time//score/time_daemon:time_daemon` - TimeDaemon executable for time distribution
+- `@score_time//score/time_slave:time_slave` - TimeSlave executable for PTP synchronization
+
+Run artifacts directly:
+
+```bash
+bazel run @score_time//score/time_daemon:time_daemon
+bazel run @score_time//score/time_slave:time_slave
+```
+
+Do not add these to `deps` as libraries. Use them as runtime artifacts for your deployment system.
+
 ---
 
 ## 📖 Documentation
@@ -122,14 +132,14 @@ bazel run //:docs
 
 This section contains information on how to build and use the Time module.
 
-### 1️⃣ Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/eclipse-score/time.git
 cd time
 ```
 
-### 2️⃣ Prerequisites
+### Prerequisites
 
 - **C++ Compiler**: gcc/clang with C++17 support
 - **Build System**: Bazel 8+ (managed via Bazelisk)
@@ -137,42 +147,42 @@ cd time
 - **Dependencies**: S-CORE Baselibs, Google Test
 - **For QNX targets**: QNX 8.0 SDP
 
-### 3️⃣ Development Environment
+### Development Environment
 
 Follow the [S-CORE Development Environment Guide](https://eclipse-score.github.io/score/main/contribute/development/development_environment.html) for Linux host setup requirements.
 
-### 4️⃣ Building the Project
+### Building the Project
 
 Build all components for **Linux x86_64** by running:
 
 ```bash
-bazel build //...
+bazel build --config=time-x86_64-linux //score/... //examples/...
 ```
 
 Run all tests:
 
 ```bash
-bazel test //...
+bazel test --config=time-x86_64-linux //score/... //examples/...
 ```
 
 #### Other Platforms
 
 **Linux AArch64**:
 ```bash
-bazel build --config=time-arm64-linux //...
-bazel test --config=time-arm64-linux //...
+bazel build --config=time-arm64-linux //score/... //examples/...
+bazel test --config=time-arm64-linux //score/... //examples/...
 ```
 
 **QNX x86_64**:
 ```bash
-bazel build --config=time-x86_64-qnx //...
-bazel test --config=time-x86_64-qnx //...
+bazel build --config=time-x86_64-qnx //score/... //examples/...
+bazel test --config=time-x86_64-qnx //score/... //examples/...
 ```
 
 **QNX AArch64**:
 ```bash
-bazel build --config=time-aarch64-qnx //...
-bazel test --config=time-aarch64-qnx //...
+bazel build --config=time-aarch64-qnx //score/... //examples/...
+bazel test --config=time-aarch64-qnx //score/... //examples/...
 ```
 
 #### Testing with Sanitizers
@@ -180,14 +190,21 @@ bazel test --config=time-aarch64-qnx //...
 To test with AddressSanitizer, UBSan, and LeakSanitizer enabled:
 
 ```bash
-bazel test --config=time-x86_64-linux --config=asan_ubsan_lsan --build_tests_only //...
+bazel test --config=time-x86_64-linux --config=asan_ubsan_lsan --build_tests_only //score/... //examples/...
 ```
 
 ---
 
 ## 💡 Examples
 
-Working examples demonstrating clock usage patterns, testing approaches, and integration techniques. See [examples/](examples/) for complete usage examples.
+Working examples demonstrating clock usage patterns, testing approaches, and integration techniques are available in the [examples/](examples/) directory:
+
+- **examples/time/system_time** — SystemTime usage for wall-clock timestamps
+- **examples/time/steady_time** — SteadyTime usage for duration measurements
+- **examples/time/high_res_steady_time** — HighResSteadyTime usage for high-precision timing
+- **examples/time/vehicle_time** — VehicleTime usage with PTP synchronization
+
+Each example includes a handler demonstrating the Clock API and corresponding unit tests.
 
 ---
 
@@ -197,8 +214,8 @@ Working examples demonstrating clock usage patterns, testing approaches, and int
 ├── score/
 │   ├── time/                    # Clock domains (SystemTime, SteadyTime, etc.)
 │   ├── time_daemon/             # Time distribution daemon
-│   ├── time_slave/              # PTP synchronization implementation
-│   └── ts_client/               # Time status utilities (internal)
+│   ├── time_slave/              # PTP timebase implementation
+│   └── ts_client/               # Library for time slave communication
 ├── examples/                    # Usage examples and patterns
 ├── docs/                        # Module documentation
 └── tools/                       # Build and development utilities
