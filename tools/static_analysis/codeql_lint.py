@@ -11,12 +11,12 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 import argparse
-import os
-import tempfile
 import json
-import subprocess
-import datetime
+import os
 import shutil
+import subprocess
+import tempfile
+import datetime
 
 
 TMP_PATH_FOR_DATABASES = "/var/tmp/codeql_databases"
@@ -81,7 +81,8 @@ def _find_compiled_pack_root():
             f"runfile '{COMPILED_PACK_RUNFILE}'). "
             "Ensure the @codeql_coding_standards_compiled//:pack dependency is "
             "in this target's `data`. Refusing to fall back to any other query "
-            "source.")
+            "source."
+        )
     # anchor = <pack_root>/qlpack.yml
     pack_root = os.path.dirname(anchor)
 
@@ -90,7 +91,8 @@ def _find_compiled_pack_root():
         raise RuntimeError(
             "Vendored pre-compiled MISRA C++ query pack is incomplete: default "
             f"suite '{suite_path}' is missing. Refusing to fall back to any "
-            "other query source.")
+            "other query source."
+        )
     return pack_root
 
 
@@ -115,16 +117,80 @@ def _read_pack_identity(pack_root):
                 version = stripped.split(":", 1)[1].strip().strip("'\"")
     if not name or not version:
         raise RuntimeError(
-            f"Could not read pack name/version from {pack_root}/qlpack.yml")
+            f"Could not read pack name/version from {pack_root}/qlpack.yml"
+        )
     return name, version
 
 
+def _resolve_production_targets(target: str, source_root: str) -> str:
+    """Return explicit production target labels for use in bazel build.
+
+    Uses ``bazel cquery`` with ``--config=codeql`` to evaluate the target
+    expression against the same platform and toolchain configuration used
+    for the traced build. This means:
+    - Targets incompatible with the current platform (e.g. QNX-only targets
+      when building on Linux) are automatically excluded.
+    - Targets with ``testonly = True`` are excluded by the ``except`` clause.
+
+    Returning explicit labels rather than a wildcard-minus-negations spec
+    avoids the need for a ``--`` end-of-options separator.
+    """
+    patterns = target.split()
+    union_expr = " union ".join(patterns)
+    cquery_expr = f"({union_expr}) except attr(testonly, 1, {union_expr})"
+    print(" Querying production targets via cquery ...")
+    result = subprocess.run(
+        [
+            "bazel",
+            "cquery",
+            "--config=codeql",
+            "--keep_going",
+            "--output=label",
+            cquery_expr,
+        ],
+        capture_output=True,
+        text=True,
+        cwd=source_root,
+    )
+    # cquery --output=label appends " (config_hash)" when a target is
+    # configured in multiple configurations. Strip the suffix and deduplicate
+    # before returning the label list.
+    seen = set()
+    labels = []
+    for line in result.stdout.splitlines():
+        line = line.strip()
+        if not line.startswith("//"):
+            continue
+        if " (" in line:
+            line = line[: line.rfind(" (")]
+        if line not in seen:
+            seen.add(line)
+            labels.append(line)
+    if not labels:
+        raise RuntimeError(
+            f"cquery returned no production targets.\nstderr:\n{result.stderr}"
+        )
+    print(f" Found {len(labels)} production targets to build")
+    return " ".join(labels)
+
+
 def create_database(code_ql_path, config_path, target, source_root, database_path):
-    """Create the CodeQL database: init, build with tracing, finalize."""
+    """Create the CodeQL database: init, build with tracing, finalize.
+
+    Only production targets are compiled and traced. testonly targets and
+    platform-incompatible targets (e.g. QNX-only when building on Linux)
+    are excluded by _resolve_production_targets via cquery.
+    """
+    # Resolve production targets before initialising the database so the
+    # cquery runs in the normal (non-tracing) environment.
+    build_target_spec = _resolve_production_targets(target, source_root)
+
     subprocess.run(
         f"{code_ql_path} database init --overwrite --begin-tracing --language=cpp "
         f"--codescanning-config={config_path} --source-root={source_root} -- {database_path}",
-        shell=True, check=True)
+        shell=True,
+        check=True,
+    )
 
     env_file = os.path.join(database_path, "temp/tracingEnvironment/start-tracing.json")
     with open(env_file) as f:
@@ -134,16 +200,36 @@ def create_database(code_ql_path, config_path, target, source_root, database_pat
     # Process coding standards config
     subprocess.run(
         f"bazel run @codeql_coding_standards//:process_coding_standards_config -- --working-dir={source_root}",
-        shell=True, env=env, cwd=source_root, check=True)
+        shell=True,
+        env=env,
+        cwd=source_root,
+        check=True,
+    )
 
-    # Build with CodeQL tracing
-    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
-    bazel_cmd = f"bazel build --config=codeql --stamp --action_env=CODEQL_SEED_FORCE_RECOMPILE={timestamp}"
+    # Build production targets with CodeQL tracing.
+    # --skip_incompatible_explicit_targets: silently skips targets whose
+    # target_compatible_with constraints are not met (e.g. QNX-only targets
+    # when building on Linux) instead of failing loudly.
+    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+    bazel_cmd = (
+        f"bazel build --config=codeql --stamp --skip_incompatible_explicit_targets"
+        f" --action_env=CODEQL_SEED_FORCE_RECOMPILE={timestamp}"
+    )
     bazel_cmd += _get_action_env_extension(codeql_env)
-    subprocess.run(f"{bazel_cmd} {target}", shell=True, env=env, cwd=source_root, check=True)
+    subprocess.run(
+        f"{bazel_cmd} {build_target_spec}",
+        shell=True,
+        env=env,
+        cwd=source_root,
+        check=True,
+    )
 
     # Finalize database
-    subprocess.run(f"{code_ql_path} database finalize -j=0 -- {database_path}", shell=True, check=True)
+    subprocess.run(
+        f"{code_ql_path} database finalize -j=0 -- {database_path}",
+        shell=True,
+        check=True,
+    )
 
 
 def analyze_database(
@@ -156,7 +242,7 @@ def analyze_database(
     output_dir=None,
 ):
     """Run CodeQL analysis and generate MISRA C++ compliance reports."""
-    output_base = output_dir or _get_bazel_info(source_root).get('output_path')
+    output_base = output_dir or _get_bazel_info(source_root).get("output_path")
     os.makedirs(output_base, exist_ok=True)
 
     # Analyze against the pre-compiled MISRA C++ query pack published with the
@@ -189,14 +275,18 @@ def analyze_database(
         f"{code_ql_path} database analyze -j=0 {database_path}{query_arg} "
         f"{common_analyze_flags} "
         f"--format=sarifv2.1.0 --output={sarif_path}",
-        shell=True, check=True)
+        shell=True,
+        check=True,
+    )
 
     # Generate CSV results
     subprocess.run(
         f"{code_ql_path} database analyze -j=0 {database_path}{query_arg} "
         f"{common_analyze_flags} "
         f"--format=csv --output={csv_path}",
-        shell=True, check=True)
+        shell=True,
+        check=True,
+    )
 
     # Generate reports using CodeQL analysis_report tool
     if analysis_report_path and os.path.exists(analysis_report_path):
@@ -226,7 +316,8 @@ def analyze_database(
             # without a registry download.
             try:
                 libraries_path = os.path.join(
-                    _find_compiled_pack_root(), ".codeql", "libraries")
+                    _find_compiled_pack_root(), ".codeql", "libraries"
+                )
                 codeql_pkg_cache = os.path.expanduser("~/.codeql/packages")
                 if os.path.isdir(libraries_path):
                     for scope in os.listdir(libraries_path):
@@ -246,11 +337,11 @@ def analyze_database(
             # analysis_report expects positional args: database-dir sarif-file output-dir
 
             result = subprocess.run(
-                [analysis_report_path,
-                 database_path,
-                 sarif_path,
-                 reports_output_dir],
-                capture_output=True, text=True, env=env)
+                [analysis_report_path, database_path, sarif_path, reports_output_dir],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
 
             # Always show subprocess output for diagnostics
             if result.stdout:
@@ -272,8 +363,12 @@ def main():
     parser.add_argument("--config_path", help="CodeQL config file")
     parser.add_argument("--analysis_report_path", help="Path to analysis_report binary")
     parser.add_argument("--target", nargs="+", help="Bazel targets to build")
-    parser.add_argument("--phase", choices=["create-database", "analyze-database", "all"],
-                       default="all", help="Execution phase")
+    parser.add_argument(
+        "--phase",
+        choices=["create-database", "analyze-database", "all"],
+        default="all",
+        help="Execution phase",
+    )
     parser.add_argument("--database-path", help="CodeQL database path")
     parser.add_argument("--query-spec", help="CodeQL query spec")
     parser.add_argument("--output-prefix", default="codeql", help="Output prefix")
@@ -288,29 +383,44 @@ def main():
 
     if args.phase == "create-database":
         os.makedirs(os.path.dirname(args.database_path), exist_ok=True)
-        create_database(codeql_path, args.config_path, target, source_root, args.database_path)
+        create_database(
+            codeql_path, args.config_path, target, source_root, args.database_path
+        )
 
     elif args.phase == "analyze-database":
-        analyze_database(codeql_path, args.database_path, source_root,
-                        analysis_report_path=args.analysis_report_path,
-                        query_spec=args.query_spec, output_prefix=args.output_prefix,
-                        output_dir=args.output_dir)
+        analyze_database(
+            codeql_path,
+            args.database_path,
+            source_root,
+            analysis_report_path=args.analysis_report_path,
+            query_spec=args.query_spec,
+            output_prefix=args.output_prefix,
+            output_dir=args.output_dir,
+        )
 
     else:  # all
         # Use standard Bazel output directory for database
         bazel_info = _get_bazel_info(source_root)
-        output_path = args.output_dir or bazel_info.get('output_path')
+        output_path = args.output_dir or bazel_info.get("output_path")
         # Ensure the output directory exists before CodeQL tries to create the
         # database inside it (codeql database init does not create parents).
         os.makedirs(output_path, exist_ok=True)
         os.makedirs(TMP_PATH_FOR_DATABASES, exist_ok=True)
-        with tempfile.TemporaryDirectory(dir=TMP_PATH_FOR_DATABASES) as database_location:
-
-            create_database(codeql_path, args.config_path, target, source_root, database_location)
-            analyze_database(codeql_path, database_location, source_root,
-                           analysis_report_path=args.analysis_report_path,
-                           query_spec=args.query_spec, output_prefix=args.output_prefix,
-                           output_dir=args.output_dir)
+        with tempfile.TemporaryDirectory(
+            dir=TMP_PATH_FOR_DATABASES
+        ) as database_location:
+            create_database(
+                codeql_path, args.config_path, target, source_root, database_location
+            )
+            analyze_database(
+                codeql_path,
+                database_location,
+                source_root,
+                analysis_report_path=args.analysis_report_path,
+                query_spec=args.query_spec,
+                output_prefix=args.output_prefix,
+                output_dir=args.output_dir,
+            )
 
 
 def _get_action_env_extension(codeql_env):
@@ -323,7 +433,9 @@ def _get_action_env_extension(codeql_env):
 def _get_merged_environment(codeql_env):
     env = os.environ.copy()
     for var in codeql_env:
-        env[var] = f"{codeql_env[var]}:{env.get(var, '')}" if var in env else codeql_env[var]
+        env[var] = (
+            f"{codeql_env[var]}:{env.get(var, '')}" if var in env else codeql_env[var]
+        )
     return env
 
 
@@ -334,14 +446,14 @@ def _get_bazel_info(source_root):
         cwd=source_root,
         capture_output=True,
         text=True,
-        check=True
+        check=True,
     )
 
     # Parse the output into a dictionary
     bazel_info = {}
-    for line in result.stdout.strip().split('\n'):
-        if ':' in line:
-            key, value = line.split(':', 1)
+    for line in result.stdout.strip().split("\n"):
+        if ":" in line:
+            key, value = line.split(":", 1)
             bazel_info[key.strip()] = value.strip()
     return bazel_info
 

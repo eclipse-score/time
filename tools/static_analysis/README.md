@@ -1,9 +1,40 @@
+<!-- ----------------------------------------------------------------------------
+  Copyright (c) 2026 Contributors to the Eclipse Foundation
+
+  See the NOTICE file(s) distributed with this work for additional
+  information regarding copyright ownership.
+
+  This program and the accompanying materials are made available under the
+  terms of the Apache License Version 2.0 which is available at
+  https://www.apache.org/licenses/LICENSE-2.0
+
+  SPDX-License-Identifier: Apache-2.0
+----------------------------------------------------------------------------- -->
+
 # CodeQL Static Analysis — MISRA C++:2023
 
 This directory provides a self-contained Bazel target for running MISRA C++:2023
 static analysis using [CodeQL](https://codeql.github.com/) and the
 [codeql-coding-standards](https://github.com/github/codeql-coding-standards)
 query pack.
+
+---
+
+## File layout
+
+```
+tools/static_analysis/
+    codeql.bzl              # module-agnostic Bazel macro (future: moves to @score_dev_tools)
+    codeql_lint.py          # module-agnostic orchestration script
+    config.yaml             # module-agnostic CodeQL config (query filters)
+    coding-standards.yaml   # module-SPECIFIC MISRA deviation records
+    BUILD                   # module-SPECIFIC entry point (calls codeql_analysis() macro)
+    README.md               # this file
+```
+
+The split is intentional: `codeql.bzl`, `codeql_lint.py`, and `config.yaml`
+contain no module-specific knowledge and can be reused by other modules as-is.
+Only `coding-standards.yaml` and `BUILD` are module-specific.
 
 ---
 
@@ -20,14 +51,20 @@ The `codeql_lint` target orchestrates three phases:
 
 ### Phase 1 — Database creation (build tracing)
 
-1. `codeql database init --begin-tracing` — initialises an empty database and
+1. `bazel cquery --config=codeql` — resolves the `--target` expression against
+   the CodeQL toolchain config; excludes `testonly` targets and
+   platform-incompatible targets (e.g. QNX-only when building on Linux).
+2. `codeql database init --begin-tracing` — initialises an empty database and
    writes a `start-tracing.json` environment file containing LD_PRELOAD hooks.
-2. `bazel run @codeql_coding_standards//:process_coding_standards_config` —
-   validates the `coding-standards.yaml` deviation records at the workspace root.
-3. `bazel build --config=codeql //score/...` — rebuilds all targets with CodeQL
-   env vars injected; the LD_PRELOAD tracer intercepts every compiler call and
-   writes TRAP files.
-4. `codeql database finalize` — merges TRAP files into the final database.
+3. `bazel run @codeql_coding_standards//:process_coding_standards_config` —
+   recursively scans the workspace for `coding-standards.yaml`, converts it to
+   XML, and the CodeQL XML extractor (active inside the tracing session) indexes
+   it into TRAP files. This is what puts deviation records **into the database**;
+   the YAML file alone is not sufficient.
+4. `bazel build --config=codeql <production targets>` — rebuilds production
+   targets only with CodeQL env vars injected; the LD_PRELOAD tracer intercepts
+   every compiler call and writes TRAP files.
+5. `codeql database finalize` — merges TRAP files into the final database.
 
 ### Phase 2 — Query analysis
 
@@ -68,9 +105,21 @@ cached in the Bazel repository cache. Subsequent runs are fully offline.
 
 ## Deviations
 
-Project-level MISRA C++:2023 deviations are declared in `coding-standards.yaml`
-at the repository root. Each entry requires a `rule-id`, `query-id`,
-`justification`, and the affected `paths`.
+Project-level MISRA C++:2023 deviations are declared in
+`tools/static_analysis/coding-standards.yaml`. Each entry requires a `rule-id`,
+`query-id`, `justification`, and the affected `paths`.
+
+## Test and mock code exclusion
+
+Test code is excluded **at the build level**, not by post-processing results.
+`codeql_lint.py` runs `bazel cquery --config=codeql` with an `except attr(testonly, 1, ...)`
+clause before the traced build, resolving a list of production-only labels.
+Only those labels are passed to `bazel build`, so test sources, mock libraries,
+and test helpers never enter the CodeQL database and cannot appear in findings.
+
+> **Why not `paths-ignore`?** The CodeQL C++ extractor does not honour
+> `paths-ignore` in the codescanning config ("C/C++ does not support
+> path-based filtering"). Build-level exclusion is the correct approach.
 
 ---
 
@@ -101,16 +150,7 @@ The `--config=codeql` config targets x86_64-linux. QNX targets
 CodeQL does support `qcc`/`q++` compilers (explicit handler in `tracing-config.lua`),
 but tracing a QCC build requires a QNX-capable host and is not set up here.
 
-### 4. `coding-standards.yaml` is a runtime dependency, not a Bazel data dep
-
-`process_coding_standards_config` reads `coding-standards.yaml` by scanning
-`BUILD_WORKING_DIRECTORY` (the workspace root). The file is not declared as a
-Bazel `data` dependency of `codeql_lint` — this is intentional (same pattern as
-`eclipse-score/communication`) but means Bazel's sandbox cannot verify the file
-is present before the run starts. If the file is missing the tool will proceed
-with no deviations.
-
-### 5. First run writes to `~/.codeql/packages/`
+### 4. First run writes to `~/.codeql/packages/`
 
 On first use, `codeql_lint.py` copies the library packs bundled inside the
 compiled MISRA pack (`.codeql/libraries/`) into the CodeQL global package cache

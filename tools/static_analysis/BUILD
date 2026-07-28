@@ -10,28 +10,19 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-py_binary(
-    name = "codeql_lint",
-    srcs = ["codeql_lint.py"],
-    args = [
-        "--codeql_path=$(location @codeql_bundle//:codeql_cli)",
-        "--config_path=$(location :config)",
-        "--analysis_report_path=$(location @codeql_coding_standards//:analysis_report)",
-    ],
-    data = [
-        ":config",
-        "@codeql_bundle//:codeql_cli",
-        "@codeql_coding_standards//:analysis_report",
-        "@codeql_coding_standards//:process_coding_standards_config",
-        "@codeql_coding_standards_compiled//:pack",
-    ],
-    main = "codeql_lint.py",
-    tags = ["local"],
-    target_compatible_with = ["@platforms//os:linux"],
-    deps = ["@rules_python//python/runfiles"],
+
+# MODULE-SPECIFIC: instantiates the shared CodeQL analysis for this module.
+# Other modules can reuse codeql.bzl, codeql_lint.py, and config.yaml by
+# copying those three files and providing their own coding-standards.yaml.
+load(":codeql.bzl", "codeql_analysis")
+
+# MODULE-SPECIFIC: declares the MISRA deviation file as an explicit Bazel
+# target so that incremental rebuilds detect changes to it.
+filegroup(
+    name = "coding_standards",
+    srcs = ["coding-standards.yaml"],
 )
 
-filegroup(
-    name = "config",
-    srcs = ["config.yaml"],
+codeql_analysis(
+    coding_standards = ":coding_standards",
 )
