@@ -60,6 +60,12 @@ def pytest_addoption(parser):
         default=10.0,
         help="Default scenario execution timeout in seconds. Default: %(default)s",
     )
+    parser.addoption(
+        "--bazel-config",
+        type=str,
+        default="time-x86_64-linux",
+        help="Bazel config to use when building C++ test scenarios. Default: %(default)s",
+    )
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -68,9 +74,10 @@ def pytest_sessionstart(session):
         if session.config.getoption("--build-scenarios"):
             build_timeout = session.config.getoption("--build-scenarios-timeout")
             print("Building C++ test scenarios executable...")
+            bazel_config = session.config.getoption("--bazel-config")
             bazel_tools = BazelTools(option_prefix="cpp", build_timeout=build_timeout)
             cpp_target_name = session.config.getoption("--cpp-target-name")
-            bazel_tools.build(cpp_target_name, "--config=time-x86_64-linux")
+            bazel_tools.build(cpp_target_name, f"--config={bazel_config}")
     except Exception as e:
         pytest.exit(str(e), returncode=1)
 
