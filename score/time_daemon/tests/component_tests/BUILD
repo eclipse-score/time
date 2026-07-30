@@ -16,7 +16,7 @@ load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 load("@score_tooling//python_basics:defs.bzl", "score_py_pytest", "score_virtualenv")
 
 # To regenerate requirements.txt.lock after editing requirements.txt, run:
-#   bazel run //score/time_daemon/tests/integration_tests:requirements.update
+#   bazel run //score/time_daemon/tests/component_tests:requirements.update
 compile_pip_requirements(
     name = "requirements",
     srcs = [
