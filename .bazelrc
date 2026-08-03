@@ -74,6 +74,10 @@ try-import %workspace%/user.bazelrc
 coverage --features=coverage
 coverage --combined_report=lcov
 coverage --cache_test_results=no
+# Atomic counter updates prevent data corruption when tests use multiple threads.
+coverage --cxxopt=-fprofile-update=atomic
+# Pass branch (-b), cumulative (-c), and unconditional (-u) flags to gcov.
+coverage --test_env=COVERAGE_GCOV_OPTIONS=-bcu
 
 # -------------------------------------------------------------------------------
 # Sanitizer configurations — powered by score_cpp_policies

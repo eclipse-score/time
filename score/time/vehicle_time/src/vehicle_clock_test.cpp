@@ -235,12 +235,55 @@ TEST(VehicleClockTest, ScopedClockOverrideRestoresBackendAfterScope)
         EXPECT_CALL(*mock, IsAvailable()).WillOnce(Return(false));
         EXPECT_FALSE(VehicleClock::GetInstance().IsAvailable());
     }
-    // After guard goes out of scope, override is cleared.
-    // A new guard for the same Tag must succeed without assertion.
     auto mock2 = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard2{mock2};
     EXPECT_CALL(*mock2, IsAvailable()).WillOnce(Return(true));
     EXPECT_TRUE(VehicleClock::GetInstance().IsAvailable());
+}
+
+TEST(VehicleClockTest, SubscribeVehicleTimeStatusCapturesAndInvokesCallback)
+{
+    auto mock = std::make_shared<VehicleClockBackendMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
+
+    VehicleTime::StatusChangedCallback captured_cb;
+    EXPECT_CALL(*mock, SetStatusChangedCallback(_)).WillOnce([&captured_cb](VehicleTime::StatusChangedCallback&& cb) {
+        captured_cb = std::move(cb);
+    });
+
+    bool invoked{false};
+    VehicleClock::GetInstance().Subscribe<VehicleTimeStatus>([&invoked](const VehicleTimeStatus&) {
+        invoked = true;
+    });
+
+    VehicleTimeStatus status{};
+    captured_cb(status);
+
+    EXPECT_TRUE(invoked);
+}
+
+TEST(VehicleClockTest, UnsubscribeVehicleTimeStatusForwardsToBackend)
+{
+    auto mock = std::make_shared<VehicleClockBackendMock>();
+    test_utils::ScopedClockOverride<VehicleTime> guard{mock};
+
+    EXPECT_CALL(*mock, UnsetStatusChangedCallback()).Times(1);
+
+    VehicleClock::GetInstance().Unsubscribe<VehicleTimeStatus>();
+}
+
+TEST(VehicleClockTest, GetInstanceWithoutOverrideUsesStubBackend)
+{
+    const auto clock = VehicleClock::GetInstance();
+    EXPECT_FALSE(clock.IsAvailable());
+}
+
+TEST(VehicleClockTest, GetInstanceCalledTwice)
+{
+    const auto clock1 = VehicleClock::GetInstance();
+    const auto clock2 = VehicleClock::GetInstance();
+    EXPECT_FALSE(clock1.IsAvailable());
+    EXPECT_FALSE(clock2.IsAvailable());
 }
 
 }  // namespace time

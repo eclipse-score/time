@@ -71,8 +71,8 @@ py_unittest_qnx_test(
 )
 
 cc_test(
-    name = "high_res_steady_clock_test",
-    srcs = ["high_res_steady_clock_test.cpp"],
+    name = "high_res_steady_clock_adapter_test",
+    srcs = ["high_res_steady_clock_adapter_test.cpp"],
     features = COMPILER_WARNING_FEATURES,
     tags = [
         "exclusive",
@@ -86,9 +86,24 @@ cc_test(
     ],
 )
 
+cc_test(
+    name = "high_res_steady_clock_integration_test",
+    srcs = ["high_res_steady_clock_integration_test.cpp"],
+    features = COMPILER_WARNING_FEATURES,
+    tags = ["unit"],
+    deps = [
+        ":high_res_steady_clock_impl",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    cc_unit_tests = [":high_res_steady_clock_test"],
+    cc_unit_tests = [
+        ":high_res_steady_clock_adapter_test",
+        ":high_res_steady_clock_integration_test",
+    ],
     test_suites_from_sub_packages = [
         "//score/time/high_res_steady_time/src/details:unit_test_suite",
     ],

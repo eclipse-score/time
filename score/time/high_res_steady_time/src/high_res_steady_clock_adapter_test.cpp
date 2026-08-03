@@ -70,5 +70,29 @@ TEST(HighResSteadyClockTest, NowSnapshotCarriesNoStatus)
     SUCCEED();
 }
 
+TEST(HighResSteadyClockTest, GetInstanceWithoutOverrideUsesStubBackend)
+{
+    const auto clock = HighResSteadyClock::GetInstance();
+    EXPECT_GE(clock.Now().TimePoint().time_since_epoch().count(), 0);
+}
+
+TEST(HighResSteadyClockTest, GetInstanceCalledTwice)
+{
+    const auto clock1 = HighResSteadyClock::GetInstance();
+    const auto clock2 = HighResSteadyClock::GetInstance();
+    EXPECT_GE(clock1.Now().TimePoint().time_since_epoch().count(), 0);
+    EXPECT_GE(clock2.Now().TimePoint().time_since_epoch().count(), 0);
+}
+
+TEST(HighResSteadyClockTest, ClockTestFactoryCreatesClockFromMockBackend)
+{
+    auto mock = std::make_shared<HighResSteadyClockBackendMock>();
+    const HighResSteadyTime::Timepoint tp{std::chrono::nanoseconds{12345LL}};
+    EXPECT_CALL(*mock, Now()).WillOnce(Return(ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{tp, NoStatus{}}));
+
+    auto clock = test_utils::ClockTestFactory<HighResSteadyTime>::Make(mock);
+    EXPECT_EQ(clock.Now().TimePoint(), tp);
+}
+
 }  // namespace time
 }  // namespace score
