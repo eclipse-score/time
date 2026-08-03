@@ -1035,6 +1035,7 @@
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_docs_as_code/3.0.1/MODULE.bazel": "296328e60d5481ff529e0c937ba80c5d3d4838445d119caf517fd82f97cd053a",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_docs_as_code/4.0.0/MODULE.bazel": "522dc070354e6be2f984468a4243fe4ab8bec690922df5f31f7f0916ee264e20",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_docs_as_code/4.0.1/MODULE.bazel": "5955f4cf37228a9cdda7f6009b81db0446f005c618f4bc43665bfa45f2673ebc",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_docs_as_code/4.0.3/MODULE.bazel": "ad24df8df93882297e36ecaa39a94a69eed68aeb5bb1614e85296d001d5e3c03",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_docs_as_code/4.5.0/MODULE.bazel": "4cfe52fe8b8dbeaf7e87500036391da278f72f1c2b41b689ffdd4337196dd8fe",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_docs_as_code/4.5.0/source.json": "e01b29a3e9640a0d41d880d7da525e451115649d90f097ed66d09808c9135486",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_format_checker/0.1.1/MODULE.bazel": "1acc254faa90e9f97b79ac69af25b6c21c561f8d6079914f6352b9b20d26bd37",
@@ -1056,6 +1057,7 @@
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_process/1.4.3/MODULE.bazel": "eb8243299a6ae3663618db5b4718e2c0d3c93f91a44994641e70106c400b23fb",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_process/1.5.2/MODULE.bazel": "be52d29278d6671221f28921e8f1acfce29c3bfc3e6b4f503f0625ab2c61586f",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_process/1.5.3/MODULE.bazel": "65024b7f23ce5f72bd6ffd455a67c042ecf56d267f0bf63a90330a3241781b7a",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_process/1.5.4/MODULE.bazel": "efd56704f1a93e670032e7c0e4fad97669aa3b348fb1a4cd40f67e4dd4c7037c",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_process/1.6.0/MODULE.bazel": "2496bc24311f69f49449ee85d8bb38e3b970cbfcf10d0a7f19b2d5262ce80e8d",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_process/1.6.0/source.json": "093424aa8bfed8705a3d142b21fe1d053258f2dd5eb1944941f6439b2c7157e9",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_python_basics/0.3.0/MODULE.bazel": "785ddd5295213e36c31ab86bdc34f29c0f7d1b72e9abd931bb08f42c0e48e2e9",
@@ -9909,6 +9911,44 @@
             "score_bazel_cpp_toolchains+",
             "score_bazel_cpp_toolchains",
             "score_bazel_cpp_toolchains+"
+          ]
+        ]
+      }
+    },
+    "@@score_rules_imagefs+//extensions:imagefs.bzl%imagefs": {
+      "general": {
+        "bzlTransitiveDigest": "6ZLANe53LXwcnne1ZrZm9GkJ9H5VdsCLSgSNHyUrqA4=",
+        "usagesDigest": "1ieOQTsTmqRePgmksL8DDGNxZZT2g0ExwBiH6NLXBLg=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "score_qnx_x86_64_ifs_toolchain": {
+            "repoRuleId": "@@score_rules_imagefs+//rules/qnx:imagefs_toolchain.bzl%imagefs_toolchain",
+            "attributes": {
+              "tc_cpu": "x86_64",
+              "tc_os": "qnx",
+              "tc_pkg_repo": "'@@score_bazel_cpp_toolchains++gcc+score_qcc_x86_64_toolchain_pkg'",
+              "sdp_version": "8.0.0",
+              "tc_type": "ifs"
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "",
+            "score_qcc_x86_64_toolchain_pkg",
+            "score_bazel_cpp_toolchains++gcc+score_qcc_x86_64_toolchain_pkg"
+          ],
+          [
+            "score_rules_imagefs+",
+            "bazel_tools",
+            "bazel_tools"
+          ],
+          [
+            "score_rules_imagefs+",
+            "score_rules_imagefs",
+            "score_rules_imagefs+"
           ]
         ]
       }
