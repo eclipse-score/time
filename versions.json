@@ -56,11 +56,11 @@
     "url": "https://eclipse-score.github.io/time/pr-144/"
   },
   {
-    "version": "pr-25",
-    "url": "https://eclipse-score.github.io/inc_time/pr-25/"
-  },
-  {
     "version": "pr-146",
     "url": "https://eclipse-score.github.io/time/pr-146/"
+  },
+  {
+    "version": "pr-25",
+    "url": "https://eclipse-score.github.io/inc_time/pr-25/"
   }
 ]
