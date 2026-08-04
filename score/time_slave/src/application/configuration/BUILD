@@ -12,23 +12,37 @@
 # *******************************************************************************
 
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
+load("//bazel/tools:json_schema_validator.bzl", "validate_json_schema_test")
 
-cc_binary(
-    name = "time_slave",
-    srcs = [
-        "main.cpp",
-        "time_slave.cpp",
-        "time_slave.h",
+filegroup(
+    name = "time_slave_config_schema",
+    srcs = ["time_slave_config_schema.json"],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "configuration",
+    srcs = ["config_parser.cpp"],
+    hdrs = [
+        "config_parser.h",
+        "time_slave_config.h",
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
-    visibility = ["//score/time_slave:__pkg__"],
+    visibility = ["//score/time_slave:__subpackages__"],
     deps = [
-        "//score/time_slave/src/application/configuration",
         "//score/time_slave/src/common:logging_contexts",
         "//score/time_slave/src/gptp:gptp_engine",
-        "//score/ts_client/src:gptp_ipc",
+        "@score_baselibs//score/json",
+        "@score_baselibs//score/json:json_parser",
         "@score_baselibs//score/mw/log:console_only_backend",
-        "@score_lifecycle_health//score/launch_manager:lifecycle_cc",
     ],
+)
+
+validate_json_schema_test(
+    name = "validate_time_slave_config_schema",
+    json = "example/time_slave_config.json",
+    schema = ":time_slave_config_schema",
+    tags = ["lint"],
+    target_compatible_with = ["@platforms//os:linux"],
 )
