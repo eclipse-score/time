@@ -31,15 +31,8 @@ version = "0.1"
 
 
 extensions = [
-    "sphinx_design",
-    "sphinx_needs",
     "sphinxcontrib.plantuml",
-    "score_plantuml",
-    "score_metamodel",
-    "score_draw_uml_funcs",
-    "score_source_code_linker",
-    "score_layout",
-    "score_metrics",
+    "score_sphinx_bundle"
 ]
 
 include_patterns = [
