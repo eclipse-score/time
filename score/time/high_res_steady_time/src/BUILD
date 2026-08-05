@@ -75,6 +75,7 @@ cc_test(
     srcs = ["high_res_steady_clock_test.cpp"],
     features = COMPILER_WARNING_FEATURES,
     tags = [
+        "component",
         "exclusive",
         "unit",
     ],
