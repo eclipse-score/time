@@ -24,7 +24,21 @@ docs(
     data = [
         "@score_process//:needs_json",
     ],
-    source_dir = ".",
+    bundles = [
+        {
+            "bundle": "//score/time_slave:docs_bundle",
+            "mount_at": "components/time_slave",
+        },
+        {
+            "bundle": "//score/time_daemon:docs_bundle",
+            "mount_at": "components/time_daemon",
+        },
+        {
+            "bundle": "//score/time:docs_bundle",
+            "mount_at": "components/time",
+        }
+    ],
+    source_dir = "docs",
 )
 
 copyright_checker(

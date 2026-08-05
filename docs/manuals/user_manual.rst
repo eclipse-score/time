@@ -51,9 +51,19 @@ For detailed component-specific user manuals:
 .. toctree::
    :maxdepth: 1
 
-   /score/time/docs/manuals/user_manual
-   /score/time_slave/docs/manuals/user_manual
-   /score/time_daemon/docs/manuals/user_manual
+   /components/time/manuals/user_manual
+   /components/time_slave/manuals/user_manual
+   /components/time_daemon/manuals/user_manual
+
+Examples
+--------
+
+Practical examples and tutorials for using the time module:
+
+.. toctree::
+   :maxdepth: 2
+
+   examples/index
 
 Environment Needs
 =================

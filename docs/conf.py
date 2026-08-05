@@ -30,17 +30,11 @@ version = "0.1"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 
-extensions = [
-    "sphinxcontrib.plantuml",
-    "score_sphinx_bundle"
-]
+extensions = ["sphinxcontrib.plantuml", "score_sphinx_bundle"]
 
 include_patterns = [
     "index.rst",
-    "docs/**",
-    "score/time/docs/**",
-    "score/time_slave/docs/**",
-    "score/time_daemon/docs/**",
+    "**",
 ]
 
 exclude_patterns = [
@@ -51,8 +45,6 @@ exclude_patterns = [
     "bazel-*",
     ".venv_docs",
 ]
-
-templates_path = ["docs/templates"]
 
 # Enable numref
 numfig = True

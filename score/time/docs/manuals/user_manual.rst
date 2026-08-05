@@ -78,16 +78,6 @@ This section covers how to use the ``score::time`` client library in your applic
    For a complete C++ API reference with full class and function documentation,
    please refer to the generated Doxygen documentation (to be added in future releases).
 
-Examples
-========
-
-Practical examples and tutorials for using the time library:
-
-.. toctree::
-   :maxdepth: 2
-
-   examples/index
-
 Build Integration
 =================
 
@@ -147,4 +137,4 @@ Runtime Requirements
 
 The ``score::time`` library requires the ``TimeSlave`` and ``TimeDaemon`` system services to be running.
 For deployment and configuration of these services, refer to the module manual and component manuals for
-:doc:`/score/time_slave/docs/manuals/user_manual` and :doc:`/score/time_daemon/docs/manuals/user_manual`.
+:doc:`/components/time_slave/manuals/user_manual` and :doc:`/components/time_daemon/manuals/user_manual`.
