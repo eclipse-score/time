@@ -21,9 +21,6 @@ setup_starpls(
 )
 
 docs(
-    data = [
-        "@score_process//:needs_json",
-    ],
     bundles = [
         {
             "bundle": "//score/time_slave:docs_bundle",
@@ -36,7 +33,10 @@ docs(
         {
             "bundle": "//score/time:docs_bundle",
             "mount_at": "components/time",
-        }
+        },
+    ],
+    data = [
+        "@score_process//:needs_json",
     ],
     source_dir = "docs",
 )

@@ -21,7 +21,6 @@ docs_bundle(
     visibility = ["//visibility:public"],
 )
 
-
 py_unittest_qnx_test(
     name = "qnx_unit_test_cases",
     test_suites = [

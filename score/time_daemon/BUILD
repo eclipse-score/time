@@ -20,7 +20,6 @@ docs_bundle(
     visibility = ["//visibility:public"],
 )
 
-
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
     test_suites_from_sub_packages = [
