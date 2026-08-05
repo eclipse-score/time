@@ -1,0 +1,55 @@
+[
+  {
+    "repo": {
+      "name": "local_repo",
+      "hash": "",
+      "url": ""
+    },
+    "needs": [
+      {
+        "need": "comp_req__time__vehicle_clock_snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 44,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__vehicle_clock_snapshot",
+              "full_line": "// # req-Id: comp_req__time__vehicle_clock_snapshot"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time__vehicle_clock_lifecycle",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 50,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__vehicle_clock_lifecycle",
+              "full_line": "// # req-Id: comp_req__time__vehicle_clock_lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 56,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__vehicle_clock_lifecycle",
+              "full_line": "// # req-Id: comp_req__time__vehicle_clock_lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 62,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__vehicle_clock_lifecycle",
+              "full_line": "// # req-Id: comp_req__time__vehicle_clock_lifecycle"
+            }
+          ],
+          "TestLinks": []
+        }
+      }
+    ]
+  }
+]
