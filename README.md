@@ -149,6 +149,12 @@ cd time
 
 ### Development Environment
 
+Use devcontainer as default path. It includes Bazel tooling and dependencies.
+
+1. Install Docker.
+2. Open repository in a devcontainer-capable editor (for example VS Code with Dev Containers extension).
+3. Reopen workspace in container.
+
 Follow the [S-CORE Development Environment Guide](https://eclipse-score.github.io/score/main/contribute/development/development_environment.html) for Linux host setup requirements.
 
 ### Building the Project
