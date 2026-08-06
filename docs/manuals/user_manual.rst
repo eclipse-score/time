@@ -21,7 +21,7 @@ User Manual
    :id: doc__user_manual_time
    :status: draft
    :version: 1
-   :safety: ASIL-B (TBC)
+   :safety: ASIL_B
    :security: NO
    :realizes: wp__training_path[version==1]
 
