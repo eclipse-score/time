@@ -12,13 +12,11 @@ This repository contains source code for time clocks, time distribution infrastr
 
 High-level functionality provided by the Time module:
 
-- **Clock Domains**: Four time sources accessed through unified `Clock<Tag>` API
+- **Clock Domains**: Four time sources accessed through unified `Clock<Tag>` API; all domains support nanosecond resolution and compile-time domain selection preventing cross-domain timing errors; mock backends and `ScopedClockOverride` available for testing
   - **SystemTime**: Wall-clock time (Unix epoch) for timestamps and user-visible time displays
   - **SteadyTime**: Monotonic time for duration measurements and timeouts
   - **HighResSteadyTime**: High-resolution monotonic time for precise timing applications
   - **VehicleTime**: PTP-synchronized time for distributed automotive applications requiring initialization
-  - Clock domains support nanosecond resolution and compile-time domain selection preventing cross-domain timing errors
-  - Mock backends and `ScopedClockOverride` available for testing
 - **Clock API**: Type-safe `Clock<Tag>::GetInstance().Now()` returns time and status information
 - **Event Subscription**: `Subscribe<EventType>()` / `Unsubscribe<EventType>()` for status changes and PTP timebase data
 - **Time Infrastructure**
