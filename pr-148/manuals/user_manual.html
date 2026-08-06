@@ -447,7 +447,7 @@
                   
   <section id="user-manual">
 <span id="id1"></span><h1>User Manual<a class="headerlink" href="#user-manual" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-a2e45b71">
+<div class="need_container docutils container" id="SNCB-cf021d5a">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__user_manual_time">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -457,7 +457,7 @@
 <td class="head_center" colspan="2"><div class="needs_head line-block">
 <div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">draft</span></span></span></div>
 <div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
 </div>
 </td>
 <td class="head_right" colspan="2"><div class="needs_head_right line-block">
@@ -603,15 +603,20 @@ synchronized to a network-wide PTP (Precision Time Protocol) Grandmaster Clock. 
 </section>
 <section id="safety-and-security">
 <h2>Safety and Security<a class="headerlink" href="#safety-and-security" title="Link to this heading">#</a></h2>
-<p><strong>Safety Classification</strong>: QM (Quality Managed)</p>
-<p>This module is designed for Quality Managed (QM) applications. For safety-critical usage requirements and guidelines, refer to the safety manual (to be added in future releases).</p>
+<p><strong>Safety Classification</strong>: ASIL-B (TBC)</p>
+<p>Safety classification details are currently being aligned with ongoing stakeholder and feature requirement clarifications. Current working classification is:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">score::time</span></code> library: ASIL-B (TBC)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code>: ASIL-B</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code>: QM</p></li>
+</ul>
+<p>For final safety-critical usage requirements and guidelines, refer to the safety manual updates in upcoming releases.</p>
 <p><strong>Security Considerations</strong>:</p>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">time</span></code> module assumes a trusted network for PTP communication</p></li>
 <li><p>No authentication or encryption is provided for PTP messages (per IEEE 1588 standard)</p></li>
-<li><p>OS-level security (Linux Capabilities) limits attack surface for TimeSlave daemon</p></li>
+<li><p>OS-level security controls limit attack surface for TimeSlave daemon (Linux Capabilities on Linux, equivalent least-privilege process configuration on QNX)</p></li>
 </ul>
-<p>For detailed security aspects and requirements, refer to the security manual (to be added in future releases).</p>
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>

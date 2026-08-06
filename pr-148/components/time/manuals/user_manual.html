@@ -459,7 +459,7 @@
                   
   <section id="time-library-user-manual">
 <span id="time-component-user-manual"></span><h1>Time Library User Manual<a class="headerlink" href="#time-library-user-manual" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-f3333324">
+<div class="need_container docutils container" id="SNCB-32608eed">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__user_manual_time_lib">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -511,7 +511,7 @@
 <section id="choosing-the-right-clock">
 <h2>Choosing the Right Clock<a class="headerlink" href="#choosing-the-right-clock" title="Link to this heading">#</a></h2>
 <p>The S-CORE <code class="docutils literal notranslate"><span class="pre">time</span></code> module provides several clock types, each designed for a specific use case. Understanding their differences is crucial for writing robust and correct applications.</p>
-<p>In general, you should <strong>always prefer ``VehicleTime``</strong> unless you have a specific reason to measure a local time interval or need a simple wall-clock timestamp for purely informational purposes.</p>
+<p>Select clock type based on use case. No clock type is universally better; each has a different purpose.</p>
 <div class="pst-scrollable-table-container"><table class="table" id="id1">
 <caption><span class="caption-number">Table 12 </span><span class="caption-text">Clock Types Overview</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <colgroup>
@@ -527,8 +527,8 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code></p></td>
-<td><p>High-precision, PTP-synchronized, quality-assured network time. <strong>This is the recommended clock for almost all applications.</strong></p></td>
-<td><p>Synchronized logging across ECUs, event timestamping, any logic that depends on a common time base in the vehicle.</p></td>
+<td><p>High-precision, PTP-synchronized, quality-assured network time.</p></td>
+<td><p>Cross-ECU correlation, synchronized logging, and decisions that depend on vehicle-wide time consistency (for example: validating whether a vehicle-time-stamped frame is too old and should be discarded).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SystemTime</span></code></p></td>
 <td><p>The system’s “wall clock” time (Unix time). Can jump forwards or backwards (e.g., due to NTP correction or manual changes).</p></td>
@@ -562,7 +562,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html">Unit-Testing Time-Dependent Code</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html#a-helper-for-controllable-time-the-clocktestfactory">A Helper for Controllable Time: The <cite>ClockTestFactory</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html#using-existing-test-utilities">Using Existing Test Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html#example-testing-a-timeout-handler">Example: Testing a Timeout Handler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html#bazel-build-setup">Bazel BUILD Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_description/advanced_api.html">Advanced API Usage: Subscribing to PTP Protocol Events</a><ul>
@@ -632,7 +632,8 @@ please refer to the generated Doxygen documentation (to be added in future relea
 </section>
 <section id="runtime-requirements">
 <h2>Runtime Requirements<a class="headerlink" href="#runtime-requirements" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">score::time</span></code> library requires the <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> and <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> system services to be running.
+<p>If using <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>, <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> and <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> system services must be running.
+<code class="docutils literal notranslate"><span class="pre">SystemTime</span></code>, <code class="docutils literal notranslate"><span class="pre">SteadyTime</span></code>, and <code class="docutils literal notranslate"><span class="pre">HighResSteadyTime</span></code> do not depend on those daemons.
 For deployment and configuration of these services, refer to the module manual and component manuals for
 <a class="reference internal" href="../../time_slave/manuals/user_manual.html"><span class="doc">Time Slave User Manual</span></a> and <a class="reference internal" href="../../time_daemon/manuals/user_manual.html"><span class="doc">Time Daemon User Manual</span></a>.</p>
 </section>

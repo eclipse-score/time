@@ -485,9 +485,11 @@
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">.</span><span class="n">Now</span><span class="p">();</span>
 
 <span class="w">    </span><span class="c1">// 3. Check the status of the snapshot.</span>
-<span class="w">    </span><span class="c1">//    The IsReliable() flag indicates if the time is currently synchronized</span>
-<span class="w">    </span><span class="c1">//    to a master and has passed all quality checks in the TimeDaemon.</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">().</span><span class="n">IsReliable</span><span class="p">())</span>
+<span class="w">    </span><span class="c1">//    IsConsistent(): status flags are not contradictory.</span>
+<span class="w">    </span><span class="c1">//    HasBeenSynchronized(): clock has synchronized at least once in this lifecycle.</span>
+<span class="w">    </span><span class="c1">//    IsReliable(): synchronized now and no active timeout/leap fault.</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">();</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">IsConsistent</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">HasBeenSynchronized</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">IsReliable</span><span class="p">())</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// 4. Use the timepoint.</span>
 <span class="w">        </span><span class="c1">//    The timepoint is a std::chrono::time_point.</span>
@@ -500,11 +502,10 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="k">else</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 5. Handle the &quot;not synchronized&quot; case.</span>
-<span class="w">        </span><span class="c1">//    If the time is not reliable, applications must not use the timepoint value.</span>
-<span class="w">        </span><span class="c1">//    This can happen during startup or if the connection to the Time Master is lost.</span>
-<span class="w">        </span><span class="c1">//    The application should implement a retry-logic or fallback.</span>
-<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Warning: Vehicle Time is not synchronized or not reliable. &quot;</span>
+<span class="w">        </span><span class="c1">// 5. Handle invalid or currently unusable status.</span>
+<span class="w">        </span><span class="c1">//    Applications must not use TimePoint() if status is inconsistent,</span>
+<span class="w">        </span><span class="c1">//    never synchronized, or currently unreliable.</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Warning: Vehicle Time status is not usable yet. &quot;</span>
 <span class="w">                  </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Retrying later...&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -512,7 +513,8 @@
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>Never use the <code class="docutils literal notranslate"><span class="pre">TimePoint</span></code> from a <code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> without first verifying that <code class="docutils literal notranslate"><span class="pre">Status().IsReliable()</span></code> is true. Using an unreliable timepoint can lead to incorrect or inconsistent behavior in safety-critical applications.</p>
+<p>Never use <code class="docutils literal notranslate"><span class="pre">TimePoint</span></code> from <code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> before verifying status.
+For robust handling, check <code class="docutils literal notranslate"><span class="pre">Status().IsConsistent()</span></code>, <code class="docutils literal notranslate"><span class="pre">Status().HasBeenSynchronized()</span></code>, and <code class="docutils literal notranslate"><span class="pre">Status().IsReliable()</span></code>.</p>
 </div>
 </section>
 </section>
