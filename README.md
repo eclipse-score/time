@@ -15,15 +15,15 @@ High-level functionality provided by the Time module:
 - **Clock Domains**: Four time sources accessed through unified `Clock<Tag>` API
   - **SystemTime**: Wall-clock time (Unix epoch) for timestamps and user-visible time displays
   - **SteadyTime**: Monotonic time for duration measurements and timeouts
-  - **HighResSteadyTime**: High-precision monotonic time for precise timing applications
+  - **HighResSteadyTime**: High-resolution monotonic time for precise timing applications
   - **VehicleTime**: PTP-synchronized time for distributed automotive applications requiring initialization
-  - Clock domains support nanosecond precision and compile-time domain selection preventing cross-domain timing errors
+  - Clock domains support nanosecond resolution and compile-time domain selection preventing cross-domain timing errors
   - Mock backends and `ScopedClockOverride` available for testing
 - **Clock API**: Type-safe `Clock<Tag>::GetInstance().Now()` returns time and status information
 - **Event Subscription**: `Subscribe<EventType>()` / `Unsubscribe<EventType>()` for status changes and PTP timebase data
 - **Time Infrastructure**
-  - **TimeDaemon**: Standalone daemon that retrieves synchronized time from TimeSlave, validates timepoints, sets synchronization status, and distributes VehicleTime to applications via shared memory
-  - **TimeSlave**: gPTP (IEEE 802.1AS) slave endpoint that implements network synchronization protocol, calculates time offset, and publishes synchronized time data to shared memory
+  - **TimeDaemon**: Standalone daemon that retrieves synchronized time from TimeSlave, validates timepoints, sets synchronization status, and distributes VehicleTime to applications
+  - **TimeSlave**: gPTP (IEEE 802.1AS) slave endpoint that implements network synchronization protocol, calculates time offset, and publishes synchronization time data to the TimeDaemon
 
 ---
 
@@ -51,7 +51,7 @@ High-level functionality provided by the Time module:
 
 | Target | Purpose |
 |--------|---------|
-| `//score/time/high_res_steady_time` | High-precision monotonic time |
+| `//score/time/high_res_steady_time` | High-resolution monotonic time |
 | `//score/time/high_res_steady_time:high_res_steady_time_mock` | Mock backend for HighResSteadyTime testing |
 | `//score/time/high_res_steady_time:interface` | Header-only interface (no backend) |
 
@@ -201,7 +201,7 @@ Working examples demonstrating clock usage patterns, testing approaches, and int
 
 - **examples/time/system_time** — SystemTime usage for wall-clock timestamps
 - **examples/time/steady_time** — SteadyTime usage for duration measurements
-- **examples/time/high_res_steady_time** — HighResSteadyTime usage for high-precision timing
+- **examples/time/high_res_steady_time** — HighResSteadyTime usage for high-resolution timing
 - **examples/time/vehicle_time** — VehicleTime usage with PTP synchronization
 
 Each example includes a handler demonstrating the Clock API and corresponding unit tests.
