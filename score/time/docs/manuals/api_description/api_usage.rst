@@ -46,9 +46,11 @@ This method involves actively requesting the current time from the ``score::time
        const auto snapshot = clock.Now();
 
        // 3. Check the status of the snapshot.
-       //    The IsReliable() flag indicates if the time is currently synchronized
-       //    to a master and has passed all quality checks in the TimeDaemon.
-       if (snapshot.Status().IsReliable())
+       //    IsConsistent(): status flags are not contradictory.
+       //    HasBeenSynchronized(): clock has synchronized at least once in this lifecycle.
+       //    IsReliable(): synchronized now and no active timeout/leap fault.
+       const auto status = snapshot.Status();
+       if (status.IsConsistent() && status.HasBeenSynchronized() && status.IsReliable())
        {
            // 4. Use the timepoint.
            //    The timepoint is a std::chrono::time_point.
@@ -61,15 +63,15 @@ This method involves actively requesting the current time from the ``score::time
        }
        else
        {
-           // 5. Handle the "not synchronized" case.
-           //    If the time is not reliable, applications must not use the timepoint value.
-           //    This can happen during startup or if the connection to the Time Master is lost.
-           //    The application should implement a retry-logic or fallback.
-           std::cerr << "Warning: Vehicle Time is not synchronized or not reliable. "
+           // 5. Handle invalid or currently unusable status.
+           //    Applications must not use TimePoint() if status is inconsistent,
+           //    never synchronized, or currently unreliable.
+           std::cerr << "Warning: Vehicle Time status is not usable yet. "
                      << "Retrying later..." << std::endl;
        }
    }
 
 .. attention::
 
-   Never use the ``TimePoint`` from a ``ClockSnapshot`` without first verifying that ``Status().IsReliable()`` is true. Using an unreliable timepoint can lead to incorrect or inconsistent behavior in safety-critical applications.
+    Never use ``TimePoint`` from ``ClockSnapshot`` before verifying status.
+    For robust handling, check ``Status().IsConsistent()``, ``Status().HasBeenSynchronized()``, and ``Status().IsReliable()``.

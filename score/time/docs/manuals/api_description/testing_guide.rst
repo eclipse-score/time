@@ -19,53 +19,32 @@ Unit-Testing Time-Dependent Code
 
 Testing application logic that depends on time can be challenging. To solve this, the ``score::time`` framework provides a powerful mechanism to replace the real-time clock with a controllable "fake" clock during unit tests. This is achieved using the ``ScopedClockOverride`` helper.
 
-A Helper for Controllable Time: The `ClockTestFactory`
-======================================================
+Using Existing Test Utilities
+=============================
 
-To make tests cleaner and more readable, it is a recommended practice to create a small test factory helper class. This class encapsulates the creation of the fake clock and provides a simple API to control the time within a test.
+The framework already provides ``ClockTestFactory<Tag>`` in
+``score/time/clock/src/clock_test_factory.h`` for constructor-based mock injection.
 
-Here is a minimal implementation of such a factory. You can add this helper to your own test utilities.
-
-**`clock_test_factory.h` (Example Implementation):**
+Use this helper when your component accepts ``Clock<Tag>`` via constructor or setter injection.
 
 .. code-block:: cpp
 
+   #include "score/time/clock/src/clock_test_factory.h"
    #include "score/time/clock/src/clock_backend_mock.h"
    #include "score/time/vehicle_time.h"
-   #include <chrono>
    #include <memory>
 
-   // A helper class to manage a fake clock backend in tests.
-   class ClockTestFactory {
-   public:
-       // Creates the backend and returns a shared_ptr to it.
-       // This backend is then passed to the ScopedClockOverride.
-       std::shared_ptr<score::time::test_utils::ClockBackendMock<score::time::VehicleTime>>
-       CreateFakeClock() {
-           fake_clock_backend_ = std::make_shared<score::time::test_utils::ClockBackendMock<score::time::VehicleTime>>();
-           return fake_clock_backend_;
-       }
+   auto backend = std::make_shared<score::time::test_utils::ClockBackendMock<score::time::VehicleTime>>();
+   auto clock = score::time::test_utils::ClockTestFactory<score::time::VehicleTime>::Make(backend);
 
-       // Advances the time on the created fake clock.
-       void AdvanceTime(std::chrono::nanoseconds duration) {
-           // We simulate a monotonic clock by shifting the offset of the mock
-           // to return a progressively advanced timestamp on every subsequent call.
-           current_time_ += duration;
-           ON_CALL(*fake_clock_backend_, Now())
-               .WillByDefault(testing::Return(score::time::TimeSnapshot<score::time::VehicleTime>(
-                   score::time::VehicleTime::time_point(current_time_))));
-       }
-
-   private:
-       std::shared_ptr<score::time::test_utils::ClockBackendMock<score::time::VehicleTime>> fake_clock_backend_;
-       std::chrono::nanoseconds current_time_{0};
-   };
+When code under test calls ``Clock<Tag>::GetInstance()`` internally, use
+``ScopedClockOverride<Tag>`` as shown below.
 
 
 Example: Testing a Timeout Handler
 ==================================
 
-This example demonstrates how to use the custom `ClockTestFactory` helper to test a component that performs an action once a specific timeout duration has elapsed.
+This example demonstrates how to test a component that performs an action once a specific timeout duration has elapsed.
 
 **Component to be tested (`my_component.h`):**
 
@@ -96,36 +75,42 @@ This example demonstrates how to use the custom `ClockTestFactory` helper to tes
 .. code-block:: cpp
 
    #include "my_component.h"
-   #include "clock_test_factory.h" // Our custom helper
+   #include "score/time/clock/src/clock_backend_mock.h"
    #include "score/time/clock/src/scoped_clock_override.h"
    #include <gtest/gtest.h>
 
    TEST(MyTimeoutHandlerTest, DetectsTimeoutCorrectly)
    {
-       // 1. Create our test factory helper.
-       ClockTestFactory test_factory;
-       auto fake_clock_backend = test_factory.CreateFakeClock();
+       auto fake_clock_backend =
+           std::make_shared<score::time::test_utils::ClockBackendMock<score::time::VehicleTime>>();
+       score::time::VehicleTime::duration elapsed{0};
 
-       // 2. Activate the override with the backend from our factory.
+       ON_CALL(*fake_clock_backend, Now())
+           .WillByDefault(testing::Invoke([&elapsed]() {
+               return score::time::TimeSnapshot<score::time::VehicleTime>{
+                   score::time::VehicleTime::time_point{elapsed}};
+           }));
+
+       // 1. Activate override because component uses Clock<VehicleTime>::GetInstance().
        auto clock_override = score::time::test_utils::ScopedClockOverride<score::time::VehicleTime>(
            fake_clock_backend);
 
-       // 3. Instantiate the component-under-test. It will now automatically use the fake clock.
+       // 2. Instantiate component-under-test. It now uses fake backend.
        MyTimeoutHandler handler;
        const auto timeout = std::chrono::seconds{10};
 
-       // 4. Initially, no timeout should be detected.
+       // 3. Initially, no timeout should be detected.
        EXPECT_FALSE(handler.HasTimedOut(timeout));
 
-       // 5. Advance the fake clock's time via our factory helper by 9 seconds.
-       test_factory.AdvanceTime(std::chrono::seconds{9});
+       // 4. Advance fake time by 9 seconds.
+       elapsed += std::chrono::seconds{9};
        EXPECT_FALSE(handler.HasTimedOut(timeout));
 
-       // 6. Advance the time past the 10 seconds timeout threshold (Total: 11 seconds).
-       test_factory.AdvanceTime(std::chrono::seconds{2});
+       // 5. Advance past 10-second threshold (total: 11 seconds).
+       elapsed += std::chrono::seconds{2};
        EXPECT_TRUE(handler.HasTimedOut(timeout));
 
-   } // <-- 7. Here, `clock_override` is destroyed, and the real clock backend is automatically restored.
+   } // clock_override is destroyed here; real backend is restored.
 
 
 Bazel BUILD Setup

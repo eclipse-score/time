@@ -39,7 +39,7 @@ Choosing the Right Clock
 
 The S-CORE ``time`` module provides several clock types, each designed for a specific use case. Understanding their differences is crucial for writing robust and correct applications.
 
-In general, you should **always prefer ``VehicleTime``** unless you have a specific reason to measure a local time interval or need a simple wall-clock timestamp for purely informational purposes.
+Select clock type based on use case. No clock type is universally better; each has a different purpose.
 
 .. list-table:: Clock Types Overview
    :widths: 20 40 40
@@ -49,8 +49,8 @@ In general, you should **always prefer ``VehicleTime``** unless you have a speci
      - Key Characteristic
      - Typical Use Case
    * - ``VehicleTime``
-     - High-precision, PTP-synchronized, quality-assured network time. **This is the recommended clock for almost all applications.**
-     - Synchronized logging across ECUs, event timestamping, any logic that depends on a common time base in the vehicle.
+     - High-precision, PTP-synchronized, quality-assured network time.
+     - Cross-ECU correlation, synchronized logging, and decisions that depend on vehicle-wide time consistency (for example: validating whether a vehicle-time-stamped frame is too old and should be discarded).
    * - ``SystemTime``
      - The system's "wall clock" time (Unix time). Can jump forwards or backwards (e.g., due to NTP correction or manual changes).
      - Displaying human-readable timestamps. Creating log entries where absolute time is more important than monotonic progression.
@@ -135,6 +135,7 @@ To use the ``score::time`` library in your application:
 Runtime Requirements
 ====================
 
-The ``score::time`` library requires the ``TimeSlave`` and ``TimeDaemon`` system services to be running.
+If using ``VehicleTime``, ``TimeSlave`` and ``TimeDaemon`` system services must be running.
+``SystemTime``, ``SteadyTime``, and ``HighResSteadyTime`` do not depend on those daemons.
 For deployment and configuration of these services, refer to the module manual and component manuals for
 :doc:`/components/time_slave/manuals/user_manual` and :doc:`/components/time_daemon/manuals/user_manual`.

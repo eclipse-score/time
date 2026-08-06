@@ -21,7 +21,7 @@ User Manual
    :id: doc__user_manual_time
    :status: draft
    :version: 1
-   :safety: QM
+   :safety: ASIL-B (TBC)
    :security: NO
    :realizes: wp__training_path[version==1]
 
@@ -146,17 +146,21 @@ For comprehensive information on the following topics:
 Safety and Security
 ===================
 
-**Safety Classification**: QM (Quality Managed)
+**Safety Classification**: ASIL-B (TBC)
 
-This module is designed for Quality Managed (QM) applications. For safety-critical usage requirements and guidelines, refer to the safety manual (to be added in future releases).
+Safety classification details are currently being aligned with ongoing stakeholder and feature requirement clarifications. Current working classification is:
+
+* ``score::time`` library: ASIL-B (TBC)
+* ``TimeDaemon``: ASIL-B
+* ``TimeSlave``: QM
+
+For final safety-critical usage requirements and guidelines, refer to the safety manual updates in upcoming releases.
 
 **Security Considerations**:
 
 * The ``time`` module assumes a trusted network for PTP communication
 * No authentication or encryption is provided for PTP messages (per IEEE 1588 standard)
-* OS-level security (Linux Capabilities) limits attack surface for TimeSlave daemon
-
-For detailed security aspects and requirements, refer to the security manual (to be added in future releases).
+* OS-level security controls limit attack surface for TimeSlave daemon (Linux Capabilities on Linux, equivalent least-privilege process configuration on QNX)
 
 License
 =======
