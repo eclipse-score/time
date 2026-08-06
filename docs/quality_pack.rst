@@ -56,15 +56,19 @@ Code coverage
 Requirements traceability (dashboards + gate)
 =============================================
 
-Requirements live under ``docs/features/time/`` and use the Score
-metamodel directives (``feat_req::`` / ``comp_req::``). Source-code
-and test-code links are consumed by ``score_docs_as_code``:
+Feature requirements live under ``docs/features/time/feature_requirements.rst``.
+Component requirements live alongside each component under
+``score/time/<component>/docs/requirements/requirements.rst``
+(``vehicle_time``, ``steady_time``, ``system_time``, ``high_res_steady_time``),
+matching the ``module_template`` layout. All entries use the Score metamodel
+directives (``feat_req::`` / ``comp_req::``). Source-code and test-code links
+are consumed by ``score_docs_as_code``:
 
 - **Source-code markers** — in the C++ implementation:
 
   .. code-block:: cpp
 
-     // # req-Id: comp_req__time__vehicle_clock_snapshot
+     // # req-Id: comp_req__vehicle_time__snapshot
      Snapshot Now() { ... }
 
   The leading ``// #`` is intentional; the linker regex looks for the
@@ -81,7 +85,7 @@ and test-code links are consumed by ``score_docs_as_code``:
 
      TEST(VehicleClockTest, InitForwardsToBackend)
      {
-         ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time__vehicle_clock_lifecycle");
+         ::testing::Test::RecordProperty("FullyVerifies", "comp_req__vehicle_time__lifecycle");
          ::testing::Test::RecordProperty("TestType", "requirements-based");
          ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
          ::testing::Test::RecordProperty("Description", "…");

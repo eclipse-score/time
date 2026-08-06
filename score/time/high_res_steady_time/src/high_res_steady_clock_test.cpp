@@ -28,7 +28,7 @@ namespace time
 
 TEST(HighResSteadyClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
 {
-    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time__hirs_clock_snapshot");
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__high_res_steady_time__snapshot");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
     ::testing::Test::RecordProperty("Description",

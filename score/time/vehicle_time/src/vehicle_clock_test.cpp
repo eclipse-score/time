@@ -52,7 +52,7 @@ class SampleVehicleService
 
 TEST(VehicleClockTest, NowReturnsSynchronizedStatusAndTimepoint)
 {
-    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time__vehicle_clock_snapshot");
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__vehicle_time__snapshot");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "equivalence-classes");
     ::testing::Test::RecordProperty("Description",
@@ -103,7 +103,7 @@ TEST(VehicleClockTest, NowIsReliableReturnsFalseWhenTimeoutSet)
 
 TEST(VehicleClockTest, InitForwardsToBackend)
 {
-    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time__vehicle_clock_lifecycle");
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__vehicle_time__lifecycle");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
     ::testing::Test::RecordProperty("Description", "VehicleClock::Init delegates to the backend Init call.");

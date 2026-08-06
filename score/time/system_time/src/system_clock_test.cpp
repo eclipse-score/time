@@ -43,7 +43,7 @@ class SampleSystemService
 
 TEST(SystemClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
 {
-    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time__system_clock_snapshot");
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__system_time__snapshot");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
     ::testing::Test::RecordProperty("Description",

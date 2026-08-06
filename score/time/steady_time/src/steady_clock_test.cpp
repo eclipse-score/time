@@ -43,7 +43,7 @@ class SampleSteadyService
 
 TEST(SteadyClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
 {
-    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time__steady_clock_snapshot");
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__steady_time__snapshot");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
     ::testing::Test::RecordProperty("Description",

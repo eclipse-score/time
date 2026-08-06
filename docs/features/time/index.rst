@@ -10,7 +10,6 @@ score::time — Unified Clock Interface
    :caption: Requirements
 
    feature_requirements
-   component_requirements
 
 Overview
 --------
