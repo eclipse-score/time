@@ -107,3 +107,22 @@ build:lsan  --config=asan_ubsan_lsan
 test:clang-tidy --aspects=//tools/lint:linters.bzl%clang_tidy_aspect
 test:clang-tidy --output_groups=+rules_lint_report
 test:clang-tidy --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
+
+# -------------------------------------------------------------------------------
+# CodeQL static analysis — MISRA C++:2023
+# -------------------------------------------------------------------------------
+# Forces a clean, cache-free build so the CodeQL tracer intercepts every
+# compiler invocation. Uses the LLVM toolchain — required because the CodeQL
+# LD_PRELOAD tracer does not intercept the hermetic GCC toolchain wrapper chain.
+#
+# Run with: bazel run //tools/static_analysis:codeql_lint -- \
+#               --output-dir /tmp/codeql-results \
+#               --output-prefix codeql-time \
+#               --target //score/...
+build:codeql --platform_suffix=codeql
+build:codeql --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
+build:codeql --sandbox_writable_path=/var/tmp
+build:codeql --nouse_action_cache
+build:codeql --noremote_accept_cached
+build:codeql --noremote_upload_local_results
+build:codeql --disk_cache=
