@@ -25,7 +25,7 @@ jobs:
   codeql:
     uses: eclipse-score/cicd-workflows/.github/workflows/codeql.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
     with:
-      build-script: "bazel build --config=time-x86_64-linux //score/..."
+      build-script: "bazel build --config=x86_64-linux //score/..."
     permissions:
       security-events: write
       contents: read
