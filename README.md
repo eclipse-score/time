@@ -1,38 +1,151 @@
+# Time
 
-# C++ & Rust Bazel Template Repository
+Unified time service library and distributed time synchronization infrastructure for automotive ECU software.
 
-This repository serves as a **template** for setting up **C++ and Rust projects** using **Bazel**.
-It provides a **standardized project structure**, ensuring best practices for:
+[![Documentation](https://img.shields.io/badge/docs-time-blue)](https://eclipse-score.github.io/time)
 
-- **Build configuration** with Bazel.
-- **Testing** (unit and integration tests).
-- **Documentation** setup.
-- **CI/CD workflows**.
-- **Development environment** configuration.
+## Overview
+
+Portable and high-performance implementation of time services for the S-CORE project.
+
+This repository contains source code for time clocks, time distribution infrastructure, and PTP synchronization. The Time module is implemented in C++ and provides working examples demonstrating usage patterns.
+
+High-level functionality provided by the Time module:
+
+- **Clock Domains**: Four time sources accessed through unified `Clock<Tag>` API; all domains support nanosecond resolution and compile-time domain selection preventing cross-domain timing errors; mock backends and `ScopedClockOverride` available for testing
+  - **SystemTime**: Wall-clock time (Unix epoch) for timestamps and user-visible time displays
+  - **SteadyTime**: Monotonic time for duration measurements and timeouts
+  - **HighResSteadyTime**: High-resolution monotonic time for precise timing applications
+  - **VehicleTime**: PTP-synchronized time for distributed automotive applications requiring initialization
+- **Clock API**: Type-safe `Clock<Tag>::GetInstance().Now()` returns time and status information
+- **Event Subscription**: `Subscribe<EventType>()` / `Unsubscribe<EventType>()` for status changes and PTP timebase data
+- **Time Infrastructure**
+  - **TimeDaemon**: Standalone daemon that retrieves synchronized time from TimeSlave, validates timepoints, sets synchronization status, and distributes VehicleTime to applications
+  - **TimeSlave**: gPTP (IEEE 802.1AS) slave endpoint that implements network synchronization protocol, calculates time offset, and publishes synchronization time data to the TimeDaemon
 
 ---
 
-## 📂 Project Structure
+## 📋 Public API
 
-| File/Folder                         | Description                                       |
-| ----------------------------------- | ------------------------------------------------- |
-| `README.md`                         | Short description & build instructions            |
-| `src/`                              | Source files for the module                       |
-| `tests/`                            | Unit tests (UT) and integration tests (IT)        |
-| `examples/`                         | Example files used for guidance                   |
-| `docs/`                             | Documentation (Doxygen for C++ / mdBook for Rust) |
-| `.github/workflows/`                | CI/CD pipelines                                   |
-| `.vscode/`                          | Recommended VS Code settings                      |
-| `.bazelrc`, `MODULE.bazel`, `BUILD` | Bazel configuration & settings                    |
-| `project_config.bzl`                | Project-specific metadata for Bazel macros        |
-| `LICENSE.md`                        | Licensing information                             |
-| `CONTRIBUTION.md`                   | Contribution guidelines                           |
+### Clock Domains
+
+#### SystemTime
+
+| Target | Purpose |
+|--------|---------|
+| `//score/time/system_time` | Wall-clock time (Unix epoch) for timestamps |
+| `//score/time/system_time:system_time_mock` | Mock backend for SystemTime testing |
+| `//score/time/system_time:interface` | Header-only interface (no backend) |
+
+#### SteadyTime
+
+| Target | Purpose |
+|--------|---------|
+| `//score/time/steady_time` | Monotonic time for duration measurement |
+| `//score/time/steady_time:steady_time_mock` | Mock backend for SteadyTime testing |
+| `//score/time/steady_time:interface` | Header-only interface (no backend) |
+
+#### HighResSteadyTime
+
+| Target | Purpose |
+|--------|---------|
+| `//score/time/high_res_steady_time` | High-resolution monotonic time |
+| `//score/time/high_res_steady_time:high_res_steady_time_mock` | Mock backend for HighResSteadyTime testing |
+| `//score/time/high_res_steady_time:interface` | Header-only interface (no backend) |
+
+#### VehicleTime
+
+| Target | Purpose |
+|--------|---------|
+| `//score/time/vehicle_time` | PTP-synchronized vehicle time |
+| `//score/time/vehicle_time:vehicle_time_mock` | Mock backend for VehicleTime testing |
+| `//score/time/vehicle_time:interface` | Header-only interface (no backend) |
+
+### Test Utilities
+
+| Target | Purpose |
+|--------|---------|
+| `//score/time/clock:clock_test_utils` | ScopedClockOverride and ClockTestFactory utilities |
+
+---
+
+## ⚙️ Using as Dependency
+
+Add to your `MODULE.bazel`:
+
+```python
+bazel_dep(name = "score_time", version = "x.x.x")
+```
+
+Check available versions in the [S-CORE Bazel Registry](https://eclipse-score.github.io/bazel_registry_ui/modules/score_time).
+
+### Using Unreleased Versions
+
+To depend on an unreleased version (for development or testing), use a git override in your `MODULE.bazel`:
+
+```python
+git_override(
+    module_name = "score_time",
+    commit = "abc123...",
+    remote = "https://github.com/eclipse-score/time.git",
+)
+```
+
+Replace the `commit` value with the specific git hash you want to use.
+
+### Executable Artifacts
+
+For deployment, use these executable targets:
+
+Available binaries:
+
+- `@score_time//score/time_daemon:time_daemon` - TimeDaemon executable for time distribution
+- `@score_time//score/time_slave:time_slave` - TimeSlave executable for PTP synchronization
+
+Run artifacts directly:
+
+```bash
+bazel run @score_time//score/time_daemon:time_daemon
+bazel run @score_time//score/time_slave:time_slave
+```
+
+Do not add these to `deps` as libraries. Use them as runtime artifacts for your deployment system.
+
+---
+
+## 📖 Documentation
+
+- **[Time Feature Documentation](https://eclipse-score.github.io/score/main/features/time/index.html)**: High-level feature overview and S-CORE platform integration
+- **[Time Module Documentation](https://eclipse-score.github.io/time)**: Detailed API documentation, architecture, and requirements
+
+Generate module documentation locally:
+
+```bash
+bazel run //:docs
+```
 
 ---
 
 ## 🚀 Getting Started
 
-### 0️⃣ Set up development environment
+This section contains information on how to build and use the Time module.
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/eclipse-score/time.git
+cd time
+```
+
+### Prerequisites
+
+- **C++ Compiler**: gcc/clang with C++17 support
+- **Build System**: Bazel 8+ (managed via Bazelisk)
+- **Operating System**: Linux (Ubuntu 24.04+)
+- **Dependencies**: S-CORE Baselibs, Google Test
+- **For QNX targets**: QNX 8.0 SDP
+
+### Development Environment
 
 Use devcontainer as default path. It includes Bazel tooling and dependencies.
 
@@ -40,89 +153,89 @@ Use devcontainer as default path. It includes Bazel tooling and dependencies.
 2. Open repository in a devcontainer-capable editor (for example VS Code with Dev Containers extension).
 3. Reopen workspace in container.
 
-Official setup guide:
-https://eclipse-score.github.io/score/main/contribute/development/development_environment.html
+Follow the [S-CORE Development Environment Guide](https://eclipse-score.github.io/score/main/contribute/development/development_environment.html) for Linux host setup requirements.
 
-If devcontainer not available, follow manual setup steps in same guide.
+### Building the Project
 
+Build all components for **Linux x86_64** by running:
 
-### 1️⃣ Clone the Repository
-
-```sh
-git clone https://github.com/eclipse-score/YOUR_PROJECT.git
-cd YOUR_PROJECT
+```bash
+bazel build --config=time-x86_64-linux //score/... //examples/...
 ```
 
-### 2️⃣ Build the Examples of module
+Run all tests:
 
-> DISCLAIMER: Depending what module implements, it's possible that different
-> configuration flags needs to be set on command line.
-
-To build all targets of the module the following command can be used:
-
-```sh
-bazel build //src/...
+```bash
+bazel test --config=time-x86_64-linux //score/... //examples/...
 ```
 
-This command will instruct Bazel to build all targets that are under Bazel
-package `src/`. The ideal solution is to provide single target that builds
-artifacts, for example:
+#### Other Platforms
 
-```sh
-bazel build //src/<module_name>:release_artifacts
+**Linux AArch64**:
+```bash
+bazel build --config=time-arm64-linux //score/... //examples/...
+bazel test --config=time-arm64-linux //score/... //examples/...
 ```
 
-where `:release_artifacts` is filegroup target that collects all release
-artifacts of the module.
+**QNX x86_64**:
+```bash
+bazel build --config=time-x86_64-qnx //score/... //examples/...
+bazel test --config=time-x86_64-qnx //score/... //examples/...
+```
 
-> NOTE: This is just proposal, the final decision is on module maintainer how
-> the module code needs to be built.
+**QNX AArch64**:
+```bash
+bazel build --config=time-aarch64-qnx //score/... //examples/...
+bazel test --config=time-aarch64-qnx //score/... //examples/...
+```
 
-### 3️⃣ Run Tests
+#### Testing with Sanitizers
 
-```sh
-bazel test //tests/...
+To test with AddressSanitizer, UBSan, and LeakSanitizer enabled:
+
+```bash
+bazel test --config=time-x86_64-linux --config=asan_ubsan_lsan --build_tests_only //score/... //examples/...
 ```
 
 ---
 
-## 🛠 Tools & Linters
+## 💡 Examples
 
-The template integrates **tools and linters** from **centralized repositories** to ensure consistency across projects.
+Working examples demonstrating clock usage patterns, testing approaches, and integration techniques are available in the [examples/](examples/) directory:
 
-- **C++:** `clang-tidy`, `cppcheck`, `Google Test`
-- **Rust:** `clippy`, `rustfmt`, `Rust Unit Tests`
-- **CI/CD:** GitHub Actions for automated builds and tests
+- **examples/time/system_time** — SystemTime usage for wall-clock timestamps
+- **examples/time/steady_time** — SteadyTime usage for duration measurements
+- **examples/time/high_res_steady_time** — HighResSteadyTime usage for high-resolution timing
+- **examples/time/vehicle_time** — VehicleTime usage with PTP synchronization
 
----
-
-## 📖 Documentation
-
-- A **centralized docs structure** is planned.
+Each example includes a handler demonstrating the Clock API and corresponding unit tests.
 
 ---
 
-## ⚙️ `project_config.bzl`
+## 📂 Repository Structure
 
-This file defines project-specific metadata used by Bazel macros, such as `dash_license_checker`.
-
-### 📌 Purpose
-
-It provides structured configuration that helps determine behavior such as:
-
-- Source language type (used to determine license check file format)
-- Safety level or other compliance info (e.g. ASIL level)
-
-### 📄 Example Content
-
-```python
-PROJECT_CONFIG = {
-    "asil_level": "QM",  # or "ASIL-A", "ASIL-B", etc.
-    "source_code": ["cpp", "rust"]  # Languages used in the module
-}
+```
+├── score/
+│   ├── time/                    # Clock domains (SystemTime, SteadyTime, etc.)
+│   ├── time_daemon/             # Time distribution daemon
+│   ├── time_slave/              # PTP timebase implementation
+│   └── ts_client/               # Library for time slave communication
+├── examples/                    # Usage examples and patterns
+├── docs/                        # Module documentation
+└── tools/                       # Build and development utilities
 ```
 
-### 🔧 Use Case
+---
 
-When used with macros like `dash_license_checker`, it allows dynamic selection of file types
- (e.g., `cargo`, `requirements`) based on the languages declared in `source_code`.
+## 🤝 Contributing
+
+See our [Contributing Guide](CONTRIBUTION.md) for contribution guidelines and development workflow.
+
+---
+
+## 🔗 Support
+
+### Community
+
+- **Issues**: Report bugs and request features via [GitHub Issues](https://github.com/eclipse-score/time/issues)
+- **Discussions**: Join time [Slack Channel](https://sdvworkinggroup.slack.com/archives/C0ADTA4SKUH)
