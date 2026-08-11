@@ -1,0 +1,74 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
+# ============================================================================
+# Common settings (Linux and QNX)
+# ============================================================================
+coverage --nocache_test_results
+coverage --cxxopt=-O0
+coverage --combined_report=lcov
+# Static linking eliminates the coverage race where headers instrumented in one
+# .so shadow differently-instrumented copies in another.
+coverage --dynamic_mode=off
+
+# Sandbox and host platform settings (mirrors time_shared) so coverage commands
+# work without an additional --config flag.
+coverage --incompatible_strict_action_env
+coverage --sandbox_writable_path=/var/tmp
+coverage --host_platform=@score_bazel_platforms//:x86_64-linux
+
+# ============================================================================
+# Linux: LLVM source-based coverage (default)
+# ============================================================================
+# Source-based coverage tracks AST regions, not assembly branches, eliminating
+# phantom branches from exception-unwind edges and GMock bookkeeping.
+coverage --experimental_fetch_all_coverage_outputs
+coverage --experimental_generate_llvm_lcov
+coverage --experimental_use_llvm_covmap
+# Generic Linux platform — the GCC-specific platform from time-x86_64-linux
+# would block the LLVM toolchain resolution.
+coverage --platforms=@score_bazel_platforms//:x86_64-linux
+coverage --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
+
+# --experimental_use_llvm_covmap instruments ALL targets; --instrumentation_filter
+# still controls which object files appear in the per-test coverage manifest
+# passed to the merger. Without it Bazel defaults to the test's own package only.
+coverage --instrumentation_filter="^//score[/:]"
+
+# Custom per-test merger (profraw→profdata zip) and final reporter (HTML+LCOV).
+coverage --coverage_output_generator=//quality/coverage/llvm_cov:merger
+coverage --coverage_report_generator=//quality/coverage/llvm_cov:reporter_wrapper
+
+# Suppress gcov post-processing; the merger handles profdata directly.
+coverage --test_env=COVERAGE_GCOV_PATH=/usr/bin/true
+coverage --test_env=GENERATE_LLVM_LCOV=0
+
+# Continuous-mode profiling — writes .profraw even from ASSERT_DEATH subprocesses.
+# Requires counter relocation via the enable_llvm_coverage_for_death_tests feature
+# defined in //quality/coverage:enable_llvm_coverage_for_death_tests.
+coverage --test_env=LLVM_PROFILE_CONTINUOUS_MODE=1
+coverage --features=enable_llvm_coverage_for_death_tests
+
+# ============================================================================
+# QNX: GCC/gcov pipeline — activated by --config=time-x86_64-qnx
+# ============================================================================
+coverage:time-x86_64-qnx --noexperimental_use_llvm_covmap
+coverage:time-x86_64-qnx --noexperimental_generate_llvm_lcov
+coverage:time-x86_64-qnx --noexperimental_fetch_all_coverage_outputs
+coverage:time-x86_64-qnx --coverage_output_generator=@bazel_tools//tools/test:lcov_merger
+coverage:time-x86_64-qnx --coverage_report_generator=@bazel_tools//tools/test:coverage_report_generator
+coverage:time-x86_64-qnx --test_env=GENERATE_LLVM_LCOV
+coverage:time-x86_64-qnx --test_env=COVERAGE_GCOV_PATH
+coverage:time-x86_64-qnx --test_env=LLVM_PROFILE_CONTINUOUS_MODE
+coverage:time-x86_64-qnx --cxxopt=-fprofile-update=atomic
+coverage:time-x86_64-qnx --test_env=COVERAGE_GCOV_OPTIONS=-bcu

@@ -70,10 +70,10 @@ build:time-arm64-qnx --extra_toolchains=@score_qcc_aarch64_toolchain//:aarch64-q
 # -------------------------------------------------------------------------------
 try-import %workspace%/user.bazelrc
 
-# Coverage configuration for C++
-coverage --features=coverage
-coverage --combined_report=lcov
-coverage --cache_test_results=no
+# Coverage configuration — LLVM (Linux) + gcov (QNX).
+# All coverage settings live in quality/coverage/coverage.bazelrc.
+# Usage: bazel coverage //score/... --build_tests_only
+import %workspace%/quality/coverage/coverage.bazelrc
 
 # -------------------------------------------------------------------------------
 # Sanitizer configurations — powered by score_cpp_policies

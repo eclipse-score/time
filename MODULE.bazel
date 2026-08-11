@@ -70,6 +70,8 @@ bazel_dep(name = "score_logging", version = "0.2.1")
 ### Modules that are used internally within the repository but not exposed as part of the public API
 
 bazel_dep(name = "score_docs_as_code", version = "4.5.0")
+# Required by //quality/coverage/llvm_cov:enable_llvm_coverage_for_death_tests (cc_feature).
+bazel_dep(name = "rules_cc", version = "0.2.17", dev_dependency = True)
 
 bazel_dep(name = "score_cpp_policies", version = "0.0.1", dev_dependency = True)
 
@@ -120,8 +122,11 @@ llvm = use_extension(
 )
 llvm.toolchain(
     llvm_version = "19.1.7",
+    extra_known_features = [
+        "//quality/coverage/llvm_cov:enable_llvm_coverage_for_death_tests",
+    ],
 )
-use_repo(llvm, "llvm_toolchain")
+use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
 
 # grpc-java@1.66.0 has a BCR bug (extension no longer generates
 # com_envoyproxy_protoc_gen_validate). Pulled transitively via

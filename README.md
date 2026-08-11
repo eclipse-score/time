@@ -67,8 +67,36 @@ artifacts of the module.
 ### 3️⃣ Run Tests
 
 ```sh
-bazel test //tests/...
+bazel test --config=time-x86_64-linux //score/...
 ```
+
+### 4️⃣ Run Coverage (Linux — LLVM source-based)
+
+All coverage configuration lives in [`quality/coverage/`](quality/coverage/README.md).
+See that README for the full pipeline architecture, scope configuration, and
+how to extend coverage to new components.
+
+```sh
+bazel coverage --build_tests_only //score/...
+```
+
+The reporter generates an HTML report, LCOV data, and a text summary, packaged
+in a zip at `$(bazel info output_path)/_coverage/_coverage_report.dat`.
+Extract and check thresholds with the bundled script:
+
+```sh
+output_path="$(bazel info output_path)"
+unzip -o "${output_path}/_coverage/_coverage_report.dat" -d coverage_output/
+python3 quality/coverage/check_coverage.py \
+  --coverage-dir coverage_output/ \
+  --min-line 85 \
+  --min-branch 70
+# HTML report: coverage_output/html_report/index.html
+# LCOV data:   coverage_output/lcov_report/lcov.dat
+```
+
+**QNX coverage** uses the gcov pipeline. Add `--config=time-x86_64-qnx` to
+activate it; the LLVM settings are reset automatically.
 
 ---
 
