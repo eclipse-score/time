@@ -199,6 +199,43 @@ bazel test --config=time-x86_64-linux --config=asan_ubsan_lsan --build_tests_onl
 
 ---
 
+## 🛠 Tools & Linters
+
+### Clang-tidy
+
+```sh
+bazel test --config=clang-tidy //score/...
+```
+
+### CodeQL — MISRA C++:2023 static analysis
+
+Runs a full build-traced MISRA C++:2023 scan using the vendored CodeQL CLI and
+pre-compiled query pack. The first run downloads ~1 GB of tooling (CodeQL CLI +
+MISRA pack) into the Bazel repository cache; subsequent runs reuse the cache.
+
+```sh
+bazel run //tools/static_analysis:codeql_lint -- \
+    --output-dir /tmp/codeql-results \
+    --output-prefix codeql-time \
+    --target //score/...
+```
+
+**Results** are written to `--output-dir` on completion:
+
+| File | Contents |
+| ---- | -------- |
+| `codeql-time.sarif` | SARIF v2.1 — import into VS Code ([SARIF Viewer extension](https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer)) or any SARIF-aware tool |
+| `codeql-time.csv` | Flat findings table: rule, file, line, message |
+| `analysis_reports/database_integrity_report.md` | Extraction errors (external deps are expected) |
+| `analysis_reports/deviations_report.md` | Active MISRA C++:2023 deviations |
+| `analysis_reports/guideline_compliance_summary.md` | Per-rule compliance summary |
+| `analysis_reports/guideline_recategorizations_report.md` | Rule recategorization log |
+
+To open SARIF results in VS Code: install the **SARIF Viewer** extension, then
+`Ctrl+Shift+P` → *SARIF: Open SARIF file* → select `codeql-time.sarif`.
+
+---
+
 ## 💡 Examples
 
 Working examples demonstrating clock usage patterns, testing approaches, and integration techniques are available in the [examples/](examples/) directory:

@@ -10,18 +10,15 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+filegroup(
+    name = "codeql",
+    srcs = glob(["**"]),
+    visibility = ["//visibility:public"],
+)
 
-cc_binary(
-    name = "HighResSteadyTimeBenchmark",
-    testonly = True,
-    srcs = [
-        "benchmark.cpp",
-    ],
-    features = [
-        "third_party_warnings",
-    ],
-    deps = [
-        "//score/time/high_res_steady_time",
-        "@google_benchmark//:benchmark_main",
-    ],
+sh_binary(
+    name = "codeql_cli",
+    srcs = ["codeql/codeql"],
+    data = glob(["codeql/**"]),
+    visibility = ["//visibility:public"],
 )

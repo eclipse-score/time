@@ -16,7 +16,7 @@
 #include "score/time_slave/src/gptp/gptp_engine.h"
 #include "score/ts_client/src/gptp_ipc_publisher.h"
 
-#include "src/lifecycle_client_lib/include/application.h"
+#include "score/mw/lifecycle/application.h"
 
 #include <memory>
 
