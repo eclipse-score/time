@@ -56,8 +56,8 @@ cc_library(
 )
 
 cc_test(
-    name = "steady_clock_test",
-    srcs = ["steady_clock_test.cpp"],
+    name = "steady_clock_adapter_test",
+    srcs = ["steady_clock_adapter_test.cpp"],
     features = COMPILER_WARNING_FEATURES,
     tags = [
         "exclusive",
@@ -71,9 +71,24 @@ cc_test(
     ],
 )
 
+cc_test(
+    name = "steady_clock_integration_test",
+    srcs = ["steady_clock_integration_test.cpp"],
+    features = COMPILER_WARNING_FEATURES,
+    tags = ["unit"],
+    deps = [
+        ":steady_clock_impl",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    cc_unit_tests = [":steady_clock_test"],
+    cc_unit_tests = [
+        ":steady_clock_adapter_test",
+        ":steady_clock_integration_test",
+    ],
     test_suites_from_sub_packages = [
         "//score/time/steady_time/src/details:unit_test_suite",
     ],
