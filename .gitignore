@@ -58,3 +58,6 @@ __pycache__/
 .cache/*
 compile_commands.json
 rust-project.json
+
+# CodeQL local analysis output (any --output-dir placed inside the repo)
+codeql-*/

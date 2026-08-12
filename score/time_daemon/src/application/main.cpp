@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_daemon/src/application/time_daemon.h"
 
-#include "src/lifecycle_client_lib/include/runapplication.h"
+#include "score/mw/lifecycle/runapplication.h"
 
 int main(int argc, const char* argv[])
 {

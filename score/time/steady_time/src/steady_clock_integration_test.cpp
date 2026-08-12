@@ -10,11 +10,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_slave/src/application/time_slave.h"
+#include "score/time/steady_time/src/steady_clock.h"
 
-#include "score/mw/lifecycle/runapplication.h"
+#include <gtest/gtest.h>
 
-int main(int argc, const char* argv[])
+#include <chrono>
+#include <thread>
+
+namespace score
 {
-    return score::mw::lifecycle::run_application<score::ts::TimeSlave>(argc, argv);
+namespace time
+{
+
+TEST(SteadyClockTest, GetInstanceNowIsMonotonicallyIncreasing)
+{
+    const auto first = SteadyClock::GetInstance().Now();
+    std::this_thread::sleep_for(std::chrono::milliseconds{5});
+    EXPECT_GT(SteadyClock::GetInstance().Now().TimePoint(), first.TimePoint());
 }
+
+}  // namespace time
+}  // namespace score

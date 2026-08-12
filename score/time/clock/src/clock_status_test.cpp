@@ -151,5 +151,38 @@ TEST_F(TestClockStatus, OutOfRangeFlagAborts)
     ASSERT_DEATH(static_cast<void>(status.IsFlagActive(StatusFlagOutOfRange::kUnknown)), "");
 }
 
+TEST_F(TestClockStatus, IsAnyOfFlagsActiveReturnsTrueOnFirstMatch)
+{
+    ClockStatus<StatusFlag> status{StatusFlag::kTimeOut};
+
+    EXPECT_TRUE(status.IsAnyOfFlagsActive({StatusFlag::kTimeOut, StatusFlag::kSynchronized}));
+}
+
+TEST_F(TestClockStatus, IsAnyOfFlagsActiveReturnsTrueOnLaterMatch)
+{
+    ClockStatus<StatusFlag> status{StatusFlag::kSynchronized};
+
+    EXPECT_TRUE(status.IsAnyOfFlagsActive({StatusFlag::kTimeOut, StatusFlag::kSynchronized}));
+    EXPECT_TRUE(
+        status.IsAnyOfFlagsActive({StatusFlag::kTimeOut, StatusFlag::kSynchToGateway, StatusFlag::kSynchronized}));
+}
+
+TEST_F(TestClockStatus, IsAnyOfFlagsActiveWithEmptyListReturnsFalse)
+{
+    const ClockStatus<StatusFlag> status{StatusFlag::kSynchronized};
+
+    EXPECT_FALSE(status.IsAnyOfFlagsActive({}));
+}
+
+TEST_F(TestClockStatus, InitializerListConstructorWithZeroFlagsMatchesDefault)
+{
+    const std::initializer_list<StatusFlag> no_flags{};
+    const ClockStatus<StatusFlag> status{no_flags};
+
+    EXPECT_EQ(status.ToUnderlying(), std::uint32_t{0U});
+    EXPECT_FALSE(status.IsAnyOfFlagsActive(
+        {StatusFlag::kTimeOut, StatusFlag::kSynchronized, StatusFlag::kSynchToGateway, StatusFlag::kUnknown}));
+}
+
 }  // namespace time
 }  // namespace score
