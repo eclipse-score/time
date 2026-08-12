@@ -73,7 +73,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="Advanced API Usage: Subscribing to PTP Protocol Events" href="advanced_api.html" />
+    <link rel="next" title="Time Slave User Manual" href="../../../time_slave/manuals/user_manual.html" />
     <link rel="prev" title="Clock Lifecycle Management" href="lifecycle.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -165,8 +165,8 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../../../../manuals/index.html">
-    Manuals
+  <a class="nav-link nav-internal" href="../../../../module/index.html">
+    Module
   </a>
 </li>
 
@@ -294,8 +294,8 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../../../../manuals/index.html">
-    Manuals
+  <a class="nav-link nav-internal" href="../../../../module/index.html">
+    Module
   </a>
 </li>
 
@@ -377,21 +377,26 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../../manuals/user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="../user_manual.html">Time Library User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="api_usage.html">API Usage: Accessing Vehicle Time</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lifecycle.html">Clock Lifecycle Management</a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Unit-Testing Time-Dependent Code</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../../module/manuals/index.html">Manuals</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../../../../module/manuals/user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../../../../module/manuals/api_description/api_usage.html">API Usage: Accessing Vehicle Time</a></li>
+
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="../user_manual.html">Time Library User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="lifecycle.html">Clock Lifecycle Management</a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#">Unit-Testing Time-Dependent Code</a></li>
 
 
 
-<li class="toctree-l3"><a class="reference internal" href="advanced_api.html">Advanced API Usage: Subscribing to PTP Protocol Events</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../manuals/examples/index.html">Examples User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../manuals/troubleshooting_guide.html">Troubleshooting Guide</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../module/manuals/examples/index.html">Examples User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../module/manuals/troubleshooting_guide.html">Troubleshooting Guide</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../module/manuals/safety_manual.html">Safety Manual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../module/manuals/security_manual.html">Security Manual</a></li>
 </ul>
 </details></li>
 </ul>
@@ -435,10 +440,13 @@
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../../../../manuals/index.html" class="nav-link">Manuals</a></li>
+    <li class="breadcrumb-item"><a href="../../../../module/index.html" class="nav-link">Module</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../../../manuals/user_manual.html" class="nav-link">User Manual</a></li>
+    <li class="breadcrumb-item"><a href="../../../../module/manuals/index.html" class="nav-link">Manuals</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../../module/manuals/user_manual.html" class="nav-link">User Manual</a></li>
     
     
     <li class="breadcrumb-item"><a href="../user_manual.html" class="nav-link">Time Library User Manual</a></li>
@@ -466,7 +474,7 @@
 </section>
 <section id="using-existing-test-utilities">
 <h1>Using Existing Test Utilities<a class="headerlink" href="#using-existing-test-utilities" title="Link to this heading">#</a></h1>
-<p>The framework already provides <code class="docutils literal notranslate"><span class="pre">ClockTestFactory&lt;Tag&gt;</span></code> in
+<p>The framework provides <code class="docutils literal notranslate"><span class="pre">ClockTestFactory&lt;Tag&gt;</span></code> in
 <code class="docutils literal notranslate"><span class="pre">score/time/clock/src/clock_test_factory.h</span></code> for constructor-based mock injection.</p>
 <p>Use this helper when your component accepts <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;</span></code> via constructor or setter injection.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/clock/src/clock_test_factory.h&quot;</span>
@@ -543,7 +551,7 @@
 <span class="w">    </span><span class="n">elapsed</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">seconds</span><span class="p">{</span><span class="mi">2</span><span class="p">};</span>
 <span class="w">    </span><span class="n">EXPECT_TRUE</span><span class="p">(</span><span class="n">handler</span><span class="p">.</span><span class="n">HasTimedOut</span><span class="p">(</span><span class="n">timeout</span><span class="p">));</span>
 
-<span class="p">}</span><span class="w"> </span><span class="c1">// clock_override is destroyed here; real backend is restored.</span>
+<span class="p">}</span><span class="w"> </span><span class="c1">// clock_override is destroyed here</span>
 </pre></div>
 </div>
 </section>
@@ -589,11 +597,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="advanced_api.html"
+       href="../../../time_slave/manuals/user_manual.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Advanced API Usage: Subscribing to PTP Protocol Events</p>
+        <p class="prev-next-title">Time Slave User Manual</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

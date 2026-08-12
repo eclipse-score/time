@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Examples User Manual &#8212; S-CORE Time  documentation</title>
+    <title>Security Manual &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -62,7 +62,7 @@
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'manuals/examples/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'module/manuals/security_manual';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Basic Clock Examples" href="basic_clocks.html" />
-    <link rel="prev" title="TimeDaemon Configuration" href="../../components/time_daemon/manuals/config/configuration_guide.html" />
+    <link rel="next" title="Components" href="../../components/index.html" />
+    <link rel="prev" title="Safety Manual" href="safety_manual.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.1" />
@@ -166,7 +166,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../index.html">
-    Manuals
+    Module
   </a>
 </li>
 
@@ -295,7 +295,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../index.html">
-    Manuals
+    Module
   </a>
 </li>
 
@@ -377,16 +377,10 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../../components/time/manuals/user_manual.html">Time Library User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../components/time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Examples User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="basic_clocks.html">Basic Clock Examples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="vehicle_time.html">Vehicle Time Example</a></li>
-</ul>
-</details></li>
-<li class="toctree-l2"><a class="reference internal" href="../troubleshooting_guide.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Manuals</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+<li class="toctree-l2"><a class="reference internal" href="safety_manual.html">Safety Manual</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Security Manual</a></li>
 </ul>
 </details></li>
 </ul>
@@ -430,12 +424,12 @@
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Manuals</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../user_manual.html" class="nav-link">User Manual</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Manuals</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Examples User Manual</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Security Manual</span></li>
   </ul>
 </nav>
 </div>
@@ -452,68 +446,119 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="examples-user-manual">
-<h1>Examples User Manual<a class="headerlink" href="#examples-user-manual" title="Link to this heading">#</a></h1>
-<p>This manual explains the examples included in the <code class="docutils literal notranslate"><span class="pre">examples/time/</span></code> subdirectory and how they
-can be used as patterns for building applications with the SCORE time library.</p>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">examples/time/</span></code> directory contains four working examples that demonstrate how to use
-different SCORE time sources:</p>
+  <section id="security-manual">
+<h1>Security Manual<a class="headerlink" href="#security-manual" title="Link to this heading">#</a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Document header</p>
+</div>
+<div class="need_container docutils container" id="SNCB-ff8246c6">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_security_manual">
+<tbody>
+<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
+<div class="line"><span><span class="needs_title"><span class="needs_data">Time Module Security Manual</span></span></span></div>
+</div>
+</td>
+<td class="head_center" colspan="2"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">draft</span></span></span></div>
+<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">YES</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
+</div>
+</td>
+<td class="head_right" colspan="2"><div class="needs_head_right line-block">
+<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
+</div>
+</td>
+</tr>
+<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
+<div class="line"><span><span><div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
+</span></span></div>
+<div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/security_management/security_management_workproducts.html#wp__module_security_manual">wp__module_security_manual</a></span></span></div>
+</span></div>
+</div>
+</td>
+<td class="meta" colspan="3"></td>
+</tr>
+<tr class="content row-odd"><td class="content" colspan="6"></td>
+</tr>
+<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__time_security_manual" title="doc__time_security_manual">doc__time_security_manual</a></span></span></div>
+</div>
+</td>
+<td class="footer" colspan="2"><div class="needs_footer line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Generic Document</span></span></span></div>
+</div>
+</td>
+<td class="footer_right" colspan="2"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>TBC — placeholder skeleton, not yet reviewed for the <code class="docutils literal notranslate"><span class="pre">time</span></code> module.
+The above directive must be updated according to your Module.</p>
 <ul class="simple">
-<li><p><strong>Basic Clock Examples</strong> (system_time, steady_time, high_res_steady_time): Simple periodic time printers showing the common pattern for reading time from SCORE clocks</p></li>
-<li><p><strong>Vehicle Time Example</strong> (vehicle_time): More complex example showing PTP-synchronized time with initialization, status monitoring, and dual time sources</p></li>
+<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">status</span></code> to be <code class="docutils literal notranslate"><span class="pre">valid</span></code></p></li>
+<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">security</span></code> and <code class="docutils literal notranslate"><span class="pre">tags</span></code> according to your needs</p></li>
 </ul>
-<p>All examples follow consistent patterns and can be used as starting points for real applications.</p>
-</section>
-<section id="building-and-running-examples">
-<h2>Building and Running Examples<a class="headerlink" href="#building-and-running-examples" title="Link to this heading">#</a></h2>
-<p>All examples use Bazel:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build all examples</span>
-bazel<span class="w"> </span>build<span class="w"> </span>//examples/...
-
-<span class="c1"># Run specific example</span>
-bazel<span class="w"> </span>run<span class="w"> </span>//examples/time/system_time
-
-<span class="c1"># Run tests</span>
-bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>//examples/time/system_time/src:system_time_handler_test
-</pre></div>
+</div>
+<section id="introduction-scope">
+<h2>Introduction/Scope<a class="headerlink" href="#introduction-scope" title="Link to this heading">#</a></h2>
+<div class="line-block">
+<div class="line">&lt;Describe here which module (or the platform) is covered by this manual.&gt;</div>
 </div>
 </section>
-<section id="common-patterns">
-<h2>Common Patterns<a class="headerlink" href="#common-patterns" title="Link to this heading">#</a></h2>
-<p>All examples share these implementation patterns:</p>
-<ul class="simple">
-<li><p><strong>Handler wrapper classes</strong> providing clean APIs over SCORE Clock&lt;Tag&gt; types</p></li>
-<li><p><strong>TimeReport structs</strong> containing time data with consistent field naming</p></li>
-<li><p><strong>Signal handling</strong> for graceful shutdown on SIGINT/SIGTERM</p></li>
-<li><p><strong>Unit test patterns</strong> using ScopedClockOverride for dependency injection</p></li>
-<li><p><strong>Nanosecond precision</strong> throughout all time calculations</p></li>
-</ul>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="basic_clocks.html">Basic Clock Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="basic_clocks.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_clocks.html#common-implementation-pattern">Common Implementation Pattern</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_clocks.html#building-and-running">Building and Running</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_clocks.html#example-output">Example Output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_clocks.html#code-structure">Code Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_clocks.html#testing-pattern">Testing Pattern</a></li>
-<li class="toctree-l2"><a class="reference internal" href="basic_clocks.html#bazel-build-setup">Bazel Build Setup</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="vehicle_time.html">Vehicle Time Example</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="vehicle_time.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vehicle_time.html#what-it-does">What it does</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vehicle_time.html#building-and-running">Building and Running</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vehicle_time.html#output-format">Output Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vehicle_time.html#code-structure">Code Structure</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vehicle_time.html#testing">Testing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vehicle_time.html#bazel-build-setup">Bazel Build Setup</a></li>
-</ul>
-</li>
-</ul>
+<section id="assumed-platform-security-requirements">
+<h2>Assumed Platform Security Requirements<a class="headerlink" href="#assumed-platform-security-requirements" title="Link to this heading">#</a></h2>
+<div class="line-block">
+<div class="line">For the &lt;Project platform / module name&gt; the following security related stakeholder requirements are assumed to define the top level functionality (purpose) of the &lt;Project platform / module name&gt;. I.e. from these all the feature and component requirements implemented are derived.</div>
+<div class="line">&lt;List here all the stakeholder requirements, with security relevance, the module’s components requirements are derived from.&gt;</div>
+</div>
+</section>
+<section id="assumptions-of-use">
+<h2>Assumptions of Use<a class="headerlink" href="#assumptions-of-use" title="Link to this heading">#</a></h2>
+<section id="assumptions-on-the-environment">
+<h3>Assumptions on the Environment<a class="headerlink" href="#assumptions-on-the-environment" title="Link to this heading">#</a></h3>
+<div class="line-block">
+<div class="line">The platform and its components are developed as Out of Context (OoC) with assumptions on the environment.
+It is assumed that the platform/components are integrated in a secure system, i.e. qualified POSIX OS.
+Also the HW related failures are taken into account by the system integrator, if not otherwise stated in the module’s security concept.</div>
+<div class="line">&lt;List here all the OS calls the Project platform expects to be secure.&gt;</div>
+</div>
+<p>List of AoUs expected from the environment the platform / module runs on:</p>
+<p class="needs_filter_warning" id="needtable-module/manuals/security_manual-0">No needs passed the filters</p>
+</section>
+<section id="assumptions-on-the-user">
+<h3>Assumptions on the User<a class="headerlink" href="#assumptions-on-the-user" title="Link to this heading">#</a></h3>
+<div class="line-block">
+<div class="line">As there is no assumption on which specific OS and HW is used, the integration testing of the stakeholder and feature requirements is expected to be performed by the user of the platform OoC. Tests covering all stakeholder and feature requirements performed on a reference platform (tbd link to reference platform specification), reviewed and passed are included in the platform OoC security package.</div>
+<div class="line">Additionally the components of the platform may have additional specific assumptions how they are used. These are part of every module documentation: &lt;link to add&gt;. Assumptions from components to their users can be fulfilled in two ways:</div>
+<div class="line">1. There are assumption which need to be fulfilled by all SW components, e.g. “every user of an IPC mechanism needs to make sure that he provides correct data (e.g. including appropriate security (access) control)” - in this case the AoU is marked as “platform”.</div>
+<div class="line">2. There are assumption which can be fulfilled by a security control realized by some other Project platform component and are therefore not relevant for an user who uses the whole platform. But those are relevant if you chose to use the module OcC stand-alone - in this case the AoU is marked as “module”. An example would be the “JSON read” which requires “The user shall provide a string as input which is not corrupted due to HW or QM SW errors.” - which is covered when using together with safe &lt;Project&gt; platform persistency feature.</div>
+</div>
+<p>List of AoUs on the user of the platform features or the module of this Security Manual:</p>
+<p class="needs_filter_warning" id="needtable-module/manuals/security_manual-1">No needs passed the filters</p>
+</section>
+</section>
+<section id="security-concept-of-the-ooc">
+<h2>Security concept of the OoC<a class="headerlink" href="#security-concept-of-the-ooc" title="Link to this heading">#</a></h2>
+<div class="line-block">
+<div class="line">&lt;Describe here the security concept incl. which attack paths are taken care of, reactions of the implemented functions under threatened operating conditions … if this is not already documented sufficiently in the feature documentation “security impact” section of all the features the module is used in.&gt;</div>
+</div>
+</section>
+<section id="security-weaknesses-vulnerabilities">
+<h2>Security Weaknesses, Vulnerabilities<a class="headerlink" href="#security-weaknesses-vulnerabilities" title="Link to this heading">#</a></h2>
+<div class="line-block">
+<div class="line">Weaknesses, vulnerabilities (bugs in security relevant SW, detected by testing or by users, which could not be fixed) known before release are documented in the platform/module release notes &lt;add link to release note&gt;.</div>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading">#</a></h2>
+<div class="line-block">
+<div class="line">&lt;link to the user manual&gt;</div>
+<div class="line">&lt;other links&gt;</div>
 </div>
 </section>
 </section>
@@ -529,20 +574,20 @@ bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../../components/time_daemon/manuals/config/configuration_guide.html"
+       href="safety_manual.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">TimeDaemon Configuration</p>
+        <p class="prev-next-title">Safety Manual</p>
       </div>
     </a>
     <a class="right-next"
-       href="basic_clocks.html"
+       href="../../components/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Basic Clock Examples</p>
+        <p class="prev-next-title">Components</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -565,9 +610,16 @@ bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-and-running-examples">Building and Running Examples</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-patterns">Common Patterns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-scope">Introduction/Scope</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assumed-platform-security-requirements">Assumed Platform Security Requirements</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#assumptions-of-use">Assumptions of Use</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assumptions-on-the-environment">Assumptions on the Environment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assumptions-on-the-user">Assumptions on the User</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#security-concept-of-the-ooc">Security concept of the OoC</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#security-weaknesses-vulnerabilities">Security Weaknesses, Vulnerabilities</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#references">References</a></li>
 </ul>
   </nav></div>
 
@@ -575,7 +627,7 @@ bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/manuals/examples/index.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/module/manuals/security_manual.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

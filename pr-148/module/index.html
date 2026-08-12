@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Troubleshooting Guide &#8212; S-CORE Time  documentation</title>
+    <title>Module &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -62,7 +62,7 @@
     <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'manuals/troubleshooting_guide';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'module/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Components" href="../components/index.html" />
-    <link rel="prev" title="Vehicle Time Example" href="examples/vehicle_time.html" />
+    <link rel="next" title="Manuals" href="manuals/index.html" />
+    <link rel="prev" title="Test Cases" href="../features/test_cases.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.1" />
@@ -165,8 +165,8 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="index.html">
-    Manuals
+  <a class="nav-link nav-internal" href="#">
+    Module
   </a>
 </li>
 
@@ -294,8 +294,8 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="index.html">
-    Manuals
+  <a class="nav-link nav-internal" href="#">
+    Module
   </a>
 </li>
 
@@ -376,15 +376,8 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../components/time/manuals/user_manual.html">Time Library User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../components/time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/index.html">Examples User Manual</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Troubleshooting Guide</a></li>
-</ul>
-</details></li>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="manuals/index.html">Manuals</a></li>
 </ul>
 </div>
 </nav></div>
@@ -425,13 +418,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Manuals</a></li>
-    
-    
-    <li class="breadcrumb-item"><a href="user_manual.html" class="nav-link">User Manual</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Troubleshooting Guide</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Module</span></li>
   </ul>
 </nav>
 </div>
@@ -448,72 +435,35 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="troubleshooting-guide">
-<span id="manual-time-troubleshooting"></span><h1>Troubleshooting Guide<a class="headerlink" href="#troubleshooting-guide" title="Link to this heading">#</a></h1>
-<p>This guide provides solutions to common problems encountered when using or integrating the S-CORE <code class="docutils literal notranslate"><span class="pre">time</span></code> module.</p>
-<section id="clock-is-not-reliable-or-not-available">
-<h2>Clock is Not Reliable or Not Available<a class="headerlink" href="#clock-is-not-reliable-or-not-available" title="Link to this heading">#</a></h2>
-<p><strong>Symptom:</strong>
-Your application calls <code class="docutils literal notranslate"><span class="pre">clock.Now()</span></code>, but <code class="docutils literal notranslate"><span class="pre">snapshot.Status().IsReliable()</span></code> always returns <cite>false</cite>. Or, <code class="docutils literal notranslate"><span class="pre">clock.WaitUntilAvailable()</span></code> runs into a timeout.</p>
-<p><strong>Potential Causes and Solutions:</strong></p>
-<ol class="arabic simple">
-<li><p><strong>TimeSlave Not Running or Not Synchronized:</strong>
-*   <strong>Check:</strong> Is the <cite>time_slave</cite> process running on the ECU?
-*   <strong>Check:</strong> Is there a PTP Grandmaster Clock active on the network, in the same PTP domain as the <cite>time_slave</cite> (default domain: 0)?
-*   <strong>Solution:</strong> Ensure the <cite>time_slave</cite> is started correctly and that a PTP master is present and reachable on the specified network interface. Check the logs of the <cite>time_slave</cite> for messages related to master detection.</p></li>
-<li><p><strong>TimeDaemon Not Running:</strong>
-*   <strong>Check:</strong> Is the <cite>time_daemon</cite> process running on the ECU? The <cite>time_slave</cite> can run, but if the <cite>time_daemon</cite> isn’t there to process the data, client applications will not receive reliable time.
-*   <strong>Solution:</strong> Ensure the <cite>time_daemon</cite> process is started.</p></li>
-<li><p><strong>IPC Channel Mismatch:</strong>
-*   <strong>Check:</strong> The <cite>time_slave</cite> and <cite>time_daemon</cite> communicate via a POSIX shared memory file. By default, this is <code class="docutils literal notranslate"><span class="pre">/gptp_ptp_info</span></code>.
-*   <strong>Solution:</strong> Verify that this file exists in the shared memory file system (e.g., under <cite>/dev/shm/</cite> on Linux). Check for permission issues that might prevent one of the processes from accessing the file.</p></li>
-<li><p><strong>Sync Timeout:</strong>
-*   <strong>Check:</strong> The <cite>time_slave</cite> has a built-in timeout (<cite>sync_timeout_ms</cite>, default: 3300 ms). If it doesn’t receive PTP Sync messages within this period, it declares a timeout.
-*   <strong>Solution:</strong> Check the network for packet loss. If you are in a simulated environment (QEMU, Docker), ensure the virtual network bridge is configured correctly.</p></li>
-</ol>
-</section>
-<section id="permission-denied-on-timeslave-startup">
-<h2>“Permission Denied” on TimeSlave Startup<a class="headerlink" href="#permission-denied-on-timeslave-startup" title="Link to this heading">#</a></h2>
-<p><strong>Symptom:</strong>
-The <cite>time_slave</cite> process fails to start with an error message similar to “Permission denied”, “Operation not permitted”, or a socket creation error.</p>
-<p><strong>Cause &amp; Solution:</strong></p>
-<p>The <cite>time_slave</cite> requires elevated network privileges to open a raw PTP socket on the specified network interface.</p>
-<ul>
-<li><p><strong>On Linux:</strong> Grant the <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code> capability to the <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> binary instead of running it as root:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>setcap<span class="w"> </span>cap_net_raw+ep<span class="w"> </span>/path/to/time_slave
+  <section id="module">
+<h1>Module<a class="headerlink" href="#module" title="Link to this heading">#</a></h1>
+<p>&lt;Module sphinx documentation template snippets for the module. The directives and their parameters
+should be updated according to the module and it’s components.&gt;</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">mod</span><span class="p">::</span> Time
+   <span class="nc">:id:</span> mod__time
+   <span class="nc">:includes:</span> comp__component_name_template
 </pre></div>
 </div>
-</li>
-<li><p><strong>On QNX:</strong> The <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> opens <code class="docutils literal notranslate"><span class="pre">/dev/bpf</span></code> (Berkeley Packet Filter device) to capture raw PTP frames. Ensure the process user has read/write permission on <code class="docutils literal notranslate"><span class="pre">/dev/bpf</span></code>. If a PHC device is configured (<code class="docutils literal notranslate"><span class="pre">phc_device</span></code> option), the process also needs read/write access to that device node.</p></li>
-<li><p><strong>Shared memory access:</strong> If the error refers to <code class="docutils literal notranslate"><span class="pre">/gptp_ptp_info</span></code>, verify that the user running <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> has read/write permission on the shared memory path (<code class="docutils literal notranslate"><span class="pre">/dev/shm/</span></code> on Linux). Adjust the file permissions or run both <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> and <code class="docutils literal notranslate"><span class="pre">time_daemon</span></code> under the same user/group.</p></li>
-</ul>
+<section id="module-view">
+<h2>Module View<a class="headerlink" href="#module-view" title="Link to this heading">#</a></h2>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">mod_view_sta</span><span class="p">::</span> Time Module Static View
+   <span class="nc">:id:</span> mod_view_sta__time__time
+   <span class="nc">:includes:</span> comp__component_name_template
+
+<span class="p">   ..</span> <span class="ow">needarch</span><span class="p">::</span>
+      <span class="nc">:scale:</span> 50
+      <span class="nc">:align:</span> center
+
+      {{ draw_module(need(), needs) }}
+</pre></div>
+</div>
 </section>
-<section id="understanding-log-messages">
-<h2>Understanding Log Messages<a class="headerlink" href="#understanding-log-messages" title="Link to this heading">#</a></h2>
-<p>The <cite>time</cite> module components use specific logging contexts to identify the source of a message. This can help you pinpoint where a problem is occurring.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id1">
-<caption><span class="caption-number">Table 14 </span><span class="caption-text">Logging Contexts</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
-<colgroup>
-<col style="width: 20.0%" />
-<col style="width: 80.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Context ID</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[TSAP]</span></code></p></td>
-<td><p><strong>Time Slave Application.</strong> Relates to the main lifecycle (Initialize/Run) of the <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> process.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">[GTPS]</span></code></p></td>
-<td><p><strong>GPTP Slave.</strong> Relates to the core gPTP protocol engine within the <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> (e.g., parsing PTP messages, state machines).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">[GPTP]</span></code></p></td>
-<td><p><strong>GPTP Machine Adapter.</strong> Relates to the component within the <code class="docutils literal notranslate"><span class="pre">time_daemon</span></code> that receives and processes the data from shared memory.</p></td>
-</tr>
-</tbody>
-</table>
+<section id="module-documents">
+<h2>Module Documents<a class="headerlink" href="#module-documents" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="manuals/index.html">Manuals</a></li>
+</ul>
 </div>
 </section>
 </section>
@@ -529,20 +479,20 @@ The <cite>time_slave</cite> process fails to start with an error message similar
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="examples/vehicle_time.html"
+       href="../features/test_cases.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Vehicle Time Example</p>
+        <p class="prev-next-title">Test Cases</p>
       </div>
     </a>
     <a class="right-next"
-       href="../components/index.html"
+       href="manuals/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Components</p>
+        <p class="prev-next-title">Manuals</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -565,9 +515,8 @@ The <cite>time_slave</cite> process fails to start with an error message similar
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clock-is-not-reliable-or-not-available">Clock is Not Reliable or Not Available</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#permission-denied-on-timeslave-startup">“Permission Denied” on TimeSlave Startup</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-log-messages">Understanding Log Messages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-view">Module View</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-documents">Module Documents</a></li>
 </ul>
   </nav></div>
 
@@ -575,7 +524,7 @@ The <cite>time_slave</cite> process fails to start with an error message similar
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/manuals/troubleshooting_guide.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/module/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
