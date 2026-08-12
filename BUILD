@@ -21,6 +21,8 @@ setup_starpls(
 )
 
 docs(
+    project = "S-CORE Time",
+    project_url = "https://eclipse-score.github.io/time",
     bundles = [
         {
             "bundle": "//score/time_slave:docs_bundle",
@@ -35,8 +37,8 @@ docs(
             "mount_at": "components/time",
         },
     ],
-    data = [
-        "@score_process//:needs_json",
+    external_needs = [
+        "@score_process//:needs_json_file",
     ],
     source_dir = "docs",
 )
