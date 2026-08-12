@@ -69,7 +69,6 @@ This section covers how to use the ``score::time`` client library in your applic
 .. toctree::
    :maxdepth: 2
 
-   api_description/api_usage
    api_description/lifecycle
    api_description/testing_guide
    api_description/advanced_api

@@ -21,6 +21,8 @@ The primary interface for applications to access synchronized time is the ``scor
 
 This section describes the most common use case: polling the current Vehicle Time.
 
+For more detail, see the :ref:`time library user manual<_time_component_user_manual>`.
+
 Polling the Current Time
 ------------------------
 

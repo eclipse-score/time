@@ -43,7 +43,7 @@ For a detailed concept and architectural design, please refer to the :doc:`time_
    :caption: Contents:
 
    features/index
-   manuals/index
+   module/index
 
 .. toctree::
    :maxdepth: 1

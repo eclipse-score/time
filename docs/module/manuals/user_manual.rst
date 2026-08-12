@@ -55,6 +55,16 @@ For detailed component-specific user manuals:
    /components/time_slave/manuals/user_manual
    /components/time_daemon/manuals/user_manual
 
+API Usage
+---------
+
+The primary interface for applications to access synchronized time is the ``score::time`` client library:
+
+.. toctree::
+   :maxdepth: 2
+
+   api_description/api_usage
+
 Examples
 --------
 

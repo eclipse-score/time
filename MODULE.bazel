@@ -69,7 +69,7 @@ bazel_dep(name = "score_logging", version = "0.2.1")
 
 ### Modules that are used internally within the repository but not exposed as part of the public API
 
-bazel_dep(name = "score_docs_as_code", version = "6.0.0")
+bazel_dep(name = "score_docs_as_code", version = "7.0.0")
 
 bazel_dep(name = "score_cpp_policies", version = "0.0.1", dev_dependency = True)
 
@@ -81,7 +81,7 @@ git_override(
     remote = "https://github.com/eclipse-score/score_cpp_policies.git",
 )
 
-bazel_dep(name = "score_process", version = "2.0.2", dev_dependency = True)
+bazel_dep(name = "score_process", version = "2.0.3", dev_dependency = True)
 bazel_dep(name = "score_tooling", version = "1.2.0", dev_dependency = True)
 
 # cpp support in use_format_targets(languages=[...]) was added after 1.2.0.
