@@ -44,6 +44,7 @@ docs(
 copyright_checker(
     name = "copyright",
     srcs = [
+        ".devcontainer",
         ".github",
         "docs",
         "examples",

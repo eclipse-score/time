@@ -38,6 +38,7 @@ alias(
 #alias to create svt receiver mock objects
 alias(
     name = "svt_receiver_mock",
+    testonly = True,
     actual = "//score/time_daemon/src/ipc/svt/receiver:factory_mock",
     tags = ["QM"],
     visibility = [
