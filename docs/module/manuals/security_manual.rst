@@ -17,20 +17,18 @@ Security Manual
 
 .. note:: Document header
 
-.. document:: [Your Module Name] Security Manual
-   :id: doc__mod_temp_module_name_security_manual
+.. document:: Time Module Security Manual
+   :id: doc__time_security_manual
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: YES
    :realizes: wp__module_security_manual
-   :tags: template
 
 .. attention::
+    TBC — placeholder skeleton, not yet reviewed for the ``time`` module.
     The above directive must be updated according to your Module.
 
-    - Modify ``Your Module Name`` to be your Module Name
-    - Modify ``id`` to be your Module Name in upper snake case preceded by ``doc__`` and succeeded by ``_security_manual``
     - Adjust ``status`` to be ``valid``
     - Adjust ``security`` and ``tags`` according to your needs
 

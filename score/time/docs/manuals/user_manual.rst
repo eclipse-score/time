@@ -71,7 +71,6 @@ This section covers how to use the ``score::time`` client library in your applic
 
    api_description/lifecycle
    api_description/testing_guide
-   api_description/advanced_api
 
 .. note::
    For a complete C++ API reference with full class and function documentation,

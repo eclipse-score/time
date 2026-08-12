@@ -17,20 +17,20 @@ Safety Manual
 
 .. note:: Document header
 
-.. document:: [Your Module Name] Safety Manual
-   :id: doc__mod_temp_module_name_safety_manual
+.. document:: Time Module Safety Manual
+   :id: doc__time_safety_manual
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__module_safety_manual
-   :tags: template
 
 .. attention::
-    The above directive must be updated according to your Module.
+    TBC — pending clarification of feature requirements (tracked in issue #33, #155). Content
+    below follows the module_template skeleton and is not yet reviewed
+    for the ``time`` module.
 
-    - Modify ``Your Module Name`` to be your Module Name or put "Platform"
-    - Modify ``id`` to be your Module Name in upper snake case preceded by ``doc__`` and succeeded by ``safety_manual``
+    The above directive must be updated according to your Module.
     - Adjust ``status`` to be ``valid``
     - Adjust ``safety`` and ``tags`` according to your needs
 

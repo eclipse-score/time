@@ -41,6 +41,16 @@ This module manual covers module-level integration, deployment, and troubleshoot
 
 For build and test of the module itself, please refer to the main documentation.
 
+API Description
+---------------
+
+The primary interface for applications to access synchronized time is the ``score::time`` client library:
+
+.. toctree::
+   :maxdepth: 2
+
+   api_description/api_usage
+
 .. _component_manuals:
 
 Component Manuals
@@ -54,16 +64,6 @@ For detailed component-specific user manuals:
    /components/time/manuals/user_manual
    /components/time_slave/manuals/user_manual
    /components/time_daemon/manuals/user_manual
-
-API Usage
----------
-
-The primary interface for applications to access synchronized time is the ``score::time`` client library:
-
-.. toctree::
-   :maxdepth: 2
-
-   api_description/api_usage
 
 Examples
 --------

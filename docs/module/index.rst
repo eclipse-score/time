@@ -20,8 +20,8 @@ should be updated according to the module and it's components.>
 
 .. code-block:: rst
 
-   .. mod:: Module Name
-      :id: mod__module_name
+   .. mod:: Time
+      :id: mod__time
       :includes: comp__component_name_template
 
 Module View
@@ -29,8 +29,8 @@ Module View
 
 .. code-block:: rst
 
-   .. mod_view_sta:: Module Name Static View
-      :id: mod_view_sta__feature_name__module_name
+   .. mod_view_sta:: Time Module Static View
+      :id: mod_view_sta__time__time
       :includes: comp__component_name_template
 
       .. needarch::
