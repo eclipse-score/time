@@ -44,14 +44,22 @@ jobs:
         --config=time-x86_64-qnx //score/... //examples/...
         --config=time-arm64-qnx //score/... //examples/...
 
+  warmup-qnx:
+    needs: repository_cache_maintenance
+    # PR and merge-queue runs validate variants above but never warm or write
+    # shared caches.
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    secrets: inherit
+    uses: ./.github/workflows/build-qnx.yml
+
   delete_old_caches:
     runs-on: ubuntu-24.04
     needs:
-      - repository_cache_maintenance
+      - warmup-qnx
     permissions:
       actions: write # needed for deletion of old caches
       contents: read
-    if: ${{ !cancelled() && github.event_name == 'push' }}
+    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
     steps:
       - name: Prune obsolete Bazel caches
         uses: eclipse-score/cicd-actions/prune-cache@212bbf86267e9381da9d2daf962d12f6feafbc90
