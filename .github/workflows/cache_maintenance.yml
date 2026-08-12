@@ -49,6 +49,9 @@ jobs:
     # PR and merge-queue runs validate variants above but never warm or write
     # shared caches.
     if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    permissions:
+      contents: read
+      pull-requests: read
     secrets: inherit
     uses: ./.github/workflows/build-qnx.yml
 
