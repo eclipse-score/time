@@ -22,7 +22,7 @@ Testing application logic that depends on time can be challenging. To solve this
 Using Existing Test Utilities
 =============================
 
-The framework already provides ``ClockTestFactory<Tag>`` in
+The framework provides ``ClockTestFactory<Tag>`` in
 ``score/time/clock/src/clock_test_factory.h`` for constructor-based mock injection.
 
 Use this helper when your component accepts ``Clock<Tag>`` via constructor or setter injection.
@@ -110,7 +110,7 @@ This example demonstrates how to test a component that performs an action once a
        elapsed += std::chrono::seconds{2};
        EXPECT_TRUE(handler.HasTimedOut(timeout));
 
-   } // clock_override is destroyed here; real backend is restored.
+   } // clock_override is destroyed here
 
 
 Bazel BUILD Setup
