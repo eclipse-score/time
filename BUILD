@@ -21,11 +21,11 @@ setup_starpls(
 )
 
 docs(
-    project = "S-CORE Time",
-    project_url = "https://eclipse-score.github.io/time",
     external_needs = [
         "@score_process//:needs_json_file",
     ],
+    project = "S-CORE Time",
+    project_url = "https://eclipse-score.github.io/time",
     source_dir = "docs",
 )
 
