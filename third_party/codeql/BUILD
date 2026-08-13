@@ -10,18 +10,12 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
-cc_binary(
-    name = "HighResSteadyTimeBenchmark",
-    testonly = True,
-    srcs = [
-        "benchmark.cpp",
-    ],
-    features = [
-        "third_party_warnings",
-    ],
-    deps = [
-        "//score/time/high_res_steady_time",
-        "@google_benchmark//:benchmark_main",
-    ],
+compile_pip_requirements(
+    name = "pip_requirements",
+    src = ":requirements.in",
+    exec_compatible_with = ["@platforms//os:linux"],
+    requirements_txt = "requirements_lock.txt",
+    target_compatible_with = ["@platforms//os:linux"],
 )

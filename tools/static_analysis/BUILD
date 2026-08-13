@@ -11,17 +11,18 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-cc_binary(
-    name = "HighResSteadyTimeBenchmark",
-    testonly = True,
-    srcs = [
-        "benchmark.cpp",
-    ],
-    features = [
-        "third_party_warnings",
-    ],
-    deps = [
-        "//score/time/high_res_steady_time",
-        "@google_benchmark//:benchmark_main",
-    ],
+# MODULE-SPECIFIC: instantiates the shared CodeQL analysis for this module.
+# Other modules can reuse codeql.bzl, codeql_lint.py, and config.yaml by
+# copying those three files and providing their own coding-standards.yaml.
+load(":codeql.bzl", "codeql_analysis")
+
+# MODULE-SPECIFIC: declares the MISRA deviation file as an explicit Bazel
+# target so that incremental rebuilds detect changes to it.
+filegroup(
+    name = "coding_standards",
+    srcs = ["coding-standards.yaml"],
+)
+
+codeql_analysis(
+    coding_standards = ":coding_standards",
 )

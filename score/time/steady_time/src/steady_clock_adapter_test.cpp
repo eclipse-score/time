@@ -10,6 +10,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+#include "score/time/clock/src/clock_test_factory.h"
 #include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/steady_time/src/steady_clock_backend_mock.h"
 
@@ -106,13 +107,45 @@ TEST(SteadyClockTest, ScopedClockOverrideRestoresBackendAfterScope)
             .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp, NoStatus{}}));
         EXPECT_EQ(SteadyClock::GetInstance().Now().TimePoint(), tp);
     }
-    // After guard goes out of scope, a new guard must succeed without assertion.
     auto mock2 = std::make_shared<SteadyClockBackendMock>();
     test_utils::ScopedClockOverride<std::chrono::steady_clock> guard2{mock2};
     const std::chrono::steady_clock::time_point tp2{std::chrono::seconds{2}};
     EXPECT_CALL(*mock2, Now())
         .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{tp2, NoStatus{}}));
     EXPECT_EQ(SteadyClock::GetInstance().Now().TimePoint(), tp2);
+}
+
+TEST(SteadyClockTest, ScopedClockOverrideMoveTransfersOwnership)
+{
+    auto mock = std::make_shared<SteadyClockBackendMock>();
+    const std::chrono::steady_clock::time_point expected{std::chrono::nanoseconds{42LL}};
+    {
+        test_utils::ScopedClockOverride<std::chrono::steady_clock> guard{mock};
+        test_utils::ScopedClockOverride<std::chrono::steady_clock> moved{std::move(guard)};
+        EXPECT_CALL(*mock, Now())
+            .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{expected, NoStatus{}}));
+        EXPECT_EQ(SteadyClock::GetInstance().Now().TimePoint(), expected);
+    }
+    auto mock2 = std::make_shared<SteadyClockBackendMock>();
+    test_utils::ScopedClockOverride<std::chrono::steady_clock> guard2{mock2};
+    EXPECT_CALL(*mock2, Now())
+        .WillOnce(Return(ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{
+            std::chrono::steady_clock::time_point{}, NoStatus{}}));
+    (void)SteadyClock::GetInstance().Now();
+}
+
+TEST(SteadyClockTest, GetInstanceWithoutOverrideUsesStubBackend)
+{
+    const auto clock = SteadyClock::GetInstance();
+    EXPECT_EQ(clock.Now().TimePoint().time_since_epoch().count(), 0);
+}
+
+TEST(SteadyClockTest, GetInstanceCalledTwice)
+{
+    const auto clock1 = SteadyClock::GetInstance();
+    const auto clock2 = SteadyClock::GetInstance();
+    EXPECT_EQ(clock1.Now().TimePoint().time_since_epoch().count(), 0);
+    EXPECT_EQ(clock2.Now().TimePoint().time_since_epoch().count(), 0);
 }
 
 }  // namespace time

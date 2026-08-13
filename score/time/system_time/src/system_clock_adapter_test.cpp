@@ -10,6 +10,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+#include "score/time/clock/src/clock_test_factory.h"
 #include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/system_time/src/system_clock_backend_mock.h"
 
@@ -108,13 +109,26 @@ TEST(SystemClockTest, ScopedClockOverrideRestoresBackendAfterScope)
             .WillOnce(Return(ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>{tp, NoStatus{}}));
         EXPECT_EQ(SystemClock::GetInstance().Now().TimePoint(), tp);
     }
-    // After guard goes out of scope, a new guard must succeed without assertion.
     auto mock2 = std::make_shared<SystemClockBackendMock>();
     test_utils::ScopedClockOverride<std::chrono::system_clock> guard2{mock2};
     const std::chrono::system_clock::time_point tp2{std::chrono::seconds{2}};
     EXPECT_CALL(*mock2, Now())
         .WillOnce(Return(ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>{tp2, NoStatus{}}));
     EXPECT_EQ(SystemClock::GetInstance().Now().TimePoint(), tp2);
+}
+
+TEST(SystemClockTest, GetInstanceWithoutOverrideUsesStubBackend)
+{
+    const auto clock = SystemClock::GetInstance();
+    EXPECT_EQ(clock.Now().TimePoint().time_since_epoch().count(), 0);
+}
+
+TEST(SystemClockTest, GetInstanceCalledTwice)
+{
+    const auto clock1 = SystemClock::GetInstance();
+    const auto clock2 = SystemClock::GetInstance();
+    EXPECT_EQ(clock1.Now().TimePoint().time_since_epoch().count(), 0);
+    EXPECT_EQ(clock2.Now().TimePoint().time_since_epoch().count(), 0);
 }
 
 }  // namespace time
