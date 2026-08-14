@@ -118,7 +118,7 @@ Run address, undefined-behaviour and leak sanitizers (powered by ``score_cpp_pol
 
 .. code-block:: bash
 
-   bazel test --config=asan_ubsan_lsan --config=time-x86_64-linux //score/...
+   bazel test --config=asan_ubsan_lsan --config=x86_64-linux //score/...
 
 Individual sanitizer aliases are also available: ``--config=asan``, ``--config=ubsan``, ``--config=lsan``.
 
