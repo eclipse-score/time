@@ -12,11 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Module
-======
+Time
+====
 
-<Module sphinx documentation template snippets for the module. The directives and their parameters
-should be updated according to the module and it's components.>
+The S-CORE ``time`` module provides a unified API for accessing system, steady, high-resolution steady, and PTP-synchronized vehicle time. The module contains four components: a client library for application-facing access, Time Slave for PTP clock synchronization, ``ts_client`` for shared-memory IPC between Time Slave and Time Daemon, and Time Daemon for synchronization quality validation before serving Vehicle Time.
 
 .. code-block:: rst
 
