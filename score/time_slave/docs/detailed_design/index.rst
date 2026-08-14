@@ -1,19 +1,34 @@
-Concept for TimeSlave
+..
+   # *******************************************************************************
+   # Copyright (c) 2026 Contributors to the Eclipse Foundation
+   #
+   # See the NOTICE file(s) distributed with this work for additional
+   # information regarding copyright ownership.
+   #
+   # This program and the accompanying materials are made available under the
+   # terms of the Apache License Version 2.0 which is available at
+   # https://www.apache.org/licenses/LICENSE-2.0
+   #
+   # SPDX-License-Identifier: Apache-2.0
+   # *******************************************************************************
+
+Concept for Time Slave
 ======================
 
 .. contents:: Table of Contents
    :depth: 3
    :local:
 
-TimeSlave concept
+Time Slave Concept
 ------------------
 
 Use Cases
 ~~~~~~~~~
 
-TimeSlave is a standalone gPTP (IEEE 802.1AS) slave endpoint process that implements the low-level time synchronization protocol for the Eclipse SCORE time system. It is deployed as a separate process from the TimeDaemon to isolate real-time network I/O from the higher-level time validation and distribution logic.
+TimeSlave is a standalone gPTP (IEEE 802.1AS) slave endpoint process that implements the low-level time synchronization protocol for the Eclipse S-CORE time system.
+It is deployed as a separate process from the TimeDaemon to isolate real-time network I/O from the higher-level time validation and distribution logic.
 
-More precisely we can specify the following use cases for the TimeSlave:
+More precisely we can specify the following use cases for the Time Slave:
 
 1. Receiving gPTP Sync/FollowUp messages from a Time Master on the Ethernet network
 2. Measuring peer delay via the IEEE 802.1AS PDelayReq/PDelayResp exchange

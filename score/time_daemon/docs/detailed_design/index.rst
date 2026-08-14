@@ -1,3 +1,17 @@
+..
+   # *******************************************************************************
+   # Copyright (c) 2026 Contributors to the Eclipse Foundation
+   #
+   # See the NOTICE file(s) distributed with this work for additional
+   # information regarding copyright ownership.
+   #
+   # This program and the accompanying materials are made available under the
+   # terms of the Apache License Version 2.0 which is available at
+   # https://www.apache.org/licenses/LICENSE-2.0
+   #
+   # SPDX-License-Identifier: Apache-2.0
+   # *******************************************************************************
+
 Concept for TimeDaemon
 =======================
 
@@ -15,19 +29,22 @@ TimeDaemon is the non Autosar adaptive process who is intended to get the Vehicl
 
 More precisely we can specify the following use cases for the time daemon:
 
-1. Providing current Vehicle time to different applications
-2. Setting the synchronization qualifier (aka Synchronized, Timeout, so on)
+1. Determine the current vehicle time and synchronization qualifier out of the sync data received from the time_slave daemon
+2. Providing current Vehicle time plus the synchronization qualifier to different applications
 3. Providing needed information for diagnostics
 4. Providing needed information for addition verification, ex SafeCarTime
 
-The raw architectural diagram is represented below.
+Deployment view
+~~~~~~~~~~~~~~~
+
+The design deployment is represented on the following diagram:
 
 .. raw:: html
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/sad_deployment.puml
-   :alt: Raw architectural diagram
+.. uml:: _assets/dd_deployment.puml
+   :alt: Deployment View
 
 .. raw:: html
 
@@ -45,22 +62,6 @@ The design consists of several sw components:
 5. `Verification Machine <#verification-machine-sw-component>`_
 6. `IPC Machine <#ipc-machine-sw-component>`_
 7. `VehicleClock (score::time) <#vehicleclock-sw-component>`_
-
-Deployment view
-~~~~~~~~~~~~~~~
-
-The design deployment is represented on the following diagram:
-
-.. raw:: html
-
-   <div style="overflow-x: auto; max-width: 100%;">
-
-.. uml:: _assets/dd_deployment.puml
-   :alt: Deployment View
-
-.. raw:: html
-
-   </div>
 
 Class view
 ~~~~~~~~~~

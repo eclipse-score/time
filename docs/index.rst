@@ -12,21 +12,22 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-time_daemon Documentation
-=========================
+Time Feature Documentation
+==========================
 
-This documentation describes the **time_daemon** and the **score::time** module.
+This documentation describes the **S-CORE Time Feature** and the **score::time** module.
 
 .. contents:: Table of Contents
    :depth: 2
    :local:
 
+
 Overview
 --------
 
-**time_daemon** is a non-AUTOSAR adaptive process designed to provide synchronized vehicle time to client applications.
-It supports multiple time bases including **in-vehicle synchronized time** (PTP - Precision Time Protocol) and
-**external synchronized time** (absolute time base). The daemon retrieves time information from the respective time sources,
+The Time feature is designed to provide applications access to multiple different local and non-local time bases ("clocks") via a unified API.
+The supported non-local time bases include a **in-vehicle synchronized time** ("vehicle time") and a **external synchronized time** (absolute time base, UTC).
+The Time feature retrieves time information from the respective time sources ("Time Masters"),
 verifies and validates the timepoints, and distributes this time information across multiple clients through efficient IPC mechanisms.
 
 The main responsibilities of time_daemon include:
@@ -36,13 +37,18 @@ The main responsibilities of time_daemon include:
 - **Providing diagnostic information** for system monitoring
 - **Supporting additional verification mechanisms** such as QualifiedVehicleTime (QVT) for safety-critical applications
 
-For a detailed concept and architectural design, please refer to the :doc:`time_daemon Concept Documentation <features/time_daemon/index>`.
+For a detailed concept and architectural design, please refer to the :doc:`Time Feature Arichitecture Documentation <architecture/index>`.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   features/index
+   architecture/index
+   ../score/time/docs/index
+   ../score/time_daemon/docs/index
+   ../score/time_slave/docs/index
+   test_cases
+
 
 Project Layout
 --------------
@@ -54,8 +60,9 @@ This module follows the Eclipse SCORE component structure:
 - `score/time/`: Client-facing time base libraries
 - `score/ts_client/`: Time synchronization client library
 - `examples/`: Usage examples
-- `docs/features/`: Feature-level documentation
+- `docs/`: Feature-level documentation
 - `.github/workflows/`: CI/CD pipelines
+
 
 Quick Start
 -----------
@@ -121,6 +128,7 @@ Run address, undefined-behaviour and leak sanitizers (powered by ``score_cpp_pol
    bazel test --config=asan_ubsan_lsan --config=x86_64-linux //score/...
 
 Individual sanitizer aliases are also available: ``--config=asan``, ``--config=ubsan``, ``--config=lsan``.
+
 
 Configuration
 -------------

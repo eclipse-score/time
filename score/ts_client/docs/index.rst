@@ -12,14 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Features
-========
+TS Client Library Component
+===========================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Features:
+   :maxdepth: 1
 
-   time/index
-   time_daemon/index
-   time_slave/index
-   test_cases
+   component_classification
