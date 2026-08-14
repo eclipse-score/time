@@ -38,11 +38,11 @@
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
@@ -455,7 +455,7 @@ verifies and validates the timepoints, and distributes this time information acr
 </div>
 <p><strong>Sanitizers</strong></p>
 <p>Run address, undefined-behaviour and leak sanitizers (powered by <code class="docutils literal notranslate"><span class="pre">score_cpp_policies</span></code>):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>asan_ubsan_lsan<span class="w"> </span>--config<span class="o">=</span>time-x86_64-linux<span class="w"> </span>//score/...
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>asan_ubsan_lsan<span class="w"> </span>--config<span class="o">=</span>x86_64-linux<span class="w"> </span>//score/...
 </pre></div>
 </div>
 <p>Individual sanitizer aliases are also available: <code class="docutils literal notranslate"><span class="pre">--config=asan</span></code>, <code class="docutils literal notranslate"><span class="pre">--config=ubsan</span></code>, <code class="docutils literal notranslate"><span class="pre">--config=lsan</span></code>.</p>
