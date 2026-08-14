@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        config: [time-x86_64-linux, time-arm64-linux]
+        config: [x86_64-linux, arm64-linux]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
