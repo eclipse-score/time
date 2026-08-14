@@ -166,7 +166,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../index.html">
-    Time
+    Module
   </a>
 </li>
 
@@ -295,7 +295,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../index.html">
-    Time
+    Module
   </a>
 </li>
 
@@ -382,7 +382,11 @@
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="api_description/api_usage.html">API Usage: Accessing Supported Time Bases</a></li>
 
-<li class="toctree-l3"><a class="reference internal" href="../../components/time/manuals/user_manual.html">Time Library User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_description/lifecycle.html">Clock Lifecycle Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api_description/testing_guide.html">Unit-Testing Time-Dependent Code</a></li>
+
+
+
 <li class="toctree-l3"><a class="reference internal" href="../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../components/time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="examples/index.html">Examples User Manual</a></li>
@@ -432,7 +436,7 @@
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module</a></li>
     
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Manuals</a></li>
@@ -456,7 +460,7 @@
                   
   <section id="user-manual">
 <span id="id1"></span><h1>User Manual<a class="headerlink" href="#user-manual" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-84e37e83">
+<div class="need_container docutils container" id="SNCB-769845be">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__user_manual_time">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -528,15 +532,67 @@ synchronized to a network-wide PTP (Precision Time Protocol) Grandmaster Clock. 
 <li class="toctree-l2"><a class="reference internal" href="api_description/api_usage.html#unsubscribing">Unsubscribing</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="api_description/lifecycle.html">Clock Lifecycle Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_description/lifecycle.html#initializing-the-clock">Initializing the Clock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/lifecycle.html#waiting-for-availability">Waiting for Availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/lifecycle.html#checking-availability-non-blocking">Checking Availability (Non-Blocking)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html">Unit-Testing Time-Dependent Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html#using-existing-test-utilities">Using Existing Test Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html#example-testing-a-timeout-handler">Example: Testing a Timeout Handler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_description/testing_guide.html#bazel-build-setup">Bazel BUILD Setup</a></li>
 </ul>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a complete C++ API reference with full class and function documentation,
+please refer to the generated Doxygen documentation (to be added in future releases).</p>
+</div>
 </section>
+</section>
+<section id="choosing-the-right-clock">
+<h2>Choosing the Right Clock<a class="headerlink" href="#choosing-the-right-clock" title="Link to this heading">#</a></h2>
+<p>The S-CORE <code class="docutils literal notranslate"><span class="pre">time</span></code> module provides several clock types, each designed for a specific use case. Understanding their differences is crucial for writing robust and correct applications.</p>
+<p>Select clock type based on use case. No clock type is universally better; each has a different purpose.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id3">
+<caption><span class="caption-number">Table 13 </span><span class="caption-text">Clock Types Overview</span><a class="headerlink" href="#id3" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 40.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Clock Type</p></th>
+<th class="head"><p>Key Characteristic</p></th>
+<th class="head"><p>Typical Use Case</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code></p></td>
+<td><p>High-precision, PTP-synchronized, quality-assured network time.</p></td>
+<td><p>Cross-ECU correlation, synchronized logging, and decisions that depend on vehicle-wide time consistency (for example: validating whether a vehicle-time-stamped frame is too old and should be discarded).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SystemTime</span></code></p></td>
+<td><p>The system’s “wall clock” time (Unix time). Can jump forwards or backwards (e.g., due to NTP correction or manual changes).</p></td>
+<td><p>Displaying human-readable timestamps. Creating log entries where absolute time is more important than monotonic progression.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SteadyTime</span></code></p></td>
+<td><p>A clock that is guaranteed to only ever move forward (monotonic). Its starting point is arbitrary (e.g., system boot time).</p></td>
+<td><p>Measuring time intervals, implementing timeouts, scheduling tasks where guaranteed monotonic progression is essential.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HighResSteadyTime</span></code></p></td>
+<td><p>A monotonic clock that provides the highest possible resolution the underlying hardware can offer.</p></td>
+<td><p>High-precision performance measurements and profiling, or very short-interval timing.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <section id="component-manuals">
 <span id="id2"></span><h3>Component Manuals<a class="headerlink" href="#component-manuals" title="Link to this heading">#</a></h3>
 <p>For detailed component-specific user manuals:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../components/time/manuals/user_manual.html">Time Library User Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../components/time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
 </ul>
@@ -601,13 +657,52 @@ synchronized to a network-wide PTP (Precision Time Protocol) Grandmaster Clock. 
 <li><p>Reference in your build files:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cc_library</span><span class="p">(</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_target&quot;</span><span class="p">,</span>
-    <span class="n">deps</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;@score_time//score/time/vehicle_time:vehicle_time&quot;</span><span class="p">],</span>
+    <span class="n">deps</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="s2">&quot;@score_time//score/time/vehicle_time:vehicle_time&quot;</span><span class="p">,</span>  <span class="c1"># For VehicleTime</span>
+          <span class="c1"># OR</span>
+          <span class="s2">&quot;@score_time//score/time/system_time:system_time&quot;</span><span class="p">,</span>     <span class="c1"># For SystemTime</span>
+          <span class="c1"># OR</span>
+          <span class="s2">&quot;@score_time//score/time/steady_time:steady_time&quot;</span><span class="p">,</span>     <span class="c1"># For SteadyTime</span>
+          <span class="c1"># OR</span>
+          <span class="s2">&quot;@score_time//score/time/high_res_steady_time:high_res_steady_time&quot;</span><span class="p">,</span>  <span class="c1"># For HighResSteadyTime</span>
+    <span class="p">],</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p>Include headers and compile your code</p></li>
+<li><p>Include headers and use the API in your code:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time.h&quot;</span>
+
+<span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">Clock</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">&gt;::</span><span class="n">GetInstance</span><span class="p">();</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">.</span><span class="n">Now</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">().</span><span class="n">IsReliable</span><span class="p">())</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="c1">// Safe to use snapshot.TimePoint()</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
 </ol>
+<p>For component tests, use the mock variants where needed, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">cc_test</span><span class="p">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_test&quot;</span><span class="p">,</span>
+    <span class="n">deps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;@score_time//score/time/vehicle_time:vehicle_time_mock&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="runtime-requirements">
+<h3>Runtime Requirements<a class="headerlink" href="#runtime-requirements" title="Link to this heading">#</a></h3>
+<p>If your application uses <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>, both <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> and <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> services must be running.</p>
+<p><code class="docutils literal notranslate"><span class="pre">SystemTime</span></code>, <code class="docutils literal notranslate"><span class="pre">SteadyTime</span></code>, and <code class="docutils literal notranslate"><span class="pre">HighResSteadyTime</span></code> do not depend on these daemons.</p>
+<p>For service deployment and configuration details, refer to:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../components/time_slave/manuals/user_manual.html"><span class="doc">Time Slave User Manual</span></a></p></li>
+<li><p><a class="reference internal" href="../../components/time_daemon/manuals/user_manual.html"><span class="doc">Time Daemon User Manual</span></a></p></li>
+</ul>
 </section>
 <section id="system-services-deployment">
 <h3>System Services Deployment<a class="headerlink" href="#system-services-deployment" title="Link to this heading">#</a></h3>
@@ -708,6 +803,9 @@ project’s issue tracker or contribute directly to the repository.</p>
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api-description">API Description</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-the-right-clock">Choosing the Right Clock</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#component-manuals">Component Manuals</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">Examples</a></li>
 </ul>
@@ -719,6 +817,7 @@ project’s issue tracker or contribute directly to the repository.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#performance-considerations">Performance Considerations</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#integration-guidelines">Integration Guidelines</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integrating-with-your-project">Integrating with Your Project</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-requirements">Runtime Requirements</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-services-deployment">System Services Deployment</a></li>
 </ul>
 </li>
