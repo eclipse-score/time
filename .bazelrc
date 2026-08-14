@@ -33,37 +33,37 @@ build --credential_helper="*.qnx.com=%workspace%/tools/qnx_credential_helper.py"
 # -------------------------------------------------------------------------------
 # Shared configuration for simple test execution
 # -------------------------------------------------------------------------------
-build:time_shared --incompatible_strict_action_env
-build:time_shared --sandbox_writable_path=/var/tmp
-build:time_shared --host_platform=@score_bazel_platforms//:x86_64-linux
+build:shared --incompatible_strict_action_env
+build:shared --sandbox_writable_path=/var/tmp
+build:shared --host_platform=@score_bazel_platforms//:x86_64-linux
 
 # -------------------------------------------------------------------------------
 # Config dedicated to host platform CPU:x86_64 and OS:Linux
 # -------------------------------------------------------------------------------
-build:time-x86_64-linux --config=time_shared
-build:time-x86_64-linux --platforms=@score_bazel_platforms//:x86_64-linux-gcc_12.2.0-posix
-build:time-x86_64-linux --extra_toolchains=@score_gcc_x86_64_toolchain//:x86_64-linux-gcc_12.2.0
+build:x86_64-linux --config=shared
+build:x86_64-linux --platforms=@score_bazel_platforms//:x86_64-linux-gcc_12.2.0-posix
+build:x86_64-linux --extra_toolchains=@score_gcc_x86_64_toolchain//:x86_64-linux-gcc_12.2.0
 
 # -------------------------------------------------------------------------------
 # Config dedicated to host platform CPU:arm64 and OS:Linux
 # -------------------------------------------------------------------------------
-build:time-arm64-linux --config=time_shared
-build:time-arm64-linux --platforms=@score_bazel_platforms//:aarch64-linux-gcc_12.2.0-posix
-build:time-arm64-linux --extra_toolchains=@score_gcc_aarch64_toolchain//:aarch64-linux-gcc_12.2.0
+build:arm64-linux --config=shared
+build:arm64-linux --platforms=@score_bazel_platforms//:aarch64-linux-gcc_12.2.0-posix
+build:arm64-linux --extra_toolchains=@score_gcc_aarch64_toolchain//:aarch64-linux-gcc_12.2.0
 
 # -------------------------------------------------------------------------------
 # Config dedicated to target platform CPU:x86_64 and OS:QNX
 # -------------------------------------------------------------------------------
-build:time-x86_64-qnx --config=time_shared
-build:time-x86_64-qnx --platforms=@score_bazel_platforms//:x86_64-qnx-sdp_8.0.0-posix
-build:time-x86_64-qnx --extra_toolchains=@score_qcc_x86_64_toolchain//:x86_64-qnx-sdp_8.0.0
+build:x86_64-qnx --config=shared
+build:x86_64-qnx --platforms=@score_bazel_platforms//:x86_64-qnx-sdp_8.0.0-posix
+build:x86_64-qnx --extra_toolchains=@score_qcc_x86_64_toolchain//:x86_64-qnx-sdp_8.0.0
 
 # -------------------------------------------------------------------------------
 # Config dedicated to target platform CPU:arm64 and OS:QNX
 # -------------------------------------------------------------------------------
-build:time-arm64-qnx --config=time_shared
-build:time-arm64-qnx --platforms=@score_bazel_platforms//:aarch64-qnx-sdp_8.0.0-posix
-build:time-arm64-qnx --extra_toolchains=@score_qcc_aarch64_toolchain//:aarch64-qnx-sdp_8.0.0
+build:arm64-qnx --config=shared
+build:arm64-qnx --platforms=@score_bazel_platforms//:aarch64-qnx-sdp_8.0.0-posix
+build:arm64-qnx --extra_toolchains=@score_qcc_aarch64_toolchain//:aarch64-qnx-sdp_8.0.0
 
 # -------------------------------------------------------------------------------
 # Import local user workspace file, if exists
