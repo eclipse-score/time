@@ -12,8 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Time Component
-==============
+Time
+====
+
+Provides client-side C++ clock API for accessing system, steady, high-resolution steady, and vehicle-synchronized time bases.
 
 .. contents:: Table of Contents
    :depth: 2

@@ -28,7 +28,7 @@ Time Library User Manual
 Overview
 ========
 
-This user manual covers the ``score::time`` client library - the C++ API for accessing synchronized time in your applications.
+This user manual covers the ``score::time`` client library - the C++ API for accessing system, steady, high-resolution steady, and vehicle-synchronized time in your applications.
 
 The library provides multiple clock types (``VehicleTime``, ``SystemTime``, ``SteadyTime``, ``HighResSteadyTime``) with a unified interface for time access, lifecycle management, and testing.
 

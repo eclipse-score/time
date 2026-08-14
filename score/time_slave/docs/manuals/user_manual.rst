@@ -28,7 +28,7 @@ Time Slave User Manual
 Overview
 ========
 
-The ``TimeSlave`` component is a system daemon responsible for synchronizing with the PTP Grandmaster Clock over the network. It adjusts the hardware clock (PHC) and publishes synchronization data to shared memory for consumption by the ``TimeDaemon``.
+The Time Slave component is a system daemon responsible for synchronizing with the PTP Grandmaster Clock over the network. It adjusts the hardware clock (PHC) and publishes synchronization data to shared memory for consumption by the ``TimeDaemon``.
 
 For module-level integration and deployment information, see the main module manual.
 

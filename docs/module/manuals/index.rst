@@ -17,6 +17,6 @@ Manuals
 
 .. toctree::
    :titlesonly:
+   :glob:
 
-   user_manual
-   troubleshooting_guide
+   *

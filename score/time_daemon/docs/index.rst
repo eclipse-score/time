@@ -12,8 +12,10 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Time Daemon Component
-=====================
+Time Daemon
+===========
+
+System daemon responsible for quality assurance and providing synchronized time to local applications on the ECU.
 
 .. contents:: Table of Contents
    :depth: 2

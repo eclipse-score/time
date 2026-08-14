@@ -14,17 +14,50 @@
 
 .. _manual_time_api_usage:
 
-API Usage: Accessing Vehicle Time
-=================================
+API Usage: Accessing Supported Time Bases
+=========================================
 
-The primary interface for applications to access synchronized time is the ``score::time`` client library. It provides a simple, robust, and testable way to get the current time without dealing with the underlying complexities of PTP and IPC.
+The primary interface for applications to access time values is the ``score::time`` client library. It provides a simple, robust, and testable way to get current time from all supported time bases.
 
-This section describes the most common use case: polling the current Vehicle Time.
+This section describes the most common use case: polling current time snapshots.
+
+Supported time bases in this module:
+
+* ``std::chrono::system_clock`` via ``score::time::SystemClock``
+* ``std::chrono::steady_clock`` via ``score::time::SteadyClock``
+* ``score::time::HighResSteadyTime`` via ``score::time::HighResSteadyClock``
+* ``score::time::VehicleTime`` via ``score::time::VehicleClock``
 
 For more detail, see the :ref:`time library user manual<time_component_user_manual>`.
 
-Polling the Current Vehicle Time
---------------------------------
+Polling Supported Time Bases
+----------------------------
+
+All supported clocks use the same API shape: ``GetInstance()`` and ``Now()``.
+
+.. code-block:: cpp
+
+   #include "score/time/system_time/src/system_clock.h"
+   #include "score/time/steady_time/src/steady_clock.h"
+   #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+   #include "score/time/vehicle_time/src/vehicle_clock.h"
+
+   void poll_supported_time_bases()
+   {
+       const auto system_snapshot = score::time::SystemClock::GetInstance().Now();
+       const auto steady_snapshot = score::time::SteadyClock::GetInstance().Now();
+       const auto high_res_snapshot = score::time::HighResSteadyClock::GetInstance().Now();
+       const auto vehicle_snapshot = score::time::VehicleClock::GetInstance().Now();
+
+       // Access the timepoint from every snapshot in the same way.
+       const auto system_tp = system_snapshot.TimePoint();
+       const auto steady_tp = steady_snapshot.TimePoint();
+       const auto high_res_tp = high_res_snapshot.TimePoint();
+       const auto vehicle_tp = vehicle_snapshot.TimePoint();
+   }
+
+Polling Vehicle Time with Quality Checks
+----------------------------------------
 
 This method involves actively requesting the current vehicle time from the ``score::time`` framework. It is the simplest way to get a timepoint when needed.
 
