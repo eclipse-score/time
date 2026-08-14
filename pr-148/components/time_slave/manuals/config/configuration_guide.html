@@ -38,11 +38,11 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
@@ -378,8 +378,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../../../module/manuals/index.html">Manuals</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../../../module/manuals/troubleshooting_guide.html">Troubleshooting Guide</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../../../../module/manuals/user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../../../../module/manuals/api_description/api_usage.html">API Usage: Accessing Vehicle Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../module/manuals/api_description/api_usage.html">API Usage: Accessing Supported Time Bases</a></li>
 
 <li class="toctree-l3"><a class="reference internal" href="../../../time/manuals/user_manual.html">Time Library User Manual</a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="../user_manual.html">Time Slave User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -391,8 +392,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../module/manuals/troubleshooting_guide.html">Troubleshooting Guide</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../module/manuals/safety_manual.html">Safety Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../module/manuals/security_manual.html">Security Manual</a></li>
 </ul>
 </details></li>
 </ul>
@@ -469,33 +468,13 @@
 <p>The behavior of the <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> is controlled by the <code class="docutils literal notranslate"><span class="pre">GptpEngineOptions</span></code> structure. Currently, only a subset of these options can be overridden at runtime via command-line arguments. For all other options, the hard-coded default values are used.</p>
 <section id="command-line-arguments">
 <h2>Command-Line Arguments<a class="headerlink" href="#command-line-arguments" title="Link to this heading">#</a></h2>
-<p>The following argument is available to configure the <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> at runtime:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 25.0%" />
-<col style="width: 15.0%" />
-<col style="width: 60.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Argument</p></th>
-<th class="head"><p>Overrides</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-i,</span> <span class="pre">--interface</span> <span class="pre">&lt;name&gt;</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">iface_name</span></code></p></td>
-<td><p><strong>Mandatory Runtime Parameter.</strong> Specifies the Ethernet network interface. Although the internal default is “emac0”, this <strong>must</strong> be set correctly at runtime to match the target hardware.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>The following argument is available to configure the <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> at runtime: &lt;tbd&gt;</p>
 </section>
 <section id="default-configuration-gptpengineoptions">
 <h2>Default Configuration (<cite>GptpEngineOptions</cite>)<a class="headerlink" href="#default-configuration-gptpengineoptions" title="Link to this heading">#</a></h2>
 <p>The following table lists all available options and their default values as defined in the source code. Currently, only <code class="docutils literal notranslate"><span class="pre">iface_name</span></code> can be changed without recompiling the application.</p>
 <div class="pst-scrollable-table-container"><table class="table" id="id1">
-<caption><span class="caption-number">Table 13 </span><span class="caption-text">GptpEngineOptions Default Values</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
+<caption><span class="caption-number">Table 14 </span><span class="caption-text">GptpEngineOptions Default Values</span><a class="headerlink" href="#id1" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 15.0%" />
@@ -543,12 +522,12 @@
 <section id="example-invocation">
 <h2>Example Invocation<a class="headerlink" href="#example-invocation" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the TimeSlave, overriding the default interface name &quot;emac0&quot;</span>
-./time_slave<span class="w"> </span>--interface<span class="w"> </span>eth1
+./time_slave
 </pre></div>
 </div>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>The command-line parsing is currently incomplete. To change parameters other than the interface name, you must modify the default values in the <code class="docutils literal notranslate"><span class="pre">GptpEngineOptions</span></code> structure and recompile the application. A comprehensive configuration mechanism (e.g., via a JSON file) is planned for future versions.</p>
+<p>The runtime configuration is currently incomplete. To change parameters, you must modify the default values in the <code class="docutils literal notranslate"><span class="pre">GptpEngineOptions</span></code> structure and recompile the application. A comprehensive configuration mechanism (e.g., via a JSON file) will come soon.</p>
 </div>
 </section>
 </section>

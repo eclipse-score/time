@@ -38,11 +38,11 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
@@ -378,8 +378,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Manuals</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting_guide.html">Troubleshooting Guide</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../api_description/api_usage.html">API Usage: Accessing Vehicle Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api_description/api_usage.html">API Usage: Accessing Supported Time Bases</a></li>
 
 <li class="toctree-l3"><a class="reference internal" href="../../../components/time/manuals/user_manual.html">Time Library User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
@@ -392,8 +393,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../troubleshooting_guide.html">Troubleshooting Guide</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="../safety_manual.html">Safety Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../security_manual.html">Security Manual</a></li>
 </ul>
 </details></li>
 </ul>
@@ -685,8 +684,8 @@ in their Bazel BUILD file to prevent parallel execution conflicts.</p>
 </table>
 </div>
 </section>
-<section id="adapting-for-your-application">
-<h3>Adapting for Your Application<a class="headerlink" href="#adapting-for-your-application" title="Link to this heading">#</a></h3>
+<section id="adapting-your-application">
+<h3>Adapting Your Application<a class="headerlink" href="#adapting-your-application" title="Link to this heading">#</a></h3>
 <p>To use these patterns in your code:</p>
 <ol class="arabic">
 <li><p><strong>Production code</strong> depends on <code class="docutils literal notranslate"><span class="pre">:interface</span></code> for headers, production target for binary:</p>
@@ -783,7 +782,7 @@ runtime dependencies.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#target-structure">Target Structure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dependency-layers">Dependency Layers</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-dependency-targets">Key Dependency Targets</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adapting-for-your-application">Adapting for Your Application</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adapting-your-application">Adapting Your Application</a></li>
 </ul>
 </li>
 </ul>

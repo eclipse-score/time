@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>API Usage: Accessing Vehicle Time &#8212; S-CORE Time  documentation</title>
+    <title>API Usage: Accessing Supported Time Bases &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -38,11 +38,11 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
@@ -378,8 +378,9 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Manuals</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../troubleshooting_guide.html">Troubleshooting Guide</a></li>
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">API Usage: Accessing Vehicle Time</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">API Usage: Accessing Supported Time Bases</a></li>
 
 <li class="toctree-l3"><a class="reference internal" href="../../../components/time/manuals/user_manual.html">Time Library User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
@@ -388,8 +389,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../troubleshooting_guide.html">Troubleshooting Guide</a></li>
 </ul>
 </details></li>
-<li class="toctree-l2"><a class="reference internal" href="../safety_manual.html">Safety Manual</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../security_manual.html">Security Manual</a></li>
 </ul>
 </details></li>
 </ul>
@@ -441,7 +440,7 @@
     
     <li class="breadcrumb-item"><a href="../user_manual.html" class="nav-link">User Manual</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">API Usage: Accessing Vehicle Time</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">API Usage: Accessing Supported Time Bases</span></li>
   </ul>
 </nav>
 </div>
@@ -458,14 +457,45 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="api-usage-accessing-vehicle-time">
-<span id="manual-time-api-usage"></span><h1>API Usage: Accessing Vehicle Time<a class="headerlink" href="#api-usage-accessing-vehicle-time" title="Link to this heading">#</a></h1>
-<p>The primary interface for applications to access synchronized time is the <code class="docutils literal notranslate"><span class="pre">score::time</span></code> client library. It provides a simple, robust, and testable way to get the current time without dealing with the underlying complexities of PTP and IPC.</p>
-<p>This section describes the most common use case: polling the current Vehicle Time.</p>
+  <section id="api-usage-accessing-supported-time-bases">
+<span id="manual-time-api-usage"></span><h1>API Usage: Accessing Supported Time Bases<a class="headerlink" href="#api-usage-accessing-supported-time-bases" title="Link to this heading">#</a></h1>
+<p>The primary interface for applications to access time values is the <code class="docutils literal notranslate"><span class="pre">score::time</span></code> client library. It provides a simple, robust, and testable way to get current time from all supported time bases.</p>
+<p>This section describes the most common use case: polling current time snapshots.</p>
+<p>Supported time bases in this module:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">std::chrono::system_clock</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::SystemClock</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std::chrono::steady_clock</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::SteadyClock</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">score::time::HighResSteadyTime</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::HighResSteadyClock</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">score::time::VehicleTime</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::VehicleClock</span></code></p></li>
+</ul>
 <p>For more detail, see the <a class="reference internal" href="../../../components/time/manuals/user_manual.html#time-component-user-manual"><span class="std std-ref">time library user manual</span></a>.</p>
-<section id="polling-the-current-time">
-<h2>Polling the Current Time<a class="headerlink" href="#polling-the-current-time" title="Link to this heading">#</a></h2>
-<p>This method involves actively requesting the current time from the <code class="docutils literal notranslate"><span class="pre">score::time</span></code> framework. It is the simplest way to get a timepoint when needed.</p>
+<section id="polling-supported-time-bases">
+<h2>Polling Supported Time Bases<a class="headerlink" href="#polling-supported-time-bases" title="Link to this heading">#</a></h2>
+<p>All supported clocks use the same API shape: <code class="docutils literal notranslate"><span class="pre">GetInstance()</span></code> and <code class="docutils literal notranslate"><span class="pre">Now()</span></code>.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/system_time/src/system_clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/steady_time/src/steady_clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/high_res_steady_time/src/high_res_steady_clock.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">poll_supported_time_bases</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">system_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">SystemClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">steady_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">SteadyClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">high_res_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">HighResSteadyClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">vehicle_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Access the timepoint from every snapshot in the same way.</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">system_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">system_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">steady_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">steady_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">high_res_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">high_res_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">vehicle_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vehicle_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="polling-vehicle-time-with-quality-checks">
+<h2>Polling Vehicle Time with Quality Checks<a class="headerlink" href="#polling-vehicle-time-with-quality-checks" title="Link to this heading">#</a></h2>
+<p>This method involves actively requesting the current vehicle time from the <code class="docutils literal notranslate"><span class="pre">score::time</span></code> framework. It is the simplest way to get a timepoint when needed.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
@@ -667,8 +697,9 @@ This event is triggered after the <code class="docutils literal notranslate"><sp
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">API Usage: Accessing Vehicle Time</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-the-current-time">Polling the Current Time</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">API Usage: Accessing Supported Time Bases</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-supported-time-bases">Polling Supported Time Bases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-vehicle-time-with-quality-checks">Polling Vehicle Time with Quality Checks</a></li>
 </ul>
 </li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-api-usage-subscribing-to-ptp-protocol-events">Advanced API Usage: Subscribing to PTP Protocol Events</a><ul class="pst-show_toc_level nav section-nav flex-column">
