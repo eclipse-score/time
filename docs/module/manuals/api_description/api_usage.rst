@@ -28,7 +28,7 @@ Supported time bases in this module:
 * ``score::time::HighResSteadyTime`` via ``score::time::HighResSteadyClock``
 * ``score::time::VehicleTime`` via ``score::time::VehicleClock``
 
-For more detail, see the :ref:`time library user manual<time_component_user_manual>`.
+For more detail, see the :ref:`module user manual<user_manual>`.
 
 Polling Supported Time Bases
 ----------------------------

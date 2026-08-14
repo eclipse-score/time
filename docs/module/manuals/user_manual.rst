@@ -50,6 +50,39 @@ The primary interface for applications to access synchronized time is the ``scor
    :maxdepth: 2
 
    api_description/api_usage
+   api_description/lifecycle
+   api_description/testing_guide
+
+.. note::
+   For a complete C++ API reference with full class and function documentation,
+   please refer to the generated Doxygen documentation (to be added in future releases).
+
+Choosing the Right Clock
+=========================
+
+The S-CORE ``time`` module provides several clock types, each designed for a specific use case. Understanding their differences is crucial for writing robust and correct applications.
+
+Select clock type based on use case. No clock type is universally better; each has a different purpose.
+
+.. list-table:: Clock Types Overview
+   :widths: 20 40 40
+   :header-rows: 1
+
+   * - Clock Type
+     - Key Characteristic
+     - Typical Use Case
+   * - ``VehicleTime``
+     - High-precision, PTP-synchronized, quality-assured network time.
+     - Cross-ECU correlation, synchronized logging, and decisions that depend on vehicle-wide time consistency (for example: validating whether a vehicle-time-stamped frame is too old and should be discarded).
+   * - ``SystemTime``
+     - The system's "wall clock" time (Unix time). Can jump forwards or backwards (e.g., due to NTP correction or manual changes).
+     - Displaying human-readable timestamps. Creating log entries where absolute time is more important than monotonic progression.
+   * - ``SteadyTime``
+     - A clock that is guaranteed to only ever move forward (monotonic). Its starting point is arbitrary (e.g., system boot time).
+     - Measuring time intervals, implementing timeouts, scheduling tasks where guaranteed monotonic progression is essential.
+   * - ``HighResSteadyTime``
+     - A monotonic clock that provides the highest possible resolution the underlying hardware can offer.
+     - High-precision performance measurements and profiling, or very short-interval timing.
 
 .. _component_manuals:
 
@@ -61,7 +94,6 @@ For detailed component-specific user manuals:
 .. toctree::
    :maxdepth: 1
 
-   /components/time/manuals/user_manual
    /components/time_slave/manuals/user_manual
    /components/time_daemon/manuals/user_manual
 
@@ -125,10 +157,53 @@ Integrating with Your Project
 
       cc_library(
           name = "my_target",
-          deps = ["@score_time//score/time/vehicle_time:vehicle_time"],
+          deps = [
+                "@score_time//score/time/vehicle_time:vehicle_time",  # For VehicleTime
+                # OR
+                "@score_time//score/time/system_time:system_time",     # For SystemTime
+                # OR
+                "@score_time//score/time/steady_time:steady_time",     # For SteadyTime
+                # OR
+                "@score_time//score/time/high_res_steady_time:high_res_steady_time",  # For HighResSteadyTime
+          ],
       )
 
-3. Include headers and compile your code
+3. Include headers and use the API in your code:
+
+   .. code-block:: cpp
+
+      #include "score/time/clock.h"
+      #include "score/time/vehicle_time.h"
+
+      auto& clock = score::time::Clock<score::time::VehicleTime>::GetInstance();
+      const auto snapshot = clock.Now();
+      if (snapshot.Status().IsReliable())
+      {
+          // Safe to use snapshot.TimePoint()
+      }
+
+For component tests, use the mock variants where needed, for example:
+
+.. code-block:: python
+
+   cc_test(
+       name = "my_test",
+       deps = [
+           "@score_time//score/time/vehicle_time:vehicle_time_mock",
+       ],
+   )
+
+Runtime Requirements
+--------------------
+
+If your application uses ``VehicleTime``, both ``TimeSlave`` and ``TimeDaemon`` services must be running.
+
+``SystemTime``, ``SteadyTime``, and ``HighResSteadyTime`` do not depend on these daemons.
+
+For service deployment and configuration details, refer to:
+
+* :doc:`/components/time_slave/manuals/user_manual`
+* :doc:`/components/time_daemon/manuals/user_manual`
 
 System Services Deployment
 ---------------------------

@@ -17,5 +17,10 @@ Time Slave
 
 System daemon responsible for synchronizing with the PTP Grandmaster Clock over the network. It adjusts the hardware clock (PHC) and publishes synchronization data to shared memory for consumption by the ``TimeDaemon``.
 
+Component Detail Information
+============================
+
 .. toctree::
    :maxdepth: 1
+
+   manuals/user_manual

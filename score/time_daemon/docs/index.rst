@@ -17,6 +17,10 @@ Time Daemon
 
 System daemon responsible for quality assurance and providing synchronized time to local applications on the ECU.
 
-.. contents:: Table of Contents
-   :depth: 2
-   :local:
+Component Detail Information
+============================
+
+.. toctree::
+   :maxdepth: 1
+
+   manuals/user_manual
