@@ -23,10 +23,10 @@ This section describes the most common use case: polling the current Vehicle Tim
 
 For more detail, see the :ref:`time library user manual<time_component_user_manual>`.
 
-Polling the Current Time
-------------------------
+Polling the Current Vehicle Time
+--------------------------------
 
-This method involves actively requesting the current time from the ``score::time`` framework. It is the simplest way to get a timepoint when needed.
+This method involves actively requesting the current vehicle time from the ``score::time`` framework. It is the simplest way to get a timepoint when needed.
 
 .. code-block:: cpp
 

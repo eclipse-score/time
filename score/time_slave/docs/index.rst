@@ -17,5 +17,3 @@ time_slave Component
 
 .. toctree::
    :maxdepth: 1
-
-   component_classification

@@ -239,8 +239,8 @@ For each clock type (``system_time``, ``steady_time``, ``high_res_steady_time``)
    * - ``//score/time/<type>:<type>_mock``
      - GMock test double for unit testing
 
-Adapting for Your Application
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Adapting Your Application
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To use these patterns in your code:
 

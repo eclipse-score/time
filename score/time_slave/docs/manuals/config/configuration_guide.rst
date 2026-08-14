@@ -22,18 +22,7 @@ The behavior of the ``TimeSlave`` is controlled by the ``GptpEngineOptions`` str
 Command-Line Arguments
 -----------------------
 
-The following argument is available to configure the ``TimeSlave`` at runtime:
-
-.. list-table::
-   :widths: 25 15 60
-   :header-rows: 1
-
-   * - Argument
-     - Overrides
-     - Description
-   * - ``-i, --interface <name>``
-     - ``iface_name``
-     - **Mandatory Runtime Parameter.** Specifies the Ethernet network interface. Although the internal default is "emac0", this **must** be set correctly at runtime to match the target hardware.
+The following argument is available to configure the ``TimeSlave`` at runtime: <tbd>
 
 
 Default Configuration (`GptpEngineOptions`)
@@ -77,7 +66,7 @@ Example Invocation
 .. code-block:: bash
 
    # Start the TimeSlave, overriding the default interface name "emac0"
-   ./time_slave --interface eth1
+   ./time_slave
 
 .. attention::
-   The command-line parsing is currently incomplete. To change parameters other than the interface name, you must modify the default values in the ``GptpEngineOptions`` structure and recompile the application. A comprehensive configuration mechanism (e.g., via a JSON file) is planned for future versions.
+   The runtime configuration is currently incomplete. To change parameters, you must modify the default values in the ``GptpEngineOptions`` structure and recompile the application. A comprehensive configuration mechanism (e.g., via a JSON file) will come soon.
