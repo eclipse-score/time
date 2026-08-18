@@ -10,9 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-module(
-    name = "score_time",
-)
+module(name = "score_time")
 
 ## Configure the C++ toolchain
 
