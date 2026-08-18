@@ -25,13 +25,13 @@ docs(
         {
             "bundle": "//score/time_slave:docs_bundle",
             "mount_at": "time_slave",
-            "attach_to": "module/index"
+            "attach_to": "module/index",
         },
         {
             "bundle": "//score/time_daemon:docs_bundle",
             "mount_at": "time_daemon",
-            "attach_to": "module/index"
-        }
+            "attach_to": "module/index",
+        },
     ],
     external_needs = [
         "@score_process//:needs_json_file",
