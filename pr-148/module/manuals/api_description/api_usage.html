@@ -172,8 +172,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../components/index.html">
-    Components
+  <a class="nav-link nav-internal" href="../../../time_daemon/index.html">
+    Time Daemon
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../time_slave/index.html">
+    Time Slave
   </a>
 </li>
 
@@ -301,8 +308,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../components/index.html">
-    Components
+  <a class="nav-link nav-internal" href="../../../time_daemon/index.html">
+    Time Daemon
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../time_slave/index.html">
+    Time Slave
   </a>
 </li>
 
@@ -387,14 +401,18 @@
 
 
 
-<li class="toctree-l3"><a class="reference internal" href="../../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../components/time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../examples/index.html">Examples User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../troubleshooting_guide.html">Troubleshooting Guide</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_slave/index.html">Time Slave</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../../time_daemon/index.html">Time Daemon</a></li>
+
 </ul>
 </div>
 </nav></div>
@@ -473,26 +491,24 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">score::time::VehicleTime</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::VehicleClock</span></code></p></li>
 </ul>
 <p>For more detail, see the <a class="reference internal" href="../user_manual.html#user-manual"><span class="std std-ref">module user manual</span></a>.</p>
-<section id="polling-supported-time-bases">
-<h2>Polling Supported Time Bases<a class="headerlink" href="#polling-supported-time-bases" title="Link to this heading">#</a></h2>
+<section id="polling-non-vehicle-time-bases">
+<h2>Polling Non-Vehicle Time Bases<a class="headerlink" href="#polling-non-vehicle-time-bases" title="Link to this heading">#</a></h2>
 <p>All supported clocks use the same API shape: <code class="docutils literal notranslate"><span class="pre">GetInstance()</span></code> and <code class="docutils literal notranslate"><span class="pre">Now()</span></code>.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/system_time/src/system_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/steady_time/src/steady_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/high_res_steady_time/src/high_res_steady_clock.h&quot;</span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">poll_supported_time_bases</span><span class="p">()</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">poll_non_vehicle_time_bases</span><span class="p">()</span>
 <span class="p">{</span>
+<span class="w">    </span><span class="c1">// Non-vehicle time bases can be accessed without any initialization.</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">system_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">SystemClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">steady_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">SteadyClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">high_res_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">HighResSteadyClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">vehicle_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
 
 <span class="w">    </span><span class="c1">// Access the timepoint from every snapshot in the same way.</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">system_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">system_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">steady_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">steady_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">high_res_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">high_res_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
-<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">vehicle_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vehicle_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -513,18 +529,25 @@
 <span class="w">    </span><span class="c1">// 1. Get a handle to the VehicleClock singleton instance.</span>
 <span class="w">    </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">clock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">Clock</span><span class="o">&lt;</span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">VehicleTime</span><span class="o">&gt;::</span><span class="n">GetInstance</span><span class="p">();</span>
 
-<span class="w">    </span><span class="c1">// 2. Request the current time snapshot.</span>
+<span class="w">    </span><span class="c1">// 2. Ensure the clock is initialized and ready to provide time snapshots.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">clock</span><span class="p">.</span><span class="n">Init</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Error: VehicleClock failed to initialize. &quot;</span>
+<span class="w">            </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Ensure TimeSlave and TimeDaemon are running.&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">        </span><span class="k">return</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// 3. Request the current time snapshot.</span>
 <span class="w">    </span><span class="c1">//    This call retrieves the latest time information from the TimeDaemon via IPC.</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clock</span><span class="p">.</span><span class="n">Now</span><span class="p">();</span>
 
-<span class="w">    </span><span class="c1">// 3. Check the status of the snapshot.</span>
+<span class="w">    </span><span class="c1">// 4. Check the status of the snapshot.</span>
 <span class="w">    </span><span class="c1">//    IsConsistent(): status flags are not contradictory.</span>
 <span class="w">    </span><span class="c1">//    HasBeenSynchronized(): clock has synchronized at least once in this lifecycle.</span>
 <span class="w">    </span><span class="c1">//    IsReliable(): synchronized now and no active timeout/leap fault.</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">();</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">IsConsistent</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">HasBeenSynchronized</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">IsReliable</span><span class="p">())</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 4. Use the timepoint.</span>
+<span class="w">        </span><span class="c1">// 5. Use the timepoint.</span>
 <span class="w">        </span><span class="c1">//    The timepoint is a std::chrono::time_point.</span>
 <span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">current_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
 <span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">ns_since_epoch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">nanoseconds</span><span class="o">&gt;</span><span class="p">(</span>
@@ -535,7 +558,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="w">    </span><span class="k">else</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// 5. Handle invalid or currently unusable status.</span>
+<span class="w">        </span><span class="c1">// 6. Handle invalid or currently unusable status.</span>
 <span class="w">        </span><span class="c1">//    Applications must not use TimePoint() if status is inconsistent,</span>
 <span class="w">        </span><span class="c1">//    never synchronized, or currently unreliable.</span>
 <span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">cerr</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Warning: Vehicle Time status is not usable yet. &quot;</span>
@@ -702,7 +725,7 @@ This event is triggered after the <code class="docutils literal notranslate"><sp
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">API Usage: Accessing Supported Time Bases</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-supported-time-bases">Polling Supported Time Bases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-non-vehicle-time-bases">Polling Non-Vehicle Time Bases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-vehicle-time-with-quality-checks">Polling Vehicle Time with Quality Checks</a></li>
 </ul>
 </li>

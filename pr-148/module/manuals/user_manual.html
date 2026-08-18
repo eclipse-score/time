@@ -172,8 +172,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../components/index.html">
-    Components
+  <a class="nav-link nav-internal" href="../../time_daemon/index.html">
+    Time Daemon
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../time_slave/index.html">
+    Time Slave
   </a>
 </li>
 
@@ -301,8 +308,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../components/index.html">
-    Components
+  <a class="nav-link nav-internal" href="../../time_daemon/index.html">
+    Time Daemon
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../time_slave/index.html">
+    Time Slave
   </a>
 </li>
 
@@ -387,14 +401,18 @@
 
 
 
-<li class="toctree-l3"><a class="reference internal" href="../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../components/time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="examples/index.html">Examples User Manual</a></li>
 <li class="toctree-l3"><a class="reference internal" href="troubleshooting_guide.html">Troubleshooting Guide</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_slave/index.html">Time Slave</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
+
 </ul>
 </div>
 </nav></div>
@@ -460,7 +478,7 @@
                   
   <section id="user-manual">
 <span id="id1"></span><h1>User Manual<a class="headerlink" href="#user-manual" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-769845be">
+<div class="need_container docutils container" id="SNCB-20c099b9">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__user_manual_time">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -521,7 +539,7 @@ synchronized to a network-wide PTP (Precision Time Protocol) Grandmaster Clock. 
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api_description/api_usage.html">API Usage: Accessing Supported Time Bases</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_description/api_usage.html#polling-supported-time-bases">Polling Supported Time Bases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/api_usage.html#polling-non-vehicle-time-bases">Polling Non-Vehicle Time Bases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_description/api_usage.html#polling-vehicle-time-with-quality-checks">Polling Vehicle Time with Quality Checks</a></li>
 </ul>
 </li>
@@ -570,7 +588,7 @@ please refer to the generated Doxygen documentation (to be added in future relea
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code></p></td>
-<td><p>High-precision, PTP-synchronized, quality-assured network time.</p></td>
+<td><p>High-accuracy, PTP-synchronized, quality-assured network time.</p></td>
 <td><p>Cross-ECU correlation, synchronized logging, and decisions that depend on vehicle-wide time consistency (for example: validating whether a vehicle-time-stamped frame is too old and should be discarded).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SystemTime</span></code></p></td>
@@ -593,8 +611,8 @@ please refer to the generated Doxygen documentation (to be added in future relea
 <p>For detailed component-specific user manuals:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../components/time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../components/time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_slave/manuals/user_manual.html">Time Slave User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_daemon/manuals/user_manual.html">Time Daemon User Manual</a></li>
 </ul>
 </div>
 </section>
@@ -700,8 +718,8 @@ please refer to the generated Doxygen documentation (to be added in future relea
 <p><code class="docutils literal notranslate"><span class="pre">SystemTime</span></code>, <code class="docutils literal notranslate"><span class="pre">SteadyTime</span></code>, and <code class="docutils literal notranslate"><span class="pre">HighResSteadyTime</span></code> do not depend on these daemons.</p>
 <p>For service deployment and configuration details, refer to:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../../components/time_slave/manuals/user_manual.html"><span class="doc">Time Slave User Manual</span></a></p></li>
-<li><p><a class="reference internal" href="../../components/time_daemon/manuals/user_manual.html"><span class="doc">Time Daemon User Manual</span></a></p></li>
+<li><p><a class="reference internal" href="../../time_slave/manuals/user_manual.html"><span class="doc">Time Slave User Manual</span></a></p></li>
+<li><p><a class="reference internal" href="../../time_daemon/manuals/user_manual.html"><span class="doc">Time Daemon User Manual</span></a></p></li>
 </ul>
 </section>
 <section id="system-services-deployment">
