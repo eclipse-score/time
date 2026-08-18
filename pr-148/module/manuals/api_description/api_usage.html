@@ -491,16 +491,16 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">score::time::VehicleTime</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::VehicleClock</span></code></p></li>
 </ul>
 <p>For more detail, see the <a class="reference internal" href="../user_manual.html#user-manual"><span class="std std-ref">module user manual</span></a>.</p>
-<section id="polling-non-vehicle-time-bases">
-<h2>Polling Non-Vehicle Time Bases<a class="headerlink" href="#polling-non-vehicle-time-bases" title="Link to this heading">#</a></h2>
+<section id="polling-local-time-bases">
+<h2>Polling Local Time Bases<a class="headerlink" href="#polling-local-time-bases" title="Link to this heading">#</a></h2>
 <p>All supported clocks use the same API shape: <code class="docutils literal notranslate"><span class="pre">GetInstance()</span></code> and <code class="docutils literal notranslate"><span class="pre">Now()</span></code>.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/system_time/src/system_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/steady_time/src/steady_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/high_res_steady_time/src/high_res_steady_clock.h&quot;</span>
 
-<span class="kt">void</span><span class="w"> </span><span class="nf">poll_non_vehicle_time_bases</span><span class="p">()</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">poll_local_time_bases</span><span class="p">()</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="c1">// Non-vehicle time bases can be accessed without any initialization.</span>
+<span class="w">    </span><span class="c1">// Local time bases can be accessed without any initialization.</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">system_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">SystemClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">steady_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">SteadyClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">high_res_snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">score</span><span class="o">::</span><span class="n">time</span><span class="o">::</span><span class="n">HighResSteadyClock</span><span class="o">::</span><span class="n">GetInstance</span><span class="p">().</span><span class="n">Now</span><span class="p">();</span>
@@ -542,10 +542,10 @@
 
 <span class="w">    </span><span class="c1">// 4. Check the status of the snapshot.</span>
 <span class="w">    </span><span class="c1">//    IsConsistent(): status flags are not contradictory.</span>
-<span class="w">    </span><span class="c1">//    HasBeenSynchronized(): clock has synchronized at least once in this lifecycle.</span>
-<span class="w">    </span><span class="c1">//    IsReliable(): synchronized now and no active timeout/leap fault.</span>
+<span class="w">    </span><span class="c1">//    IsReliable(): clock has synchronized at least once in this lifecycle and no active timeout/leap fault.</span>
+<span class="w">    </span><span class="c1">//    IsSynchronized() is also available to check if the clock has ever synchronized, but it does not check for timeout/leap faults.</span>
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="p">();</span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">IsConsistent</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">HasBeenSynchronized</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">IsReliable</span><span class="p">())</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">status</span><span class="p">.</span><span class="n">IsConsistent</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">status</span><span class="p">.</span><span class="n">IsReliable</span><span class="p">())</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// 5. Use the timepoint.</span>
 <span class="w">        </span><span class="c1">//    The timepoint is a std::chrono::time_point.</span>
@@ -725,7 +725,7 @@ This event is triggered after the <code class="docutils literal notranslate"><sp
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">API Usage: Accessing Supported Time Bases</a><ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-non-vehicle-time-bases">Polling Non-Vehicle Time Bases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-local-time-bases">Polling Local Time Bases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#polling-vehicle-time-with-quality-checks">Polling Vehicle Time with Quality Checks</a></li>
 </ul>
 </li>
