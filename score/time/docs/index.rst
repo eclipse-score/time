@@ -12,54 +12,42 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-System daemon responsible for quality assurance and providing synchronized time to local applications on the ECU.
-.. _time_daemon:
+.. _time:
 
-Time Daemon
-#####################
+Time
+####
 
-.. note:: Document header
-
-.. document:: Time Daemon
-   :id: doc__time_daemon
+.. document:: Time
+   :id: doc__time
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__cmpt_request
-   :tags: time_daemon
+   :tags: time
 
-.. note::
-   Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
-
-.. code-block:: rst
-
-   .. comp:: Time Daemon
-      :id: comp__time_daemon_template
-      :security: YES
-      :safety: ASIL_B
-      :status: invalid
-      :implements: logic_arc_int__feature_name__interface_name1
-      :consists_of: comp__component_name_internal_1, comp__component_name_internal_2, comp__component_name_internal_3
-      :belongs_to: feat__feature_name
-
-.. attention::
-    The above directives must be updated according to your Component.
-
-    - Adjust ``status`` to be ``valid``
-    - Adjust ``safety`` and ``tags`` according to your needs
+.. comp:: Time
+   :id: comp__time
+   :security: NO
+   :safety: ASIL_B
+   :status: valid
+   :version: 1
+   :belongs_to: feat__time
 
 Abstract
+========
 
 [A short (~200 word) description of the component.]
 
 
 Specification
+=============
 
 [Describe the requirements, architecture of any component.] or
 
 
 How to Teach This
+=================
 
 [How to teach users, new and experienced, how to apply the CR to their work.]
 
@@ -67,6 +55,7 @@ How to Teach This
    For a CR that adds new functionality or changes behaviour, it is helpful to include a section on how to teach users, new and experienced, how to apply the CR to their work.
 
 Footnotes
+=========
 
 [A collection of footnotes cited in the CR, and a place to list non-inline hyperlink targets.]
 
@@ -78,7 +67,6 @@ Component Detail Information
 
 .. toctree::
    :maxdepth: 1
-   
+
    detailed_design/index
    requirements/index
-   manuals/user_manual
