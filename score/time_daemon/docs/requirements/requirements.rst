@@ -39,7 +39,7 @@ Component Time Daemon Requirements
 Functional Requirements
 -----------------------
 
-.. codeblock:: rst
+.. code-block:: rst
 
    .. comp_req:: Some Title
       :id: comp_req__time_daemon__some_title
@@ -68,7 +68,7 @@ Functional Requirements
 Assumption of Use Requirements
 ------------------------------
 
-.. codeblock:: rst
+.. code-block:: rst
 
    .. aou_req:: Next Title
       :id: aou_req__time_daemon__next_title
@@ -83,7 +83,7 @@ Assumption of Use Requirements
 Environmental Requirements
 --------------------------
 
-.. codeblock:: rst
+.. code-block:: rst
 
    .. aou_req:: Another Title
       :id: aou_req__time_daemon__another
