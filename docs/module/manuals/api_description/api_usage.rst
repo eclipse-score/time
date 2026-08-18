@@ -30,8 +30,8 @@ Supported time bases in this module:
 
 For more detail, see the :ref:`module user manual<user_manual>`.
 
-Polling Non-Vehicle Time Bases
-------------------------------
+Polling Local Time Bases
+------------------------
 
 All supported clocks use the same API shape: ``GetInstance()`` and ``Now()``.
 
@@ -41,9 +41,9 @@ All supported clocks use the same API shape: ``GetInstance()`` and ``Now()``.
    #include "score/time/steady_time/src/steady_clock.h"
    #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 
-   void poll_non_vehicle_time_bases()
+   void poll_local_time_bases()
    {
-       // Non-vehicle time bases can be accessed without any initialization.
+       // Local time bases can be accessed without any initialization.
        const auto system_snapshot = score::time::SystemClock::GetInstance().Now();
        const auto steady_snapshot = score::time::SteadyClock::GetInstance().Now();
        const auto high_res_snapshot = score::time::HighResSteadyClock::GetInstance().Now();
@@ -87,10 +87,10 @@ This method involves actively requesting the current vehicle time from the ``sco
 
        // 4. Check the status of the snapshot.
        //    IsConsistent(): status flags are not contradictory.
-       //    HasBeenSynchronized(): clock has synchronized at least once in this lifecycle.
-       //    IsReliable(): synchronized now and no active timeout/leap fault.
+       //    IsReliable(): clock has synchronized at least once in this lifecycle and no active timeout/leap fault.
+       //    IsSynchronized() is also available to check if the clock has ever synchronized, but it does not check for timeout/leap faults.
        const auto status = snapshot.Status();
-       if (status.IsConsistent() && status.HasBeenSynchronized() && status.IsReliable())
+       if (status.IsConsistent() && status.IsReliable())
        {
            // 5. Use the timepoint.
            //    The timepoint is a std::chrono::time_point.
