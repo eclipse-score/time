@@ -39,19 +39,21 @@ Component Time Sync Client Requirements
 Functional Requirements
 -----------------------
 
-.. comp_req:: Some Title
-   :id: comp_req__ts_client__some_title
-   :reqtype: Functional
-   :security: NO
-   :safety: ASIL_B
-   :derived_from: feat_req__time__example_req
-   :status: invalid
-   :version: 1
-   :satisfied_by: comp__time_ts_client
+.. code-block:: rst
 
-   The Component shall do xyz to another component to bring it to this condition at this time
+   .. comp_req:: Some Title
+      :id: comp_req__ts_client__some_title
+      :reqtype: Functional
+      :security: NO
+      :safety: ASIL_B
+      :derived_from: feat_req__time__example_req
+      :status: invalid
+      :version: 1
+      :satisfied_by: comp__time_ts_client
 
-   Note: (optional, not to be verified)
+      The Component shall do xyz to another component to bring it to this condition at this time
+
+      Note: (optional, not to be verified)
 
 .. attention::
     The above directive must be updated according to your component requirements.
@@ -66,29 +68,33 @@ Functional Requirements
 Assumption of Use Requirements
 ------------------------------
 
-.. aou_req:: Next Title
-   :id: aou_req__ts_client__next_title
-   :reqtype: Process
-   :security: NO
-   :safety: ASIL_B
-   :status: invalid
-   :version: 1
+.. code-block:: rst
 
-   The Component User shall do xyz to use the component safely/securely
+   .. aou_req:: Next Title
+      :id: aou_req__ts_client__next_title
+      :reqtype: Process
+      :security: NO
+      :safety: ASIL_B
+      :status: invalid
+      :version: 1
+
+      The Component User shall do xyz to use the component safely/securely
 
 Environmental Requirements
 --------------------------
 
-.. aou_req:: Another Title
-   :id: aou_req__ts_client__another
-   :reqtype: Process
-   :security: NO
-   :safety: ASIL_B
-   :status: invalid
-   :version: 1
-   :tags: environment
+.. code-block:: rst
 
-   The Component shall only be used in a xyz environment to ensure its proper functioning.
+   .. aou_req:: Another Title
+      :id: aou_req__ts_client__another
+      :reqtype: Process
+      :security: NO
+      :safety: ASIL_B
+      :status: invalid
+      :version: 1
+      :tags: environment
+
+      The Component shall only be used in a xyz environment to ensure its proper functioning.
 
 Hints
 -----
