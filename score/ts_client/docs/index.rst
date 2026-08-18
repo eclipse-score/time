@@ -70,6 +70,3 @@ Component Detail Information
 
    detailed_design/index
    requirements/index
-   safety_analysis/dfa
-   safety_analysis/fmea
-   safety_analysis/aou_requirements
