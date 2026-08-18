@@ -24,16 +24,14 @@ docs(
     bundles = [
         {
             "bundle": "//score/time_slave:docs_bundle",
-            "mount_at": "components/time_slave",
+            "mount_at": "time_slave",
+            "attach_to": "module/index"
         },
         {
             "bundle": "//score/time_daemon:docs_bundle",
-            "mount_at": "components/time_daemon",
-        },
-        {
-            "bundle": "//score/time:docs_bundle",
-            "mount_at": "components/time",
-        },
+            "mount_at": "time_daemon",
+            "attach_to": "module/index"
+        }
     ],
     external_needs = [
         "@score_process//:needs_json_file",

@@ -30,8 +30,8 @@ Supported time bases in this module:
 
 For more detail, see the :ref:`module user manual<user_manual>`.
 
-Polling Supported Time Bases
-----------------------------
+Polling Non-Vehicle Time Bases
+------------------------------
 
 All supported clocks use the same API shape: ``GetInstance()`` and ``Now()``.
 
@@ -40,20 +40,18 @@ All supported clocks use the same API shape: ``GetInstance()`` and ``Now()``.
    #include "score/time/system_time/src/system_clock.h"
    #include "score/time/steady_time/src/steady_clock.h"
    #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
-   #include "score/time/vehicle_time/src/vehicle_clock.h"
 
-   void poll_supported_time_bases()
+   void poll_non_vehicle_time_bases()
    {
+       // Non-vehicle time bases can be accessed without any initialization.
        const auto system_snapshot = score::time::SystemClock::GetInstance().Now();
        const auto steady_snapshot = score::time::SteadyClock::GetInstance().Now();
        const auto high_res_snapshot = score::time::HighResSteadyClock::GetInstance().Now();
-       const auto vehicle_snapshot = score::time::VehicleClock::GetInstance().Now();
 
        // Access the timepoint from every snapshot in the same way.
        const auto system_tp = system_snapshot.TimePoint();
        const auto steady_tp = steady_snapshot.TimePoint();
        const auto high_res_tp = high_res_snapshot.TimePoint();
-       const auto vehicle_tp = vehicle_snapshot.TimePoint();
    }
 
 Polling Vehicle Time with Quality Checks
@@ -76,18 +74,25 @@ This method involves actively requesting the current vehicle time from the ``sco
        // 1. Get a handle to the VehicleClock singleton instance.
        auto& clock = score::time::Clock<score::time::VehicleTime>::GetInstance();
 
-       // 2. Request the current time snapshot.
+       // 2. Ensure the clock is initialized and ready to provide time snapshots.
+       if (!clock.Init()) {
+       std::cerr << "Error: VehicleClock failed to initialize. "
+               << "Ensure TimeSlave and TimeDaemon are running." << std::endl;
+           return;
+       }
+
+       // 3. Request the current time snapshot.
        //    This call retrieves the latest time information from the TimeDaemon via IPC.
        const auto snapshot = clock.Now();
 
-       // 3. Check the status of the snapshot.
+       // 4. Check the status of the snapshot.
        //    IsConsistent(): status flags are not contradictory.
        //    HasBeenSynchronized(): clock has synchronized at least once in this lifecycle.
        //    IsReliable(): synchronized now and no active timeout/leap fault.
        const auto status = snapshot.Status();
        if (status.IsConsistent() && status.HasBeenSynchronized() && status.IsReliable())
        {
-           // 4. Use the timepoint.
+           // 5. Use the timepoint.
            //    The timepoint is a std::chrono::time_point.
            const auto current_time = snapshot.TimePoint();
            const auto ns_since_epoch = std::chrono::duration_cast<std::chrono::nanoseconds>(
@@ -98,7 +103,7 @@ This method involves actively requesting the current vehicle time from the ``sco
        }
        else
        {
-           // 5. Handle invalid or currently unusable status.
+           // 6. Handle invalid or currently unusable status.
            //    Applications must not use TimePoint() if status is inconsistent,
            //    never synchronized, or currently unreliable.
            std::cerr << "Warning: Vehicle Time status is not usable yet. "

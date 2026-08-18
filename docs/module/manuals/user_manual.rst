@@ -72,7 +72,7 @@ Select clock type based on use case. No clock type is universally better; each h
      - Key Characteristic
      - Typical Use Case
    * - ``VehicleTime``
-     - High-precision, PTP-synchronized, quality-assured network time.
+     - High-accuracy, PTP-synchronized, quality-assured network time.
      - Cross-ECU correlation, synchronized logging, and decisions that depend on vehicle-wide time consistency (for example: validating whether a vehicle-time-stamped frame is too old and should be discarded).
    * - ``SystemTime``
      - The system's "wall clock" time (Unix time). Can jump forwards or backwards (e.g., due to NTP correction or manual changes).
@@ -94,8 +94,8 @@ For detailed component-specific user manuals:
 .. toctree::
    :maxdepth: 1
 
-   /components/time_slave/manuals/user_manual
-   /components/time_daemon/manuals/user_manual
+   /time_slave/manuals/user_manual
+   /time_daemon/manuals/user_manual
 
 Examples
 --------
@@ -202,8 +202,8 @@ If your application uses ``VehicleTime``, both ``TimeSlave`` and ``TimeDaemon`` 
 
 For service deployment and configuration details, refer to:
 
-* :doc:`/components/time_slave/manuals/user_manual`
-* :doc:`/components/time_daemon/manuals/user_manual`
+* :doc:`/time_slave/manuals/user_manual`
+* :doc:`/time_daemon/manuals/user_manual`
 
 System Services Deployment
 ---------------------------

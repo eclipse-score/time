@@ -49,7 +49,8 @@ For a detailed concept and architectural design, please refer to the :doc:`time_
    :maxdepth: 1
    :caption: Component Documentation:
 
-   components/index
+   /time_daemon/index
+   /time_slave/index
 
 Project Layout
 --------------
