@@ -43,6 +43,7 @@ For a detailed concept and architectural design, please refer to the :doc:`time_
    :caption: Contents:
 
    features/index
+   module/index
 
 Project Layout
 --------------
