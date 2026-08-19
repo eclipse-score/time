@@ -30,7 +30,7 @@ permissions:
 
 jobs:
   license-check:
-    uses: eclipse-score/cicd-workflows/.github/workflows/license-check.yml@c644440e1f98e65db039cd66bcaa557314e6201b
+    uses: eclipse-score/cicd-workflows/.github/workflows/license-check.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     with:
       repo-url: "${{ github.server_url }}/${{ github.repository }}"
     secrets:

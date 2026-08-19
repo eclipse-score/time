@@ -38,9 +38,9 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.2.2
       - name: Setup Bazel
-        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90
+        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
         with:
-          unique-cache-name: ${{ github.job }}-${{ matrix.config }}
+          unique-cache-name: ${{ github.workflow }}-${{ github.job }}-${{ matrix.config }}
 
       - name: Build with Bazel
         run: |

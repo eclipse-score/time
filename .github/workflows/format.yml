@@ -40,9 +40,9 @@ jobs:
         uses: actions/checkout@v4.2.2
 
       - name: Setup Bazel
-        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90
+        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
         with:
-          unique-cache-name: ${{ github.job }}
+          unique-cache-name: ${{ github.workflow }}-${{ github.job }}
 
       - name: Run format check
         run: bazel test //:format.check
