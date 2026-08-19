@@ -18,7 +18,7 @@ Time
 ####
 
 .. document:: Time
-   :id: doc__time
+   :id: doc__time_time
    :status: draft
    :version: 1
    :safety: ASIL_B
