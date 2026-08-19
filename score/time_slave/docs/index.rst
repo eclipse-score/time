@@ -31,6 +31,7 @@ Time Slave
    :security: NO
    :safety: QM
    :status: valid
+   :version: 1
    :belongs_to: feat__time[version==1]
 
 
