@@ -21,8 +21,31 @@ setup_starpls(
 )
 
 docs(
+    bundles = [
+        {
+            "bundle": "//score/time_slave:docs_bundle",
+            "mount_at": "time_slave",
+            "attach_to": "module/index",
+        },
+        {
+            "bundle": "//score/time_daemon:docs_bundle",
+            "mount_at": "time_daemon",
+            "attach_to": "module/index",
+        },
+        {
+            "bundle": "//score/ts_client:docs_bundle",
+            "mount_at": "ts_client",
+            "attach_to": "module/index",
+        },
+        {
+            "bundle": "//score/time:docs_bundle",
+            "mount_at": "time",
+            "attach_to": "module/index",
+        },
+    ],
     external_needs = [
         "@score_process//:needs_json_file",
+        "@score_platform//:needs_json_file",
     ],
     project = "S-CORE Time",
     project_url = "https://eclipse-score.github.io/time",
