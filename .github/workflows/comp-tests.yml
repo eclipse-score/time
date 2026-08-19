@@ -36,6 +36,6 @@ jobs:
       contents: read
       pull-requests: read
     with:
-      bazel-target: 'test --config=time-x86_64-linux //score/...'
+      bazel-target: 'test --config=x86_64-linux //score/...'
       upload-name: 'bazel-testlogs'
       packages: 'fakechroot'

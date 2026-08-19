@@ -12,29 +12,29 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _time_slave:
+.. _time_daemon:
 
-Time Slave
+Time Daemon
 #####################
 
 .. note:: Document header
 
-.. document:: Time Slave
-   :id: doc__time_slave
+.. document:: Time Daemon
+   :id: doc__time_daemon
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__cmpt_request
-   :tags: time_slave
+   :tags: time_daemon
 
 .. note::
    Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
 
 .. code-block:: rst
 
-   .. comp:: Time Slave
-      :id: comp__time_slave_template
+   .. comp:: Time Daemon
+      :id: comp__time_daemon_template
       :security: YES
       :safety: ASIL_B
       :status: invalid
