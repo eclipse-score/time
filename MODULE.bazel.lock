@@ -9934,7 +9934,7 @@
     "@@score_rules_imagefs+//extensions:imagefs.bzl%imagefs": {
       "general": {
         "bzlTransitiveDigest": "6ZLANe53LXwcnne1ZrZm9GkJ9H5VdsCLSgSNHyUrqA4=",
-        "usagesDigest": "1ieOQTsTmqRePgmksL8DDGNxZZT2g0ExwBiH6NLXBLg=",
+        "usagesDigest": "voFwF6OLwUgMT68FYrWm7gv8AvRXIqmHAaCCackI5fM=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
