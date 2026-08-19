@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Features &#8212; S-CORE Time  documentation</title>
+    <title>Module &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -62,7 +62,7 @@
     <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'features/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'module/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="score::time — Unified Clock Interface" href="time/index.html" />
-    <link rel="prev" title="time_daemon Documentation" href="../index.html" />
+    <link rel="next" title="Time Slave" href="../time_slave/index.html" />
+    <link rel="prev" title="Test Cases" href="../features/test_cases.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
@@ -157,15 +157,15 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../features/index.html">
     Features
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../module/index.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
     Module
   </a>
 </li>
@@ -279,15 +279,15 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../features/index.html">
     Features
   </a>
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../module/index.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
     Module
   </a>
 </li>
@@ -362,12 +362,11 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Features:</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="time/index.html">score::time — Unified Clock Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="time_daemon/index.html">Concept for TimeDaemon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="time_slave/index.html">Concept for TimeSlave</a></li>
-<li class="toctree-l1"><a class="reference internal" href="test_cases.html">Test Cases</a></li>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../time_slave/index.html">Time Slave</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../time_daemon/index.html">Time Daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts_client/index.html">Time Sync Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../time/index.html">Time</a></li>
 </ul>
 </div>
 </nav></div>
@@ -408,7 +407,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Features</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Module</span></li>
   </ul>
 </nav>
 </div>
@@ -425,48 +424,39 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="features">
-<h1>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h1>
+  <section id="module">
+<h1>Module<a class="headerlink" href="#module" title="Link to this heading">#</a></h1>
+<p>The S-CORE <code class="docutils literal notranslate"><span class="pre">time</span></code> module provides a unified API for accessing system, steady, high-resolution steady, and PTP-synchronized vehicle time. The module contains four components: a client library for application-facing access, Time Slave for PTP clock synchronization, <code class="docutils literal notranslate"><span class="pre">ts_client</span></code> for shared-memory IPC between Time Slave and Time Daemon, and Time Daemon for synchronization quality validation before serving Vehicle Time.</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">mod</span><span class="p">::</span> Time
+   <span class="nc">:id:</span> mod__time
+   <span class="nc">:includes:</span> comp__component_name_template
+</pre></div>
+</div>
+<section id="module-view">
+<h2>Module View<a class="headerlink" href="#module-view" title="Link to this heading">#</a></h2>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">mod_view_sta</span><span class="p">::</span> Time Module Static View
+   <span class="nc">:id:</span> mod_view_sta__time__time
+   <span class="nc">:includes:</span> comp__component_name_template
+
+<span class="p">   ..</span> <span class="ow">needarch</span><span class="p">::</span>
+      <span class="nc">:scale:</span> 50
+      <span class="nc">:align:</span> center
+
+      {{ draw_module(need(), needs) }}
+</pre></div>
+</div>
+</section>
+<section id="module-documents">
+<h2>Module Documents<a class="headerlink" href="#module-documents" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Features:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="time/index.html">score::time — Unified Clock Interface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="time/index.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="time/index.html#architecture">Architecture</a></li>
-<li class="toctree-l2"><a class="reference internal" href="time/index.html#use-cases">Use Cases</a></li>
-<li class="toctree-l2"><a class="reference internal" href="time/index.html#bazel-dependencies">Bazel dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="time/index.html#design-decisions">Design decisions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="time/index.html#extending-with-a-new-clock-domain">Extending with a new clock domain</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="time_daemon/index.html">Concept for TimeDaemon</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="time_daemon/index.html#timedaemon-concept">TimeDaemon concept</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="time_slave/index.html">Concept for TimeSlave</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="time_slave/index.html#timeslave-concept">TimeSlave concept</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="test_cases.html">Test Cases</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-1-vehicle-time-synchronization">FR-1 Vehicle Time Synchronization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-2-vehicle-time-sync-precision">FR-2 Vehicle Time Sync Precision</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-3-vehicle-time-base-api">FR-3 Vehicle Time Base API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-4-vehicle-time-base-accuracy-qualifier">FR-4 Vehicle Time Base Accuracy Qualifier</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-5-vehicle-time-base-time-point-qualifier">FR-5 Vehicle Time Base Time Point Qualifier</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-6-vehicle-time-control-flow">FR-6 Vehicle Time Control Flow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-7-vehicle-time-synchronization-logging">FR-7 Vehicle Time Synchronization Logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-8-score-time-external-synchronization">FR-8 score::time External Synchronization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-9-absolute-time-base-api">FR-9 Absolute Time Base API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-10-absolute-time-base-accuracy-qualifier">FR-10 Absolute Time Base Accuracy Qualifier</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-11-absolute-time-base-security-qualifier">FR-11 Absolute Time Base Security Qualifier</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-12-absolute-time-synchronization-status-log">FR-12 Absolute Time Synchronization Status Log</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-13-high-precision-clock-api">FR-13 High Precision Clock API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-14-monotonic-clock-api">FR-14 Monotonic Clock API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="test_cases.html#fr-15-score-time-mocking-apis">FR-15 score::time Mocking APIs</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../time_slave/index.html">Time Slave</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../time_daemon/index.html">Time Daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ts_client/index.html">Time Sync Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../time/index.html">Time</a></li>
 </ul>
 </div>
+</section>
 </section>
 
 
@@ -480,20 +470,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../index.html"
+       href="../features/test_cases.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">time_daemon Documentation</p>
+        <p class="prev-next-title">Test Cases</p>
       </div>
     </a>
     <a class="right-next"
-       href="time/index.html"
+       href="../time_slave/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">score::time — Unified Clock Interface</p>
+        <p class="prev-next-title">Time Slave</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -509,10 +499,23 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-view">Module View</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-documents">Module Documents</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/features/index.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/module/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
