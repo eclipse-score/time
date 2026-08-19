@@ -33,7 +33,7 @@ An example of documenting detailed design can be found in:
 
    .. toctree::
 
-      detailed_design_example
+      detailed_design
 
 Inspection Checklist
 --------------------
