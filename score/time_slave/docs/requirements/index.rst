@@ -12,10 +12,13 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Component Classification
-========================
+Requirements
+############
 
-:Component: time_slave
-:ASIL Level: QM
-:Language: C++
-:Platform: Linux, QNX
+.. note::
+   Work in progress: page structure only, content to follow in later PRs.
+
+.. toctree::
+
+   requirements
+   chklst_req_inspection

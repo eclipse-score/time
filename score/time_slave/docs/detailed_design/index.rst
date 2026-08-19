@@ -12,7 +12,7 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _time_daemon_detailed_design_index:
+.. _time_slave_detailed_design_index:
 
 Detailed Design
 ###############
@@ -33,7 +33,7 @@ An example of documenting detailed design can be found in:
 
    .. toctree::
 
-      detailed_design
+      detailed_design_example
 
 Inspection Checklist
 --------------------
