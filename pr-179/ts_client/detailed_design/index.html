@@ -62,7 +62,7 @@
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'time_slave/detailed_design/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'ts_client/detailed_design/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Time Slave Detailed Design" href="detailed_design.html" />
-    <link rel="prev" title="Time Slave" href="../index.html" />
+    <link rel="next" title="Time Sync Client Detailed Design" href="detailed_design.html" />
+    <link rel="prev" title="Time Sync Client" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
@@ -363,9 +363,11 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time Slave</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../time_slave/index.html">Time Slave</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time Sync Client</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Detailed Design</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="detailed_design.html">Time Slave Detailed Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="detailed_design.html">Time Sync Client Detailed Design</a></li>
 
 <li class="toctree-l3"><a class="reference internal" href="chklst_impl_inspection.html">Implementation Inspection Checklist</a></li>
 </ul>
@@ -373,8 +375,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../requirements/index.html">Requirements</a></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../ts_client/index.html">Time Sync Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../time/index.html">Time</a></li>
 </ul>
 </div>
@@ -420,7 +420,7 @@
     <li class="breadcrumb-item"><a href="../../module/index.html" class="nav-link">Module</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time Slave</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time Sync Client</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Detailed Design</span></li>
   </ul>
@@ -440,7 +440,7 @@
                 <article class="bd-article">
                   
   <section id="detailed-design">
-<span id="time-slave-detailed-design-index"></span><h1>Detailed Design<a class="headerlink" href="#detailed-design" title="Link to this heading">#</a></h1>
+<span id="ts-client-detailed-design-index"></span><h1>Detailed Design<a class="headerlink" href="#detailed-design" title="Link to this heading">#</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Work in progress: page structure only, content to follow in later PRs.</p>
@@ -456,8 +456,8 @@ But the inspection checklist for the implementation is mandatory.</p>
 <blockquote>
 <div><div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="detailed_design.html">Time Slave Detailed Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="detailed_design.html#detailed-design-for-time-slave">Detailed Design for Time Slave</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="detailed_design.html">Time Sync Client Detailed Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="detailed_design.html#detailed-design-for-time-sync-client">Detailed Design for Time Sync Client</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="detailed_design.html#description">Description</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="detailed_design.html#rationale-behind-decomposition-into-units">Rationale Behind Decomposition into Units</a></li>
 </ul>
@@ -503,7 +503,7 @@ But the inspection checklist for the implementation is mandatory.</p>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Time Slave</p>
+        <p class="prev-next-title">Time Sync Client</p>
       </div>
     </a>
     <a class="right-next"
@@ -511,7 +511,7 @@ But the inspection checklist for the implementation is mandatory.</p>
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Time Slave Detailed Design</p>
+        <p class="prev-next-title">Time Sync Client Detailed Design</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -543,7 +543,7 @@ But the inspection checklist for the implementation is mandatory.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/time_slave/detailed_design/indexe/time_slave/docs/detailed_design/index.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/ts_client/detailed_design/indexre/ts_client/docs/detailed_design/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
