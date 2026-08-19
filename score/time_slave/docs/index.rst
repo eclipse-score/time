@@ -15,64 +15,44 @@
 .. _time_slave:
 
 Time Slave
-#####################
-
-.. note:: Document header
+##########
 
 .. document:: Time Slave
    :id: doc__time_slave
-   :status: draft
+   :status: valid
    :version: 1
-   :safety: ASIL_B
+   :safety: QM
    :security: NO
    :realizes: wp__cmpt_request
    :tags: time_slave
 
-.. note::
-   Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
+.. comp:: Time Slave
+   :id: comp__time_slave
+   :security: NO
+   :safety: QM
+   :status: valid
+   :belongs_to: feat__time[version==1]
 
-.. code-block:: rst
-
-   .. comp:: Time Slave
-      :id: comp__time_slave_template
-      :security: YES
-      :safety: ASIL_B
-      :status: invalid
-      :implements: logic_arc_int__feature_name__interface_name1
-      :consists_of: comp__component_name_internal_1, comp__component_name_internal_2, comp__component_name_internal_3
-      :belongs_to: feat__feature_name
-
-.. attention::
-    The above directives must be updated according to your Component.
-
-    - Adjust ``status`` to be ``valid``
-    - Adjust ``safety`` and ``tags`` according to your needs
 
 Abstract
 ========
 
-[A short (~200 word) description of the component.]
-
+This component implements a gPTP (IEEE 802.1AS) time synchronization slave daemon that receives time synchronization data from network and publishes it to IPC for client applications.
 
 Specification
 =============
 
-[Describe the requirements, architecture of any component.] or
+The component provides gPTP slave functionality with network message processing and IPC publishing:
 
-
-How to Teach This
-=================
-
-[How to teach users, new and experienced, how to apply the CR to their work.]
-
-.. note::
-   For a CR that adds new functionality or changes behaviour, it is helpful to include a section on how to teach users, new and experienced, how to apply the CR to their work.
+* :need:`comp_req__time_slave__gptp_slave`
+* :need:`comp_req__time_slave__time_publishing`
+* :need:`comp_req__time_slave__sync_state`
+* :need:`comp_req__time_slave__phc_sync`
+* :need:`comp_req__time_slave__error_reporting`
+* :need:`comp_req__time_slave__efficient_access`
 
 Footnotes
 =========
-
-[A collection of footnotes cited in the CR, and a place to list non-inline hyperlink targets.]
-
 
 Further Documentation of the component can be found in the following sections:
 
