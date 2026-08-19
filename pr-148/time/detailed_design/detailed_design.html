@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Time Daemon User Manual &#8212; S-CORE Time  documentation</title>
+    <title>Time Detailed Design &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -62,7 +62,7 @@
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'time_daemon/manuals/user_manual';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'time/detailed_design/detailed_design';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="TimeDaemon Configuration" href="config/configuration_guide.html" />
-    <link rel="prev" title="TimeSlave Configuration" href="../../time_slave/manuals/config/configuration_guide.html" />
+    <link rel="next" title="Implementation Inspection Checklist" href="chklst_impl_inspection.html" />
+    <link rel="prev" title="Detailed Design" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
@@ -172,7 +172,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../index.html">
+  <a class="nav-link nav-internal" href="../../time_daemon/index.html">
     Time Daemon
   </a>
 </li>
@@ -308,7 +308,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../index.html">
+  <a class="nav-link nav-internal" href="../../time_daemon/index.html">
     Time Daemon
   </a>
 </li>
@@ -393,17 +393,18 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../module/manuals/index.html">Manuals</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../time_slave/index.html">Time Slave</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time Daemon</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../detailed_design/index.html">Detailed Design</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../requirements/index.html">Requirements</a></li>
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Time Daemon User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="config/configuration_guide.html">TimeDaemon Configuration</a></li>
-</ul>
-</details></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ts_client/index.html">Time Sync Client</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../time/index.html">Time</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Detailed Design</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Time Detailed Design</a></li>
+
+<li class="toctree-l3"><a class="reference internal" href="chklst_impl_inspection.html">Implementation Inspection Checklist</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../requirements/index.html">Requirements</a></li>
+</ul>
+</details></li>
 </ul>
 </div>
 </nav></div>
@@ -448,12 +449,12 @@
     <li class="breadcrumb-item"><a href="../../module/index.html" class="nav-link">Module</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../module/manuals/index.html" class="nav-link">Manuals</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../../module/manuals/user_manual.html" class="nav-link">User Manual</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Detailed Design</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Time Daemon User Manual</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Time Detailed Design</span></li>
   </ul>
 </nav>
 </div>
@@ -470,19 +471,19 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="time-daemon-user-manual">
-<span id="id1"></span><h1>Time Daemon User Manual<a class="headerlink" href="#time-daemon-user-manual" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-00c41aa1">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__user_manual_time_daemon">
+  <section id="time-detailed-design">
+<span id="id1"></span><h1>Time Detailed Design<a class="headerlink" href="#time-detailed-design" title="Link to this heading">#</a></h1>
+<div class="need_container docutils container" id="SNCB-dc1a1d6b">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_detailed_design">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">User Manual Time Daemon Component</span></span></span></div>
+<div class="line"><span><span class="needs_title"><span class="needs_data">Time Detailed Design</span></span></span></div>
 </div>
 </td>
 <td class="head_center" colspan="2"><div class="needs_head line-block">
 <div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">draft</span></span></span></div>
 <div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
 </div>
 </td>
 <td class="head_right" colspan="2"><div class="needs_head_right line-block">
@@ -491,10 +492,10 @@
 </td>
 </tr>
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span><span class="needs_spacer">, </span><span class="needs_data">time_daemon</span></span></span></div>
+<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span><span class="needs_spacer">, </span><span class="needs_data">time</span></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
-<div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/quality_management/quality_workproducts.html#wp__training_path">wp__training_path</a></span></span></div>
+<div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/implementation/implementation_workproducts.html#wp__sw_implementation">wp__sw_implementation</a></span></span></div>
 </span></div>
 </div>
 </td>
@@ -503,7 +504,7 @@
 <tr class="content row-odd"><td class="content" colspan="6"></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__user_manual_time_daemon" title="doc__user_manual_time_daemon">doc__user_manual_time_daemon</a></span></span></div>
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__time_detailed_design" title="doc__time_detailed_design">doc__time_detailed_design</a></span></span></div>
 </div>
 </td>
 <td class="footer" colspan="2"><div class="needs_footer line-block">
@@ -516,29 +517,74 @@
 </table>
 </div>
 </div>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> component is a system daemon responsible for quality assurance and providing synchronized time to local applications on the ECU. It reads raw synchronization data from shared memory (published by <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code>), performs quality checks and plausibility assessments, and provides the final <code class="docutils literal notranslate"><span class="pre">score::time</span></code> API to client applications.</p>
-<p>For module-level integration and deployment information, see the main module manual.</p>
-</section>
-<section id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="config/configuration_guide.html">TimeDaemon Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="config/configuration_guide.html#shared-memory-configuration">Shared Memory Configuration</a></li>
-</ul>
-</li>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.</p>
+</div>
+<div class="admonition attention">
+<p class="admonition-title">Attention</p>
+<p>The above directive must be updated according to your Component.</p>
+<ul class="simple">
+<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">status</span></code> to be <code class="docutils literal notranslate"><span class="pre">valid</span></code></p></li>
+<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">safety</span></code> and <code class="docutils literal notranslate"><span class="pre">tags</span></code> according to your needs</p></li>
 </ul>
 </div>
 </section>
-<section id="runtime-requirements">
-<h2>Runtime Requirements<a class="headerlink" href="#runtime-requirements" title="Link to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> requires:</p>
+<section id="detailed-design-for-time">
+<h1>Detailed Design for Time<a class="headerlink" href="#detailed-design-for-time" title="Link to this heading">#</a></h1>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Link to this heading">#</a></h2>
+<div class="line-block">
+<div class="line">Design Decisions - For the documentation of the decision the <a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/change_management/guidance/change_management_decision_record_template.html#gd_temp__change_decision_record">gd_temp__change_decision_record</a> can be used.</div>
+<div class="line">Design Constraints</div>
+</div>
+<p>Example:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>component is split into two units unit1 and unit2 based on single responsibility principle.</p></li>
+<li><p>unit2 is injected to unit1 one via dependency injection for testability.</p></li>
+</ul>
+</div></blockquote>
+<section id="rationale-behind-decomposition-into-units">
+<h3>Rationale Behind Decomposition into Units<a class="headerlink" href="#rationale-behind-decomposition-into-units" title="Link to this heading">#</a></h3>
+<div class="line-block">
+<div class="line">mandatory: a motivation for the decomposition into one or more units.</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Reason for split into multiple units could be-
+- Based on design principles like SOLID,DRY etc
+- Based on design pattern’s etc.</p>
+</div>
+</section>
+</section>
+<section id="static-diagrams-for-unit-interactions">
+<h2>Static Diagrams for Unit Interactions<a class="headerlink" href="#static-diagrams-for-unit-interactions" title="Link to this heading">#</a></h2>
+<p>A static view provides an overview of the units and their relationships using
+UML 2.0 notations (e.g. class diagrams, component diagrams). Use <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">uml::</span></code>
+or <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">image::</span></code> directives to include the diagram.</p>
+</section>
+<section id="dynamic-diagrams-for-unit-interactions-optional">
+<h2>Dynamic Diagrams for Unit Interactions (optional)<a class="headerlink" href="#dynamic-diagrams-for-unit-interactions-optional" title="Link to this heading">#</a></h2>
+<p>A dynamic view illustrates how the units within a component interact over their
+interfaces to fulfill a specific use case or functionality. It is optional when the
+component’s behaviour is straightforward and can be understood from the static view
+and interface documentation alone.</p>
+<p>Use standard UML behavioural diagrams (sequence diagrams, state machine diagrams)
+with <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">uml::</span></code> or <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">image::</span></code> directives.</p>
+</section>
+<section id="units-within-the-component">
+<h2>Units within the Component<a class="headerlink" href="#units-within-the-component" title="Link to this heading">#</a></h2>
+<p>The relationship between a unit and its parent component is established implicitly
+through the file path. Each component has its own directory, and units residing
+within that directory belong to it. The unit’s attributes and behaviour are documented
+in the source code itself. A separate static diagram per unit is not required.</p>
+<p>Interface documentation of a software unit is part of the source code (e.g. public
+API headers, trait definitions, or documented function signatures).</p>
+<p>Example:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> must be running and publishing data to shared memory</p></li>
-<li><p>Access to POSIX shared memory segment (<code class="docutils literal notranslate"><span class="pre">/gptp_ptp_info</span></code>)</p></li>
-<li><p>Managed by system service manager (e.g., <cite>systemd</cite> on Linux, launch script on QNX)</p></li>
+<li><p>unit1: implements the main logic (see source code for details)</p></li>
+<li><p>unit2: injected into unit1 via dependency injection for testability</p></li>
 </ul>
 </section>
 </section>
@@ -554,20 +600,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../../time_slave/manuals/config/configuration_guide.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">TimeSlave Configuration</p>
+        <p class="prev-next-title">Detailed Design</p>
       </div>
     </a>
     <a class="right-next"
-       href="config/configuration_guide.html"
+       href="chklst_impl_inspection.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">TimeDaemon Configuration</p>
+        <p class="prev-next-title">Implementation Inspection Checklist</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -590,17 +636,26 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#runtime-requirements">Runtime Requirements</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Time Detailed Design</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#detailed-design-for-time">Detailed Design for Time</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#description">Description</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rationale-behind-decomposition-into-units">Rationale Behind Decomposition into Units</a></li>
 </ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#static-diagrams-for-unit-interactions">Static Diagrams for Unit Interactions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dynamic-diagrams-for-unit-interactions-optional">Dynamic Diagrams for Unit Interactions (optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#units-within-the-component">Units within the Component</a></li>
+</ul>
+</li>
+</ul>
+
   </nav></div>
 
   <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/time_daemon/manuals/user_manualre/time_daemon/docs/manuals/user_manual.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/time/detailed_design/detailed_designme/docs/detailed_design/detailed_design.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
