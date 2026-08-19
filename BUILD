@@ -32,7 +32,6 @@ docs(
             "mount_at": "time_daemon",
             "attach_to": "module/index",
         },
-
         {
             "bundle": "//score/ts_client:docs_bundle",
             "mount_at": "ts_client",
