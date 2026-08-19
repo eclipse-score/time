@@ -15,9 +15,7 @@
 .. _time_daemon:
 
 Time Daemon
-#####################
-
-.. note:: Document header
+###########
 
 .. document:: Time Daemon
    :id: doc__time_daemon
@@ -28,51 +26,32 @@ Time Daemon
    :realizes: wp__cmpt_request
    :tags: time_daemon
 
-.. note::
-   Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
-
-.. code-block:: rst
-
-   .. comp:: Time Daemon
-      :id: comp__time_daemon_template
-      :security: YES
-      :safety: ASIL_B
-      :status: invalid
-      :implements: logic_arc_int__feature_name__interface_name1
-      :consists_of: comp__component_name_internal_1, comp__component_name_internal_2, comp__component_name_internal_3
-      :belongs_to: feat__feature_name
-
-.. attention::
-    The above directives must be updated according to your Component.
-
-    - Adjust ``status`` to be ``valid``
-    - Adjust ``safety`` and ``tags`` according to your needs
+.. comp:: Time Daemon
+   :id: comp__time_daemon
+   :security: NO
+   :safety: ASIL_B
+   :status: valid
+   :version: 1
+   :belongs_to: feat__time
 
 Abstract
 ========
 
-[A short (~200 word) description of the component.]
-
+This component implements a time synchronization daemon that receives time data from time_slave via IPC, performs verification and qualification, and provides validated time information to applications.
 
 Specification
 =============
 
-[Describe the requirements, architecture of any component.] or
+The component provides time data reception, verification, and qualification:
 
-
-How to Teach This
-=================
-
-[How to teach users, new and experienced, how to apply the CR to their work.]
-
-.. note::
-   For a CR that adds new functionality or changes behaviour, it is helpful to include a section on how to teach users, new and experienced, how to apply the CR to their work.
+* :need:`comp_req__time_daemon__ipc_reception`
+* :need:`comp_req__time_daemon__sync_validation`
+* :need:`comp_req__time_daemon__time_jump_detection`
+* :need:`comp_req__time_daemon__timeout_detection`
+* :need:`comp_req__time_daemon__error_reporting`
 
 Footnotes
 =========
-
-[A collection of footnotes cited in the CR, and a place to list non-inline hyperlink targets.]
-
 
 Further Documentation of the component can be found in the following sections:
 
