@@ -10,3 +10,11 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+
+load("@score_docs_as_code//:docs.bzl", "docs_bundle")
+
+docs_bundle(
+    name = "docs_bundle",
+    source_dir = "docs",
+    visibility = ["//visibility:public"],
+)
