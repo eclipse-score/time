@@ -19,9 +19,3 @@ time_slave Component
    :maxdepth: 1
 
    component_classification
-   architecture/index
-   detailed_design/index
-   requirements/index
-   manuals/index
-   safety_analysis/index
-   security_analysis/index

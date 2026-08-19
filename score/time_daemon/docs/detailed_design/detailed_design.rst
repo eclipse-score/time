@@ -64,7 +64,7 @@ A static view provides an overview of the units and their relationships using
 UML 2.0 notations (e.g. class diagrams, component diagrams). Use ``.. uml::``
 or ``.. image::`` directives to include the diagram.
 
-.. uml:: dd_example_ex_sta.puml
+.. .. uml:: dd_example_ex_sta.puml
 
 Dynamic Diagrams for Unit Interactions (optional)
 --------------------------------------------------
@@ -77,7 +77,7 @@ and interface documentation alone.
 Use standard UML behavioural diagrams (sequence diagrams, state machine diagrams)
 with ``.. uml::`` or ``.. image::`` directives.
 
-.. uml:: dd_example_ex_dyn.puml
+.. .. uml:: dd_example_ex_dyn.puml
 
 Units within the Component
 --------------------------

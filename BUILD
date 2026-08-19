@@ -46,6 +46,7 @@ docs(
     ],
     external_needs = [
         "@score_process//:needs_json_file",
+        "@score_platform//:needs_json_file",
     ],
     project = "S-CORE Time",
     project_url = "https://eclipse-score.github.io/time",

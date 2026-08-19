@@ -39,19 +39,21 @@ Component Time Daemon Requirements
 Functional Requirements
 -----------------------
 
-.. comp_req:: Some Title
-   :id: comp_req__time_daemon__some_title
-   :reqtype: Process
-   :security: YES
-   :safety: ASIL_B
-   :derived_from: feat_req__example_feature__example_req
-   :status: invalid
-   :version: 1
-   :satisfied_by: comp__time_daemon
+.. code-block:: rst
 
-   The Component shall do xyz to another component to bring it to this condition at this time
+   .. comp_req:: Some Title
+      :id: comp_req__time_daemon__some_title
+      :reqtype: Process
+      :security: YES
+      :safety: ASIL_B
+      :derived_from: feat_req__example_feature__example_req
+      :status: invalid
+      :version: 1
+      :satisfied_by: comp__time_daemon
 
-   Note: (optional, not to be verified)
+      The Component shall do xyz to another component to bring it to this condition at this time
+
+      Note: (optional, not to be verified)
 
 .. attention::
     The above directive must be updated according to your component requirements.
