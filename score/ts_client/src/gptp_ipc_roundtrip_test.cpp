@@ -16,8 +16,6 @@
 
 #include <gtest/gtest.h>
 
-#include <cstring>
-
 namespace score
 {
 namespace ts
@@ -45,12 +43,26 @@ class GptpIpcRoundtripTest : public ::testing::Test
 
 TEST_F(GptpIpcRoundtripTest, ReceiverOpen_AfterPublisherOpen_ReturnsTrue)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__publisher_creates");
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__ts_client__receiver_multi_reader");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "equivalence-classes");
+    ::testing::Test::RecordProperty("Description",
+                                    "Receiver::Open succeeds after Publisher creates shared memory segment.");
+
     ASSERT_TRUE(pub_.Open(name_));
     EXPECT_TRUE(rx_.Open(name_));
 }
 
 TEST_F(GptpIpcRoundtripTest, ReceiverReceive_BeforeAnyPublish_ReturnsNullopt)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__data_validity");
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__ts_client__seqlock_protocol");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "boundary-values");
+    ::testing::Test::RecordProperty(
+        "Description", "Receiver::Receive before any Publish returns empty optional due to seqlock mismatch.");
+
     ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(rx_.Open(name_));
     // seq_confirm is initialised to 1 (≠ seq=0) by GptpIpcRegion's constructor,
@@ -60,6 +72,15 @@ TEST_F(GptpIpcRoundtripTest, ReceiverReceive_BeforeAnyPublish_ReturnsNullopt)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_BasicFields_RoundtripCorrectly)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__time_correlation_data");
+    ::testing::Test::RecordProperty("PartiallyVerifies",
+                                    "comp_req__ts_client__sync_status_data,comp_req__ts_client__seqlock_protocol");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "equivalence-classes");
+    ::testing::Test::RecordProperty(
+        "Description",
+        "Publisher::Publish and Receiver::Receive correctly exchange time correlation data and status fields.");
+
     ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(rx_.Open(name_));
 
@@ -84,6 +105,14 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_BasicFields_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_StatusFlags_RoundtripCorrectly)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__sync_status_data");
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__ts_client__seqlock_protocol");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "boundary-values");
+    ::testing::Test::RecordProperty(
+        "Description",
+        "Publisher::Publish and Receiver::Receive correctly exchange all gPTP synchronization status flags.");
+
     ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(rx_.Open(name_));
 
@@ -105,6 +134,14 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_StatusFlags_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_SyncFupData_RoundtripCorrectly)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__sync_fup_data");
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__ts_client__seqlock_protocol");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "equivalence-classes");
+    ::testing::Test::RecordProperty(
+        "Description",
+        "Publisher::Publish and Receiver::Receive correctly exchange Sync/FollowUp message metadata fields.");
+
     ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(rx_.Open(name_));
 
@@ -132,6 +169,13 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_SyncFupData_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, PublishReceive_PDelayData_RoundtripCorrectly)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__pdelay_data");
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__ts_client__seqlock_protocol");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "equivalence-classes");
+    ::testing::Test::RecordProperty(
+        "Description", "Publisher::Publish and Receiver::Receive correctly exchange PDelay message metadata fields.");
+
     ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(rx_.Open(name_));
 
@@ -158,6 +202,12 @@ TEST_F(GptpIpcRoundtripTest, PublishReceive_PDelayData_RoundtripCorrectly)
 
 TEST_F(GptpIpcRoundtripTest, MultiplePublish_LastValueIsVisible)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__ts_client__seqlock_protocol");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "equivalence-classes");
+    ::testing::Test::RecordProperty(
+        "Description", "Multiple Publisher::Publish calls result in Receiver::Receive returning last published value.");
+
     ASSERT_TRUE(pub_.Open(name_));
     ASSERT_TRUE(rx_.Open(name_));
 
@@ -177,18 +227,32 @@ TEST_F(GptpIpcRoundtripTest, MultiplePublish_LastValueIsVisible)
 
 TEST_F(GptpIpcRoundtripTest, ReceiverOpen_WrongMagic_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__shm_validation");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "boundary-values");
+    ::testing::Test::RecordProperty(
+        "Description", "Receiver::Open with incorrect magic number in shared memory region returns false.");
+
     ManualShm shm{name_};
     ASSERT_TRUE(shm.Valid());
 
-    new (shm.Region()) GptpIpcRegion{};
+    auto* region = new (shm.Region()) GptpIpcRegion{};
     const std::uint32_t bad = 0xDEADBEEFU;
-    std::memcpy(shm.Region(), &bad, sizeof(bad));
+    region->magic.store(bad, std::memory_order_release);
 
     EXPECT_FALSE(rx_.Open(name_));
 }
 
 TEST_F(GptpIpcRoundtripTest, Receive_PersistentOddSeq_ExhaustsRetriesAndReturnsNullopt)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__ts_client__seqlock_protocol");
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__ts_client__data_validity");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
+    ::testing::Test::RecordProperty("DerivationTechnique", "error-guessing");
+    ::testing::Test::RecordProperty(
+        "Description",
+        "Receiver::Receive with persistent odd sequence counter exhausts retries and returns empty optional.");
+
     ManualShm shm{name_};
     ASSERT_TRUE(shm.Valid());
 
