@@ -38,11 +38,11 @@
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
@@ -53,7 +53,7 @@
 
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/documentation_options.js?v=7f41d439"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -73,10 +73,10 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Test Cases" href="features/test_cases.html" />
+    <link rel="prev" title="Requirement Inspection Checklist" href="time/requirements/chklst_req_inspection.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.0.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -159,6 +159,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="features/index.html">
     Features
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="module/index.html">
+    Module
   </a>
 </li>
 
@@ -281,6 +288,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="features/index.html">
     Features
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="module/index.html">
+    Module
   </a>
 </li>
 
@@ -474,12 +488,16 @@ threshold.</p></li>
 </section>
 <section id="requirements-traceability-dashboards-gate">
 <h2>Requirements traceability (dashboards + gate)<a class="headerlink" href="#requirements-traceability-dashboards-gate" title="Link to this heading">#</a></h2>
-<p>Requirements live under <code class="docutils literal notranslate"><span class="pre">docs/features/time/</span></code> and use the Score
-metamodel directives (<code class="docutils literal notranslate"><span class="pre">feat_req::</span></code> / <code class="docutils literal notranslate"><span class="pre">comp_req::</span></code>). Source-code
-and test-code links are consumed by <code class="docutils literal notranslate"><span class="pre">score_docs_as_code</span></code>:</p>
+<p>Feature requirements live under <code class="docutils literal notranslate"><span class="pre">docs/features/time/feature_requirements.rst</span></code>.
+Component requirements live alongside each component under
+<code class="docutils literal notranslate"><span class="pre">score/time/&lt;component&gt;/docs/requirements/requirements.rst</span></code>
+(<code class="docutils literal notranslate"><span class="pre">vehicle_time</span></code>, <code class="docutils literal notranslate"><span class="pre">steady_time</span></code>, <code class="docutils literal notranslate"><span class="pre">system_time</span></code>, <code class="docutils literal notranslate"><span class="pre">high_res_steady_time</span></code>),
+matching the <code class="docutils literal notranslate"><span class="pre">module_template</span></code> layout. All entries use the Score metamodel
+directives (<code class="docutils literal notranslate"><span class="pre">feat_req::</span></code> / <code class="docutils literal notranslate"><span class="pre">comp_req::</span></code>). Source-code and test-code links
+are consumed by <code class="docutils literal notranslate"><span class="pre">score_docs_as_code</span></code>:</p>
 <ul>
 <li><p><strong>Source-code markers</strong> — in the C++ implementation:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// # req-Id: comp_req__time__vehicle_clock_snapshot</span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="c1">// # req-Id: comp_req__vehicle_time__snapshot</span>
 <span class="n">Snapshot</span><span class="w"> </span><span class="nf">Now</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">}</span>
 </pre></div>
 </div>
@@ -494,7 +512,7 @@ files that carry markers are collected in
 linked test body:</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="n">TEST</span><span class="p">(</span><span class="n">VehicleClockTest</span><span class="p">,</span><span class="w"> </span><span class="n">InitForwardsToBackend</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="o">::</span><span class="n">RecordProperty</span><span class="p">(</span><span class="s">&quot;FullyVerifies&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;comp_req__time__vehicle_clock_lifecycle&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="o">::</span><span class="n">RecordProperty</span><span class="p">(</span><span class="s">&quot;FullyVerifies&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;comp_req__vehicle_time__lifecycle&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="o">::</span><span class="n">RecordProperty</span><span class="p">(</span><span class="s">&quot;TestType&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;requirements-based&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="o">::</span><span class="n">RecordProperty</span><span class="p">(</span><span class="s">&quot;DerivationTechnique&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;requirements-analysis&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="o">::</span><span class="n">testing</span><span class="o">::</span><span class="n">Test</span><span class="o">::</span><span class="n">RecordProperty</span><span class="p">(</span><span class="s">&quot;Description&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;…&quot;</span><span class="p">);</span>
@@ -572,12 +590,12 @@ these targets directly and would need to move in lockstep.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="features/test_cases.html"
+       href="time/requirements/chklst_req_inspection.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Test Cases</p>
+        <p class="prev-next-title">Requirement Inspection Checklist</p>
       </div>
     </a>
 </div>
@@ -610,7 +628,7 @@ these targets directly and would need to move in lockstep.</p>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main/docs/quality_pack.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/quality_pack.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -618,15 +636,6 @@ these targets directly and would need to move in lockstep.</p>
           Edit on GitHub
         
       
-    </a>
-  </div>
-</div>
-
-  <div class="sidebar-secondary-item">
-
-  <div class="tocsection sourcelink">
-    <a href="_sources/quality_pack.rst.txt">
-      <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
 </div>

@@ -7,44 +7,44 @@
     },
     "needs": [
       {
-        "need": "comp_req__time__vehicle_clock_snapshot",
+        "need": "comp_req__vehicle_time__snapshot",
         "links": {
           "CodeLinks": [
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
               "line": 44,
               "tag": "# req-Id:",
-              "need": "comp_req__time__vehicle_clock_snapshot",
-              "full_line": "// # req-Id: comp_req__time__vehicle_clock_snapshot"
+              "need": "comp_req__vehicle_time__snapshot",
+              "full_line": "// # req-Id: comp_req__vehicle_time__snapshot"
             }
           ],
           "TestLinks": []
         }
       },
       {
-        "need": "comp_req__time__vehicle_clock_lifecycle",
+        "need": "comp_req__vehicle_time__lifecycle",
         "links": {
           "CodeLinks": [
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
               "line": 50,
               "tag": "# req-Id:",
-              "need": "comp_req__time__vehicle_clock_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__vehicle_clock_lifecycle"
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
               "line": 56,
               "tag": "# req-Id:",
-              "need": "comp_req__time__vehicle_clock_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__vehicle_clock_lifecycle"
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
               "line": 62,
               "tag": "# req-Id:",
-              "need": "comp_req__time__vehicle_clock_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__vehicle_clock_lifecycle"
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
             }
           ],
           "TestLinks": []

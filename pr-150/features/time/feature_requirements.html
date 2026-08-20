@@ -38,11 +38,11 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
@@ -53,7 +53,7 @@
 
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/documentation_options.js?v=7f41d439"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -73,11 +73,11 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Component Requirements" href="component_requirements.html" />
+    <link rel="next" title="Concept for TimeDaemon" href="../time_daemon/index.html" />
     <link rel="prev" title="score::time — Unified Clock Interface" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.0.0" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -160,6 +160,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../index.html">
     Features
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../module/index.html">
+    Module
   </a>
 </li>
 
@@ -287,6 +294,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../module/index.html">
+    Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../quality_pack.html">
     Quality Pack Targets
   </a>
@@ -366,7 +380,6 @@
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">score::time — Unified Clock Interface</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Feature Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="component_requirements.html">Component Requirements</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../time_daemon/index.html">Concept for TimeDaemon</a></li>
@@ -437,7 +450,7 @@
                   
   <section id="feature-requirements">
 <h1>Feature Requirements<a class="headerlink" href="#feature-requirements" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-cbab14d6">
+<div class="need_container docutils container" id="SNCB-4b7cd32c">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_feat_req table" id="feat_req__time__unified_clock_facade">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -456,10 +469,13 @@
 </td>
 </tr>
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>0</span></div>
+<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
+<div class="line"><span class="needs_valid_from"><span class="needs_label">valid_from: </span><span class="needs_data">v1.0</span></span></div>
+<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
-<div class="line"><span><div class="line">satisfied by: <span class="satisfies"><span><a class="reference internal" href="component_requirements.html#comp_req__time__hirs_clock_snapshot" title="feat_req__time__unified_clock_facade">comp_req__time__hirs_clock_snapshot</a>, <a class="reference internal" href="component_requirements.html#comp_req__time__steady_clock_snapshot" title="feat_req__time__unified_clock_facade">comp_req__time__steady_clock_snapshot</a>, <a class="reference internal" href="component_requirements.html#comp_req__time__system_clock_snapshot" title="feat_req__time__unified_clock_facade">comp_req__time__system_clock_snapshot</a></span></span></div>
+<div class="line"><span><div class="line">derives: <span class="derived_from"><span><a class="reference internal" href="../../time/requirements/requirements.html#comp_req__high_res_steady_time__snapshot" title="feat_req__time__unified_clock_facade">comp_req__high_res_steady_time__snapshot</a>, <a class="reference internal" href="../../time/requirements/requirements.html#comp_req__steady_time__snapshot" title="feat_req__time__unified_clock_facade">comp_req__steady_time__snapshot</a>, <a class="reference internal" href="../../time/requirements/requirements.html#comp_req__system_time__snapshot" title="feat_req__time__unified_clock_facade">comp_req__system_time__snapshot</a></span></span></div>
+<div class="line">satisfied by: <span class="satisfied_by"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/docs/architecture/index.html#feat__time">feat__time</a></span></span></div>
 </span></div>
 </div>
 </td>
@@ -486,7 +502,7 @@ mix domains at run time.</p></td>
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-afca66a8">
+<div class="need_container docutils container" id="SNCB-67b2bb17">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_feat_req table" id="feat_req__time__snapshot_with_status">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -505,10 +521,13 @@ mix domains at run time.</p></td>
 </td>
 </tr>
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>0</span></div>
+<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_valid_from"><span class="needs_label">valid_from: </span><span class="needs_data">v1.0</span></span></div>
+<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
-<div class="line"><span><div class="line">satisfied by: <span class="satisfies"><span><a class="reference internal" href="component_requirements.html#comp_req__time__vehicle_clock_snapshot" title="feat_req__time__snapshot_with_status">comp_req__time__vehicle_clock_snapshot</a></span></span></div>
+<div class="line"><span><div class="line">derives: <span class="derived_from"><span><a class="reference internal" href="../../time/requirements/requirements.html#comp_req__vehicle_time__snapshot" title="feat_req__time__snapshot_with_status">comp_req__vehicle_time__snapshot</a></span></span></div>
+<div class="line">satisfied by: <span class="satisfied_by"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/docs/architecture/index.html#feat__time">feat__time</a></span></span></div>
 </span></div>
 </div>
 </td>
@@ -533,7 +552,7 @@ without a separate status call.</p></td>
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-08219a0b">
+<div class="need_container docutils container" id="SNCB-707817af">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_feat_req table" id="feat_req__time__explicit_lifecycle">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -552,10 +571,13 @@ without a separate status call.</p></td>
 </td>
 </tr>
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>0</span></div>
+<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_valid_from"><span class="needs_label">valid_from: </span><span class="needs_data">v1.0</span></span></div>
+<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
-<div class="line"><span><div class="line">satisfied by: <span class="satisfies"><span><a class="reference internal" href="component_requirements.html#comp_req__time__vehicle_clock_lifecycle" title="feat_req__time__explicit_lifecycle">comp_req__time__vehicle_clock_lifecycle</a></span></span></div>
+<div class="line"><span><div class="line">derives: <span class="derived_from"><span><a class="reference internal" href="../../time/requirements/requirements.html#comp_req__vehicle_time__lifecycle" title="feat_req__time__explicit_lifecycle">comp_req__vehicle_time__lifecycle</a></span></span></div>
+<div class="line">satisfied by: <span class="satisfied_by"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/docs/architecture/index.html#feat__time">feat__time</a></span></span></div>
 </span></div>
 </div>
 </td>
@@ -603,11 +625,11 @@ ready.</p></td>
       </div>
     </a>
     <a class="right-next"
-       href="component_requirements.html"
+       href="../time_daemon/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Component Requirements</p>
+        <p class="prev-next-title">Concept for TimeDaemon</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -626,7 +648,7 @@ ready.</p></td>
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main/docs/features/time/feature_requirements.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/features/time/feature_requirements.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -634,15 +656,6 @@ ready.</p></td>
           Edit on GitHub
         
       
-    </a>
-  </div>
-</div>
-
-  <div class="sidebar-secondary-item">
-
-  <div class="tocsection sourcelink">
-    <a href="../../_sources/features/time/feature_requirements.rst.txt">
-      <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>
 </div>
