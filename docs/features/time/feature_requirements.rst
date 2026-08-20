@@ -7,7 +7,9 @@ Feature Requirements
    :security: NO
    :safety: QM
    :status: valid
-   :satisfies:
+   :version: 1
+   :valid_from: v1.0
+   :satisfied_by: feat__time
 
    ``score::time`` shall expose a single, type-safe entry point
    (``Clock<Tag>::GetInstance``) for reading time snapshots across the
@@ -22,7 +24,9 @@ Feature Requirements
    :security: NO
    :safety: QM
    :status: valid
-   :satisfies:
+   :version: 1
+   :valid_from: v1.0
+   :satisfied_by: feat__time
 
    Every ``Clock<Tag>::Now`` call shall return a single immutable
    ``ClockSnapshot`` value that bundles the timepoint with the domain's
@@ -35,7 +39,9 @@ Feature Requirements
    :security: NO
    :safety: QM
    :status: valid
-   :satisfies:
+   :version: 1
+   :valid_from: v1.0
+   :satisfied_by: feat__time
 
    Clock domains that depend on an external resource (currently
    ``VehicleTime``) shall provide ``Init``, ``IsAvailable`` and

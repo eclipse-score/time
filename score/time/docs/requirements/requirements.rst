@@ -13,96 +13,89 @@
    # *******************************************************************************
 
 Component Time Requirements
-############################
+###########################
 
 .. document:: Time Requirements
    :id: doc__time_requirements
-   :status: draft
+   :status: valid
    :version: 1
-   :safety: ASIL_B
+   :safety: QM
    :security: NO
    :realizes: wp__requirements_comp[version==1]
-   :tags: time
-
-.. note::
-   Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
-
-.. attention::
-    The above directive must be updated according to your Component.
-
-    - Adjust ``status`` to be ``valid``
-    - Adjust ``safety``, ``security`` and ``tags`` according to your needs
-
-<Headlines (for the list of requirements if structuring is needed)>
-===================================================================
+   :tags: requirements, time
 
 Functional Requirements
 -----------------------
 
-.. code-block:: rst
-
-   .. comp_req:: Some Title
-      :id: comp_req__time__some_title
-      :reqtype: Functional
-      :security: NO
-      :safety: ASIL_B
-      :derived_from: feat_req__time__example_req
-      :status: invalid
-      :version: 1
-      :satisfied_by: comp__time
-
-      The Component shall do xyz to another component to bring it to this condition at this time
-
-      Note: (optional, not to be verified)
-
-.. attention::
-    The above directive must be updated according to your component requirements.
-
-    - Replace the example content by the real content for your first requirement
-    - Set ``derived_from`` with links to Feature requirements
-    - Set ``satisfied_by`` with a link to the right Component id
-    - Set ``safety`` and ``security`` to the right value
-    - Set the status to valid and start the review/merge process
-    - Add other needed requirements for your component
-
-Assumption of Use Requirements
-------------------------------
-
-.. aou_req:: Next Title
-   :id: aou_req__time__next_title
-   :reqtype: Process
+.. comp_req:: VehicleClock returns snapshot with status
+   :id: comp_req__vehicle_time__snapshot
+   :reqtype: Functional
    :security: NO
-   :safety: ASIL_B
-   :status: invalid
+   :safety: QM
+   :derived_from: feat_req__time__snapshot_with_status
+   :status: valid
    :version: 1
+   :satisfied_by: comp__time
 
-   The Component User shall do xyz to use the component safely/securely
+   ``VehicleClock::Now`` shall return a ``ClockSnapshot`` whose timepoint
+   and ``VehicleTimeStatus`` originate from the same backend read, so
+   downstream callers observe consistent time and status values.
 
-Environmental Requirements
---------------------------
-
-.. aou_req:: Another Title
-   :id: aou_req__time__another
-   :reqtype: Process
+.. comp_req:: VehicleClock lifecycle operations
+   :id: comp_req__vehicle_time__lifecycle
+   :reqtype: Functional
    :security: NO
-   :safety: ASIL_B
-   :status: invalid
+   :safety: QM
+   :derived_from: feat_req__time__explicit_lifecycle
+   :status: valid
    :version: 1
-   :tags: environment
+   :satisfied_by: comp__time
 
-   The Component shall only be used in a xyz environment to ensure its proper functioning.
+   ``VehicleClock`` shall provide ``Init``, ``IsAvailable`` and
+   ``WaitUntilAvailable`` operations that delegate to the backend and
+   report backend init failure and availability-wait timeouts to the
+   caller without blocking indefinitely.
 
-Hints
------
+.. comp_req:: HighResSteadyClock always-ready snapshot
+   :id: comp_req__high_res_steady_time__snapshot
+   :reqtype: Functional
+   :security: NO
+   :safety: QM
+   :derived_from: feat_req__time__unified_clock_facade
+   :status: valid
+   :version: 1
+   :satisfied_by: comp__time
 
-.. attention::
-    The above directives must be updated according to your feature requirements.
+   ``HighResSteadyClock::Now`` shall return a monotonic
+   ``ClockSnapshot`` without requiring prior initialization, and shall
+   not expose ``Init`` / ``IsAvailable`` / ``WaitUntilAvailable`` on the
+   facade (using them is a compile error).
 
-    - Replace the example content by the real content for your first requirement (according to :need:`gd_guidl__req_engineering`)
-    - Set ``safety`` and ``security`` to the right value (ASIL B/QM; YES/NO)
-    - Set ``reqtype`` with a link to the right value (<Functional|Interface|Process|Non-Functional>)
-    - Add other needed requirements for your feature
-    - Set ``status`` to ``valid`` and start the review/merge process
+.. comp_req:: SteadyClock always-ready snapshot
+   :id: comp_req__steady_time__snapshot
+   :reqtype: Functional
+   :security: NO
+   :safety: QM
+   :derived_from: feat_req__time__unified_clock_facade
+   :status: valid
+   :version: 1
+   :satisfied_by: comp__time
+
+   ``SteadyClock::Now`` shall return a snapshot backed by
+   ``std::chrono::steady_clock`` without requiring initialization.
+
+.. comp_req:: SystemClock always-ready snapshot
+   :id: comp_req__system_time__snapshot
+   :reqtype: Functional
+   :security: NO
+   :safety: QM
+   :derived_from: feat_req__time__unified_clock_facade
+   :status: valid
+   :version: 1
+   :satisfied_by: comp__time
+
+   ``SystemClock::Now`` shall return a snapshot backed by
+   ``std::chrono::system_clock`` without requiring initialization.
 
 .. needextend:: is_external == False and "time" in id
    :+tags: time
