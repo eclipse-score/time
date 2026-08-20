@@ -24,8 +24,7 @@ Prerequisites
 * `QNX Software Center <https://www.qnx.com/download/>`_ installed on the
   build host, with **QNX SDP 8.0** deployed.
 * A valid QNX license, placed under ``/var/tmp/.qnx/license/licenses``
-  (the QNX tools hard-code ``QNX_CONFIGURATION_EXCLUSIVE=/var/tmp/.qnx``;
-  see :doc:`/memory:qnx-license-var-tmp`).
+  (the QNX tools hard-code ``QNX_CONFIGURATION_EXCLUSIVE=/var/tmp/.qnx``).
 * `Bazel <https://bazel.build/>`_ 8.6.0 or later. On first QNX build the
   toolchain is downloaded automatically (authenticated via the
   ``qnx.com`` credentials above); no additional toolchain setup script
