@@ -21,7 +21,6 @@ cc_library(
         "gptp_ipc_receiver.cpp",
     ],
     hdrs = [
-        "gptp_ipc.h",
         "gptp_ipc_channel.h",
         "gptp_ipc_data.h",
         "gptp_ipc_publisher.h",
@@ -32,6 +31,7 @@ cc_library(
     visibility = [
         "//score/time_daemon:__subpackages__",
         "//score/time_slave:__subpackages__",
+        "//score/ts_client:__pkg__",
     ],
     deps = [
         "@score_baselibs//score/memory/shared",

@@ -33,6 +33,9 @@ struct GptpIpcStatus
     bool is_correct;
 };
 
+/**
+ * @brief Sync/FollowUp message metadata.
+ */
 struct GptpIpcSyncFupData
 {
     std::uint64_t precise_origin_timestamp;
@@ -46,6 +49,9 @@ struct GptpIpcSyncFupData
     std::uint64_t clock_identity;
 };
 
+/**
+ * @brief PDelay message metadata.
+ */
 struct GptpIpcPDelayData
 {
     std::uint64_t request_origin_timestamp;
