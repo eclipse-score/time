@@ -1,0 +1,32 @@
+{
+  "name": "eclipse-s-core",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "USERNAME": "${localEnv:USER}"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:4.0.0": {}
+  },
+  "runArgs": [
+    "--privileged"
+  ],
+  "remoteUser": "${localEnv:USER}",
+  "mounts": [
+    {
+      "source": "${localEnv:HOME}/.qnx/license/licenses",
+      "target": "/opt/score_qnx/license/licenses",
+      "type": "bind"
+    },
+    {
+      "source": "${localEnv:HOME}/.netrc",
+      "target": "/home/${localEnv:USER}/.netrc",
+      "type": "bind"
+    }
+  ],
+  "initializeCommand": {
+    "Make sure QNX license exists": "mkdir -p ~/.qnx/license && touch -a ~/.qnx/license/licenses",
+    "Make sure .netrc exists": "touch -a ~/.netrc"
+  }
+}

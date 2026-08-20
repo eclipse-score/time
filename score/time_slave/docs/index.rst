@@ -12,16 +12,75 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-time_slave Component
-====================
+.. _time_slave:
+
+Time Slave
+#####################
+
+.. note:: Document header
+
+.. document:: Time Slave
+   :id: doc__time_slave
+   :status: draft
+   :version: 1
+   :safety: ASIL_B
+   :security: NO
+   :realizes: wp__cmpt_request
+   :tags: time_slave
+
+.. note::
+   Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
+
+.. code-block:: rst
+
+   .. comp:: Time Slave
+      :id: comp__time_slave_template
+      :security: YES
+      :safety: ASIL_B
+      :status: invalid
+      :implements: logic_arc_int__feature_name__interface_name1
+      :consists_of: comp__component_name_internal_1, comp__component_name_internal_2, comp__component_name_internal_3
+      :belongs_to: feat__feature_name
+
+.. attention::
+    The above directives must be updated according to your Component.
+
+    - Adjust ``status`` to be ``valid``
+    - Adjust ``safety`` and ``tags`` according to your needs
+
+Abstract
+========
+
+[A short (~200 word) description of the component.]
+
+
+Specification
+=============
+
+[Describe the requirements, architecture of any component.] or
+
+
+How to Teach This
+=================
+
+[How to teach users, new and experienced, how to apply the CR to their work.]
+
+.. note::
+   For a CR that adds new functionality or changes behaviour, it is helpful to include a section on how to teach users, new and experienced, how to apply the CR to their work.
+
+Footnotes
+=========
+
+[A collection of footnotes cited in the CR, and a place to list non-inline hyperlink targets.]
+
+
+Further Documentation of the component can be found in the following sections:
+
+Component Detail Information
+============================
 
 .. toctree::
    :maxdepth: 1
 
-   component_classification
-   architecture/index
    detailed_design/index
    requirements/index
-   manuals/index
-   safety_analysis/index
-   security_analysis/index

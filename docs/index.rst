@@ -43,7 +43,7 @@ For a detailed concept and architectural design, please refer to the :doc:`time_
    :caption: Contents:
 
    features/index
-   quality_pack
+   module/index
 
 Project Layout
 --------------
@@ -119,7 +119,7 @@ Run address, undefined-behaviour and leak sanitizers (powered by ``score_cpp_pol
 
 .. code-block:: bash
 
-   bazel test --config=asan_ubsan_lsan --config=time-x86_64-linux //score/...
+   bazel test --config=asan_ubsan_lsan --config=x86_64-linux //score/...
 
 Individual sanitizer aliases are also available: ``--config=asan``, ``--config=ubsan``, ``--config=lsan``.
 

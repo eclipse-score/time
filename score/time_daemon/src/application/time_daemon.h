@@ -15,7 +15,7 @@
 
 #include "score/time_daemon/src/application/timebase_handler.h"
 
-#include "src/lifecycle_client_lib/include/application.h"
+#include "score/mw/lifecycle/application.h"
 
 namespace score
 {

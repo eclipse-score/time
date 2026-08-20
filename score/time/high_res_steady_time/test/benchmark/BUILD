@@ -13,6 +13,7 @@
 
 cc_binary(
     name = "HighResSteadyTimeBenchmark",
+    testonly = True,
     srcs = [
         "benchmark.cpp",
     ],

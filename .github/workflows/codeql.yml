@@ -23,11 +23,45 @@ on:
 
 jobs:
   codeql:
-    uses: eclipse-score/cicd-workflows/.github/workflows/codeql.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
-    with:
-      build-script: "bazel build --config=time-x86_64-linux //score/..."
+    name: MISRA C++:2023 analysis
+    runs-on: ubuntu-24.04
     permissions:
       security-events: write
       contents: read
       actions: read
-      packages: read
+
+    steps:
+      - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
+        with:
+          level: 4
+
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}-codeql
+          repository-cache: true
+          cache-save: true
+
+      - name: Run MISRA C++:2023 analysis
+        run: |
+          bazel run //tools/static_analysis:codeql_lint -- \
+            --output-dir ${{ runner.temp }}/codeql-results \
+            --output-prefix codeql-time \
+            --target //score/...
+
+      - name: Upload SARIF to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: ${{ runner.temp }}/codeql-results/codeql-time.sarif
+
+      - name: Upload compliance reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: codeql-compliance-reports
+          path: ${{ runner.temp }}/codeql-results/analysis_reports/

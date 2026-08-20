@@ -21,18 +21,41 @@ setup_starpls(
 )
 
 docs(
-    data = [
-        "@score_process//:needs_json",
+    bundles = [
+        {
+            "bundle": "//score/time_slave:docs_bundle",
+            "mount_at": "time_slave",
+            "attach_to": "module/index",
+        },
+        {
+            "bundle": "//score/time_daemon:docs_bundle",
+            "mount_at": "time_daemon",
+            "attach_to": "module/index",
+        },
+        {
+            "bundle": "//score/ts_client:docs_bundle",
+            "mount_at": "ts_client",
+            "attach_to": "module/index",
+        },
+        {
+            "bundle": "//score/time:docs_bundle",
+            "mount_at": "time",
+            "attach_to": "module/index",
+        },
     ],
-    scan_code = [
-        "//score/time/vehicle_time/src:requirement_marked_sources",
+    external_needs = [
+        "@score_process//:needs_json_file",
+        "@score_platform//:needs_json_file",
     ],
+    project = "S-CORE Time",
+    project_url = "https://eclipse-score.github.io/time",
     source_dir = "docs",
 )
 
 copyright_checker(
     name = "copyright",
     srcs = [
+        ".devcontainer",
         ".github",
         "docs",
         "examples",

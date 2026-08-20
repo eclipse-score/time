@@ -1,0 +1,30 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
+deviations:
+  - rule-id: "RULE-18-5-2"
+    query-id: "cpp/misra/avoid-program-terminating-functions"
+    justification: "The software is designed for a fail-silent system. The agreed safe-state for a process is the termination. Thus, we do not need to care about not cleaning up the environment, as this is exactly the desired behavior."
+    paths:
+      - "score/**"
+
+  - rule-id: "RULE-7-0-4"
+    query-id: "cpp/misra/inappropriate-bitwise-or-shift-operands"
+    justification: "Tool defect: CodeQL MISRA C++:2023 RULE-7-0-4 incorrectly treats overloaded operator<< as the built-in shift operator. MISRA C++:2023 RULE-7-0-4 applies only to the built-in shift operator, not to overloaded operator<<. All flagged occurrences in these files are stream-insertion operators (e.g. LogStream&, OutputStream& template parameters), not bitwise shifts. Files that contain genuine bitwise operations (&, |, >>) are excluded from this deviation."
+    paths:
+      - "score/time/clock/src/clock_status.h"
+      - "score/time_daemon/src/common/data_types/ptp_time_info.h"
+      - "score/time_daemon/src/control_flow_divider/core/control_flow_divider.h"
+      - "score/time_daemon/src/ipc/core/shared_memory_handler.h"
+      - "score/time_daemon/src/ipc/svt/svt_time_info.h"
+      - "score/time_daemon/src/verification_machine/core/verification_machine.h"

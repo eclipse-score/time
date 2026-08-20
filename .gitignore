@@ -40,7 +40,8 @@ user.bazelrc
 .ruff_cache
 
 # docs:incremental and docs:ide_support build artifacts
-/_build
+_build
+ubproject.toml
 
 # Vale - editorial style guide
 .vale.ini
@@ -53,3 +54,11 @@ styles/
 .venv
 __pycache__/
 /.coverage
+
+# Compilation databases for code completion in IDEs
+.cache/*
+compile_commands.json
+rust-project.json
+
+# CodeQL local analysis output (any --output-dir placed inside the repo)
+codeql-*/
