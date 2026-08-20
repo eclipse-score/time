@@ -12,34 +12,13 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _time_detailed_design_index:
-
-Detailed Design
-###############
+Requirements
+############
 
 .. note::
    Work in progress: page structure only, content to follow in later PRs.
 
-.. attention::
-
-   The detailed design document is optional and should be created if the design of the component is complex and cannot be easily understood from the architecture documentation and interface documentation alone.
-   But the inspection checklist for the implementation is mandatory.
-
-
-Detail design example
----------------------
-
-An example of documenting detailed design can be found in:
-
-   .. toctree::
-
-      detailed_design
-
-Inspection Checklist
---------------------
-
-The checklist for verification of the detailed design and code can be found here:
-
 .. toctree::
 
-   chklst_impl_inspection
+   requirements
+   chklst_req_inspection

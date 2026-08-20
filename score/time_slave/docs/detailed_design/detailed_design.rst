@@ -12,19 +12,19 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _time_daemon_detailed_design:
+.. _time_slave_detailed_design:
 
-Time Daemon Detailed Design
+Time Slave Detailed Design
 ===========================
 
-.. document:: Time Daemon Detailed Design
-   :id: doc__time_daemon_detailed_design
+.. document:: Time Slave Detailed Design
+   :id: doc__time_slave_detailed_design
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__sw_implementation
-   :tags: time_daemon
+   :tags: time_slave
 
 .. note::
    Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
@@ -35,7 +35,7 @@ Time Daemon Detailed Design
     - Adjust ``status`` to be ``valid``
     - Adjust ``safety`` and ``tags`` according to your needs
 
-Detailed Design for Time Daemon
+Detailed Design for Time Slave
 ===============================
 
 Description
