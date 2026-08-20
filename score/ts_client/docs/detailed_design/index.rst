@@ -12,7 +12,7 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _time_detailed_design_index:
+.. _ts_client_detailed_design_index:
 
 Detailed Design
 ###############

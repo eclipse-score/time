@@ -12,17 +12,17 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Component Time Requirements
-############################
+Component Time Sync Client Requirements
+########################################
 
-.. document:: Time Requirements
-   :id: doc__time_requirements
+.. document:: Time Sync Client Requirements
+   :id: doc__ts_client_requirements
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__requirements_comp[version==1]
-   :tags: time
+   :tags: ts_client
 
 .. note::
    Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
@@ -42,14 +42,14 @@ Functional Requirements
 .. code-block:: rst
 
    .. comp_req:: Some Title
-      :id: comp_req__time__some_title
+      :id: comp_req__ts_client__some_title
       :reqtype: Functional
       :security: NO
       :safety: ASIL_B
       :derived_from: feat_req__time__example_req
       :status: invalid
       :version: 1
-      :satisfied_by: comp__time
+      :satisfied_by: comp__time_ts_client
 
       The Component shall do xyz to another component to bring it to this condition at this time
 
@@ -68,29 +68,33 @@ Functional Requirements
 Assumption of Use Requirements
 ------------------------------
 
-.. aou_req:: Next Title
-   :id: aou_req__time__next_title
-   :reqtype: Process
-   :security: NO
-   :safety: ASIL_B
-   :status: invalid
-   :version: 1
+.. code-block:: rst
 
-   The Component User shall do xyz to use the component safely/securely
+   .. aou_req:: Next Title
+      :id: aou_req__ts_client__next_title
+      :reqtype: Process
+      :security: NO
+      :safety: ASIL_B
+      :status: invalid
+      :version: 1
+
+      The Component User shall do xyz to use the component safely/securely
 
 Environmental Requirements
 --------------------------
 
-.. aou_req:: Another Title
-   :id: aou_req__time__another
-   :reqtype: Process
-   :security: NO
-   :safety: ASIL_B
-   :status: invalid
-   :version: 1
-   :tags: environment
+.. code-block:: rst
 
-   The Component shall only be used in a xyz environment to ensure its proper functioning.
+   .. aou_req:: Another Title
+      :id: aou_req__ts_client__another
+      :reqtype: Process
+      :security: NO
+      :safety: ASIL_B
+      :status: invalid
+      :version: 1
+      :tags: environment
+
+      The Component shall only be used in a xyz environment to ensure its proper functioning.
 
 Hints
 -----
@@ -104,5 +108,5 @@ Hints
     - Add other needed requirements for your feature
     - Set ``status`` to ``valid`` and start the review/merge process
 
-.. needextend:: is_external == False and "time" in id
-   :+tags: time
+.. needextend:: is_external == False and "ts_client" in id
+   :+tags: ts_client
