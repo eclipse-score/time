@@ -45,6 +45,13 @@ For a detailed concept and architectural design, please refer to the :doc:`time_
    features/index
    module/index
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Component Documentation:
+
+   /time_daemon/index
+   /time_slave/index
+
 Project Layout
 --------------
 
