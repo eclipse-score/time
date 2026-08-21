@@ -54,7 +54,7 @@ callers decide whether the time value is reliable enough for their use case with
 making a separate status call.
 
 Because ``VehicleTime`` depends on an IPC channel to the
-:doc:`TimeDaemon <../time_daemon/index>`, it requires an explicit ``Init()`` call before
+:doc:`TimeDaemon <../../time_daemon/index>`, it requires an explicit ``Init()`` call before
 ``Now()`` returns synchronized data.  Readiness can be probed non-blocking via
 ``IsAvailable()`` or waited for with ``WaitUntilAvailable()``.  Callers can also
 subscribe to synchronization events (status changes, sync messages, peer-delay
@@ -256,7 +256,7 @@ VT2 — Initialization and readiness check
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ``VehicleTime`` requires an explicit ``Init()`` call to open the IPC channel to the
-:doc:`TimeDaemon <../time_daemon/index>` before any time data becomes available.  Until ``Init()`` returns ``true``,
+:doc:`TimeDaemon <../../time_daemon/index>` before any time data becomes available.  Until ``Init()`` returns ``true``,
 ``Now()`` returns a snapshot with no flags set (``IsConsistent()`` returns ``false``) and ``IsAvailable()`` returns
 ``false``.
 
