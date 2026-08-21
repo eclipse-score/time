@@ -68,6 +68,8 @@ GptpEngine::~GptpEngine() noexcept
     Deinitialize();
 }
 
+// req-Id: comp_req__time_slave__initialization
+// req-Id: comp_req__time_slave__error_reporting
 bool GptpEngine::Initialize()
 {
     if (running_.load(std::memory_order_acquire))
@@ -132,6 +134,7 @@ bool GptpEngine::Initialize()
     return true;
 }
 
+// req-Id: comp_req__time_slave__shutdown
 bool GptpEngine::Deinitialize()
 {
     running_.store(false, std::memory_order_release);
@@ -148,6 +151,7 @@ bool GptpEngine::Deinitialize()
     return true;
 }
 
+// req-Id: comp_req__time_slave__sync_timeout
 void GptpEngine::FinalizeSnapshot() noexcept
 {
     if (!running_.load(std::memory_order_acquire))
@@ -255,6 +259,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
 
     const TmvT hw_ts{static_cast<std::int64_t>(hwts.tv_sec) * 1'000'000'000LL + hwts.tv_nsec};
 
+    // req-Id: comp_req__time_slave__domain_filtering
     switch (msg.msgtype)
     {
         case kPtpMsgtypePdelayReq:
@@ -312,6 +317,8 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     }
 }
 
+// req-Id: comp_req__time_slave__phc_offset
+// req-Id: comp_req__time_slave__phc_frequency
 void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdelay) noexcept
 {
     const double rate_ratio = sync_sm_.GetNeighborRateRatio();

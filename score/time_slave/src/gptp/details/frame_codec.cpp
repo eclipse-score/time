@@ -32,6 +32,8 @@ constexpr std::size_t kVlanTciLen = 2U;
 
 }  // namespace
 
+// req-Id: comp_req__time_slave__sync_reception
+// req-Id: comp_req__time_slave__pdelay_computation
 bool FrameCodec::ParseEthernetHeader(const std::uint8_t* frame, int frame_len, int& ptp_offset) const
 {
     // Convert to size_t once (after the negative guard) to avoid signed/unsigned
@@ -72,6 +74,7 @@ bool FrameCodec::ParseEthernetHeader(const std::uint8_t* frame, int frame_len, i
     return true;
 }
 
+// req-Id: comp_req__time_slave__pdelay_req
 bool FrameCodec::AddEthernetHeader(std::uint8_t* buf,
                                    unsigned int& buf_len,
                                    const std::array<std::uint8_t, kMacAddrLen>& src_mac,

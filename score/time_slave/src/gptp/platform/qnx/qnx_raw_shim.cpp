@@ -241,6 +241,8 @@ static int open_tx_loopback_fd(const char* ifname) noexcept
     return fd;
 }
 
+// req-Id: comp_req__time_slave__platform_qnx
+// req-Id: comp_req__time_slave__hw_timestamping
 extern "C" int qnx_raw_open(const char* ifname)
 {
     if (ifname == nullptr)
@@ -314,6 +316,8 @@ extern "C" int qnx_raw_open(const char* ifname)
     return fd;
 }
 
+// req-Id: comp_req__time_slave__platform_qnx
+// req-Id: comp_req__time_slave__hw_timestamping
 extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int nonblock)
 {
     if (fd < 0 || buf == nullptr || buf_len <= 0 || hwts == nullptr)
@@ -472,6 +476,9 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
     }
 }
 
+// req-Id: comp_req__time_slave__pdelay_req
+// req-Id: comp_req__time_slave__platform_qnx
+// req-Id: comp_req__time_slave__hw_timestamping
 extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
 {
     if (fd < 0 || buf == nullptr || len <= 0 || hwts == nullptr)
@@ -543,6 +550,8 @@ extern "C" int qnx_phc_open(const char* phc_dev)
     return 0;
 }
 
+// req-Id: comp_req__time_slave__phc_offset
+// req-Id: comp_req__time_slave__platform_qnx
 extern "C" int qnx_phc_adjtime_step(int /*phc_fd*/, long long offset_ns)
 {
     if (offset_ns == 0)
@@ -601,6 +610,8 @@ extern "C" int qnx_phc_adjtime_step(int /*phc_fd*/, long long offset_ns)
     return r;
 }
 
+// req-Id: comp_req__time_slave__phc_frequency
+// req-Id: comp_req__time_slave__platform_qnx
 extern "C" int qnx_phc_adjfreq_ppb(int /*phc_fd*/, long long freq_ppb)
 {
     // Skip a few cycles immediately after a step correction.
