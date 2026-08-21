@@ -55,6 +55,7 @@ int ReadMac(const char* iface_name, unsigned char out_mac[8]) noexcept
 
 }  // namespace
 
+// req-Id: comp_req__time_slave__platform_linux
 bool NetworkIdentityImpl::Resolve(const std::string& iface_name)
 {
     unsigned char mac[8]{};

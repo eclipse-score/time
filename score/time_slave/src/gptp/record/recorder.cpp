@@ -19,6 +19,7 @@ namespace ts
 namespace details
 {
 
+// req-Id: comp_req__time_slave__diagnostics
 Recorder::Recorder(Config cfg) : cfg_{std::move(cfg)}, enabled_{cfg_.enabled}
 {
     if (cfg_.enabled)
@@ -35,6 +36,7 @@ Recorder::Recorder(Config cfg) : cfg_{std::move(cfg)}, enabled_{cfg_.enabled}
     }
 }
 
+// req-Id: comp_req__time_slave__diagnostics
 void Recorder::Record(const RecordEntry& entry)
 {
     if (!enabled_.load(std::memory_order_relaxed) || !file_.is_open())

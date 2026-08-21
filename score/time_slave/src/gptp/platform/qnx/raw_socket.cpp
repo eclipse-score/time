@@ -41,6 +41,7 @@ RawSocketImpl::~RawSocketImpl()
     Close();
 }
 
+// req-Id: comp_req__time_slave__platform_qnx
 bool RawSocketImpl::Open(const std::string& iface)
 {
     Close();
@@ -67,6 +68,8 @@ void RawSocketImpl::Close()
     iface_.clear();
 }
 
+// req-Id: comp_req__time_slave__platform_qnx
+// req-Id: comp_req__time_slave__hw_timestamping
 int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms)
 {
     if (fd_ < 0 || buf == nullptr || buf_len == 0)
@@ -79,6 +82,9 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
     return qnx_raw_recv(fd_, buf, static_cast<int>(buf_len), &hwts, nonblock);
 }
 
+// req-Id: comp_req__time_slave__pdelay_req
+// req-Id: comp_req__time_slave__platform_qnx
+// req-Id: comp_req__time_slave__hw_timestamping
 int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
 {
     if (fd_ < 0 || buf == nullptr || len <= 0)

@@ -216,6 +216,8 @@ void OpenSocket(RawSocketImpl& sock, FakeOsSyscalls& /*fake*/)
 
 TEST(RawSocketTest, DefaultConstruct_GetFd_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "interface-test");
     FakeOsSyscalls fake;
     fake.socket_fail = true;  // never actually open
     RawSocketImpl sock{&fake};
@@ -224,6 +226,8 @@ TEST(RawSocketTest, DefaultConstruct_GetFd_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Close_WhenNotOpen_IsNoOp)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "interface-test");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     EXPECT_NO_THROW(sock.Close());
@@ -233,6 +237,8 @@ TEST(RawSocketTest, Close_WhenNotOpen_IsNoOp)
 
 TEST(RawSocketTest, EnableHwTimestamping_WhenNotOpen_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__hw_timestamping");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     EXPECT_FALSE(sock.EnableHwTimestamping());
@@ -240,6 +246,9 @@ TEST(RawSocketTest, EnableHwTimestamping_WhenNotOpen_ReturnsFalse)
 
 TEST(RawSocketTest, Recv_WhenNotOpen_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
+    ::testing::Test::RecordProperty("DerivationTechnique", "error-guessing");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     std::uint8_t buf[64] = {};
@@ -249,6 +258,9 @@ TEST(RawSocketTest, Recv_WhenNotOpen_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Recv_NullBuf_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
+    ::testing::Test::RecordProperty("DerivationTechnique", "boundary-values");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -258,6 +270,8 @@ TEST(RawSocketTest, Recv_NullBuf_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Recv_ZeroBufLen_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -268,6 +282,8 @@ TEST(RawSocketTest, Recv_ZeroBufLen_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Send_WhenNotOpen_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     const std::uint8_t data[14] = {};
@@ -277,6 +293,8 @@ TEST(RawSocketTest, Send_WhenNotOpen_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Send_NullBuf_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -286,6 +304,8 @@ TEST(RawSocketTest, Send_NullBuf_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Send_ZeroLen_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -296,6 +316,8 @@ TEST(RawSocketTest, Send_ZeroLen_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Send_NegativeLen_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -308,6 +330,8 @@ TEST(RawSocketTest, Send_NegativeLen_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Open_SocketCallFails_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     fake.socket_fail = true;
     RawSocketImpl sock{&fake};
@@ -317,6 +341,8 @@ TEST(RawSocketTest, Open_SocketCallFails_ReturnsFalse)
 
 TEST(RawSocketTest, Open_IoctlSiocgifindexFails_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     fake.ioctl_siocgifindex_fail = true;
     RawSocketImpl sock{&fake};
@@ -329,6 +355,8 @@ TEST(RawSocketTest, Open_IoctlSiocgifindexFails_ReturnsFalse)
 
 TEST(RawSocketTest, Open_BindFails_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     fake.bind_fail = true;
     RawSocketImpl sock{&fake};
@@ -339,6 +367,8 @@ TEST(RawSocketTest, Open_BindFails_ReturnsFalse)
 
 TEST(RawSocketTest, Open_Success_ReturnsTrueAndStoresFd)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     EXPECT_TRUE(sock.Open("eth0"));
@@ -347,6 +377,8 @@ TEST(RawSocketTest, Open_Success_ReturnsTrueAndStoresFd)
 
 TEST(RawSocketTest, Open_NonExistentInterface_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     // Uses RealOsSyscalls; ioctl(SIOCGIFINDEX) will fail for unknown iface.
     RawSocketImpl sock;
     EXPECT_FALSE(sock.Open("nonexistent_eth_zzz"));
@@ -354,6 +386,8 @@ TEST(RawSocketTest, Open_NonExistentInterface_ReturnsFalse)
 
 TEST(RawSocketTest, Open_NonExistentInterface_GetFdRemainsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     RawSocketImpl sock;
     (void)sock.Open("nonexistent_eth_zzz");
     EXPECT_EQ(sock.GetFd(), -1);
@@ -363,6 +397,8 @@ TEST(RawSocketTest, Open_NonExistentInterface_GetFdRemainsNegativeOne)
 
 TEST(RawSocketTest, Close_AfterOpen_CallsCloseOnFd)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -375,6 +411,8 @@ TEST(RawSocketTest, Close_AfterOpen_CallsCloseOnFd)
 
 TEST(RawSocketTest, Close_CalledTwiceAfterOpen_IsIdempotent)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "interface-test");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -386,6 +424,8 @@ TEST(RawSocketTest, Close_CalledTwiceAfterOpen_IsIdempotent)
 
 TEST(RawSocketTest, Destructor_AfterOpen_ClosesSocket)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     {
         RawSocketImpl sock{&fake};
@@ -399,6 +439,8 @@ TEST(RawSocketTest, Destructor_AfterOpen_ClosesSocket)
 
 TEST(RawSocketTest, EnableHwTimestamping_Success_ReturnsTrue)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__hw_timestamping");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
@@ -407,6 +449,8 @@ TEST(RawSocketTest, EnableHwTimestamping_Success_ReturnsTrue)
 
 TEST(RawSocketTest, EnableHwTimestamping_SiocshwtstampFallback_StillReturnsTrue)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__hw_timestamping");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     // First SIOCSHWTSTAMP ioctl fails → fallback (second call) is attempted.
     FakeOsSyscalls fake;
     fake.ioctl_siocshwtstamp_fail = true;
@@ -417,6 +461,8 @@ TEST(RawSocketTest, EnableHwTimestamping_SiocshwtstampFallback_StillReturnsTrue)
 
 TEST(RawSocketTest, EnableHwTimestamping_SetsockoptFails_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__hw_timestamping");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     fake.setsockopt_fail = true;
     RawSocketImpl sock{&fake};
@@ -428,6 +474,8 @@ TEST(RawSocketTest, EnableHwTimestamping_SetsockoptFails_ReturnsFalse)
 
 TEST(RawSocketTest, Recv_PollTimeout_ReturnsZero)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     fake.poll_result = 0;  // timeout
     RawSocketImpl sock{&fake};
@@ -439,6 +487,8 @@ TEST(RawSocketTest, Recv_PollTimeout_ReturnsZero)
 
 TEST(RawSocketTest, Recv_PollError_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     fake.poll_result = -1;  // poll error
     RawSocketImpl sock{&fake};
@@ -450,6 +500,8 @@ TEST(RawSocketTest, Recv_PollError_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Recv_RecvmsgFails_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     fake.poll_result = 1;
     fake.recvmsg_result = -1;
@@ -462,6 +514,8 @@ TEST(RawSocketTest, Recv_RecvmsgFails_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Recv_Success_NoTimestamp_ReturnsLen)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     fake.poll_result = 1;
     fake.recvmsg_result = 14;  // 14 bytes received
@@ -476,6 +530,8 @@ TEST(RawSocketTest, Recv_Success_NoTimestamp_ReturnsLen)
 
 TEST(RawSocketTest, Recv_WithSoTimestampingCmsg_ExtractsHwts)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     fake.poll_result = 1;
     fake.recvmsg_result = 14;
@@ -493,6 +549,8 @@ TEST(RawSocketTest, Recv_WithSoTimestampingCmsg_ExtractsHwts)
 
 TEST(RawSocketTest, Send_SendFails_ReturnsNegativeOne)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     FakeOsSyscalls fake;
     fake.send_result = -1;
     RawSocketImpl sock{&fake};
@@ -504,6 +562,8 @@ TEST(RawSocketTest, Send_SendFails_ReturnsNegativeOne)
 
 TEST(RawSocketTest, Send_Success_PollNoTxTs_ReturnsSentBytes)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     FakeOsSyscalls fake;
     fake.send_result = 14;
     fake.poll_result = 0;  // no TX-timestamp event
@@ -518,6 +578,8 @@ TEST(RawSocketTest, Send_Success_PollNoTxTs_ReturnsSentBytes)
 
 TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     // poll returns POLLERR → MSG_ERRQUEUE recvmsg fills SO_TIMESTAMPING cmsg.
     FakeOsSyscalls fake;
     fake.send_result = 14;
@@ -536,6 +598,8 @@ TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
 
 TEST(RawSocketTest, Send_DrainErrQueue_WhileBodyExecuted)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     // recvmsg_drain_limit=1 → first MSG_ERRQUEUE call returns 1 (while body runs),
     // second returns -1 → loop exits. Covers DrainErrQueue's while body.
     FakeOsSyscalls fake;
@@ -555,6 +619,8 @@ TEST(RawSocketTest, Send_DrainErrQueue_WhileBodyExecuted)
 
 TEST(NetworkIdentityTest, GetClockIdentity_BeforeResolve_ReturnsZeroIdentity)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "interface-test");
     NetworkIdentityImpl ni;
     const ClockIdentity id = ni.GetClockIdentity();
     for (const std::uint8_t b : id.id)
@@ -565,12 +631,16 @@ TEST(NetworkIdentityTest, GetClockIdentity_BeforeResolve_ReturnsZeroIdentity)
 
 TEST(NetworkIdentityTest, Resolve_NonExistentInterface_ReturnsFalse)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     NetworkIdentityImpl ni;
     EXPECT_FALSE(ni.Resolve("nonexistent_eth_zzz"));
 }
 
 TEST(NetworkIdentityTest, Resolve_NonExistentInterface_GetClockIdentityRemainsZero)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "fault-injection");
     NetworkIdentityImpl ni;
     (void)ni.Resolve("nonexistent_eth_zzz");
     const ClockIdentity id = ni.GetClockIdentity();
@@ -582,6 +652,8 @@ TEST(NetworkIdentityTest, Resolve_NonExistentInterface_GetClockIdentityRemainsZe
 
 TEST(NetworkIdentityTest, Resolve_LoInterface_ReturnsTrue)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     // lo has MAC 00:00:00:00:00:00; the EUI-48→EUI-64 conversion inserts
     // 0xFF 0xFE at positions 3–4 regardless of the MAC value.
     NetworkIdentityImpl ni;
@@ -590,6 +662,8 @@ TEST(NetworkIdentityTest, Resolve_LoInterface_ReturnsTrue)
 
 TEST(NetworkIdentityTest, GetClockIdentity_AfterResolveOnLo_HasFfFeBytes)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     NetworkIdentityImpl ni;
     ASSERT_TRUE(ni.Resolve("lo"));
     const ClockIdentity id = ni.GetClockIdentity();
@@ -600,6 +674,8 @@ TEST(NetworkIdentityTest, GetClockIdentity_AfterResolveOnLo_HasFfFeBytes)
 
 TEST(NetworkIdentityTest, Resolve_CalledTwice_SecondCallSucceeds)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__time_slave__platform_linux,comp_req__time_slave__platform_qnx");
+    ::testing::Test::RecordProperty("TestType", "interface-test");
     NetworkIdentityImpl ni;
     ASSERT_TRUE(ni.Resolve("lo"));
     EXPECT_TRUE(ni.Resolve("lo"));

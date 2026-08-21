@@ -71,6 +71,9 @@ Timestamp LoadTimestamp(const std::uint8_t* p) noexcept
 
 }  // namespace
 
+// req-Id: comp_req__time_slave__sync_reception
+// req-Id: comp_req__time_slave__followup_processing
+// req-Id: comp_req__time_slave__pdelay_computation
 bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_len, PTPMessage& msg) const
 {
     if (payload == nullptr || payload_len < sizeof(PTPHeader))

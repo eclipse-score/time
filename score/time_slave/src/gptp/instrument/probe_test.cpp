@@ -39,6 +39,8 @@ class ProbeManagerTest : public ::testing::Test
 
 TEST_F(ProbeManagerTest, DefaultState_IsDisabled)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time_slave__diagnostics");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     EXPECT_FALSE(ProbeManager::Instance().IsEnabled());
 }
 
@@ -113,6 +115,8 @@ class ProbeManagerWithRecorderTest : public ::testing::Test
 
 TEST_F(ProbeManagerWithRecorderTest, Trace_WritesToRecorder)
 {
+    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__time_slave__diagnostics");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
     ProbeData d{};
     d.ts_mono_ns = 3'000'000LL;
     d.value_ns = 42LL;

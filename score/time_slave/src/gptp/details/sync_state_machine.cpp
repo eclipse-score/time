@@ -25,6 +25,7 @@ SyncStateMachine::SyncStateMachine(std::int64_t jump_future_threshold_ns) noexce
 {
 }
 
+// req-Id: comp_req__time_slave__sync_reception
 void SyncStateMachine::OnSync(const PTPMessage& msg)
 {
     switch (state_)
@@ -47,6 +48,10 @@ void SyncStateMachine::OnSync(const PTPMessage& msg)
     }
 }
 
+// req-Id: comp_req__time_slave__followup_processing
+// req-Id: comp_req__time_slave__offset_calculation
+// req-Id: comp_req__time_slave__leap_future
+// req-Id: comp_req__time_slave__leap_past
 std::optional<SyncResult> SyncStateMachine::OnFollowUp(const PTPMessage& msg)
 {
     switch (state_)
@@ -81,6 +86,7 @@ std::optional<SyncResult> SyncStateMachine::OnFollowUp(const PTPMessage& msg)
     return std::nullopt;
 }
 
+// req-Id: comp_req__time_slave__sync_timeout
 bool SyncStateMachine::IsTimeout(std::int64_t mono_now_ns, std::int64_t timeout_ns) const
 {
     if (timeout_ns <= 0)

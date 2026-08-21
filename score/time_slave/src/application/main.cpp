@@ -14,6 +14,8 @@
 
 #include "score/mw/lifecycle/runapplication.h"
 
+// req-Id: comp_req__time_slave__initialization
+// req-Id: comp_req__time_slave__shutdown
 int main(int argc, const char* argv[])
 {
     return score::mw::lifecycle::run_application<score::ts::TimeSlave>(argc, argv);

@@ -39,6 +39,7 @@ PhcAdjuster::~PhcAdjuster()
     phc_fd_ = -1;
 }
 
+// req-Id: comp_req__time_slave__phc_offset
 void PhcAdjuster::AdjustOffset(std::int64_t offset_ns)
 {
     if (!cfg_.enabled)
@@ -51,6 +52,7 @@ void PhcAdjuster::AdjustOffset(std::int64_t offset_ns)
     (void)qnx_phc_adjtime_step(phc_fd_, static_cast<long long>(offset_ns));
 }
 
+// req-Id: comp_req__time_slave__phc_frequency
 void PhcAdjuster::AdjustFrequency(double rate_ratio)
 {
     if (!cfg_.enabled)

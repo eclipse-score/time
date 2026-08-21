@@ -32,6 +32,8 @@ constexpr std::int32_t kInitFailure = -1;
 
 TimeSlave::TimeSlave() = default;
 
+// req-Id: comp_req__time_slave__initialization
+// req-Id: comp_req__time_slave__error_reporting
 std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContext& /*context*/)
 {
     engine_ = std::make_unique<details::GptpEngine>(opts_);
@@ -52,6 +54,9 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     return kInitSuccess;
 }
 
+// req-Id: comp_req__time_slave__sync_publishing
+// req-Id: comp_req__time_slave__publish_interval
+// req-Id: comp_req__time_slave__shutdown
 std::int32_t TimeSlave::Run(const score::cpp::stop_token& token)
 {
     constexpr auto kPublishInterval = std::chrono::milliseconds{50};
