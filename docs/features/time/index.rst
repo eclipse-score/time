@@ -5,6 +5,12 @@ score::time — Unified Clock Interface
    :depth: 3
    :local:
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Requirements
+
+   feature_requirements
+
 Overview
 --------
 
