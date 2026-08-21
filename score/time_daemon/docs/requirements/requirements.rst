@@ -68,33 +68,29 @@ Functional Requirements
 Assumption of Use Requirements
 ------------------------------
 
-.. code-block:: rst
+.. aou_req:: Next Title
+   :id: aou_req__time_daemon__next_title
+   :reqtype: Process
+   :security: YES
+   :safety: ASIL_B
+   :status: invalid
+   :version: 1
 
-   .. aou_req:: Next Title
-      :id: aou_req__time_daemon__next_title
-      :reqtype: Process
-      :security: YES
-      :safety: ASIL_B
-      :status: invalid
-      :version: 1
-
-      The Component User shall do xyz to use the component safely/securely
+   The Component User shall do xyz to use the component safely/securely
 
 Environmental Requirements
 --------------------------
 
-.. code-block:: rst
+.. aou_req:: Another Title
+   :id: aou_req__time_daemon__another
+   :reqtype: Process
+   :security: YES
+   :safety: ASIL_B
+   :status: invalid
+   :version: 1
+   :tags: environment
 
-   .. aou_req:: Another Title
-      :id: aou_req__time_daemon__another
-      :reqtype: Process
-      :security: YES
-      :safety: ASIL_B
-      :status: invalid
-      :version: 1
-      :tags: environment
-
-      The Component shall only be used in a xyz environment to ensure its proper functioning.
+   The Component shall only be used in a xyz environment to ensure its proper functioning.
 
 Hints
 -----
