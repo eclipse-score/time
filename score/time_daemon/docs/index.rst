@@ -12,7 +12,6 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-System daemon responsible for quality assurance and providing synchronized time to local applications on the ECU.
 .. _time_daemon:
 
 Time Daemon
@@ -50,16 +49,19 @@ Time Daemon
     - Adjust ``safety`` and ``tags`` according to your needs
 
 Abstract
+========
 
 [A short (~200 word) description of the component.]
 
 
 Specification
+=============
 
 [Describe the requirements, architecture of any component.] or
 
 
 How to Teach This
+=================
 
 [How to teach users, new and experienced, how to apply the CR to their work.]
 
@@ -67,6 +69,7 @@ How to Teach This
    For a CR that adds new functionality or changes behaviour, it is helpful to include a section on how to teach users, new and experienced, how to apply the CR to their work.
 
 Footnotes
+=========
 
 [A collection of footnotes cited in the CR, and a place to list non-inline hyperlink targets.]
 
@@ -78,7 +81,7 @@ Component Detail Information
 
 .. toctree::
    :maxdepth: 1
-   
+
    detailed_design/index
    requirements/index
    manuals/user_manual
