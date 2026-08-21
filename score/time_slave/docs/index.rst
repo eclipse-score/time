@@ -45,12 +45,26 @@ Specification
 
 The component provides gPTP slave functionality with network message processing and IPC publishing:
 
-* :need:`comp_req__time_slave__gptp_slave`
-* :need:`comp_req__time_slave__time_publishing`
-* :need:`comp_req__time_slave__sync_state`
-* :need:`comp_req__time_slave__phc_sync`
+* :need:`comp_req__time_slave__initialization`
+* :need:`comp_req__time_slave__shutdown`
+* :need:`comp_req__time_slave__domain_filtering`
+* :need:`comp_req__time_slave__sync_reception`
+* :need:`comp_req__time_slave__followup_processing`
+* :need:`comp_req__time_slave__offset_calculation`
+* :need:`comp_req__time_slave__pdelay_req`
+* :need:`comp_req__time_slave__pdelay_computation`
+* :need:`comp_req__time_slave__phc_offset`
+* :need:`comp_req__time_slave__phc_frequency`
+* :need:`comp_req__time_slave__sync_timeout`
+* :need:`comp_req__time_slave__leap_future`
+* :need:`comp_req__time_slave__leap_past`
+* :need:`comp_req__time_slave__sync_publishing`
+* :need:`comp_req__time_slave__publish_interval`
+* :need:`comp_req__time_slave__platform_linux`
+* :need:`comp_req__time_slave__platform_qnx`
+* :need:`comp_req__time_slave__hw_timestamping`
 * :need:`comp_req__time_slave__error_reporting`
-* :need:`comp_req__time_slave__efficient_access`
+* :need:`comp_req__time_slave__diagnostics`
 
 Footnotes
 =========
