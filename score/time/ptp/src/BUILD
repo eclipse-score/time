@@ -26,7 +26,11 @@ cc_library(
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["FFI"],
-    visibility = ["//score/time:__subpackages__"],
+    visibility = [
+        "//score/time:__subpackages__",
+        # Coverage scope root (tools/coverage/BUILD) — report-time allowlist only.
+        "//tools/coverage:__pkg__",
+    ],
 )
 
 cc_test(

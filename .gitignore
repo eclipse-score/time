@@ -62,3 +62,6 @@ rust-project.json
 
 # CodeQL local analysis output (any --output-dir placed inside the repo)
 codeql-*/
+coverage_linux/
+coverage_artifact/
+summary.md
