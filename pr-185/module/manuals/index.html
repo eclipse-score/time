@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Requirements &#8212; S-CORE Time  documentation</title>
+    <title>Manuals &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -62,7 +62,7 @@
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'ts_client/requirements/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'module/manuals/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Component Time Sync Client Requirements" href="requirements.html" />
-    <link rel="prev" title="Implementation Inspection Checklist" href="../detailed_design/chklst_impl_inspection.html" />
+    <link rel="next" title="Troubleshooting Guide" href="troubleshooting_guide.html" />
+    <link rel="prev" title="Module" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
@@ -165,7 +165,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../../module/index.html">
+  <a class="nav-link nav-internal" href="../index.html">
     Module
   </a>
 </li>
@@ -287,7 +287,7 @@
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../../module/index.html">
+  <a class="nav-link nav-internal" href="../index.html">
     Module
   </a>
 </li>
@@ -363,18 +363,14 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../module/manuals/index.html">Manuals</a></li>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Manuals</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting_guide.html">Troubleshooting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../time_slave/index.html">Time Slave</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time Sync Client</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../detailed_design/index.html">Time Sync Client Detailed Design</a></li>
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Requirements</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html">Component Time Sync Client Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chklst_req_inspection.html">Requirement Inspection Checklist</a></li>
-</ul>
-</details></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ts_client/index.html">Time Sync Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../time/index.html">Time</a></li>
 </ul>
 </div>
@@ -417,12 +413,9 @@
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../../module/index.html" class="nav-link">Module</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module</a></li>
     
-    
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time Sync Client</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Requirements</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Manuals</span></li>
   </ul>
 </nav>
 </div>
@@ -439,28 +432,24 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="requirements">
-<h1>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Work in progress: page structure only, content to follow in later PRs.</p>
-</div>
+  <section id="manuals">
+<h1>Manuals<a class="headerlink" href="#manuals" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="requirements.html">Component Time Sync Client Requirements</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="requirements.html#headlines-for-the-list-of-requirements-if-structuring-is-needed">&lt;Headlines (for the list of requirements if structuring is needed)&gt;</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#functional-requirements">Functional Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#assumption-of-use-requirements">Assumption of Use Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#environmental-requirements">Environmental Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#hints">Hints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting_guide.html">Troubleshooting Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_manual.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_description/api_usage.html">API Usage: Accessing Supported Time Bases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/api_usage.html#advanced-api-usage-subscribing-to-ptp-protocol-events">Advanced API Usage: Subscribing to PTP Protocol Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/lifecycle.html">Clock Lifecycle Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/testing_guide.html">Unit-Testing Time-Dependent Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/testing_guide.html#using-existing-test-utilities">Using Existing Test Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/testing_guide.html#example-testing-a-timeout-handler">Example: Testing a Timeout Handler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_description/testing_guide.html#bazel-build-setup">Bazel BUILD Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/index.html">Examples User Manual</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="examples/basic_clocks.html">Basic Clock Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="examples/vehicle_time.html">Vehicle Time Example</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chklst_req_inspection.html">Requirement Inspection Checklist</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chklst_req_inspection.html#purpose">Purpose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chklst_req_inspection.html#conduct">Conduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chklst_req_inspection.html#checklist">Checklist</a></li>
 </ul>
 </li>
 </ul>
@@ -478,20 +467,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../detailed_design/chklst_impl_inspection.html"
+       href="../index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Implementation Inspection Checklist</p>
+        <p class="prev-next-title">Module</p>
       </div>
     </a>
     <a class="right-next"
-       href="requirements.html"
+       href="troubleshooting_guide.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Component Time Sync Client Requirements</p>
+        <p class="prev-next-title">Troubleshooting Guide</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -510,7 +499,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/ts_client/requirements/indexscore/ts_client/docs/requirements/index.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/module/manuals/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
