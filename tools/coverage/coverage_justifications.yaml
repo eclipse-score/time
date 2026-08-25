@@ -64,6 +64,7 @@ justifications:
   #
   - id: time-jumps-validator-time-jump-state-default
     category: defensive_programming
+    platforms: [linux, qnx]
     reason: >
       Default case in switch over TimeJumpState, a private enum with exactly three values (kJumpToFuture, kJumpToPast, kNoTimeJump), all of which are explicitly handled above. Kept as defensive programming against future enum additions.
     locations:
