@@ -549,7 +549,7 @@ When the ``Verification Machine`` receives new PTP data, it processes it through
 IPC Machine SW component
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``IPC Machine`` component shall get the `verified-ptp-data <#verified-ptp-data>`_ from the ``Verification Machine`` and provide it to the ``VehicleClock`` backend (see :doc:`score::time — Unified Clock Interface <../time/index>`) through a custom shared memory channel.
+The ``IPC Machine`` component shall get the `verified-ptp-data <#verified-ptp-data>`_ from the ``Verification Machine`` and provide it to the ``VehicleClock`` backend (see :doc:`score::time — Unified Clock Interface <../../time/index>`) through a custom shared memory channel.
 
 The component provides two sub components: publisher and receiver to be deployed on the TimeDaemon and Application sides accordingly.
 
@@ -655,7 +655,7 @@ applications access vehicle time.  Its ``td_impl`` backend connects to the ``IPC
 to receive the time data published by the ``TimeDaemon``.
 
 For the full API description, test patterns, and Bazel dependencies, see
-:doc:`score::time — Unified Clock Interface <../time/index>`.
+:doc:`score::time — Unified Clock Interface <../../time/index>`.
 
 Component requirements
 ''''''''''''''''''''''
@@ -686,7 +686,7 @@ The Class Diagram is presented below.
 Receive data
 ''''''''''''
 
-In case of receiving data, the ``Application`` shall just call ``VehicleClock::GetInstance().Now()`` (see :doc:`score::time <../time/index>`) and it shall return the latest published Vehicle Time, which is already adjusted with local clock.
+In case of receiving data, the ``Application`` shall just call ``VehicleClock::GetInstance().Now()`` (see :doc:`score::time <../../time/index>`) and it shall return the latest published Vehicle Time, which is already adjusted with local clock.
 
 To do so, in the ``VehicleClock`` ``td_impl`` backend there is a thread, who polls for new data the ``IPCMachine::receiver`` and put the data to the process-internal shared buffer (memory), from where it is being read on ``VehicleClock::GetInstance().Now()`` call.
 
