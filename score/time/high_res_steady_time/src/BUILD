@@ -95,6 +95,7 @@ cc_test(
         ":high_res_steady_clock_impl",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
 
