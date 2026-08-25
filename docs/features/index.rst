@@ -19,6 +19,5 @@ Features
    :maxdepth: 2
    :caption: Features:
 
-   time/index
    time_daemon/index
    test_cases
