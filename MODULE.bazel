@@ -79,15 +79,7 @@ git_override(
 
 bazel_dep(name = "score_platform", version = "0.6.4", dev_dependency = True)
 bazel_dep(name = "score_process", version = "2.0.3", dev_dependency = True)
-bazel_dep(name = "score_tooling", version = "1.2.0", dev_dependency = True)
-
-# cpp support in use_format_targets(languages=[...]) was added after 1.2.0.
-# Pin to the exact commit that introduced it; remove once published to the registry.
-git_override(
-    module_name = "score_tooling",
-    commit = "2ea61535696f61a4ba0d49d829256915557dcfe7",
-    remote = "https://github.com/eclipse-score/tooling.git",
-)
+bazel_dep(name = "score_tooling", version = "2.2.1", dev_dependency = True)
 
 # lobster is a non-dev bazel_dep of score_tooling; its own git_override is ignored
 # by Bazel for non-root modules, so the root module must declare it too.
@@ -99,7 +91,7 @@ git_override(
 )
 
 bazel_dep(name = "aspect_rules_lint", version = "2.7.1", dev_dependency = True)
-bazel_dep(name = "toolchains_llvm", version = "1.7.0", dev_dependency = True)
+bazel_dep(name = "toolchains_llvm", version = "1.8.0", dev_dependency = True)
 
 bazel_dep(name = "googletest", version = "1.17.0.bcr.2")
 bazel_dep(name = "google_benchmark", version = "1.9.5")
@@ -133,7 +125,7 @@ single_version_override(
 bazel_dep(name = "trlc", version = "0.0.0", dev_dependency = True)
 git_override(
     module_name = "trlc",
-    commit = "8d25f639ff44976893d7866ba421a04db5698ebe",
+    commit = "8f369f1208598c2e75f44a77a98d244634ed482a",
     remote = "https://github.com/bmw-software-engineering/trlc.git",
 )
 
