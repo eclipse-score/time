@@ -36,7 +36,7 @@ The main responsibilities of time_daemon include:
 - **Providing diagnostic information** for system monitoring
 - **Supporting additional verification mechanisms** such as QualifiedVehicleTime (QVT) for safety-critical applications
 
-For a detailed concept and architectural design, please refer to the :doc:`time_daemon Concept Documentation <features/time_daemon/index>`.
+For a detailed concept and architectural design, please refer to the :doc:`time_daemon documentation <time_daemon/index>`.
 
 .. toctree::
    :maxdepth: 2
