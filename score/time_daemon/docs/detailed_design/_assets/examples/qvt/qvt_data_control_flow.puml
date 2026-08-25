@@ -1,0 +1,157 @@
+' *******************************************************************************
+' Copyright (c) 2026 Contributors to the Eclipse Foundation
+'
+' See the NOTICE file(s) distributed with this work for additional
+' information regarding copyright ownership.
+'
+' This program and the accompanying materials are made available under the
+' terms of the Apache License Version 2.0 which is available at
+' https://www.apache.org/licenses/LICENSE-2.0
+'
+' SPDX-License-Identifier: Apache-2.0
+' *******************************************************************************
+
+@startuml dd_data_control_flow_diagram
+
+title VehicleTimeDaemon: Data and Control Flow
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color           |= Description                           |
+    |<#PaleTurquoise>  | MessageBroker                          |
+    |<#Wheat>          | PTPMachine                             |
+    |<#LightBlue>      | ControlFlowDivider                     |
+    |<#Lavender>       | VerificationMachine                    |
+    |<#LightPink>      | IPC components                         |
+    |<#WhiteSmoke>     | Shared Memory                          |
+    |<#LightGreen>     | Middleware components                  |
+    |<#LightSalmon>    | Client Application                     |
+    |<#RosyBrown>      | QualifiedVehicleTime components        |
+    |<#PeachPuff>      | BSP/OS Components                      |
+endlegend
+
+participant "ptpd" as ptpd #PeachPuff
+
+box VehicleTimeDaemon #LightYellow
+    participant "libptpd" as libptpd #PeachPuff
+    participant "PTPMachine" as ptp_machine #Wheat
+    participant "MessageBroker" as broker #PaleTurquoise
+    participant "ControlFlowDivider" as cf_divider #LightBlue
+    participant "VerificationMachine" as ver_machine #Lavender
+    participant "QualifiedVehicleTime" as qvt_machine #RosyBrown
+    participant "IpcPublisher" as ipc_publisher #LightPink
+    participant "IpcPublisher\nQVT" as ipc_qvt_publisher #RosyBrown
+end box
+
+participant "SharedMemory" as shared_memory #WhiteSmoke
+participant "SharedMemory\nQVT" as shared_memory_qvt #WhiteSmoke
+
+box Application #e6ffe6
+    participant "IpcReceiver" as ipc_receiver #LightPink
+    participant "IpcReceiver\nQVT" as ipc_qvt_receiver #RosyBrown
+    participant "score::time::svt" as mw_svt #LightGreen
+    participant "score::time::qvt" as mw_qvt #RosyBrown
+    participant "Application" as app #LightSalmon
+end box
+
+group PTP handling thread scope
+    ptp_machine -> libptpd: receive()
+    activate ptp_machine
+    activate libptpd
+    libptpd -> ptpd: devctl
+    activate ptpd
+    ptpd --> libptpd: TimeInfo
+    deactivate ptpd
+    libptpd --> ptp_machine: TimeInfo
+    deactivate libptpd
+    ptp_machine -> broker: publish_callback_(PtpTimeInfo)
+    activate broker
+    broker -> cf_divider: OnMessage(PtpTimeInfo)
+    activate cf_divider
+    cf_divider -> cf_divider: Buffer and notify with new event
+    cf_divider --> broker
+    deactivate cf_divider
+    broker --> ptp_machine
+    deactivate broker
+    deactivate ptp_machine
+end
+
+group TimeInfo handling thread scope
+    cf_divider -> cf_divider: OnEvent()
+    activate cf_divider
+    cf_divider -> broker: publish_callback_(PtpTimeInfo)
+    activate broker
+    broker -> ver_machine: OnMessage(PtpTimeInfo)
+    activate ver_machine
+    ver_machine -> ver_machine: Validate through pipeline
+    ver_machine -> broker: publish_callback_(PtpTimeInfo)
+    deactivate ver_machine
+
+    broker -> qvt_machine: OnMessage(PtpTimeInfo)
+    activate qvt_machine
+    qvt_machine -> qvt_machine: Qualify PTP data
+    qvt_machine -> broker: publish_callback_(PtpTimeInfo & QvtInfo)
+    deactivate qvt_machine
+
+    broker -> ipc_publisher: OnMessage(PtpTimeInfo)
+    activate ipc_publisher
+    ipc_publisher -> shared_memory: Write(PtpTimeInfo)
+    activate shared_memory
+    shared_memory --> ipc_publisher
+    deactivate shared_memory
+    ipc_publisher --> broker
+    deactivate ipc_publisher
+
+    broker -> ipc_qvt_publisher: OnMessage(QvtInfo)
+    activate ipc_qvt_publisher
+    ipc_qvt_publisher -> shared_memory_qvt: Write(QvtInfo)
+    activate shared_memory_qvt
+    shared_memory_qvt --> ipc_qvt_publisher
+    deactivate shared_memory_qvt
+    ipc_qvt_publisher --> broker
+    deactivate ipc_qvt_publisher
+
+    broker --> cf_divider
+    deactivate broker
+    deactivate cf_divider
+end
+
+group Application use case thread scope
+    app -> mw_svt: Now()
+    activate app
+    activate mw_svt
+    mw_svt -> ipc_receiver: Receive()
+    activate ipc_receiver
+    ipc_receiver -> shared_memory: Receive()
+    activate shared_memory
+    shared_memory --> ipc_receiver: PtpTimeInfo
+    deactivate shared_memory
+    ipc_receiver --> mw_svt: PtpTimeInfo
+    deactivate ipc_receiver
+    mw_svt -> mw_svt: Calculate current time
+    mw_svt --> app: Current Vehicle Time
+    deactivate mw_svt
+    deactivate app
+end
+
+group Diagnostic use case thread scope
+    app -> mw_qvt: GetCurrentData()
+    activate app
+    activate mw_qvt
+    mw_qvt -> ipc_qvt_receiver: Receive()
+    activate ipc_qvt_receiver
+    ipc_qvt_receiver -> shared_memory_qvt: Receive()
+    activate shared_memory_qvt
+    shared_memory_qvt --> ipc_qvt_receiver: QvtInfo
+    deactivate shared_memory_qvt
+    ipc_qvt_receiver --> mw_qvt: QvtInfo
+    deactivate ipc_qvt_receiver
+    mw_qvt --> app: Current QvtInfo
+    deactivate mw_qvt
+    deactivate app
+end
+
+@enduml
