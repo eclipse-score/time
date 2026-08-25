@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Component Time Requirements &#8212; S-CORE Time  documentation</title>
+    <title>Feature Requirements &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -62,7 +62,7 @@
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'time/requirements/requirements';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'time/detailed_design/feature_requirements';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Requirement Inspection Checklist" href="chklst_req_inspection.html" />
-    <link rel="prev" title="Requirements" href="index.html" />
+    <link rel="next" title="Implementation Inspection Checklist" href="chklst_impl_inspection.html" />
+    <link rel="prev" title="Detailed Design" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
@@ -381,12 +381,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ts_client/index.html">Time Sync Client</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../detailed_design/index.html">Detailed Design</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Requirements</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Component Time Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chklst_req_inspection.html">Requirement Inspection Checklist</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Detailed Design</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Feature Requirements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chklst_impl_inspection.html">Implementation Inspection Checklist</a></li>
 </ul>
 </details></li>
+<li class="toctree-l2"><a class="reference internal" href="../requirements/index.html">Requirements</a></li>
 </ul>
 </details></li>
 </ul>
@@ -436,9 +436,9 @@
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time</a></li>
     
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Requirements</a></li>
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Detailed Design</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Component Time Requirements</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Feature Requirements</span></li>
   </ul>
 </nav>
 </div>
@@ -455,13 +455,13 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="component-time-requirements">
-<h1>Component Time Requirements<a class="headerlink" href="#component-time-requirements" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-65279e24">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_requirements">
+  <section id="feature-requirements">
+<h1>Feature Requirements<a class="headerlink" href="#feature-requirements" title="Link to this heading">#</a></h1>
+<div class="need_container docutils container" id="SNCB-94e8e112">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_feat_req table" id="feat_req__time__unified_clock_facade">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">Time Requirements</span></span></span></div>
+<div class="line"><span><span class="needs_title"><span class="needs_data">Unified clock facade across time domains</span></span></span></div>
 </div>
 </td>
 <td class="head_center" colspan="2"><div class="needs_head line-block">
@@ -476,23 +476,31 @@
 </td>
 </tr>
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">requirements</span><span class="needs_spacer">, </span><span class="needs_data">time</span><span class="needs_spacer">, </span><span class="needs_data">time</span></span></span></div>
+<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
+<div class="line"><span class="needs_valid_from"><span class="needs_label">valid_from: </span><span class="needs_data">v1.0</span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
-<div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/requirements_engineering/requirements_workproducts.html#wp__requirements_comp">wp__requirements_comp</a></span></span></div>
+<div class="line"><span><div class="line">derives: <span class="derived_from"><span><a class="reference internal" href="../requirements/requirements.html#comp_req__high_res_steady_time__snapshot" title="feat_req__time__unified_clock_facade">comp_req__high_res_steady_time__snapshot</a>, <a class="reference internal" href="../requirements/requirements.html#comp_req__steady_time__snapshot" title="feat_req__time__unified_clock_facade">comp_req__steady_time__snapshot</a>, <a class="reference internal" href="../requirements/requirements.html#comp_req__system_time__snapshot" title="feat_req__time__unified_clock_facade">comp_req__system_time__snapshot</a></span></span></div>
+<div class="line">satisfied by: <span class="satisfied_by"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/docs/architecture/index.html#feat__time">feat__time</a></span></span></div>
 </span></div>
 </div>
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p><code class="docutils literal notranslate"><span class="pre">score::time</span></code> shall expose a single, type-safe entry point
+(<code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;::GetInstance</span></code>) for reading time snapshots across the
+supported clock domains (<code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>, <code class="docutils literal notranslate"><span class="pre">HighResSteadyTime</span></code>,
+<code class="docutils literal notranslate"><span class="pre">std::chrono::steady_clock</span></code>, <code class="docutils literal notranslate"><span class="pre">std::chrono::system_clock</span></code>), so
+clients select a clock domain at compile time and cannot accidentally
+mix domains at run time.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__time_requirements" title="doc__time_requirements">doc__time_requirements</a></span></span></div>
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#feat_req__time__unified_clock_facade" title="feat_req__time__unified_clock_facade">feat_req__time__unified_clock_facade</a></span></span></div>
 </div>
 </td>
 <td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Generic Document</span></span></span></div>
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Feature Requirement</span></span></span></div>
 </div>
 </td>
 <td class="footer_right" colspan="2"></td>
@@ -501,13 +509,11 @@
 </table>
 </div>
 </div>
-<section id="functional-requirements">
-<h2>Functional Requirements<a class="headerlink" href="#functional-requirements" title="Link to this heading">#</a></h2>
-<div class="need_container docutils container" id="SNCB-5c2de6c0">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__vehicle_time__snapshot">
+<div class="need_container docutils container" id="SNCB-65923bb8">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_feat_req table" id="feat_req__time__snapshot_with_status">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">VehicleClock returns snapshot with status</span></span></span></div>
+<div class="line"><span><span class="needs_title"><span class="needs_data">Immutable snapshot with quality metadata</span></span></span></div>
 </div>
 </td>
 <td class="head_center" colspan="2"><div class="needs_head line-block">
@@ -524,26 +530,27 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/etas-contrib/score_time/blob/31ad9b92a1b7bebc4e15c7069e5d5516cdfdfdf1/score/time/vehicle_time/src/vehicle_clock.cpp#L44">score/time/vehicle_time/src/vehicle_clock.cpp:44</a><em>; </em></span></span></div>
+<div class="line"><span class="needs_valid_from"><span class="needs_label">valid_from: </span><span class="needs_data">v1.0</span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
-<div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="reference internal" href="../detailed_design/feature_requirements.html#feat_req__time__snapshot_with_status" title="comp_req__vehicle_time__snapshot">feat_req__time__snapshot_with_status</a></span></span></div>
-<div class="line">satisfied by: <span class="satisfied_by"><span><a class="reference internal" href="../index.html#comp__time" title="comp_req__vehicle_time__snapshot">comp__time</a></span></span></div>
+<div class="line"><span><div class="line">derives: <span class="derived_from"><span><a class="reference internal" href="../requirements/requirements.html#comp_req__vehicle_time__snapshot" title="feat_req__time__snapshot_with_status">comp_req__vehicle_time__snapshot</a></span></span></div>
+<div class="line">satisfied by: <span class="satisfied_by"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/docs/architecture/index.html#feat__time">feat__time</a></span></span></div>
 </span></div>
 </div>
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p><code class="docutils literal notranslate"><span class="pre">VehicleClock::Now</span></code> shall return a <code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> whose timepoint
-and <code class="docutils literal notranslate"><span class="pre">VehicleTimeStatus</span></code> originate from the same backend read, so
-downstream callers observe consistent time and status values.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>Every <code class="docutils literal notranslate"><span class="pre">Clock&lt;Tag&gt;::Now</span></code> call shall return a single immutable
+<code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> value that bundles the timepoint with the domain’s
+status metadata, so callers can inspect synchronization quality
+without a separate status call.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__vehicle_time__snapshot" title="comp_req__vehicle_time__snapshot">comp_req__vehicle_time__snapshot</a></span></span></div>
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#feat_req__time__snapshot_with_status" title="feat_req__time__snapshot_with_status">feat_req__time__snapshot_with_status</a></span></span></div>
 </div>
 </td>
 <td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span></span></div>
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Feature Requirement</span></span></span></div>
 </div>
 </td>
 <td class="footer_right" colspan="2"></td>
@@ -552,11 +559,11 @@ downstream callers observe consistent time and status values.</p></td>
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-7626c57f">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__vehicle_time__lifecycle">
+<div class="need_container docutils container" id="SNCB-9f1b5d64">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_feat_req table" id="feat_req__time__explicit_lifecycle">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">VehicleClock lifecycle operations</span></span></span></div>
+<div class="line"><span><span class="needs_title"><span class="needs_data">Explicit lifecycle for backends that need it</span></span></span></div>
 </div>
 </td>
 <td class="head_center" colspan="2"><div class="needs_head line-block">
@@ -573,27 +580,28 @@ downstream callers observe consistent time and status values.</p></td>
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/etas-contrib/score_time/blob/31ad9b92a1b7bebc4e15c7069e5d5516cdfdfdf1/score/time/vehicle_time/src/vehicle_clock.cpp#L50">score/time/vehicle_time/src/vehicle_clock.cpp:50</a><em>; </em><a class="reference external" href="https://github.com/etas-contrib/score_time/blob/31ad9b92a1b7bebc4e15c7069e5d5516cdfdfdf1/score/time/vehicle_time/src/vehicle_clock.cpp#L56">score/time/vehicle_time/src/vehicle_clock.cpp:56</a><em>; </em><a class="reference external" href="https://github.com/etas-contrib/score_time/blob/31ad9b92a1b7bebc4e15c7069e5d5516cdfdfdf1/score/time/vehicle_time/src/vehicle_clock.cpp#L62">score/time/vehicle_time/src/vehicle_clock.cpp:62</a><em>; </em></span></span></div>
+<div class="line"><span class="needs_valid_from"><span class="needs_label">valid_from: </span><span class="needs_data">v1.0</span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
-<div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="reference internal" href="../detailed_design/feature_requirements.html#feat_req__time__explicit_lifecycle" title="comp_req__vehicle_time__lifecycle">feat_req__time__explicit_lifecycle</a></span></span></div>
-<div class="line">satisfied by: <span class="satisfied_by"><span><a class="reference internal" href="../index.html#comp__time" title="comp_req__vehicle_time__lifecycle">comp__time</a></span></span></div>
+<div class="line"><span><div class="line">derives: <span class="derived_from"><span><a class="reference internal" href="../requirements/requirements.html#comp_req__vehicle_time__lifecycle" title="feat_req__time__explicit_lifecycle">comp_req__vehicle_time__lifecycle</a></span></span></div>
+<div class="line">satisfied by: <span class="satisfied_by"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/docs/architecture/index.html#feat__time">feat__time</a></span></span></div>
 </span></div>
 </div>
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p><code class="docutils literal notranslate"><span class="pre">VehicleClock</span></code> shall provide <code class="docutils literal notranslate"><span class="pre">Init</span></code>, <code class="docutils literal notranslate"><span class="pre">IsAvailable</span></code> and
-<code class="docutils literal notranslate"><span class="pre">WaitUntilAvailable</span></code> operations that delegate to the backend and
-report backend init failure and availability-wait timeouts to the
-caller without blocking indefinitely.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>Clock domains that depend on an external resource (currently
+<code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>) shall provide <code class="docutils literal notranslate"><span class="pre">Init</span></code>, <code class="docutils literal notranslate"><span class="pre">IsAvailable</span></code> and
+<code class="docutils literal notranslate"><span class="pre">WaitUntilAvailable</span></code> operations, and shall keep those operations
+unavailable — at compile time — on clock domains that are always
+ready.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__vehicle_time__lifecycle" title="comp_req__vehicle_time__lifecycle">comp_req__vehicle_time__lifecycle</a></span></span></div>
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#feat_req__time__explicit_lifecycle" title="feat_req__time__explicit_lifecycle">feat_req__time__explicit_lifecycle</a></span></span></div>
 </div>
 </td>
 <td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span></span></div>
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Feature Requirement</span></span></span></div>
 </div>
 </td>
 <td class="footer_right" colspan="2"></td>
@@ -602,150 +610,6 @@ caller without blocking indefinitely.</p></td>
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-5727a167">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__high_res_steady_time__snapshot">
-<tbody>
-<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">HighResSteadyClock always-ready snapshot</span></span></span></div>
-</div>
-</td>
-<td class="head_center" colspan="2"><div class="needs_head line-block">
-<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
-<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
-</div>
-</td>
-<td class="head_right" colspan="2"><div class="needs_head_right line-block">
-<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
-</div>
-</td>
-</tr>
-<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
-<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
-</span></span></div>
-<div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="reference internal" href="../detailed_design/feature_requirements.html#feat_req__time__unified_clock_facade" title="comp_req__high_res_steady_time__snapshot">feat_req__time__unified_clock_facade</a></span></span></div>
-<div class="line">satisfied by: <span class="satisfied_by"><span><a class="reference internal" href="../index.html#comp__time" title="comp_req__high_res_steady_time__snapshot">comp__time</a></span></span></div>
-</span></div>
-</div>
-</td>
-<td class="meta" colspan="3"></td>
-</tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p><code class="docutils literal notranslate"><span class="pre">HighResSteadyClock::Now</span></code> shall return a monotonic
-<code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> without requiring prior initialization, and shall
-not expose <code class="docutils literal notranslate"><span class="pre">Init</span></code> / <code class="docutils literal notranslate"><span class="pre">IsAvailable</span></code> / <code class="docutils literal notranslate"><span class="pre">WaitUntilAvailable</span></code> on the
-facade (using them is a compile error).</p></td>
-</tr>
-<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__high_res_steady_time__snapshot" title="comp_req__high_res_steady_time__snapshot">comp_req__high_res_steady_time__snapshot</a></span></span></div>
-</div>
-</td>
-<td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span></span></div>
-</div>
-</td>
-<td class="footer_right" colspan="2"></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="need_container docutils container" id="SNCB-ed70544a">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__steady_time__snapshot">
-<tbody>
-<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">SteadyClock always-ready snapshot</span></span></span></div>
-</div>
-</td>
-<td class="head_center" colspan="2"><div class="needs_head line-block">
-<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
-<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
-</div>
-</td>
-<td class="head_right" colspan="2"><div class="needs_head_right line-block">
-<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
-</div>
-</td>
-</tr>
-<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
-<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
-</span></span></div>
-<div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="reference internal" href="../detailed_design/feature_requirements.html#feat_req__time__unified_clock_facade" title="comp_req__steady_time__snapshot">feat_req__time__unified_clock_facade</a></span></span></div>
-<div class="line">satisfied by: <span class="satisfied_by"><span><a class="reference internal" href="../index.html#comp__time" title="comp_req__steady_time__snapshot">comp__time</a></span></span></div>
-</span></div>
-</div>
-</td>
-<td class="meta" colspan="3"></td>
-</tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p><code class="docutils literal notranslate"><span class="pre">SteadyClock::Now</span></code> shall return a snapshot backed by
-<code class="docutils literal notranslate"><span class="pre">std::chrono::steady_clock</span></code> without requiring initialization.</p></td>
-</tr>
-<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__steady_time__snapshot" title="comp_req__steady_time__snapshot">comp_req__steady_time__snapshot</a></span></span></div>
-</div>
-</td>
-<td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span></span></div>
-</div>
-</td>
-<td class="footer_right" colspan="2"></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="need_container docutils container" id="SNCB-af19fb11">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__system_time__snapshot">
-<tbody>
-<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">SystemClock always-ready snapshot</span></span></span></div>
-</div>
-</td>
-<td class="head_center" colspan="2"><div class="needs_head line-block">
-<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
-<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
-</div>
-</td>
-<td class="head_right" colspan="2"><div class="needs_head_right line-block">
-<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
-</div>
-</td>
-</tr>
-<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
-<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
-</span></span></div>
-<div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="reference internal" href="../detailed_design/feature_requirements.html#feat_req__time__unified_clock_facade" title="comp_req__system_time__snapshot">feat_req__time__unified_clock_facade</a></span></span></div>
-<div class="line">satisfied by: <span class="satisfied_by"><span><a class="reference internal" href="../index.html#comp__time" title="comp_req__system_time__snapshot">comp__time</a></span></span></div>
-</span></div>
-</div>
-</td>
-<td class="meta" colspan="3"></td>
-</tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p><code class="docutils literal notranslate"><span class="pre">SystemClock::Now</span></code> shall return a snapshot backed by
-<code class="docutils literal notranslate"><span class="pre">std::chrono::system_clock</span></code> without requiring initialization.</p></td>
-</tr>
-<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__system_time__snapshot" title="comp_req__system_time__snapshot">comp_req__system_time__snapshot</a></span></span></div>
-</div>
-</td>
-<td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span></span></div>
-</div>
-</td>
-<td class="footer_right" colspan="2"></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
 </section>
 
 
@@ -764,15 +628,15 @@ facade (using them is a compile error).</p></td>
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Requirements</p>
+        <p class="prev-next-title">Detailed Design</p>
       </div>
     </a>
     <a class="right-next"
-       href="chklst_req_inspection.html"
+       href="chklst_impl_inspection.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Requirement Inspection Checklist</p>
+        <p class="prev-next-title">Implementation Inspection Checklist</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -788,22 +652,10 @@ facade (using them is a compile error).</p></td>
 
 
   <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functional-requirements">Functional Requirements</a></li>
-</ul>
-  </nav></div>
-
-  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/time/requirements/requirementsore/time/docs/requirements/requirements.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/time/detailed_design/feature_requirementscs/detailed_design/feature_requirements.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
