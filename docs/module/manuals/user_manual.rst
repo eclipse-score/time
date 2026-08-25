@@ -209,10 +209,10 @@ The ``time`` module requires two system daemons to be running. These processes m
 
 .. For detailed configuration of each daemon (OS privileges, network configuration, command-line arguments), refer to the  :ref:`component_manuals<component manuals>` linked above.
 
-Version History, Compatibility, and Troubleshooting
-===================================================
+Troubleshooting
+===============
 
-For comprehensive information on version history, compatibility notes, known issues, troubleshooting tips, and security vulnerabilities (CVEs), refer to :doc:`troubleshooting_guide`.
+For troubleshooting tips refer to :doc:`troubleshooting_guide`.
 
 Safety and Security
 ===================
