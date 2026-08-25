@@ -821,6 +821,15 @@ Choose the target that matches your use case:
    * - ``//score/time/ptp:ptp_types``
      - PTP notification data types (``TimeSlaveSyncData``, ``PDelayMeasurementData``)
 
+Requirements
+------------
+
+Detailed requirements and features mapping:
+
+.. toctree::
+
+   feature_requirements
+
 Inspection Checklist
 --------------------
 
