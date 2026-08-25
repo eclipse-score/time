@@ -20,5 +20,4 @@ Features
    :caption: Features:
 
    time_daemon/index
-   time_slave/index
    test_cases
