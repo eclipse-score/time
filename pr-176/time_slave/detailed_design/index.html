@@ -439,7 +439,7 @@
                   
   <section id="time-slave-detailed-design">
 <span id="time-slave-detailed-design-index"></span><h1>Time Slave Detailed Design<a class="headerlink" href="#time-slave-detailed-design" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-728b1513">
+<div class="need_container docutils container" id="SNCB-afa9f29a">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_slave_detailed_design">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -516,7 +516,7 @@
 <p>This separation enables independent testing, exchangeability of platform-specific implementations
 (raw sockets, PHC drivers), and clear responsibility boundaries critical for ASIL_B safety qualification.</p>
 <p>TimeSlave publishes its <code class="docutils literal notranslate"><span class="pre">GptpIpcData</span></code> snapshot to shared memory using the <code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher</span></code>
-from the <a class="reference internal" href="../../ts_client/detailed_design/detailed_design.html#ts-client-detailed-design"><span class="std std-ref">ts_client</span></a> component; the TimeDaemon-side
+from the <a class="reference internal" href="../../ts_client/detailed_design/index.html#ts-client-detailed-design"><span class="std std-ref">ts_client</span></a> component; the TimeDaemon-side
 consumer (<code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code>) is documented in the <a class="reference internal" href="../../time_daemon/detailed_design/detailed_design.html#time-daemon-detailed-design"><span class="std std-ref">Time Daemon detailed design</span></a>.</p>
 </section>
 <section id="static-diagrams-for-unit-interactions">
@@ -1120,7 +1120,7 @@ consumer (<code class="docutils literal notranslate"><span class="pre">ShmPTPEng
 <li><p>The shared memory IPC channel name is configurable (<code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher::Init(name)</span></code>), allowing multiple gPTP instances per ECU if needed</p></li>
 </ol>
 <p>The <code class="docutils literal notranslate"><span class="pre">GptpIpcPublisher</span></code> used here, and the corresponding <code class="docutils literal notranslate"><span class="pre">GptpIpcReceiver</span></code>/<code class="docutils literal notranslate"><span class="pre">ShmPTPEngine</span></code> on the
-consuming side, are documented in the <a class="reference internal" href="../../ts_client/detailed_design/detailed_design.html#ts-client-detailed-design"><span class="std std-ref">ts_client</span></a> and
+consuming side, are documented in the <a class="reference internal" href="../../ts_client/detailed_design/index.html#ts-client-detailed-design"><span class="std std-ref">ts_client</span></a> and
 <a class="reference internal" href="../../time_daemon/detailed_design/detailed_design.html#time-daemon-detailed-design"><span class="std std-ref">Time Daemon</span></a> detailed designs respectively.</p>
 </section>
 </section>
