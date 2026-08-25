@@ -439,7 +439,7 @@
                   
   <section id="detailed-design">
 <span id="time-detailed-design"></span><h1>Detailed Design<a class="headerlink" href="#detailed-design" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-e763d7d8">
+<div class="need_container docutils container" id="SNCB-5d00f2d4">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_detailed_design">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -773,7 +773,7 @@ semantics.  <code class="docutils literal notranslate"><span class="pre">ClockSt
 <section id="vt2-initialization-and-readiness-check">
 <h4>VT2 — Initialization and Readiness Check<a class="headerlink" href="#vt2-initialization-and-readiness-check" title="Link to this heading">#</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code> requires an explicit <code class="docutils literal notranslate"><span class="pre">Init()</span></code> call to open the IPC channel to the
-<a class="reference internal" href="../../time_daemon/detailed_design/detailed_design.html#time-daemon-detailed-design"><span class="std std-ref">Time Daemon Detailed Design</span></a> before any time data becomes available.  Until <code class="docutils literal notranslate"><span class="pre">Init()</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code>,
+<a class="reference internal" href="../../time_daemon/detailed_design/index.html#time-daemon-detailed-design"><span class="std std-ref">Time Daemon Detailed Design</span></a> before any time data becomes available.  Until <code class="docutils literal notranslate"><span class="pre">Init()</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code>,
 <code class="docutils literal notranslate"><span class="pre">Now()</span></code> returns a snapshot with no flags set (<code class="docutils literal notranslate"><span class="pre">IsConsistent()</span></code> returns <code class="docutils literal notranslate"><span class="pre">false</span></code>) and <code class="docutils literal notranslate"><span class="pre">IsAvailable()</span></code> returns
 <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
 <p>After a successful <code class="docutils literal notranslate"><span class="pre">Init()</span></code>, <code class="docutils literal notranslate"><span class="pre">IsAvailable()</span></code> returns <code class="docutils literal notranslate"><span class="pre">true</span></code> immediately.  The
