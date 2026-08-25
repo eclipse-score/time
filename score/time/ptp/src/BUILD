@@ -28,8 +28,6 @@ cc_library(
     tags = ["FFI"],
     visibility = [
         "//score/time:__subpackages__",
-        # Coverage scope root (tools/coverage/BUILD) — report-time allowlist only.
-        "//tools/coverage:__pkg__",
     ],
 )
 

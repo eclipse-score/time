@@ -75,9 +75,6 @@ import %workspace%/tools/coverage/coverage.bazelrc
 # Local user overrides — kept LAST so they can override everything above.
 try-import %workspace%/user.bazelrc
 
-# Atomic counter updates prevent data corruption when tests use multiple threads.
-# Pass branch (-b), cumulative (-c), and unconditional (-u) flags to gcov.
-
 # -------------------------------------------------------------------------------
 # Sanitizer configurations — powered by score_cpp_policies
 # -------------------------------------------------------------------------------

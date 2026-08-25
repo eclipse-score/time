@@ -26,10 +26,9 @@ score_coverage_scope(
     visibility = ["//visibility:private"],
     deps = [
         # Standalone public clock APIs, not reachable through the daemons:
-        "//score/time/ptp/src:ptp_types",
-        "//score/time/steady_time/src:steady_clock",
-        "//score/time/system_time/src:system_clock",
-        "//score/time/vehicle_time/src:vehicle_clock",
+        "//score/time/steady_time",
+        "//score/time/system_time",
+        "//score/time/vehicle_time",
         # The daemons transitively bring in clock_core, high_res_steady_clock
         # and ts_client's gptp_ipc (verified via bazel query deps()).
         # KNOWN GAP: the cc_binary entry-point sources themselves (main.cpp,

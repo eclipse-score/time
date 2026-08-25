@@ -51,16 +51,13 @@ jobs:
 
       - name: Generate coverage report and enforce threshold
         env:
-          # Same gate level as the previous gcov-based workflow. Applies to
-          # RAW line coverage (no justification YAML yet); when justifications
-          # are introduced, the gate switches to effective coverage. The
-          # markdown summary lands on this run's page via GITHUB_STEP_SUMMARY.
           COVERAGE_THRESHOLD: "85"
         run: |
           set -euo pipefail
           bazel run --lockfile_mode=error @score_tooling//coverage:generate_coverage_html -- \
             --testlogs-subdir score \
-            --archive-dir coverage_artifact
+            --archive-dir coverage_artifact \
+            --yaml tools/coverage/coverage_justifications.yaml
 
       # upload-artifact zips its input itself; the script assembles an
       # unzipped directory (--archive-dir) to avoid a zip inside a zip.
