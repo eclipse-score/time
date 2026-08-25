@@ -43,3 +43,5 @@ Module Documents
 
 .. toctree::
    :maxdepth: 1
+
+   manuals/index
