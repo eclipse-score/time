@@ -82,5 +82,6 @@ Component Detail Information
 .. toctree::
    :maxdepth: 1
 
+   manuals/user_manual
    detailed_design/index
    requirements/index
