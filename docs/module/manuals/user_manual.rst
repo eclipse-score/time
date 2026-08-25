@@ -89,13 +89,10 @@ Select clock type based on use case. No clock type is universally better; each h
 Component Manuals
 -----------------
 
-For detailed component-specific user manuals:
+For detailed component-specific user manuals, see:
 
-.. toctree::
-   :maxdepth: 1
-
-   /time_slave/manuals/user_manual
-   /time_daemon/manuals/user_manual
+* :doc:`/time_slave/manuals/user_manual`
+* :doc:`/time_daemon/manuals/user_manual`
 
 Examples
 --------
@@ -215,18 +212,7 @@ The ``time`` module requires two system daemons to be running. These processes m
 Version History, Compatibility, and Troubleshooting
 ===================================================
 
-For comprehensive information on the following topics:
-
-* Version history and changes
-* Compatibility notes and upgrade instructions
-* Known issues and limitations
-* Troubleshooting tips and solutions
-* Security vulnerabilities (CVEs)
-
-.. toctree::
-   :maxdepth: 1
-
-   troubleshooting_guide
+For comprehensive information on version history, compatibility notes, known issues, troubleshooting tips, and security vulnerabilities (CVEs), refer to :doc:`troubleshooting_guide`.
 
 Safety and Security
 ===================
