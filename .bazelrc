@@ -20,6 +20,13 @@ common --registry=https://raw.githubusercontent.com/eclipse-score/bazel_registry
 common --registry=https://bcr.bazel.build
 common --@score_logging//score/mw/log/flags:KRemote_Logging=False
 
+# Overcome stability issues when downloading external dependencies on GH Runners
+common --experimental_repository_downloader_retries=10
+common --experimental_scale_timeouts=2.0
+common --http_connector_attempts=10
+common --http_connector_retry_max_timeout=30s
+common --http_timeout_scaling=4.0
+
 # rules_android is pulled in transitively: lobster -> rules_jvm_external -> rules_android.
 # The android_sdk_repository extension fails on machines without Android SDK APIs
 # installed (including GitHub Actions ubuntu-24.04 runners). This project does not
