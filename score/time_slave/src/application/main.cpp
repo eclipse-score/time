@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_slave/src/application/time_slave.h"
 
-#include "src/lifecycle_client_lib/include/runapplication.h"
+#include "score/mw/lifecycle/runapplication.h"
 
 int main(int argc, const char* argv[])
 {

@@ -56,8 +56,8 @@ cc_library(
 )
 
 cc_test(
-    name = "system_clock_test",
-    srcs = ["system_clock_test.cpp"],
+    name = "system_clock_adapter_test",
+    srcs = ["system_clock_adapter_test.cpp"],
     features = COMPILER_WARNING_FEATURES,
     tags = [
         "exclusive",
@@ -71,9 +71,24 @@ cc_test(
     ],
 )
 
+cc_test(
+    name = "system_clock_integration_test",
+    srcs = ["system_clock_integration_test.cpp"],
+    features = COMPILER_WARNING_FEATURES,
+    tags = ["unit"],
+    deps = [
+        ":system_clock_impl",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)
+
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    cc_unit_tests = [":system_clock_test"],
+    cc_unit_tests = [
+        ":system_clock_adapter_test",
+        ":system_clock_integration_test",
+    ],
     test_suites_from_sub_packages = [
         "//score/time/system_time/src/details:unit_test_suite",
     ],

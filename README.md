@@ -160,33 +160,33 @@ Follow the [S-CORE Development Environment Guide](https://eclipse-score.github.i
 Build all components for **Linux x86_64** by running:
 
 ```bash
-bazel build --config=time-x86_64-linux //score/... //examples/...
+bazel build --config=x86_64-linux //score/... //examples/...
 ```
 
 Run all tests:
 
 ```bash
-bazel test --config=time-x86_64-linux //score/... //examples/...
+bazel test --config=x86_64-linux //score/... //examples/...
 ```
 
 #### Other Platforms
 
 **Linux AArch64**:
 ```bash
-bazel build --config=time-arm64-linux //score/... //examples/...
-bazel test --config=time-arm64-linux //score/... //examples/...
+bazel build --config=arm64-linux //score/... //examples/...
+bazel test --config=arm64-linux //score/... //examples/...
 ```
 
 **QNX x86_64**:
 ```bash
-bazel build --config=time-x86_64-qnx //score/... //examples/...
-bazel test --config=time-x86_64-qnx //score/... //examples/...
+bazel build --config=x86_64-qnx //score/... //examples/...
+bazel test --config=x86_64-qnx //score/... //examples/...
 ```
 
 **QNX AArch64**:
 ```bash
-bazel build --config=time-aarch64-qnx //score/... //examples/...
-bazel test --config=time-aarch64-qnx //score/... //examples/...
+bazel build --config=aarch64-qnx //score/... //examples/...
+bazel test --config=aarch64-qnx //score/... //examples/...
 ```
 
 #### Testing with Sanitizers
@@ -194,8 +194,45 @@ bazel test --config=time-aarch64-qnx //score/... //examples/...
 To test with AddressSanitizer, UBSan, and LeakSanitizer enabled:
 
 ```bash
-bazel test --config=time-x86_64-linux --config=asan_ubsan_lsan --build_tests_only //score/... //examples/...
+bazel test --config=x86_64-linux --config=asan_ubsan_lsan --build_tests_only //score/... //examples/...
 ```
+
+---
+
+## 🛠 Tools & Linters
+
+### Clang-tidy
+
+```sh
+bazel test --config=clang-tidy //score/...
+```
+
+### CodeQL — MISRA C++:2023 static analysis
+
+Runs a full build-traced MISRA C++:2023 scan using the vendored CodeQL CLI and
+pre-compiled query pack. The first run downloads ~1 GB of tooling (CodeQL CLI +
+MISRA pack) into the Bazel repository cache; subsequent runs reuse the cache.
+
+```sh
+bazel run //tools/static_analysis:codeql_lint -- \
+    --output-dir /tmp/codeql-results \
+    --output-prefix codeql-time \
+    --target //score/...
+```
+
+**Results** are written to `--output-dir` on completion:
+
+| File | Contents |
+| ---- | -------- |
+| `codeql-time.sarif` | SARIF v2.1 — import into VS Code ([SARIF Viewer extension](https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer)) or any SARIF-aware tool |
+| `codeql-time.csv` | Flat findings table: rule, file, line, message |
+| `analysis_reports/database_integrity_report.md` | Extraction errors (external deps are expected) |
+| `analysis_reports/deviations_report.md` | Active MISRA C++:2023 deviations |
+| `analysis_reports/guideline_compliance_summary.md` | Per-rule compliance summary |
+| `analysis_reports/guideline_recategorizations_report.md` | Rule recategorization log |
+
+To open SARIF results in VS Code: install the **SARIF Viewer** extension, then
+`Ctrl+Shift+P` → *SARIF: Open SARIF file* → select `codeql-time.sarif`.
 
 ---
 

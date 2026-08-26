@@ -152,6 +152,32 @@ TEST_F(TestVehicleTimeStatus, IsFlagActiveDelegatesCorrectly)
     EXPECT_FALSE(status.IsFlagActive(Flag::kTimeOut));
 }
 
+TEST_F(TestVehicleTimeStatus, PrintToFormatsAllActiveFlagsCorrectly)
+{
+    ClockStatus<Flag> status{Flag::kTimeOut, Flag::kSynchronized, Flag::kTimeLeapFuture, Flag::kTimeLeapPast};
+
+    std::ostringstream os;
+    os << status;
+
+    EXPECT_STREQ(
+        "[kTimeOut: true, kSynchronized: true, kTimeLeapFuture: true, "
+        "kTimeLeapPast: true, ]",
+        os.str().c_str());
+}
+
+TEST_F(TestVehicleTimeStatus, PrintToFormatsMixedFlagsCorrectly)
+{
+    ClockStatus<Flag> status{Flag::kSynchronized};
+
+    std::ostringstream os;
+    os << status;
+
+    EXPECT_STREQ(
+        "[kTimeOut: false, kSynchronized: true, kTimeLeapFuture: false, "
+        "kTimeLeapPast: false, ]",
+        os.str().c_str());
+}
+
 }  // namespace
 }  // namespace time
 }  // namespace score
