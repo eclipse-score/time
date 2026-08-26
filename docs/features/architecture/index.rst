@@ -25,7 +25,8 @@ Time Feature Architecture
 
 This page defines the static and dynamic architecture of the :need:`feat__time` feature
 (:term:`score::time`). The feature overview, logical interfaces, and requirements are
-described in the platform repository.
+described in the `platform Time feature documentation
+<https://eclipse-score.github.io/score/main/features/time/index.html>`_.
 
 Static Architecture
 -------------------
@@ -35,10 +36,10 @@ it exposes, and the SW components that implement them:
 
 * **score::time** (clock library) — ``Clock<Tag>`` API exposing
   :term:`Vehicle Clock`, :term:`Local Clock`, and :term:`Absolute Clock`
-* **TimeDaemon** — PTP time validation and distribution process
+* **TimeDaemon** — time validation, aggregation and distribution process
 * **TimeSlave** — gPTP slave endpoint that receives network time
-* **ts_client** — shared-memory IPC client connecting ``VehicleClock`` to
-  ``TimeDaemon``
+* **ts_client** — IPC client library used by ``TimeDaemon`` to communicate
+  with ``TimeSlave``
 
 .. feat_arc_sta:: Time Static Architecture
    :id: feat_arc_sta__time__static_view
@@ -62,13 +63,14 @@ Vehicle Time
 
 The :term:`Vehicle Clock` exposes two runtime interaction modes: a **pull** model — reading the
 latest accumulated snapshot on demand — and an **event notification** model — subscribing to
-receive notifications when new data arrives.
+receive notifications when the :term:`Vehicle Time status` changes or new time-sync relevant
+data from the :term:`Time slave` arrives.
 
 .. rubric:: Reading the time
 
 Applications read the current vehicle time through the :term:`Vehicle Clock` (``now``). In the
 background the time is continuously synchronized to the external network time
-(:term:`PTP protocol`), validated, and accumulated as a snapshot. The read uses the latest
+(:term:`gPTP`), validated, and accumulated as a snapshot. The read uses the latest
 accumulated snapshot and interpolates it on the current local monotonic clock — a fast local
 operation that does not cross the process boundary.
 
@@ -88,10 +90,10 @@ operation that does not cross the process boundary.
 .. rubric:: Receiving notifications
 
 Applications can subscribe to :term:`Vehicle Clock` events. Subscription is the only way to obtain
-the PTP payload data (the sync/follow-up and pdelay sequences, which are independent); the
-:term:`Vehicle Time status` can also be read from ``now``, and subscription additionally delivers
-it as it changes. The primary use case is diagnostics — reacting to a status change or a PTP data
-update in a diagnostic manner.
+the PTP payload data (the sync/follow-up and pdelay sequences, which are independent). The primary
+use case is diagnostics — reacting to a status change or a PTP data update in a diagnostic manner.
+The :term:`Vehicle Time status` can also be read from ``now``, and subscription additionally
+delivers it when it changes.
 
 .. feat_arc_dyn:: Vehicle Time Notification
    :id: feat_arc_dyn__time__vehicle_subscription

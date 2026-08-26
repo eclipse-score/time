@@ -32,7 +32,7 @@ rectangle "ECU" #f0f5f5 {
       component "score::time::LocalClock\n(Steady|HiRes|System)" as local_clock_api #LightGreen
       component "score::time::AbsoluteClock" as abs_clock_api #LightGreen
     }
-    component "ts_client\n(TimeDaemon IPC client)" as time_slave_client #LightGreen
+    component "ts_client\n(TimeSlave<->TimeDaemon shm IPC)" as time_slave_client #LightGreen
     component "TimeDaemon\n" as time_daemon #LightGreen
     component "TimeSlave\n(gPTP slave endpoint)" as time_slave #LightGreen
   }
@@ -58,23 +58,5 @@ time_daemon <-- score_someip : absolute time
 score_someip ..> abs_master : obtains absolute time
 
 local_clock_api ..> os : reads OS clock
-
-@enduml
-
-  component "score::score_someip" as score_someip #LightBlue
-  component "OS / local clock" as os #LightGrey
-}
-
-cloud "Vehicle network time\n(PTP)" as veh_net #LightCoral
-cloud "Absolute time source\n(e.g. GPS / UTC)" as abs_master #LightCoral
-
-user --> veh_clock_api : read vehicle time
-user --> local_clock_api : read local time
-user --> abs_clock_api : read absolute time
-
-veh_clock_api ..> veh_net : synchronized to (PTP)
-local_clock_api ..> os : reads
-abs_clock_api ..> score_someip : IPC
-score_someip ..> abs_master : obtains absolute time
 
 @enduml

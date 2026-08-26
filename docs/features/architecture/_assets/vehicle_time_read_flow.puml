@@ -29,11 +29,14 @@ endlegend
 box "ECU" #f0f5f5
   box "Application process" #e6ffe6
     participant "Application"                      as app  #LightSalmon
-    participant "score::time::VehicleClock"         as vc   #LightGreen
-    participant "ts_client"                         as tsc  #LightGreen
+    participant "score::time::VehicleClock"        as vc   #LightGreen
   end box
-  box "score::time provider process" #e6ffe6
+  box "TimeDaemon process" #e6ffe6
     participant "TimeDaemon\n(validation & distribution)" as td #LightGreen
+    participant "ts_client\n(shared-memory IPC)" as tsc #LightGreen
+  end box
+  box "TimeSlave process" #e6ffe6
+    participant "TimeSlave\n(gPTP endpoint)" as ts #LightGreen
   end box
 end box
 participant "Grand Master" as host #LightCoral
@@ -44,16 +47,16 @@ vc --> app : ready
 
 == Synchronization (background) ==
 loop periodically
-  host <--> td : gPTP synchronization
+  host <--> ts : gPTP synchronization
+  ts -> tsc : publish PTP data (shared memory)
+  tsc --> td : receive PTP data
   td -> td : validate, derive Vehicle Time status,\ntimestamp on local monotonic clock
-  td -->> tsc : publish latest snapshot\n(time, local timestamp, status, metadata)
+  td -->> vc : distribute latest snapshot\n(time, local timestamp, status, metadata)
 end
 
 == Reading the time (on demand) ==
 app -> vc : now()
-vc -> tsc : read snapshot (shared memory IPC)
-tsc --> vc : latest snapshot
-vc -> vc : interpolate on current local monotonic clock
+vc -> vc : use latest snapshot;\ninterpolate on current local monotonic clock
 vc --> app : Snapshot\n(vehicle TimePoint + Vehicle Time status)
 
 @enduml

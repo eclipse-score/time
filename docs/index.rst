@@ -15,7 +15,7 @@
 S-CORE Time
 ===========
 
-This documentation covers the **score::time** module.
+This documentation covers the **score::time** feature and module.
 
 .. contents:: Table of Contents
    :depth: 2

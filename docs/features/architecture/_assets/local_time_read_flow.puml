@@ -50,7 +50,7 @@ note left
 end note
 lc --> app : Snapshot (TimePoint)
 
-== High-Resolution Clock ==
+== High-Resolution Steady Clock ==
 app -> lc : now()
 lc -> os : ClockCycles
 os --> lc : TimePoint
