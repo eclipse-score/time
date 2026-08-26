@@ -1,0 +1,46 @@
+' *******************************************************************************
+' Copyright (c) 2026 Contributors to the Eclipse Foundation
+'
+' See the NOTICE file(s) distributed with this work for additional
+' information regarding copyright ownership.
+'
+' This program and the accompanying materials are made available under the
+' terms of the Apache License Version 2.0 which is available at
+' https://www.apache.org/licenses/LICENSE-2.0
+'
+' SPDX-License-Identifier: Apache-2.0
+' *******************************************************************************
+
+@startuml mw_time_receive_simple_seq_diagram
+
+title mw::time::svt: Providing new Vehicle Time to Applications (simplified)
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+autoactivate on
+
+legend top left
+    |= Color        |= Description                  |
+    |<#LightPink>   | IPC components                |
+    |<#LightSalmon> | Client Application            |
+    |<#LightGreen>  | Middleware components         |
+endlegend
+
+box Application #e6ffe6
+    participant "Business logic" as app #LightSalmon
+    participant "score::time::svt" as mw_svt #LightGreen
+    participant "IPCMachine:receiver" as ipc_receiver #LightPink
+end box
+
+app -> mw_svt: Now()
+mw_svt -> ipc_receiver: receive()
+ipc_receiver --> mw_svt: TimeInfo
+mw_svt -> mw_svt: handleNewData()
+note right
+    Adjusts the ptp time with current local time
+    and provides the current time to the application.
+end note
+mw_svt --> app: Current Vehicle Time
+
+@enduml

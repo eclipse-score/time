@@ -1,0 +1,50 @@
+' *******************************************************************************
+' Copyright (c) 2026 Contributors to the Eclipse Foundation
+'
+' See the NOTICE file(s) distributed with this work for additional
+' information regarding copyright ownership.
+'
+' This program and the accompanying materials are made available under the
+' terms of the Apache License Version 2.0 which is available at
+' https://www.apache.org/licenses/LICENSE-2.0
+'
+' SPDX-License-Identifier: Apache-2.0
+' *******************************************************************************
+
+@startuml mw_time_svt_class_diagram
+
+title mw::time::svt: Class Diagram
+
+legend top left
+    |= Color            |= Description                     |
+    | <#LightGreen>     | Middleware components            |
+    | <#LightPink>      | IPC components                   |
+endlegend
+
+
+class "TimeInfo" as time_info #Beige {
+    +ptp: uint64
+    +local_time: uint64
+    +status: int
+    +sync_fup_data: int
+    +pdelay_data: int
+}
+
+class "TimeStatus" as time_status #LightGreen {
+    +ptp: uint64
+    +status: int
+}
+
+class "IPCMachine:receiver" as ipc_machine_receiver #LightPink {
+    +receive(): TimeInfo
+}
+
+class "score::time::svt" as mw_svt #LightGreen {
+    +Now(): TimeStatus
+}
+
+ipc_machine_receiver --> time_info : processes
+mw_svt *-- ipc_machine_receiver : contains
+mw_svt --> time_status : provides
+
+@enduml

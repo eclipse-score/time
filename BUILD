@@ -12,7 +12,8 @@
 # *******************************************************************************
 
 load("@score_docs_as_code//:docs.bzl", "docs")
-load("@score_tooling//:defs.bzl", "copyright_checker", "dash_license_checker", "setup_starpls", "use_format_targets")
+load("@score_tooling//:defs.bzl", "copyright_checker", "dash_license_checker", "setup_starpls")
+load("@score_tooling//third_party/format:macros.bzl", "use_format_targets")
 load("//:project_config.bzl", "PROJECT_CONFIG")
 
 setup_starpls(
@@ -57,12 +58,12 @@ copyright_checker(
     srcs = [
         ".devcontainer",
         ".github",
+        "BUILD",
+        "MODULE.bazel",
         "docs",
         "examples",
         "score",
         "tools",
-        "//:BUILD",
-        "//:MODULE.bazel",
     ],
     config = "@score_tooling//cr_checker/resources:config",
     template = "@score_tooling//cr_checker/resources:templates",
@@ -74,6 +75,13 @@ dash_license_checker(
     file_type = "",  # let it auto-detect based on project_config
     project_config = PROJECT_CONFIG,
     visibility = ["//visibility:public"],
+)
+
+exports_files(
+    [
+        # Used by the @score_tooling coverage reporter to locate the workspace root.
+        "MODULE.bazel",
+    ],
 )
 
 # Add targets for formatting checks
