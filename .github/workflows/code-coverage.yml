@@ -10,7 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-name: Test / Code Coverage (>85%)
+name: Test / Code Coverage (>=85%)
 
 permissions:
   contents: read
@@ -30,11 +30,40 @@ on:
 
 jobs:
   code-coverage:
-    uses: eclipse-score/cicd-workflows/.github/workflows/cpp-coverage.yml@93aac16ada7d247bbb6ae926509ddea74cf5213a # v0.0.2
-    with:
-      bazel-target: "//score/..."
-      bazel-config: "x86_64-linux"
-      extra-bazel-flags: "--test_output=errors --nocache_test_results"
-      artifact-name-suffix: "_cpp"
-      retention-days: 10
-      min-coverage: 85
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.18.0
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+          cache-save: ${{ github.event_name == 'push' }}
+
+      - name: Run coverage (LLVM source-based, @score_tooling//coverage)
+        run: |
+          set -euo pipefail
+          bazel coverage --lockfile_mode=error --config=llvm_cov \
+            //score/... --build_tests_only
+
+      - name: Generate coverage report and enforce threshold
+        env:
+          COVERAGE_THRESHOLD: "85"
+        run: |
+          set -euo pipefail
+          bazel run --lockfile_mode=error @score_tooling//coverage:generate_coverage_html -- \
+            --testlogs-subdir score \
+            --archive-dir coverage_artifact \
+            --yaml tools/coverage/coverage_justifications.yaml
+
+      # upload-artifact zips its input itself; the script assembles an
+      # unzipped directory (--archive-dir) to avoid a zip inside a zip.
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}_coverage_report_cpp
+          path: coverage_artifact
+          retention-days: 10

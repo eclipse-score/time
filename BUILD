@@ -77,6 +77,13 @@ dash_license_checker(
     visibility = ["//visibility:public"],
 )
 
+exports_files(
+    [
+        # Used by the @score_tooling coverage reporter to locate the workspace root.
+        "MODULE.bazel",
+    ],
+)
+
 # Add targets for formatting checks
 use_format_targets(languages = [
     "python",
