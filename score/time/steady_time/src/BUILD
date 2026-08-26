@@ -23,9 +23,7 @@ cc_library(
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["FFI"],
-    visibility = [
-        "//score/time:__subpackages__",
-    ],
+    visibility = ["//score/time:__subpackages__"],
     deps = [
         "//score/time/clock:clock_core",
         "@score_baselibs//score/language/futurecpp",
