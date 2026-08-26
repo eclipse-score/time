@@ -2,13 +2,13 @@
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="../../" >
+<html lang="en" data-content_root="../../../" >
 
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Requirements &#8212; S-CORE Time  documentation</title>
+    <title>TimeDaemon Configuration &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -27,42 +27,42 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=bb63a8e1" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=82a1844f" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=8048e6ee" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/modern.css?v=803738c0" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/score.css?v=bb63a8e1" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/score_needs.css?v=82a1844f" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/score_design.css?v=8048e6ee" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/jquery.js?v=5d32c60e"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=7f41d439"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script src="../../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
-    <script src="../../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
-    <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
-    <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
-    <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'ts_client/requirements/index';</script>
+    <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../../_static/documentation_options.js?v=7f41d439"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../../../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'time_daemon/manuals/config/configuration_guide';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.17.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -71,18 +71,18 @@
             false;
         </script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Component Time Sync Client Requirements" href="requirements.html" />
-    <link rel="prev" title="Implementation Inspection Checklist" href="../detailed_design/chklst_impl_inspection.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Time Sync Client" href="../../../ts_client/index.html" />
+    <link rel="prev" title="Time Daemon User Manual" href="../user_manual.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
   
     
-    <script src="../../_static/searchtools.js"></script>
-    <script src="../../_static/language_data.js"></script>
-    <script src="../../searchindex.js"></script>
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
   
   </head>
   <body data-default-mode="">
@@ -100,7 +100,7 @@
   <dialog id="pst-search-dialog">
     
 <form class="bd-search d-flex align-items-center"
-      action="../../search.html"
+      action="../../../search.html"
       method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
   <input type="search"
@@ -136,7 +136,7 @@
     
   
 
-<a class="navbar-brand logo" href="../../index.html">
+<a class="navbar-brand logo" href="../../../index.html">
   
   
   
@@ -158,14 +158,14 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../features/index.html">
+  <a class="nav-link nav-internal" href="../../../features/index.html">
     Features
   </a>
 </li>
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../../module/index.html">
+  <a class="nav-link nav-internal" href="../../../module/index.html">
     Module
   </a>
 </li>
@@ -280,14 +280,14 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../features/index.html">
+  <a class="nav-link nav-internal" href="../../../features/index.html">
     Features
   </a>
 </li>
 
 
 <li class="nav-item current active">
-  <a class="nav-link nav-internal" href="../../module/index.html">
+  <a class="nav-link nav-internal" href="../../../module/index.html">
     Module
   </a>
 </li>
@@ -363,19 +363,19 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../module/manuals/index.html">Manuals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../time_slave/index.html">Time Slave</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time Sync Client</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../detailed_design/index.html">Time Sync Client Detailed Design</a></li>
-<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">Requirements</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html">Component Time Sync Client Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chklst_req_inspection.html">Requirement Inspection Checklist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module/manuals/index.html">Manuals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../time_slave/index.html">Time Slave</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">Time Daemon</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../detailed_design/index.html">Time Daemon Detailed Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../requirements/index.html">Requirements</a></li>
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="../user_manual.html">Time Daemon User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">TimeDaemon Configuration</a></li>
 </ul>
 </details></li>
 </ul>
 </details></li>
-<li class="toctree-l1"><a class="reference internal" href="../../time/index.html">Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../ts_client/index.html">Time Sync Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../time/index.html">Time</a></li>
 </ul>
 </div>
 </nav></div>
@@ -412,17 +412,20 @@
   <ul class="bd-breadcrumbs">
     
     <li class="breadcrumb-item breadcrumb-home">
-      <a href="../../index.html" class="nav-link" aria-label="Home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../../module/index.html" class="nav-link">Module</a></li>
+    <li class="breadcrumb-item"><a href="../../../module/index.html" class="nav-link">Module</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time Sync Client</a></li>
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Time Daemon</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Requirements</span></li>
+    
+    <li class="breadcrumb-item"><a href="../user_manual.html" class="nav-link">Time Daemon User Manual</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">TimeDaemon Configuration</span></li>
   </ul>
 </nav>
 </div>
@@ -439,32 +442,18 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="requirements">
-<h1>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">#</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Work in progress: page structure only, content to follow in later PRs.</p>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="requirements.html">Component Time Sync Client Requirements</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="requirements.html#headlines-for-the-list-of-requirements-if-structuring-is-needed">&lt;Headlines (for the list of requirements if structuring is needed)&gt;</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#functional-requirements">Functional Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#assumption-of-use-requirements">Assumption of Use Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#environmental-requirements">Environmental Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="requirements.html#hints">Hints</a></li>
+  <section id="timedaemon-configuration">
+<span id="time-daemon-configuration"></span><h1>TimeDaemon Configuration<a class="headerlink" href="#timedaemon-configuration" title="Link to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">TimeDaemon</span></code> process currently operates <strong>without any external configuration</strong>. It relies on default, built-in settings for IPC communication.</p>
+<section id="shared-memory-configuration">
+<h2>Shared Memory Configuration<a class="headerlink" href="#shared-memory-configuration" title="Link to this heading">#</a></h2>
+<p>The daemon reads from the shared memory segment published by <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Shared memory path</strong>: <code class="docutils literal notranslate"><span class="pre">/gptp_ptp_info</span></code></p></li>
+<li><p><strong>IPC mechanism</strong>: POSIX shared memory with seqlock protection</p></li>
 </ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="chklst_req_inspection.html">Requirement Inspection Checklist</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="chklst_req_inspection.html#purpose">Purpose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chklst_req_inspection.html#conduct">Conduct</a></li>
-<li class="toctree-l2"><a class="reference internal" href="chklst_req_inspection.html#checklist">Checklist</a></li>
-</ul>
-</li>
-</ul>
-</div>
+<p>No runtime configuration options are exposed at this time. All settings are compiled into the binary.</p>
+</section>
 </section>
 
 
@@ -478,20 +467,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../detailed_design/chklst_impl_inspection.html"
+       href="../user_manual.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Implementation Inspection Checklist</p>
+        <p class="prev-next-title">Time Daemon User Manual</p>
       </div>
     </a>
     <a class="right-next"
-       href="requirements.html"
+       href="../../../ts_client/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Component Time Sync Client Requirements</p>
+        <p class="prev-next-title">Time Sync Client</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -507,10 +496,22 @@
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-memory-configuration">Shared Memory Configuration</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/ts_client/requirements/indexscore/ts_client/docs/requirements/index.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main//home/runner/work/time/time/docs/time_daemon/manuals/config/configuration_guidedocs/manuals/config/configuration_guide.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
@@ -535,8 +536,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
