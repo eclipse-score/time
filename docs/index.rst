@@ -34,7 +34,7 @@ The module consists of the following components:
 - **score::time** — client-facing ``Clock<Tag>`` library
 - **TimeDaemon** — time validation, aggregation and distribution process
 - **TimeSlave** — gPTP slave endpoint process
-- **ts_client** — time synchronization client library
+- **ts_client** — gPTP shared-memory IPC between TimeSlave and TimeDaemon
 
 .. toctree::
    :maxdepth: 2

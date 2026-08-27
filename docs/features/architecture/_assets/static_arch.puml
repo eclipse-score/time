@@ -29,7 +29,7 @@ rectangle "ECU" #f0f5f5 {
   package "score::time feature" #e6ffe6 {
     package "score::time\n(clock library)" #d4f7d4 {
       component "score::time::VehicleClock" as veh_clock_api #LightGreen
-      component "score::time::LocalClock\n(Steady|HiRes|System)" as local_clock_api #LightGreen
+      component "score::time::<Local>Clock\n(Steady|HiRes|System)" as local_clock_api #LightGreen
       component "score::time::AbsoluteClock" as abs_clock_api #LightGreen
     }
     component "ts_client\n(TimeSlave<->TimeDaemon shm IPC)" as time_slave_client #LightGreen

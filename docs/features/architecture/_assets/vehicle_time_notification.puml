@@ -31,13 +31,9 @@ box "ECU" #f0f5f5
     participant "Application"                      as app  #LightSalmon
     participant "score::time::VehicleClock"        as vc   #LightGreen
   end box
-  box "TimeDaemon process" #e6ffe6
-    participant "TimeDaemon\n(validation & distribution)" as td #LightGreen
-    participant "ts_client\n(shared-memory IPC)" as tsc #LightGreen
-  end box
-  box "TimeSlave process" #e6ffe6
-    participant "TimeSlave\n(gPTP endpoint)" as ts #LightGreen
-  end box
+  participant "TimeDaemon\n(validation & distribution)" as td #LightGreen
+  participant "ts_client\n(gPTP shm IPC)" as tsc #LightGreen
+  participant "TimeSlave\n(gPTP endpoint)" as ts #LightGreen
 end box
 participant "Grand Master" as host #LightCoral
 

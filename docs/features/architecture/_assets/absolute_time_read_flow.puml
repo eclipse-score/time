@@ -32,9 +32,7 @@ box "ECU" #f0f5f5
     participant "Application"                   as app    #LightSalmon
     participant "score::time::AbsoluteClock" as ac     #LightGreen
   end box
-  box "score::time provider process" #e6ffe6
-    participant "TimeDaemon\n(absolute time receiver)" as recv   #LightGreen
-  end box
+  participant "TimeDaemon\n(absolute time receiver)" as recv   #LightGreen
   participant "score::someip" as someip #LightBlue
 end box
 participant "External time master" as master #LightCoral

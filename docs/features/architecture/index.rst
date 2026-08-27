@@ -38,8 +38,8 @@ it exposes, and the SW components that implement them:
   :term:`Vehicle Clock`, :term:`Local Clock`, and :term:`Absolute Clock`
 * **TimeDaemon** — time validation, aggregation and distribution process
 * **TimeSlave** — gPTP slave endpoint that receives network time
-* **ts_client** — IPC client library used by ``TimeDaemon`` to communicate
-  with ``TimeSlave``
+* **ts_client** — SW component implementing the gPTP shared-memory IPC channel
+  between ``TimeSlave`` (publisher) and ``TimeDaemon`` (reader)
 
 .. feat_arc_sta:: Time Static Architecture
    :id: feat_arc_sta__time__static_view
