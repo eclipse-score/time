@@ -117,9 +117,18 @@ at construction time and is always available.
 
 .. rubric:: Reading the time
 
-.. uml:: _assets/local_time_read_flow.puml
-   :scale: 50
-   :align: center
+.. feat_arc_dyn:: Local Time Read
+   :id: feat_arc_dyn__time__local
+   :security: NO
+   :safety: ASIL_B
+   :status: valid
+   :version: 1
+   :fulfils: feat_req__time__monotonic_clock_api[version==1], feat_req__time__high_prec_clock_api[version==1]
+   :belongs_to: feat__time[version==1]
+
+   .. uml:: _assets/local_time_read_flow.puml
+      :scale: 50
+      :align: center
 
 Absolute Time
 *************
@@ -132,9 +141,18 @@ preserving precision without making clients depend on the :term:`Vehicle Clock`.
 
 .. rubric:: Reading the time
 
-.. uml:: _assets/absolute_time_read_flow.puml
-   :scale: 50
-   :align: center
+.. feat_arc_dyn:: Absolute Time Read
+   :id: feat_arc_dyn__time__absolute
+   :security: YES
+   :safety: ASIL_B
+   :status: valid
+   :version: 1
+   :fulfils: feat_req__time__abs_base_api[version==1], feat_req__time__abs_sync[version==1]
+   :belongs_to: feat__time[version==1]
+
+   .. uml:: _assets/absolute_time_read_flow.puml
+      :scale: 50
+      :align: center
 
 Mocking Support
 ---------------
@@ -145,6 +163,15 @@ can substitute any clock interface with a controlled implementation during testi
 deterministic unit, component and integration tests of time-dependent code without requiring
 a real time source (:need:`feat_req__time__mocking_apis`).
 
-.. uml:: _assets/clock_testability.puml
-   :scale: 50
-   :align: center
+.. feat_arc_dyn:: Clock Mocking
+   :id: feat_arc_dyn__time__mocking
+   :security: NO
+   :safety: ASIL_B
+   :status: valid
+   :version: 1
+   :fulfils: feat_req__time__mocking_apis[version==1]
+   :belongs_to: feat__time[version==1]
+
+   .. uml:: _assets/clock_testability.puml
+      :scale: 50
+      :align: center
