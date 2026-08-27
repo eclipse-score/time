@@ -1,0 +1,68 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
+name: Cache maintenance
+
+# Refreshes caches and rebuilds a new bazel repository cache when MODULE.bazel.lock changes.
+# Caches are only saved on pushes to the main branch or on workflow_dispatch events.
+# In merge_groups and pull requests a fast dry-run is executed to ensure inputs are valid and caches can be rebuilt successfully.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled]
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  repository_cache_maintenance:
+    permissions:
+      actions: write # needed for cache deletion after cache refresh
+      contents: read
+    secrets:
+      score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
+      score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
+      score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
+    uses: eclipse-score/cicd-workflows/.github/workflows/cache-maintenance.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
+    with:
+      variants: |
+        //...
+        --config=x86_64-linux //...
+        --config=arm64-linux //...
+        --config=x86_64-qnx //score/... //examples/...
+        --config=arm64-qnx //score/... //examples/...
+
+  warmup-qnx:
+    needs: repository_cache_maintenance
+    # PR and merge-queue runs validate variants above but never warm or write
+    # shared caches.
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    permissions:
+      contents: read
+      pull-requests: read
+    secrets: inherit
+    uses: ./.github/workflows/build-qnx.yml
+
+  delete_old_caches:
+    runs-on: ubuntu-24.04
+    needs:
+      - warmup-qnx
+    permissions:
+      actions: write # needed for deletion of old caches
+      contents: read
+    if: ${{ !cancelled() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+    steps:
+      - name: Prune obsolete Bazel caches
+        uses: eclipse-score/cicd-actions/prune-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
