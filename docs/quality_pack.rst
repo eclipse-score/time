@@ -70,13 +70,12 @@ Code coverage
 Requirements traceability (dashboards + gate)
 =============================================
 
-Feature requirements live under ``docs/features/time/feature_requirements.rst``.
-Component requirements live alongside each component under
-``score/time/<component>/docs/requirements/requirements.rst``
-(``vehicle_time``, ``steady_time``, ``system_time``, ``high_res_steady_time``),
-matching the ``module_template`` layout. All entries use the Score metamodel
-directives (``feat_req::`` / ``comp_req::``). Source-code and test-code links
-are consumed by ``score_docs_as_code``:
+Component requirements live alongside the module under
+``score/time/docs/requirements/requirements.rst`` and use the Score
+metamodel ``comp_req::`` directive. Feature-level requirements
+(``feat_req::``) belong to the upstream ``eclipse-score/score`` repo and
+are consumed here via the external needs.json feed. Source-code and
+test-code links are consumed by ``score_docs_as_code``:
 
 - **Source-code markers** — in the C++ implementation:
 

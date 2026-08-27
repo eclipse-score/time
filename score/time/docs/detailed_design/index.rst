@@ -824,12 +824,6 @@ Choose the target that matches your use case:
 Requirements
 ------------
 
-Detailed requirements and features mapping:
-
-.. toctree::
-
-   feature_requirements
-
 Inspection Checklist
 --------------------
 

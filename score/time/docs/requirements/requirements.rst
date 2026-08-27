@@ -32,7 +32,6 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__snapshot_with_status
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -46,7 +45,6 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__explicit_lifecycle
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -61,7 +59,6 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__unified_clock_facade
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -76,7 +73,6 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__unified_clock_facade
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -89,7 +85,6 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__unified_clock_facade
    :status: valid
    :version: 1
    :satisfied_by: comp__time
