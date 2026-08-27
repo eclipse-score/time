@@ -27,11 +27,60 @@ Component Time Requirements
 Functional Requirements
 -----------------------
 
+.. comp_req:: Unified clock facade across time domains
+   :id: comp_req__time__unified_clock_facade
+   :reqtype: Interface
+   :security: NO
+   :safety: QM
+   :derived_from: feat_req__time__high_prec_clock_api, feat_req__time__monotonic_clock_api, feat_req__time__abs_base_api, feat_req__time__vehicle_time_time_api
+   :status: valid
+   :version: 1
+   :satisfied_by: comp__time
+
+   ``score::time`` shall expose a single, type-safe entry point
+   (``Clock<Tag>::GetInstance``) for reading time snapshots across the
+   supported clock domains (``VehicleTime``, ``HighResSteadyTime``,
+   ``std::chrono::steady_clock``, ``std::chrono::system_clock``), so
+   clients select a clock domain at compile time and cannot accidentally
+   mix domains at run time.
+
+.. comp_req:: Immutable snapshot with quality metadata
+   :id: comp_req__time__snapshot_with_status
+   :reqtype: Functional
+   :security: NO
+   :safety: QM
+   :derived_from: feat_req__time__vehicle_time_time_api
+   :status: valid
+   :version: 1
+   :satisfied_by: comp__time
+
+   Every ``Clock<Tag>::Now`` call shall return a single immutable
+   ``ClockSnapshot`` value that bundles the timepoint with the domain's
+   status metadata, so callers can inspect synchronization quality
+   without a separate status call.
+
+.. comp_req:: Explicit lifecycle for backends that need it
+   :id: comp_req__time__explicit_lifecycle
+   :reqtype: Functional
+   :security: NO
+   :safety: QM
+   :derived_from: feat_req__time__vehicle_time_ctrl_flow
+   :status: valid
+   :version: 1
+   :satisfied_by: comp__time
+
+   Clock domains that depend on an external resource (currently
+   ``VehicleTime``) shall provide ``Init``, ``IsAvailable`` and
+   ``WaitUntilAvailable`` operations, and shall keep those operations
+   unavailable — at compile time — on clock domains that are always
+   ready.
+
 .. comp_req:: VehicleClock returns snapshot with status
    :id: comp_req__vehicle_time__snapshot
    :reqtype: Functional
    :security: NO
    :safety: QM
+   :derived_from: feat_req__time__vehicle_time_time_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -45,6 +94,7 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
+   :derived_from: feat_req__time__vehicle_time_ctrl_flow
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -59,6 +109,7 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
+   :derived_from: feat_req__time__high_prec_clock_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -73,6 +124,7 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
+   :derived_from: feat_req__time__monotonic_clock_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -85,6 +137,7 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
+   :derived_from: feat_req__time__abs_base_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time

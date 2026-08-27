@@ -124,20 +124,20 @@ test-code links are consumed by ``score_docs_as_code``:
      bazel run  //:traceability_gate -- \
        --metrics-json "$(pwd)/_build/metrics.json" \
        --need-type comp_req \
-       --min-req-code 40 \
-       --min-req-test 100 \
-       --min-req-fully-linked 40 \
-       --min-tests-linked 15
+       --min-req-code 100 \
+       --min-req-test 62 \
+       --min-req-fully-linked 62 \
+       --min-tests-linked 1
 
   Current baseline (component requirements only):
 
   =========================  ===============
   Metric                     Value
   =========================  ===============
-  Requirements with source   2/5 (40.0%)
-  Requirements with test     5/5 (100.0%)
-  Requirements fully linked  2/5 (40.0%)
-  Tests linked to reqs       5/27 (18.5%)
+  Requirements with source   8/8 (100.0%)
+  Requirements with test     5/8 (62.5%)
+  Requirements fully linked  5/8 (62.5%)
+  Tests linked to reqs       5/318 (1.6%)
   =========================  ===============
 
 .. note::
