@@ -38,7 +38,7 @@ jobs:
     with:
       bazel-target: '//score/... //examples/...'
       bazel-config: ${{ matrix.config }}
-      credential-helper: 'tools/qnx_credential_helper.py'
+      credential-helper: '.github/tools/qnx_credential_helper.py'
       environment-name: 'workflow-approval'
       bazel-disk-cache: -${{ matrix.config }}
     secrets:
