@@ -28,6 +28,6 @@ cc_binary(
         "//score/time_slave/src/gptp:gptp_engine",
         "//score/ts_client/src:gptp_ipc",
         "@score_baselibs//score/mw/log:console_only_backend",
-        "@score_lifecycle_health//score/launch_manager:lifecycle_cc",
+        "@score_lifecycle//score/launch_manager:lifecycle_cc",
     ],
 )
