@@ -37,12 +37,10 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   ``score::time`` shall expose a single, type-safe entry point
-   (``Clock<Tag>::GetInstance``) for reading time snapshots across the
-   supported clock domains (``VehicleTime``, ``HighResSteadyTime``,
-   ``std::chrono::steady_clock``, ``std::chrono::system_clock``), so
-   clients select a clock domain at compile time and cannot accidentally
-   mix domains at run time.
+   The Component shall provide a single type-safe accessor for all supported
+   clock domains that prevents mixing time values from different domains by
+   rejecting domain-mismatched operations at compile time when accessing 
+   time snapshots.
 
 .. comp_req:: Immutable snapshot with quality metadata
    :id: comp_req__time__snapshot_with_status
@@ -69,11 +67,10 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   Clock domains that depend on an external resource (currently
-   ``VehicleTime``) shall provide ``Init``, ``IsAvailable`` and
-   ``WaitUntilAvailable`` operations, and shall keep those operations
-   unavailable — at compile time — on clock domains that are always
-   ready.
+   The Component shall provide initialization, availability-check, and
+   availability-wait operations for clock domains that depend on external
+   resources, and shall cause compilation failure when those operations
+   are invoked on clock domains that are always ready.
 
 .. comp_req:: VehicleClock returns snapshot with status
    :id: comp_req__vehicle_time__snapshot
@@ -85,8 +82,8 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   ``VehicleClock::Now`` shall return a ``ClockSnapshot`` whose timepoint
-   and ``VehicleTimeStatus`` originate from the same backend read, so
+   The Component shall read the vehicle time timepoint and its status
+   atomically from the backend within a single backend operation, so
    downstream callers observe consistent time and status values.
 
 .. comp_req:: VehicleClock lifecycle operations
@@ -99,10 +96,10 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   ``VehicleClock`` shall provide ``Init``, ``IsAvailable`` and
-   ``WaitUntilAvailable`` operations that delegate to the backend and
-   report backend init failure and availability-wait timeouts to the
-   caller without blocking indefinitely.
+   The Component shall delegate initialization and
+   availability checks to the backend and shall report backend 
+   init failure and availability-wait timeouts to the caller without
+   blocking indefinitely.
 
 .. comp_req:: HighResSteadyClock always-ready snapshot
    :id: comp_req__high_res_steady_time__snapshot
@@ -114,10 +111,10 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   ``HighResSteadyClock::Now`` shall return a monotonic
-   ``ClockSnapshot`` without requiring prior initialization, and shall
-   not expose ``Init`` / ``IsAvailable`` / ``WaitUntilAvailable`` on the
-   facade (using them is a compile error).
+   The Component shall provide monotonic high-resolution time snapshots
+   without requiring initialization, and shall cause compilation failure
+   when initialization or availability operations are invoked on the
+   high-resolution steady time domain.
 
 .. comp_req:: SteadyClock always-ready snapshot
    :id: comp_req__steady_time__snapshot
@@ -129,8 +126,8 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   ``SteadyClock::Now`` shall return a snapshot backed by
-   ``std::chrono::steady_clock`` without requiring initialization.
+   The Component shall provide monotonic steady time snapshots without
+   requiring initialization.
 
 .. comp_req:: SystemClock always-ready snapshot
    :id: comp_req__system_time__snapshot
@@ -142,8 +139,8 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   ``SystemClock::Now`` shall return a snapshot backed by
-   ``std::chrono::system_clock`` without requiring initialization.
+   The Component shall provide wall-clock time snapshots without
+   requiring initialization.
 
 .. needextend:: is_external == False and "time" in id
    :+tags: time
