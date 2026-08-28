@@ -87,4 +87,3 @@ cc_test(
         "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
-
