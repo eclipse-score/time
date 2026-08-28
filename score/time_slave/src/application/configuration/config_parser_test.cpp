@@ -127,26 +127,25 @@ TEST(ConfigParserTest, ParsePartialFields)
 
 TEST(ConfigParserTest, FullExampleConfigRoundTrip)
 {
-    const auto path = WriteTempFile(
-        "example.json",
-        "{\n"
-        "    \"iface_name\": \"emac0\",\n"
-        "    \"domain_number\": 0,\n"
-        "    \"pdelay_req_interval_ms\": 1000,\n"
-        "    \"pdelay_warmup_ms\": 2000,\n"
-        "    \"sync_timeout_ms\": 3300,\n"
-        "    \"jump_future_threshold_ns\": 500000000,\n"
-        "    \"shm_path\": \"/gptp_shmem\",\n"
-        "    \"phc\": {\n"
-        "        \"enabled\": true,\n"
-        "        \"device\": \"emac0\",\n"
-        "        \"step_threshold_ns\": 100000000\n"
-        "    },\n"
-        "    \"qnx\": {\n"
-        "        \"bpf_device_prefix\": \"/dev/bpf\",\n"
-        "        \"see_sent\": true\n"
-        "    }\n"
-        "}\n");
+    const auto path = WriteTempFile("example.json",
+                                    "{\n"
+                                    "    \"iface_name\": \"emac0\",\n"
+                                    "    \"domain_number\": 0,\n"
+                                    "    \"pdelay_req_interval_ms\": 1000,\n"
+                                    "    \"pdelay_warmup_ms\": 2000,\n"
+                                    "    \"sync_timeout_ms\": 3300,\n"
+                                    "    \"jump_future_threshold_ns\": 500000000,\n"
+                                    "    \"shm_path\": \"/gptp_shmem\",\n"
+                                    "    \"phc\": {\n"
+                                    "        \"enabled\": true,\n"
+                                    "        \"device\": \"emac0\",\n"
+                                    "        \"step_threshold_ns\": 100000000\n"
+                                    "    },\n"
+                                    "    \"qnx\": {\n"
+                                    "        \"bpf_device_prefix\": \"/dev/bpf\",\n"
+                                    "        \"see_sent\": true\n"
+                                    "    }\n"
+                                    "}\n");
 
     const auto cfg = ParseConfig(path);
 
