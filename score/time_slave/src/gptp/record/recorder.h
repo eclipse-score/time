@@ -29,11 +29,11 @@ namespace details
 /// @brief Event types that can be recorded by the @c Recorder.
 enum class RecordEvent : std::uint8_t
 {
-    kSyncReceived = 0, ///< A Sync message was received and processed.
-    kPdelayCompleted = 1, ///< A full peer delay measurement cycle completed.
-    kClockJump = 2, ///< A forward or backward time jump was detected.
-    kOffsetThreshold = 3, ///< Clock offset exceeded offset_threshold_ns.
-    kProbe = 4, ///< Forwarded from ProbeManager::Trace(); status_flags column carries the ``ProbePoint`` value.
+    kSyncReceived = 0,     ///< A Sync message was received and processed.
+    kPdelayCompleted = 1,  ///< A full peer delay measurement cycle completed.
+    kClockJump = 2,        ///< A forward or backward time jump was detected.
+    kOffsetThreshold = 3,  ///< Clock offset exceeded offset_threshold_ns.
+    kProbe = 4,  ///< Forwarded from ProbeManager::Trace(); status_flags column carries the ``ProbePoint`` value.
 };
 
 /// @brief A single record entry written to the CSV log file.
@@ -71,8 +71,9 @@ class Recorder final
     {
         bool enabled = false;                                ///< Enable or disable recording.
         std::string file_path = "/var/log/gptp_record.csv";  ///< Output CSV file path.
-        std::int64_t offset_threshold_ns = 1'000'000LL;      ///< Reserved for ``kOffsetThreshold`` events (threshold above which offsets are logged); 1ms.
-        std::uint32_t flush_interval = 8U;                   ///< Number of rows between explicit ``file_.flush()`` calls.
+        std::int64_t offset_threshold_ns =
+            1'000'000LL;  ///< Reserved for ``kOffsetThreshold`` events (threshold above which offsets are logged); 1ms.
+        std::uint32_t flush_interval = 8U;  ///< Number of rows between explicit ``file_.flush()`` calls.
     };
 
     explicit Recorder(Config cfg);

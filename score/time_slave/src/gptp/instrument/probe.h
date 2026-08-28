@@ -28,13 +28,13 @@ namespace details
 /// @brief Measurement probe points within the gPTP pipeline.
 enum class ProbePoint : std::uint8_t
 {
-    kRxPacketReceived = 0, ///< Raw Ethernet frame received from socket (RxThread).
-    kSyncFrameParsed = 1,  ///< Sync message successfully decoded by GptpMessageParser.
-    kFollowUpProcessed = 2,///< FollowUp received; SyncStateMachine::OnFollowUp() returned a SyncResult.
-    kOffsetComputed = 3,   ///< Final clock offset value available after Sync/FollowUp correlation.
-    kPdelayReqSent = 4,    ///< PDelayReq frame transmitted by PeerDelayMeasurer.
-    kPdelayCompleted = 5,  ///< Peer delay computation finished (all four timestamps collected).
-    kPhcAdjusted = 6,      ///< PhcAdjuster applied a step or frequency correction.
+    kRxPacketReceived = 0,   ///< Raw Ethernet frame received from socket (RxThread).
+    kSyncFrameParsed = 1,    ///< Sync message successfully decoded by GptpMessageParser.
+    kFollowUpProcessed = 2,  ///< FollowUp received; SyncStateMachine::OnFollowUp() returned a SyncResult.
+    kOffsetComputed = 3,     ///< Final clock offset value available after Sync/FollowUp correlation.
+    kPdelayReqSent = 4,      ///< PDelayReq frame transmitted by PeerDelayMeasurer.
+    kPdelayCompleted = 5,    ///< Peer delay computation finished (all four timestamps collected).
+    kPhcAdjusted = 6,        ///< PhcAdjuster applied a step or frequency correction.
 };
 
 /// @brief Data payload for a single probe event.
