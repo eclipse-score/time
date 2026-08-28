@@ -98,8 +98,9 @@ bazel_dep(name = "google_benchmark", version = "1.9.5")
 
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1", dev_dependency = True)
 
-bazel_dep(name = "score_baselibs", version = "0.2.9")
-bazel_dep(name = "score_lifecycle_health", version = "0.3.0")
+bazel_dep(name = "score_baselibs", version = "0.2.12")
+bazel_dep(name = "score_communication", version = "0.4.0")
+bazel_dep(name = "score_lifecycle", version = "0.5.0")
 
 # LLVM toolchain — provides @llvm_toolchain//:clang-tidy for the clang-tidy aspect.
 llvm = use_extension(
@@ -127,7 +128,7 @@ use_repo(llvm, "llvm_toolchain", "llvm_toolchain_coverage", "llvm_toolchain_cove
 
 # grpc-java@1.66.0 has a BCR bug (extension no longer generates
 # com_envoyproxy_protoc_gen_validate). Pulled transitively via
-# score_lifecycle_health -> score_baselibs_rust -> aspect_rules_lint@2.x -> grpc.
+# score_baselibs, score_lifecycle and score_tooling.
 # Override to a fixed version.
 single_version_override(
     module_name = "grpc-java",
