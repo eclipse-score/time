@@ -34,7 +34,7 @@ common --http_timeout_scaling=4.0
 common --repo_env=ANDROID_HOME=
 
 build --@score_baselibs//score/json:base_library=nlohmann
-build --@score_baselibs//score/memory/shared/flags:use_typedshmd=False
+build --@score_communication//score/memory/shared/flags:use_typedshmd=False
 build --credential_helper="*.qnx.com=%workspace%/.github/tools/qnx_credential_helper.py"
 
 # -------------------------------------------------------------------------------

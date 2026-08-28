@@ -13,7 +13,6 @@
 
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
-load("@score_baselibs//third_party/itf:py_unittest_qnx_test.bzl", "py_unittest_qnx_test")
 
 cc_library(
     name = "high_res_steady_clock",
@@ -60,14 +59,6 @@ cc_library(
     }) + [
         ":high_res_steady_clock",
     ],
-)
-
-py_unittest_qnx_test(
-    name = "qnx_unit_test_cases",
-    test_suites = [
-        "//score/time/high_res_steady_time/src/details:qnx_unit_test_cases",
-    ],
-    visibility = ["//score/time/high_res_steady_time:__pkg__"],
 )
 
 cc_test(

@@ -139,7 +139,7 @@ Clang's wrapper (`cc_wrapper.sh` from `@llvm_toolchain`) is correctly traced.
 
 The `database_integrity_report.md` lists ~90 extraction errors. These are all
 from external repositories (`googletest`, `google_benchmark`, `score_baselibs`,
-`score_lifecycle_health`). This is expected: the external sources are compiled
+`score_lifecycle`). This is expected: the external sources are compiled
 with flags or language extensions that CodeQL's extractor does not fully support.
 Findings in `score/**` are not affected.
 

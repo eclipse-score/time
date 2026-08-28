@@ -24,9 +24,9 @@ cc_library(
     visibility = ["//score/time_daemon/src/ipc:__subpackages__"],
     deps = [
         "//score/time_daemon/src/common:logging_contexts",
-        "@score_baselibs//score/memory/shared",
-        "@score_baselibs//score/memory/shared/typedshm/typedshm_wrapper:typedmemory",
         "@score_baselibs//score/mw/log:frontend",
+        "@score_communication//score/memory/shared",
+        "@score_communication//score/memory/shared/typedshm/typedshm_wrapper:typedmemory",
     ],
 )
 
