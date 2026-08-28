@@ -12,7 +12,6 @@
 # *******************************************************************************
 
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
-load("@score_baselibs//third_party/itf:py_unittest_qnx_test.bzl", "py_unittest_qnx_test")
 
 cc_library(
     name = "qclock",
@@ -87,14 +86,4 @@ cc_test(
         "@googletest//:gtest_main",
         "@score_baselibs//score/mw/log:console_only_backend",
     ],
-)
-
-py_unittest_qnx_test(
-    name = "qnx_unit_test_cases",
-    test_cases = [
-        ":factory_test",
-        ":high_res_steady_qclock_test",
-        ":tick_provider_test",
-    ],
-    visibility = ["//score/time/high_res_steady_time/src/details:__pkg__"],
 )
