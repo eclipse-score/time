@@ -39,7 +39,7 @@ Functional Requirements
 
    The Component shall provide a single type-safe accessor for all supported
    clock domains that prevents mixing time values from different domains by
-   rejecting domain-mismatched operations at compile time when accessing 
+   rejecting domain-mismatched operations at compile time when accessing
    time snapshots.
 
 .. comp_req:: Immutable snapshot with quality metadata
@@ -52,10 +52,11 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   Every ``Clock<Tag>::Now`` call shall return a single immutable
-   ``ClockSnapshot`` value that bundles the timepoint with the domain's
-   status metadata, so callers can inspect synchronization quality
-   without a separate status call.
+   The Component shall return a single immutable value that bundles
+   the timepoint with the domain's synchronization and quality
+   metadata, so callers observe state that cannot change after
+   creation and can determine time validity without a separate
+   status query.
 
 .. comp_req:: Explicit lifecycle for backends that need it
    :id: comp_req__time__explicit_lifecycle
@@ -97,7 +98,7 @@ Functional Requirements
    :satisfied_by: comp__time
 
    The Component shall delegate initialization and
-   availability checks to the backend and shall report backend 
+   availability checks to the backend and shall report backend
    init failure and availability-wait timeouts to the caller without
    blocking indefinitely.
 
