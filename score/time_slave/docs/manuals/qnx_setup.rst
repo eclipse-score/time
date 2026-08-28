@@ -108,11 +108,28 @@ disciplining a hardware clock.
 Example
 =======
 
-A representative QNX configuration is shipped at
-``score/time_slave/config/qnx/time_slave_qnx_config.json``:
+A representative QNX configuration:
 
-.. literalinclude:: ../../config/qnx/time_slave_qnx_config.json
-   :language: json
+.. code-block:: json
+
+   {
+       "iface_name": "emac0",
+       "domain_number": 0,
+       "pdelay_req_interval_ms": 1000,
+       "pdelay_warmup_ms": 2000,
+       "sync_timeout_ms": 3300,
+       "jump_future_threshold_ns": 500000000,
+       "shm_path": "/gptp_shmem",
+       "phc": {
+           "enabled": true,
+           "device": "emac0",
+           "step_threshold_ns": 100000000
+       },
+       "qnx": {
+           "bpf_device_prefix": "/dev/bpf",
+           "see_sent": true
+       }
+   }
 
 Build steps
 ***********
