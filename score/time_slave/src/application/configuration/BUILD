@@ -39,6 +39,19 @@ cc_library(
     ],
 )
 
+cc_test(
+    name = "config_parser_test",
+    srcs = ["config_parser_test.cpp"],
+    tags = ["unit"],
+    target_compatible_with = ["@platforms//os:linux"],
+    deps = [
+        ":configuration",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
+    ],
+)
+
 validate_json_schema_test(
     name = "validate_time_slave_config_schema",
     json = "example/time_slave_config.json",
