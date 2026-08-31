@@ -22,7 +22,6 @@ Component Time Requirements
    :safety: ASIL_B
    :security: NO
    :realizes: wp__requirements_comp[version==1]
-   :tags: time
 
 .. note::
    Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
@@ -104,5 +103,5 @@ Hints
     - Add other needed requirements for your feature
     - Set ``status`` to ``valid`` and start the review/merge process
 
-.. needextend:: is_external == False and "time" in id
+.. needextend:: "c.this_doc()"
    :+tags: time
