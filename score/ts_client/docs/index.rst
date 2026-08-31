@@ -21,13 +21,13 @@ Time Sync Client
    :id: doc__ts_client
    :status: draft
    :version: 1
-   :safety: ASIL_B
+   :safety: QM
    :security: NO
    :realizes: wp__cmpt_request
    :tags: ts_client
 
 .. comp:: Time Sync Client
-   :id: comp__time_ts_client
+   :id: comp__ts_client
    :security: NO
    :safety: ASIL_B
    :status: valid
@@ -37,28 +37,32 @@ Time Sync Client
 Abstract
 ========
 
-[A short (~200 word) description of the component.]
-
+This component provides IPC mechanisms for time synchronization data exchange between time daemons and client applications within an ECU.
 
 Specification
 =============
 
-[Describe the requirements, architecture of any component.] or
+The component provides shared memory-based IPC for distributing time synchronization data with thread-safe, low-latency access:
 
-
-How to Teach This
-=================
-
-[How to teach users, new and experienced, how to apply the CR to their work.]
-
-.. note::
-   For a CR that adds new functionality or changes behaviour, it is helpful to include a section on how to teach users, new and experienced, how to apply the CR to their work.
+* :need:`comp_req__ts_client__shared_memory_mgmt`
+* :need:`comp_req__ts_client__shm_validation`
+* :need:`comp_req__ts_client__publisher_creates`
+* :need:`comp_req__ts_client__receiver_multi_reader`
+* :need:`comp_req__ts_client__data_validity`
+* :need:`comp_req__ts_client__seqlock_protocol`
+* :need:`comp_req__ts_client__sync_status_data`
+* :need:`comp_req__ts_client__sync_fup_data`
+* :need:`comp_req__ts_client__pdelay_data`
+* :need:`comp_req__ts_client__time_correlation_data`
+* :need:`comp_req__ts_client__platform_linux`
+* :need:`comp_req__ts_client__platform_qnx`
+* :need:`comp_req__ts_client__error_reporting`
+* :need:`comp_req__ts_client__cache_optimization`
+* :need:`aou_req__ts_client__single_publisher`
+* :need:`aou_req__ts_client__shm_permissions`
 
 Footnotes
 =========
-
-[A collection of footnotes cited in the CR, and a place to list non-inline hyperlink targets.]
-
 
 Further Documentation of the component can be found in the following sections:
 
