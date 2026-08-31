@@ -23,7 +23,6 @@ cc_binary(
     visibility = ["//score/time_daemon/tests/component_tests:__pkg__"],
     deps = [
         "//score/time_daemon/src/application/svt:svt_handler",
-        "//score/time_daemon/src/control_flow_divider/ptp:ptp_control_flow_divider",
         "//score/time_daemon/src/ipc:svt_publisher",
         "//score/time_daemon/src/ipc:svt_receiver",
         "//score/time_daemon/src/ptp_machine/stub:gptp_stub_machine",

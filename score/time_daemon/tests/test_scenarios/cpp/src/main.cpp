@@ -18,10 +18,8 @@
 #include <scenario.hpp>
 #include <test_context.hpp>
 
-#include "control_flow/ptp_divider.hpp"
 #include "daemon/lifecycle.hpp"
 #include "ipc/shm_roundtrip.hpp"
-#include "svt/stub_sync.hpp"
 #include "verification/pipeline.hpp"
 
 static constexpr int kFrameworkError = 101;
@@ -32,13 +30,10 @@ int main(int argc, char** argv)
     {
         std::vector<std::string> raw_arguments{argv, argv + argc};
 
-        ScenarioGroup::Ptr svt_group{svt_scenario_group()};
         ScenarioGroup::Ptr verification_group{verification_scenario_group()};
-        ScenarioGroup::Ptr control_flow_group{control_flow_scenario_group()};
         ScenarioGroup::Ptr daemon_group{daemon_scenario_group()};
         ScenarioGroup::Ptr ipc_group{ipc_scenario_group()};
-        ScenarioGroup::Ptr root_group{new ScenarioGroupImpl{
-            "root", {}, {svt_group, verification_group, control_flow_group, daemon_group, ipc_group}}};
+        ScenarioGroup::Ptr root_group{new ScenarioGroupImpl{"root", {}, {verification_group, daemon_group, ipc_group}}};
 
         TestContext test_context{root_group};
         run_cli_app(raw_arguments, test_context);

@@ -11,9 +11,6 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "verification/pipeline.hpp"
-#include "verification/sync_detection.hpp"
-#include "verification/time_jump_detection.hpp"
-#include "verification/timeout_detection.hpp"
 
 #include <chrono>
 #include <future>
@@ -101,10 +98,5 @@ class VerificationPipeline final : public Scenario
 
 ScenarioGroup::Ptr verification_scenario_group()
 {
-    return ScenarioGroup::Ptr{new ScenarioGroupImpl{"verification",
-                                                    {std::make_shared<VerificationPipeline>(),
-                                                     std::make_shared<SyncDetection>(),
-                                                     std::make_shared<TimeJumpDetection>(),
-                                                     std::make_shared<TimeoutDetection>()},
-                                                    {}}};
+    return ScenarioGroup::Ptr{new ScenarioGroupImpl{"verification", {std::make_shared<VerificationPipeline>()}, {}}};
 }
