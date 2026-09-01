@@ -139,8 +139,10 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   The Component shall provide monotonic steady time snapshots without
-   requiring initialization.
+   The Component shall provide steady time snapshots without
+   requiring initialization, and shall cause compilation failure
+   when initialization or availability operations are invoked on the
+   steady time domain.
 
 .. comp_req:: SystemClock always-ready snapshot
    :id: comp_req__system_time__snapshot
@@ -152,8 +154,10 @@ Functional Requirements
    :version: 1
    :satisfied_by: comp__time
 
-   The Component shall provide wall-clock time snapshots without
-   requiring initialization.
+   The Component shall provide system time snapshots without
+   requiring initialization, and shall cause compilation failure
+   when initialization or availability operations are invoked on the
+   system time domain.
 
 .. needextend:: "c.this_doc()"
    :+tags: time
