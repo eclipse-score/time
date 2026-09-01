@@ -38,98 +38,10 @@ Prerequisites
 Configuration
 *************
 
-TimeSlave is configured via a JSON file. The schema is defined in
-``score/time_slave/src/application/configuration/time_slave_config_schema.json``
-and covers all runtime parameters: network interface, gPTP timing, PHC
-adjustment, shared-memory path, and QNX-specific options.
-
-Configuration file location
-===========================
-
-The configuration file is resolved in the following order:
-
-1. ``--config <path>`` command-line argument.
-2. ``TIMESLAVE_CONFIG`` environment variable.
-3. ``./etc/time_slave_config.json`` relative to the process working
-   directory.
-
-If no configuration file is found at the resolved path, TimeSlave uses
-built-in defaults (equivalent to the schema defaults) and logs an
-informational message.
-
-For backwards compatibility, the ``GPTP_IFACE`` environment variable
-(when set) still overrides the ``iface_name`` field after the JSON config
-is loaded.
-
-QNX-specific fields
-===================
-
-The optional ``"qnx"`` section holds QNX-only settings (ignored on
-Linux):
-
-.. code-block:: json
-
-   {
-       "qnx": {
-           "bpf_device_prefix": "/dev/bpf",
-           "see_sent": true
-       }
-   }
-
-``bpf_device_prefix``
-  Path prefix for the BPF (Berkeley Packet Filter) devices used for raw
-  Ethernet frame capture. Defaults to ``/dev/bpf``.
-
-``see_sent``
-  When ``true``, sent frames are also delivered to the RX BPF. This is
-  required to capture TX hardware timestamps for Pdelay_Req T1
-  measurement. Defaults to ``false``.
-
-PHC configuration
-=================
-
-To enable PTP Hardware Clock adjustment, set ``"phc"."enabled"`` to
-``true``. On QNX the ``device`` field identifies the network interface
-whose EMAC PTP clock is adjusted (e.g. ``"emac0"``):
-
-.. code-block:: json
-
-   {
-       "phc": {
-           "enabled": true,
-           "device": "emac0",
-           "step_threshold_ns": 100000000
-       }
-   }
-
-When disabled (the default), gPTP runs in slave-only mode without
-disciplining a hardware clock.
-
-Example
-=======
-
-A representative QNX configuration:
-
-.. code-block:: json
-
-   {
-       "iface_name": "emac0",
-       "domain_number": 0,
-       "pdelay_req_interval_ms": 1000,
-       "pdelay_warmup_ms": 2000,
-       "sync_timeout_ms": 3300,
-       "jump_future_threshold_ns": 500000000,
-       "shm_path": "/gptp_shmem",
-       "phc": {
-           "enabled": true,
-           "device": "emac0",
-           "step_threshold_ns": 100000000
-       },
-       "qnx": {
-           "bpf_device_prefix": "/dev/bpf",
-           "see_sent": true
-       }
-   }
+For general TimeSlave configuration (config file lookup order, JSON
+schema reference, command-line arguments, PHC configuration, and
+QNX-specific fields), see the
+:ref:`time_slave_configuration` section.
 
 Build steps
 ***********

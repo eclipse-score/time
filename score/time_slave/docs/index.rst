@@ -85,4 +85,3 @@ Component Detail Information
    manuals/user_manual
    detailed_design/index
    requirements/index
-   manuals/index
