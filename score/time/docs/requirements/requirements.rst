@@ -29,7 +29,7 @@ Functional Requirements
 
 .. comp_req:: Unified clock facade across time domains
    :id: comp_req__time__unified_clock_facade
-   :reqtype: Interface
+   :reqtype: Functional
    :security: NO
    :safety: QM
    :derived_from: feat_req__time__high_prec_clock_api, feat_req__time__monotonic_clock_api, feat_req__time__abs_base_api, feat_req__time__vehicle_time_time_api
