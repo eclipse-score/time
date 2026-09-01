@@ -129,16 +129,9 @@ test-code links are consumed by ``score_docs_as_code``:
        --min-req-fully-linked 62 \
        --min-tests-linked 1
 
-  Current baseline (component requirements only):
-
-  =========================  ===============
-  Metric                     Value
-  =========================  ===============
-  Requirements with source   8/8 (100.0%)
-  Requirements with test     5/8 (62.5%)
-  Requirements fully linked  5/8 (62.5%)
-  Tests linked to reqs       5/318 (1.6%)
-  =========================  ===============
+  The thresholds above are the enforced contract. Live metric values
+  are produced by ``//:metrics_json`` on every build; consult that
+  artefact (or the CI dashboard) for current numbers.
 
 .. note::
 

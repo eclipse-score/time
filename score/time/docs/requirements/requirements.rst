@@ -125,9 +125,7 @@ Functional Requirements
    :satisfied_by: comp__time
 
    The Component shall provide monotonic high-resolution time snapshots
-   without requiring initialization, and shall cause compilation failure
-   when initialization or availability operations are invoked on the
-   high-resolution steady time domain.
+   without requiring initialization.
 
 .. comp_req:: SteadyClock always-ready snapshot
    :id: comp_req__steady_time__snapshot
