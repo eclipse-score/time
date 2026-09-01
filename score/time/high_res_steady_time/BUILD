@@ -12,7 +12,6 @@
 # *******************************************************************************
 
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
-load("@score_baselibs//third_party/itf:py_unittest_qnx_test.bzl", "py_unittest_qnx_test")
 
 # The public interface of the HighResSteadyTime clock domain
 alias(
@@ -35,12 +34,6 @@ alias(
     name = "interface",
     actual = "//score/time/high_res_steady_time/src:high_res_steady_clock",
     visibility = ["//visibility:public"],
-)
-
-py_unittest_qnx_test(
-    name = "qnx_unit_test_cases",
-    test_suites = ["//score/time/high_res_steady_time/src:qnx_unit_test_cases"],
-    visibility = ["//score/time:__pkg__"],
 )
 
 cc_unit_test_suites_for_host_and_qnx(

@@ -34,7 +34,7 @@ cc_library(
         "//score/time_slave:__subpackages__",
     ],
     deps = [
-        "@score_baselibs//score/memory/shared",
+        "@score_communication//score/memory/shared",
     ],
 )
 

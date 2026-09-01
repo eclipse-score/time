@@ -24,6 +24,18 @@ Component Time Requirements
    :realizes: wp__requirements_comp[version==1]
    :tags: requirements, time
 
+.. note::
+   Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.
+
+.. attention::
+    The above directive must be updated according to your Component.
+
+    - Adjust ``status`` to be ``valid``
+    - Adjust ``safety``, ``security`` and ``tags`` according to your needs
+
+<Headlines (for the list of requirements if structuring is needed)>
+===================================================================
+
 Functional Requirements
 -----------------------
 
@@ -143,5 +155,5 @@ Functional Requirements
    The Component shall provide wall-clock time snapshots without
    requiring initialization.
 
-.. needextend:: is_external == False and "time" in id
+.. needextend:: "c.this_doc()"
    :+tags: time
