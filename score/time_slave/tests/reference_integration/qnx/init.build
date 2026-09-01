@@ -89,6 +89,10 @@
     echo "---> Setting hostname"
     hostname qnx-score-time
 
+    echo "---> Generating SSH host key on RAM disk"
+    mkdir -p /tmp_ram/ssh
+    ssh-keygen -t rsa -b 2048 -f /tmp_ram/ssh/ssh_host_rsa_key -N '' -q
+
     echo "---> Starting sshd"
     /proc/boot/sshd -E /tmp/sshd.log -f /var/ssh/sshd_config &
     sleep 3
