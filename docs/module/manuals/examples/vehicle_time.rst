@@ -249,7 +249,7 @@ value. ``Now()`` returns a single immutable ``ClockSnapshot`` — the timepoint 
 +---------------------------+------------------------------------------------------------+
 | Flag                      | Meaning                                                    |
 +===========================+============================================================+
-| ``kSynchronized``         | Synchronized at least once to the PTP Grand Master        |
+| ``kSynchronized``         | Synchronized at least once to the PTP Grand Master         |
 +---------------------------+------------------------------------------------------------+
 | ``kTimeOut``              | No sync message received within the configured time window |
 +---------------------------+------------------------------------------------------------+
