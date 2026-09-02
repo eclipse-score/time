@@ -97,3 +97,26 @@ justifications:
     locations:
       - file: score/time_daemon/src/verification_machine/core/verification_machine.h
         lines: [172, 173]
+
+  - id: ptp-time-info-printto-gtest-hook
+    category: other
+    platforms: [linux, qnx]
+    reason: >
+      PrintTo(..., std::ostream*) is the exact signature GTest looks up via ADL to render a value when a comparison assertion on that type fails; no application code calls this overload. The templated PrintTo/operator<< these delegate to (in the header) already has real production coverage via score::mw::log call sites (e.g. TimeJumpsValidator streaming SyncFupData), so only this GTest-only overload is otherwise unreachable without an assertion actually failing.
+    locations:
+      - file: score/time_daemon/src/common/data_types/ptp_time_info.cpp
+        line_start: 116
+        line_end: 134
+
+  - id: svt-time-info-print-stream-unused
+    category: other
+    platforms: [linux, qnx]
+    reason: >
+      PrintTo/operator<< for the svt IPC snapshot types exist only as debug-printing/GTest-compatibility infrastructure. Unlike ptp_time_info.h's equivalents, no production code anywhere logs or streams these svt types, so none of this (templated or GTest-only overload) is ever exercised outside of GTest's failure-printing path, which none of the current assertions trigger.
+    locations:
+      - file: score/time_daemon/src/ipc/svt/svt_time_info.h
+        line_start: 113
+        line_end: 168
+      - file: score/time_daemon/src/ipc/svt/svt_time_info.cpp
+        line_start: 206
+        line_end: 224

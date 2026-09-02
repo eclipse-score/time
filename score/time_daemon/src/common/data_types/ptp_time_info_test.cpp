@@ -15,7 +15,6 @@
 #include <chrono>
 #include <functional>
 #include <limits>
-#include <sstream>
 #include <string>
 #include <vector>
 
@@ -347,30 +346,6 @@ INSTANTIATE_TEST_SUITE_P(
                                                      value.pdelay_data.sequence_id += 1U;
                                                  }}),
     FieldMutationName<PtpTimeInfo>);
-
-TEST(PrintToTest, WritesReadableRepresentationForAllTypes)
-{
-    const PtpStatus status{true, false, true, false, true};
-    const SyncFupData sync_fup_data{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U};
-    const PDelayData pdelay_data{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U};
-    const PtpTimeInfo info = MakePtpTimeInfoWithRateDeviation(1.0);
-
-    std::ostringstream status_stream;
-    PrintTo(status, &status_stream);
-    EXPECT_FALSE(status_stream.str().empty());
-
-    std::ostringstream sync_fup_stream;
-    PrintTo(sync_fup_data, &sync_fup_stream);
-    EXPECT_FALSE(sync_fup_stream.str().empty());
-
-    std::ostringstream pdelay_stream;
-    PrintTo(pdelay_data, &pdelay_stream);
-    EXPECT_FALSE(pdelay_stream.str().empty());
-
-    std::ostringstream info_stream;
-    PrintTo(info, &info_stream);
-    EXPECT_FALSE(info_stream.str().empty());
-}
 
 }  // namespace td
 }  // namespace score

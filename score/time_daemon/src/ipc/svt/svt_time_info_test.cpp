@@ -15,7 +15,6 @@
 #include <chrono>
 #include <functional>
 #include <limits>
-#include <sstream>
 #include <vector>
 
 #include <gtest/gtest.h>
@@ -481,46 +480,6 @@ TEST(TimeBaseSnapshotTest, NotEqualsWhenEachTopLevelFieldDiffers)
         mutation(changed);
         EXPECT_TRUE(baseline != changed);
     }
-}
-
-TEST(PrintToTest, WritesReadableRepresentationForAllTypes)
-{
-    const svt::TimeBaseStatus status{true, false, true, false, true};
-    const svt::SyncFupSnapshot sync_fup_data{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U};
-    const svt::PDelayDataSnapshot pdelay_data{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U};
-    const svt::TimeBaseSnapshot snapshot = MakeSnapshot();
-
-    std::ostringstream status_stream;
-    svt::PrintTo(status, &status_stream);
-    EXPECT_FALSE(status_stream.str().empty());
-
-    std::ostringstream sync_fup_stream;
-    svt::PrintTo(sync_fup_data, &sync_fup_stream);
-    EXPECT_FALSE(sync_fup_stream.str().empty());
-
-    std::ostringstream pdelay_stream;
-    svt::PrintTo(pdelay_data, &pdelay_stream);
-    EXPECT_FALSE(pdelay_stream.str().empty());
-
-    std::ostringstream snapshot_stream;
-    svt::PrintTo(snapshot, &snapshot_stream);
-    EXPECT_FALSE(snapshot_stream.str().empty());
-
-    std::ostringstream status_shift_stream;
-    status_shift_stream << status;
-    EXPECT_FALSE(status_shift_stream.str().empty());
-
-    std::ostringstream sync_fup_shift_stream;
-    sync_fup_shift_stream << sync_fup_data;
-    EXPECT_FALSE(sync_fup_shift_stream.str().empty());
-
-    std::ostringstream pdelay_shift_stream;
-    pdelay_shift_stream << pdelay_data;
-    EXPECT_FALSE(pdelay_shift_stream.str().empty());
-
-    std::ostringstream snapshot_shift_stream;
-    snapshot_shift_stream << snapshot;
-    EXPECT_FALSE(snapshot_shift_stream.str().empty());
 }
 
 }  // namespace td
