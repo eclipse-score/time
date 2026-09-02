@@ -13,8 +13,10 @@
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
 #include <chrono>
+#include <functional>
 #include <limits>
 #include <sstream>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -56,6 +58,36 @@ TEST(PtpStatusTest, NotEqualsWhenAnyFieldDiffers)
     EXPECT_FALSE(first == second);
 }
 
+TEST(PtpStatusTest, NotEqualsWhenEachFieldDiffers)
+{
+    const PtpStatus baseline{true, false, true, false, true};
+
+    const std::vector<std::function<void(PtpStatus&)>> mutations = {
+        [](PtpStatus& value) {
+            value.is_synchronized = !value.is_synchronized;
+        },
+        [](PtpStatus& value) {
+            value.is_timeout = !value.is_timeout;
+        },
+        [](PtpStatus& value) {
+            value.is_time_jump_future = !value.is_time_jump_future;
+        },
+        [](PtpStatus& value) {
+            value.is_time_jump_past = !value.is_time_jump_past;
+        },
+        [](PtpStatus& value) {
+            value.is_correct = !value.is_correct;
+        },
+    };
+
+    for (const auto& mutation : mutations)
+    {
+        auto changed = baseline;
+        mutation(changed);
+        EXPECT_FALSE(baseline == changed);
+    }
+}
+
 TEST(SyncFupDataTest, EqualsWhenAllFieldsMatch)
 {
     const SyncFupData first{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U};
@@ -72,6 +104,48 @@ TEST(SyncFupDataTest, NotEqualsOperatorReturnsTrueWhenDifferent)
     EXPECT_TRUE(first != second);
 }
 
+TEST(SyncFupDataTest, NotEqualsWhenEachFieldDiffers)
+{
+    const SyncFupData baseline{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U};
+
+    const std::vector<std::function<void(SyncFupData&)>> mutations = {
+        [](SyncFupData& value) {
+            value.precise_origin_timestamp += 10U;
+        },
+        [](SyncFupData& value) {
+            value.reference_global_timestamp += 10U;
+        },
+        [](SyncFupData& value) {
+            value.reference_local_timestamp += 10U;
+        },
+        [](SyncFupData& value) {
+            value.sync_ingress_timestamp += 10U;
+        },
+        [](SyncFupData& value) {
+            value.correction_field += 10U;
+        },
+        [](SyncFupData& value) {
+            value.sequence_id += 1U;
+        },
+        [](SyncFupData& value) {
+            value.pdelay += 10U;
+        },
+        [](SyncFupData& value) {
+            value.port_number += 1U;
+        },
+        [](SyncFupData& value) {
+            value.clock_identity += 10U;
+        },
+    };
+
+    for (const auto& mutation : mutations)
+    {
+        auto changed = baseline;
+        mutation(changed);
+        EXPECT_TRUE(baseline != changed);
+    }
+}
+
 TEST(PDelayDataTest, EqualsWhenAllFieldsMatch)
 {
     const PDelayData first{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U};
@@ -86,6 +160,57 @@ TEST(PDelayDataTest, NotEqualsOperatorReturnsTrueWhenDifferent)
     const PDelayData second{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 13U};
 
     EXPECT_TRUE(first != second);
+}
+
+TEST(PDelayDataTest, NotEqualsWhenEachFieldDiffers)
+{
+    const PDelayData baseline{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U};
+
+    const std::vector<std::function<void(PDelayData&)>> mutations = {
+        [](PDelayData& value) {
+            value.request_origin_timestamp += 10U;
+        },
+        [](PDelayData& value) {
+            value.request_receipt_timestamp += 10U;
+        },
+        [](PDelayData& value) {
+            value.response_origin_timestamp += 10U;
+        },
+        [](PDelayData& value) {
+            value.response_receipt_timestamp += 10U;
+        },
+        [](PDelayData& value) {
+            value.reference_global_timestamp += 10U;
+        },
+        [](PDelayData& value) {
+            value.reference_local_timestamp += 10U;
+        },
+        [](PDelayData& value) {
+            value.sequence_id += 1U;
+        },
+        [](PDelayData& value) {
+            value.pdelay += 10U;
+        },
+        [](PDelayData& value) {
+            value.req_port_number += 1U;
+        },
+        [](PDelayData& value) {
+            value.req_clock_identity += 10U;
+        },
+        [](PDelayData& value) {
+            value.resp_port_number += 1U;
+        },
+        [](PDelayData& value) {
+            value.resp_clock_identity += 10U;
+        },
+    };
+
+    for (const auto& mutation : mutations)
+    {
+        auto changed = baseline;
+        mutation(changed);
+        EXPECT_TRUE(baseline != changed);
+    }
 }
 
 TEST(PtpTimeInfoTest, EqualsUsesToleranceForRateDeviation)
@@ -119,6 +244,63 @@ TEST(PtpTimeInfoTest, NotEqualsWhenStatusDiffers)
     second.status.is_timeout = !second.status.is_timeout;
 
     EXPECT_TRUE(first != second);
+}
+
+TEST(PtpTimeInfoTest, NotEqualsWhenEachTopLevelFieldDiffers)
+{
+    const PtpTimeInfo baseline = MakePtpTimeInfoWithRateDeviation(1.0);
+
+    const std::vector<std::function<void(PtpTimeInfo&)>> mutations = {
+        [](PtpTimeInfo& value) {
+            value.local_time += std::chrono::nanoseconds{1};
+        },
+        [](PtpTimeInfo& value) {
+            value.ptp_assumed_time += std::chrono::nanoseconds{1};
+        },
+        [](PtpTimeInfo& value) {
+            value.rate_deviation += std::numeric_limits<double>::epsilon() * 4.0;
+        },
+        [](PtpTimeInfo& value) {
+            value.status.is_correct = !value.status.is_correct;
+        },
+        [](PtpTimeInfo& value) {
+            value.sync_fup_data.sequence_id += 1U;
+        },
+        [](PtpTimeInfo& value) {
+            value.pdelay_data.sequence_id += 1U;
+        },
+    };
+
+    for (const auto& mutation : mutations)
+    {
+        auto changed = baseline;
+        mutation(changed);
+        EXPECT_TRUE(baseline != changed);
+    }
+}
+
+TEST(PrintToTest, WritesReadableRepresentationForAllTypes)
+{
+    const PtpStatus status{true, false, true, false, true};
+    const SyncFupData sync_fup_data{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U};
+    const PDelayData pdelay_data{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U};
+    const PtpTimeInfo info = MakePtpTimeInfoWithRateDeviation(1.0);
+
+    std::ostringstream status_stream;
+    PrintTo(status, &status_stream);
+    EXPECT_FALSE(status_stream.str().empty());
+
+    std::ostringstream sync_fup_stream;
+    PrintTo(sync_fup_data, &sync_fup_stream);
+    EXPECT_FALSE(sync_fup_stream.str().empty());
+
+    std::ostringstream pdelay_stream;
+    PrintTo(pdelay_data, &pdelay_stream);
+    EXPECT_FALSE(pdelay_stream.str().empty());
+
+    std::ostringstream info_stream;
+    PrintTo(info, &info_stream);
+    EXPECT_FALSE(info_stream.str().empty());
 }
 
 }  // namespace td

@@ -16,6 +16,7 @@
 
 #include <gtest/gtest.h>
 #include <memory>
+#include <string>
 
 namespace score
 {
@@ -128,6 +129,58 @@ TEST_F(MessageBrokerTest, MultipleDataProduction)
     ASSERT_EQ(consumer->received_data.size(), 5);
     for (int i = 0; i < 5; ++i)
         EXPECT_EQ(consumer->received_data[i], i);
+}
+
+TEST_F(MessageBrokerTest, ExpiredSubscriberDoesNotReceiveData)
+{
+    auto consumer = std::make_shared<MockConsumer<int>>();
+    broker->AddSubscriber(Topic("topic1"), consumer);
+    consumer.reset();
+
+    auto producer = std::make_shared<MockProducer<int>>();
+    broker->AddProducer(Topic("topic1"), producer);
+
+    EXPECT_NO_THROW(producer->Produce(42));
+}
+
+TEST_F(MessageBrokerTest, ExpiredProducerDoesNotGetCallback)
+{
+    auto producer = std::make_shared<MockProducer<int>>();
+    std::weak_ptr<MockProducer<int>> weak_producer = producer;
+    producer.reset();
+
+    EXPECT_TRUE(weak_producer.expired());
+    EXPECT_NO_THROW(broker->AddProducer(Topic("topic1"), weak_producer));
+}
+
+TEST_F(MessageBrokerTest, ExpiredBrokerDoesNotProcessCallback)
+{
+    auto producer = std::make_shared<MockProducer<int>>();
+    broker->AddProducer(Topic("topic1"), producer);
+
+    broker.reset();
+
+    EXPECT_NO_THROW(producer->Produce(42));
+}
+
+TEST(MessageBrokerTopicTest, LongNameIsTrimmedToMaximumLength)
+{
+    const std::string long_name(128U, 'x');
+    Topic topic(long_name);
+
+    EXPECT_EQ(topic.Name().size(), 32U);
+    EXPECT_EQ(topic.Name(), long_name.substr(0U, 32U));
+}
+
+TEST(MessageBrokerTopicTest, TopicComparisonOperators)
+{
+    const Topic a("alpha");
+    const Topic b("alpha");
+    const Topic c("beta");
+
+    EXPECT_TRUE(a == b);
+    EXPECT_TRUE(a != c);
+    EXPECT_TRUE(a < c);
 }
 
 }  // namespace td
