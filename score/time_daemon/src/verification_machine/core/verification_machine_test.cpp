@@ -140,10 +140,11 @@ TEST_F(VerificationMachineDeathTest, ConstructionWithNoFactoriesAborts)
 
 TEST_F(VerificationMachineDeathTest, FactoryReturningNullptrAborts)
 {
-    ASSERT_DEATH(
-        (VerificationMachine<ValidatorMockData>(
-            "TestMachine", []() -> std::unique_ptr<VerificationStage<ValidatorMockData>> { return nullptr; })),
-        "");
+    ASSERT_DEATH((VerificationMachine<ValidatorMockData>("TestMachine",
+                                                         []() -> std::unique_ptr<VerificationStage<ValidatorMockData>> {
+                                                             return nullptr;
+                                                         })),
+                 "");
 }
 
 }  // namespace td
