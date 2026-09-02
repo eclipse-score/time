@@ -37,7 +37,7 @@ cc_binary(
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
-    visibility = ["//score/time_daemon:__pkg__"],
+    visibility = ["//visibility:public"],
     deps = [
         "//score/time_daemon/src/application/svt:svt_handler",
         "//score/time_daemon/src/common:logging_contexts",

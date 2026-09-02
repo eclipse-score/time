@@ -22,7 +22,7 @@ cc_binary(
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
-    visibility = ["//score/time_slave:__pkg__"],
+    visibility = ["//visibility:public"],
     deps = [
         "//score/time_slave/src/common:logging_contexts",
         "//score/time_slave/src/gptp:gptp_engine",
