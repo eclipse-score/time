@@ -122,8 +122,9 @@ TEST_F(PTPMachineTest, DataFlowTest)
     }
 }
 
-TEST_F(PTPMachineTest, PeriodicTaskBeforeInitLogsFatalAndReturns)
+TEST_F(PTPMachineTest, PeriodicTaskSkipsSnapshotReadWhenNotInitialized)
 {
+    // Asserts behavior only; the Fatal log this guard also emits isn't checked here.
     EXPECT_CALL(*testing::PTPEngineMockProvider::GetInstance().GetMock(), ReadPTPSnapshot(_)).Times(0);
 
     machine_->Start();
@@ -132,8 +133,9 @@ TEST_F(PTPMachineTest, PeriodicTaskBeforeInitLogsFatalAndReturns)
     EXPECT_TRUE(future.wait_for(std::chrono::milliseconds(150)) == std::future_status::timeout);
 }
 
-TEST_F(PTPMachineTest, PeriodicTaskLogsWarnWhenSnapshotReadFails)
+TEST_F(PTPMachineTest, PeriodicTaskDoesNotPublishWhenSnapshotReadFails)
 {
+    // Same caveat: asserts no-publish, not the Warn log.
     EXPECT_CALL(*testing::PTPEngineMockProvider::GetInstance().GetMock(), Initialize())
         .Times(Exactly(1))
         .WillOnce(Return(true));

@@ -129,12 +129,16 @@ TEST_F(VerificationMachineTest, InitReturnsTrue)
     EXPECT_TRUE(verificationMachine.Init());
 }
 
-TEST_F(VerificationMachineTest, ConstructionWithNoFactoriesAborts)
+class VerificationMachineDeathTest : public ::testing::Test
+{
+};
+
+TEST_F(VerificationMachineDeathTest, ConstructionWithNoFactoriesAborts)
 {
     ASSERT_DEATH((VerificationMachine<ValidatorMockData>("TestMachine")), "");
 }
 
-TEST_F(VerificationMachineTest, FactoryReturningNullptrAborts)
+TEST_F(VerificationMachineDeathTest, FactoryReturningNullptrAborts)
 {
     ASSERT_DEATH(
         (VerificationMachine<ValidatorMockData>(

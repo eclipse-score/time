@@ -133,9 +133,13 @@ TEST_F(MessageBrokerTest, MultipleDataProduction)
 
 TEST_F(MessageBrokerTest, ExpiredSubscriberDoesNotReceiveData)
 {
+    // weak_ptr stored by AddSubscriber; reset() simulates the subscriber already being destroyed.
     auto consumer = std::make_shared<MockConsumer<int>>();
+    std::weak_ptr<MockConsumer<int>> weak_consumer = consumer;
     broker->AddSubscriber(Topic("topic1"), consumer);
     consumer.reset();
+
+    ASSERT_TRUE(weak_consumer.expired());
 
     auto producer = std::make_shared<MockProducer<int>>();
     broker->AddProducer(Topic("topic1"), producer);
@@ -143,24 +147,33 @@ TEST_F(MessageBrokerTest, ExpiredSubscriberDoesNotReceiveData)
     EXPECT_NO_THROW(producer->Produce(42));
 }
 
-TEST_F(MessageBrokerTest, ExpiredProducerDoesNotGetCallback)
+TEST_F(MessageBrokerTest, ExpiredProducerNeverRegistersPublishCallback)
 {
+    // AddProducer() registers a callback ON the producer (SetPublishCallback); expired must skip it.
     auto producer = std::make_shared<MockProducer<int>>();
     std::weak_ptr<MockProducer<int>> weak_producer = producer;
     producer.reset();
 
-    EXPECT_TRUE(weak_producer.expired());
+    ASSERT_TRUE(weak_producer.expired());
     EXPECT_NO_THROW(broker->AddProducer(Topic("topic1"), weak_producer));
 }
 
 TEST_F(MessageBrokerTest, ExpiredBrokerDoesNotProcessCallback)
 {
+    // Live consumer makes broker expiry observable: delivery must stop after broker.reset().
+    auto consumer = std::make_shared<MockConsumer<int>>();
+    broker->AddSubscriber(Topic("topic1"), consumer);
+
     auto producer = std::make_shared<MockProducer<int>>();
     broker->AddProducer(Topic("topic1"), producer);
 
+    producer->Produce(1);
+    ASSERT_EQ(consumer->received_data.size(), 1U);
+
     broker.reset();
 
-    EXPECT_NO_THROW(producer->Produce(42));
+    EXPECT_NO_THROW(producer->Produce(2));
+    EXPECT_EQ(consumer->received_data.size(), 1U);
 }
 
 TEST(MessageBrokerTopicTest, LongNameIsTrimmedToMaximumLength)
