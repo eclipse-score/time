@@ -14,6 +14,7 @@
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/data_flow/producer.h"
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <memory>
 #include <string>
@@ -27,12 +28,16 @@ template <typename T>
 class MockConsumer : public Consumer<T>
 {
   public:
+    MockConsumer()
+    {
+        ON_CALL(*this, OnMessage(::testing::_)).WillByDefault([this](T data) {
+            received_data.push_back(data);
+        });
+    }
+
     std::vector<T> received_data;
 
-    void OnMessage(T data) override
-    {
-        received_data.push_back(data);
-    }
+    MOCK_METHOD(void, OnMessage, (T), (override));
 };
 
 template <typename T>
@@ -136,6 +141,7 @@ TEST_F(MessageBrokerTest, ExpiredSubscriberDoesNotReceiveData)
     // weak_ptr stored by AddSubscriber; reset() simulates the subscriber already being destroyed.
     auto consumer = std::make_shared<MockConsumer<int>>();
     std::weak_ptr<MockConsumer<int>> weak_consumer = consumer;
+    EXPECT_CALL(*consumer, OnMessage(::testing::_)).Times(0);
     broker->AddSubscriber(Topic("topic1"), consumer);
     consumer.reset();
 
