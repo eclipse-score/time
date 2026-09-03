@@ -157,5 +157,20 @@ Functional Requirements
    when initialization or availability operations are invoked on the
    system time domain.
 
+Assumption of Use Requirements
+------------------------------
+
+.. aou_req:: Backend initialization by the user
+   :id: aou_req__time__user_initializes_backend
+   :reqtype: Process
+   :security: NO
+   :safety: QM
+   :status: valid
+   :version: 1
+
+   The Component User shall initialize the backends for clock domains
+   that require initialization before requesting time snapshots
+   from those domains.
+
 .. needextend:: "c.this_doc()"
    :+tags: time
