@@ -157,6 +157,19 @@ Functional Requirements
    when initialization or availability operations are invoked on the
    system time domain.
 
+.. comp_req:: Supported platforms
+   :id: comp_req__time__supported_platforms
+   :reqtype: Non-Functional
+   :security: NO
+   :safety: QM
+   :status: valid
+   :version: 1
+   :satisfied_by: comp__time
+
+   The Component shall build and run on Linux and QNX host platforms,
+   providing platform-specific backends where the underlying OS APIs
+   differ.
+
 Assumption of Use Requirements
 ------------------------------
 
