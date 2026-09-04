@@ -29,7 +29,6 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
         features = COMPILER_WARNING_FEATURES,
         visibility = [
             "//score/time_daemon/src/application:__pkg__",
-            "//score/time_daemon/tests/test_scenarios/cpp:__pkg__",
         ],
         deps = [
             "//score/time_daemon/src/application:timebase_handler",

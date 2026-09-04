@@ -13,7 +13,7 @@
 
 load("@pip_time_daemon_venv//:requirements.bzl", "all_requirements")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-load("@score_tooling//python_basics:defs.bzl", "score_py_pytest", "score_virtualenv")
+load("@score_tooling//python_basics:defs.bzl", "score_virtualenv")
 
 # To regenerate requirements.txt.lock after editing requirements.txt, run:
 #   bazel run //score/time_daemon/tests/component_tests:requirements.update
@@ -21,7 +21,7 @@ compile_pip_requirements(
     name = "requirements",
     srcs = [
         "requirements.txt",
-        "@score_tooling//python_basics:requirements.txt",
+        "@score_tooling//python_basics:requirements.in",
     ],
     requirements_txt = "requirements.txt.lock",
     tags = ["manual"],
@@ -33,17 +33,13 @@ score_virtualenv(
     venv_name = ".python_tc_venv",
 )
 
-score_py_pytest(
-    name = "time_daemon_cit",
-    srcs = glob(["tests/**/*.py"]) + ["conftest.py"],
-    args = [
-        "--cpp-target-path=$(rootpath //score/time_daemon/tests/test_scenarios/cpp:test_scenarios)",
-    ],
-    data = [
-        ":python_tc_venv",
-        "//score/time_daemon/tests/test_scenarios/cpp:test_scenarios",
-    ],
-    pytest_config = ":pytest.ini",
-    tags = ["integration"],
-    deps = all_requirements,
-)
+# NOTE: The time_daemon_cit pytest target is intentionally absent.
+#
+# Previous CIT scenarios (lifecycle, shm_roundtrip, pipeline) exercised
+# component-internal behaviour inside a single process — those belong in
+# gtest-based unit/component integration tests under src/.
+#
+# The CIT framework (Python driver + test_scenarios binary) is reserved
+# for testing the TimeDaemon as an external binary, with true IPC between
+# processes.  Re-enable score_py_pytest here once a real process-level
+# integration scenario is added.
