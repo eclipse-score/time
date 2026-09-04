@@ -172,7 +172,7 @@ Data Publishing
    The time_daemon component shall publish time data to client applications at a fixed interval of maximum 250 milliseconds.
 
 .. comp_req:: Non-Blocking Access Path
-   :id: comp_req__time_daemon__non_blocking_access_path
+   :id: comp_req__time_daemon__non_blocking
    :reqtype: Functional
    :security: NO
    :safety: ASIL_B
