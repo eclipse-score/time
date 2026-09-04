@@ -17,6 +17,7 @@
 #include "score/time_slave/src/common/logging_contexts.h"
 
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <string_view>
 
@@ -29,6 +30,8 @@ namespace
 {
 
 using score::json::Error;
+using score::json::GetAttribute;
+using score::json::MakeError;
 using score::json::Object;
 
 /// Fatal out if @p result is a type/parse error (as opposed to the caller having
@@ -36,7 +39,7 @@ using score::json::Object;
 template <typename ResultT>
 void FatalOnTypeError(const ResultT& result, std::string_view key)
 {
-    if (!result.has_value() && static_cast<int>(*result.error()) != static_cast<int>(Error::kKeyNotFound))
+    if (!result.has_value() && result.error() != MakeError(Error::kKeyNotFound))
     {
         score::mw::log::LogFatal(kTimeSlaveAppContext)
             << "Config field '" << key << "' has wrong type: " << result.error().Message();
@@ -46,12 +49,7 @@ void FatalOnTypeError(const ResultT& result, std::string_view key)
 /// Read a string field; leaves @p out unchanged if key is missing.
 void ParseOptionalString(const Object& obj, std::string_view key, std::string& out)
 {
-    auto it = obj.find(key);
-    if (it == obj.end())
-    {
-        return;
-    }
-    auto result = it->second.As<std::string_view>();
+    const auto result = GetAttribute<std::string_view>(std::cref(obj), key);
     FatalOnTypeError(result, key);
     if (result.has_value())
     {
@@ -63,12 +61,7 @@ void ParseOptionalString(const Object& obj, std::string_view key, std::string& o
 template <typename T>
 void ParseOptionalInt(const Object& obj, std::string_view key, T& out)
 {
-    auto it = obj.find(key);
-    if (it == obj.end())
-    {
-        return;
-    }
-    auto result = it->second.As<std::int64_t>();
+    const auto result = GetAttribute<std::int64_t>(std::cref(obj), key);
     FatalOnTypeError(result, key);
     if (result.has_value())
     {
@@ -79,12 +72,7 @@ void ParseOptionalInt(const Object& obj, std::string_view key, T& out)
 /// Read a bool field; leaves @p out unchanged if key is missing.
 void ParseOptionalBool(const Object& obj, std::string_view key, bool& out)
 {
-    auto it = obj.find(key);
-    if (it == obj.end())
-    {
-        return;
-    }
-    auto result = it->second.As<bool>();
+    const auto result = GetAttribute<bool>(std::cref(obj), key);
     FatalOnTypeError(result, key);
     if (result.has_value())
     {
@@ -95,16 +83,14 @@ void ParseOptionalBool(const Object& obj, std::string_view key, bool& out)
 /// Parse the optional "phc" nested object. If absent, @p cfg keeps defaults.
 void ParsePhcConfig(const Object& obj, details::PhcConfig& cfg)
 {
-    auto it = obj.find("phc");
-    if (it == obj.end())
-    {
-        return;
-    }
-    auto obj_result = it->second.As<Object>();
+    const auto obj_result = GetAttribute<Object>(std::cref(obj), "phc");
     if (!obj_result.has_value())
     {
-        score::mw::log::LogFatal(kTimeSlaveAppContext)
-            << "Config field 'phc' is not an object: " << obj_result.error().Message();
+        if (obj_result.error() != MakeError(Error::kKeyNotFound))
+        {
+            score::mw::log::LogFatal(kTimeSlaveAppContext)
+                << "Config field 'phc' is not an object: " << obj_result.error().Message();
+        }
         return;
     }
     const auto& phc_obj = obj_result.value().get();
@@ -117,16 +103,14 @@ void ParsePhcConfig(const Object& obj, details::PhcConfig& cfg)
 /// Parse the optional "qnx" nested object. If absent, @p qnx keeps defaults.
 void ParseQnxConfig(const Object& obj, TimeSlaveConfig::QnxSettings& qnx)
 {
-    auto it = obj.find("qnx");
-    if (it == obj.end())
-    {
-        return;
-    }
-    auto obj_result = it->second.As<Object>();
+    const auto obj_result = GetAttribute<Object>(std::cref(obj), "qnx");
     if (!obj_result.has_value())
     {
-        score::mw::log::LogFatal(kTimeSlaveAppContext)
-            << "Config field 'qnx' is not an object: " << obj_result.error().Message();
+        if (obj_result.error() != MakeError(Error::kKeyNotFound))
+        {
+            score::mw::log::LogFatal(kTimeSlaveAppContext)
+                << "Config field 'qnx' is not an object: " << obj_result.error().Message();
+        }
         return;
     }
     const auto& qnx_obj = obj_result.value().get();
