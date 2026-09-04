@@ -215,3 +215,8 @@ pip.parse(
     requirements_lock = "//third_party/codeql:requirements_lock.txt",
 )
 use_repo(pip, "codeql_coding_standards_pip_hub")
+
+bazel_dep(
+    name = "score_devcontainer",
+    version = "1.8.0",
+)
