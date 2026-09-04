@@ -40,7 +40,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall initialize the gPTP shared memory reader, time data verification (synchronization validation, time jump detection, timeout detection), and IPC publisher during initialization. Initialization shall fail if not completed within 20 seconds.
+   The time_daemon component shall initialize the configured time synchronization data receiver, time data verification (synchronization validation, time jump detection, timeout detection), and IPC publisher during initialization. Initialization shall fail if not completed within 20 seconds.
 
 .. comp_req:: Component Shutdown
    :id: comp_req__time_daemon__shutdown
@@ -52,7 +52,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall stop the publishing loop, release shared memory mappings, and close IPC resources when deinitialized or when a stop signal is received.
+   The time_daemon component shall stop the publishing loop and close plus release any IPC resources (e.g. shared memory mappings) when a stop signal is received.
 
 Data Reception and Validation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -67,7 +67,7 @@ Data Reception and Validation
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall receive time synchronization data from the gPTP shared memory region written by the time_slave component.
+   The time_daemon component shall receive time synchronization data from time_slave component using the ts_client component for IPC abstraction.
 
 Verification Pipeline
 ^^^^^^^^^^^^^^^^^^^^^
@@ -94,7 +94,7 @@ Verification Pipeline
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall not report synchronization state changes during the first 5 seconds after initial synchronization to avoid spurious time jump detection during startup.
+   The time_daemon component shall not report time jumps during the first 5 seconds after initial synchronization to avoid spuriously detected time jumps during startup.
 
 .. comp_req:: Time Jump Detection
    :id: comp_req__time_daemon__time_jump_detection
@@ -106,7 +106,7 @@ Verification Pipeline
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall detect time jumps when consecutive gPTP frames differ by more than 500 microseconds. Both forward and backward time jumps shall be detected.
+   The time_daemon component shall detect time jumps when consecutive gPTP updates differ by more than 500 microseconds. Both forward and backward time jumps shall be detected.
 
 .. comp_req:: Timeout Detection
    :id: comp_req__time_daemon__timeout_detection
@@ -118,14 +118,14 @@ Verification Pipeline
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall detect timeout condition when no new time synchronization frame is received within 3.3 seconds.
+   The time_daemon component shall detect timeout condition when no new time synchronization data is received within 3.3 seconds.
 
 Data Publishing
 ^^^^^^^^^^^^^^^
 
 .. comp_req:: Time Data Publishing
    :id: comp_req__time_daemon__time_data_publishing
-   :reqtype: Interface
+   :reqtype: Functional
    :security: NO
    :safety: ASIL_B
    :derived_from: feat_req__time__vehicle_time_time_api[version==1]
@@ -133,14 +133,14 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall publish time data that has passed verification checks to client applications via the VehicleTime IPC interface.
+   The time_daemon component shall publish time data with the determined verification result to client applications via a lock-free non-blocking shared memory IPC interface.
 
 .. comp_req:: Published Time Data Content
    :id: comp_req__time_daemon__published_data_content
    :reqtype: Interface
    :security: NO
    :safety: ASIL_B
-   :derived_from: feat_req__time__vehicle_time_time_api[version==1]
+   :derived_from: feat_req__time__vehicle_time_acc_qual_api[version==1],
    :status: valid
    :version: 1
    :satisfied_by: comp__time_daemon
@@ -169,10 +169,10 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall publish time data to client applications at a fixed interval of maximum 250 milliseconds to provide consistent read latency for VehicleTime clients.
+   The time_daemon component shall publish time data to client applications at a fixed interval of maximum 250 milliseconds.
 
-.. comp_req:: Periodic Publishing Fallback
-   :id: comp_req__time_daemon__periodic_fallback
+.. comp_req:: Non-Blocking Access Path
+   :id: comp_req__time_daemon__non_blocking_access_path
    :reqtype: Functional
    :security: NO
    :safety: ASIL_B
@@ -181,7 +181,7 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall republish the last valid time data at the publishing interval when no new upstream data has arrived.
+   The time_daemon component shall use a non-blocking, lock-free shared memory access path for receiving time synchronization data and providing published time data to client applications.
 
 .. comp_req:: Multi-Client Support
    :id: comp_req__time_daemon__multi_client
@@ -193,7 +193,7 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall support concurrent read access from multiple client applications to the published time data.
+   The time_daemon component shall support concurrent lock-free read access from multiple client applications to the published time data.
 
 Error Handling and Recovery
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -244,13 +244,13 @@ Error Handling and Recovery
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall continue publishing time data with timeout status set when the timeout detection period elapses without new gPTP frames.
+   The time_daemon component shall continue publishing time data with timeout status set when the timeout detection period elapses without receiving new gPTP data.
 
 Platform Abstraction
 ^^^^^^^^^^^^^^^^^^^^
 
-.. comp_req:: Linux Platform Support
-   :id: comp_req__time_daemon__platform_linux
+.. comp_req:: Platform Support
+   :id: comp_req__time_daemon__platform_support
    :reqtype: Functional
    :security: NO
    :safety: ASIL_B
@@ -259,19 +259,7 @@ Platform Abstraction
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall support Linux platforms for shared memory access and IPC communication.
-
-.. comp_req:: QNX Platform Support
-   :id: comp_req__time_daemon__platform_qnx
-   :reqtype: Functional
-   :security: NO
-   :safety: ASIL_B
-   :derived_from: feat_req__time__vehicle_time_sync[version==1]
-   :status: valid
-   :version: 1
-   :satisfied_by: comp__time_daemon
-
-   The time_daemon component shall support QNX 8.0 SDP platforms for shared memory access and IPC communication.
+   The time_daemon component shall support Linux and QNX 8.0 SDPplatforms for shared memory access and IPC communication.
 
 Assumption of Use Requirements
 -------------------------------
