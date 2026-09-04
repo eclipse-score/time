@@ -42,28 +42,34 @@ This component implements a time synchronization daemon that receives time data 
 Specification
 =============
 
-The component requirements are:
+The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.
 
-* :need:`comp_req__time_daemon__initialization`
-* :need:`comp_req__time_daemon__shutdown`
-* :need:`comp_req__time_daemon__gptp_shm_reception`
-* :need:`comp_req__time_daemon__sync_validation`
-* :need:`comp_req__time_daemon__sync_debounce`
-* :need:`comp_req__time_daemon__time_jump_detection`
-* :need:`comp_req__time_daemon__timeout_detection`
-* :need:`comp_req__time_daemon__time_data_publishing`
-* :need:`comp_req__time_daemon__published_data_content`
-* :need:`comp_req__time_daemon__time_point_qualifier`
-* :need:`comp_req__time_daemon__publish_interval`
-* :need:`comp_req__time_daemon__periodic_fallback`
-* :need:`comp_req__time_daemon__multi_client`
-* :need:`comp_req__time_daemon__error_reporting`
-* :need:`comp_req__time_daemon__time_jump_reaction`
-* :need:`comp_req__time_daemon__time_jump_recovery`
-* :need:`comp_req__time_daemon__timeout_reaction`
-* :need:`comp_req__time_daemon__platform_linux`
-* :need:`comp_req__time_daemon__platform_qnx`
-* :need:`aou_req__time_daemon__gptp_shm_available`
+The component operates as a continuous loop with the following stages:
+
+1. **Data Reception**: Reads gPTP time synchronization data from shared memory written by time_slave
+2. **Verification Pipeline**: Validates data through three checks:
+
+   * Synchronization status validation
+   * Time jump detection (>500μs between consecutive frames)
+   * Timeout detection (no new data within 3.3 seconds)
+
+3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface at a fixed 250ms interval
+
+Key Behaviors
+-------------
+
+**Startup Stabilization**: Synchronization state changes are not reported during the first 5 seconds after initial synchronization to avoid spurious time jump detection.
+
+**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after 2 consecutive valid frames.
+
+**Multi-Client Support**: Multiple client applications can concurrently read published time data.
+
+**Platform Support**: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.
+
+Assumptions of Use
+------------------
+
+The gPTP shared memory must be available and initialized before synchronized time data published by time_daemon is relied upon. Otherwise shared memory access failures or stale data may occur.
 
 Footnotes
 =========
