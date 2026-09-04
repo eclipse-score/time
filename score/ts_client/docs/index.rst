@@ -42,24 +42,31 @@ This component provides IPC mechanisms for time synchronization data exchange be
 Specification
 =============
 
-The component provides shared memory-based IPC for distributing time synchronization data with thread-safe, low-latency access:
+The ts_client component provides shared memory IPC channel for gPTP time synchronization data exchange between one publisher and multiple readers within ECU.
 
-* :need:`comp_req__ts_client__shared_memory_mgmt`
-* :need:`comp_req__ts_client__shm_validation`
-* :need:`comp_req__ts_client__publisher_creates`
-* :need:`comp_req__ts_client__receiver_multi_reader`
-* :need:`comp_req__ts_client__data_validity`
-* :need:`comp_req__ts_client__seqlock_protocol`
-* :need:`comp_req__ts_client__sync_status_data`
-* :need:`comp_req__ts_client__sync_fup_data`
-* :need:`comp_req__ts_client__pdelay_data`
-* :need:`comp_req__ts_client__time_correlation_data`
-* :need:`comp_req__ts_client__platform_linux`
-* :need:`comp_req__ts_client__platform_qnx`
-* :need:`comp_req__ts_client__error_reporting`
-* :need:`comp_req__ts_client__cache_optimization`
-* :need:`aou_req__ts_client__single_publisher`
-* :need:`aou_req__ts_client__shm_permissions`
+Channel lifecycle follows producer-consumer model:
+
+1. **Channel setup**: Publisher creates shared memory channel and Receiver opens existing channel in read-only mode.
+2. **Validation and synchronization**: Receiver validates shared memory region on open, then reads data through lock-free synchronization with concurrent write detection.
+3. **Data exchange**: Channel carries synchronization status, Sync/FollowUp metadata, PDelay metadata, and time correlation data for downstream processing.
+
+Key Behaviors
+-------------
+
+**Lock-Free Multi-Reader Access**: Multiple readers can access same shared memory channel concurrently while single publisher writes.
+
+**Data Integrity Handling**: Receiver reports invalid or corrupted reads when integrity checks fail.
+
+**Platform Support**: Shared memory IPC flow supported on Linux and QNX 8.0 SDP.
+
+**Error Reporting**: Shared memory create/open/validation failures are logged via score::mw::log.
+
+**Cache-Aware Layout**: Shared memory layout is optimized to reduce cache contention between writer and readers.
+
+Assumptions of Use
+------------------
+
+Only one publisher process may open and write given shared memory segment. Users must configure permissions so publisher has write access and readers have read access.
 
 Footnotes
 =========
