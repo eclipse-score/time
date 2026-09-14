@@ -15,11 +15,12 @@
 #include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
 
 #include "gmock/gmock.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include <gtest/gtest.h>
+#include <cstdint>
+#include <tuple>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 using namespace std::chrono_literals;
@@ -232,5 +233,4 @@ TEST(TimeJumpsValidatorTest, StaysInInitialSyncDebouncingWhenThresholdNotElapsed
     EXPECT_FALSE(result.status.is_time_jump_past);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

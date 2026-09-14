@@ -18,11 +18,7 @@
 
 #include <string>
 
-namespace score
-{
-namespace td
-{
-namespace details
+namespace score::td::details
 {
 
 /**
@@ -35,19 +31,22 @@ namespace details
 class ShmPTPEngine final
 {
   public:
+    // kGptpIpcName is a char-array constant used as a default arg for a std::string param;
+    // ordinary literal decay, not raw pointer/buffer use.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
     explicit ShmPTPEngine(std::string ipc_name = score::ts::details::kGptpIpcName) noexcept;
     ~ShmPTPEngine() noexcept = default;
 
     ShmPTPEngine(const ShmPTPEngine&) = delete;
-    ShmPTPEngine& operator=(const ShmPTPEngine&) = delete;
+    auto operator=(const ShmPTPEngine&) -> ShmPTPEngine& = delete;
     ShmPTPEngine(ShmPTPEngine&&) = delete;
-    ShmPTPEngine& operator=(ShmPTPEngine&&) = delete;
+    auto operator=(ShmPTPEngine&&) -> ShmPTPEngine& = delete;
 
-    bool Initialize();
+    auto Initialize() -> bool;
 
-    bool Deinitialize();
+    auto Deinitialize() -> bool;
 
-    bool ReadPTPSnapshot(PtpTimeInfo& info);
+    auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool;
 
   private:
     std::string ipc_name_;
@@ -55,8 +54,6 @@ class ShmPTPEngine final
     bool initialized_{false};
 };
 
-}  // namespace details
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::details
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_DETAILS_SHM_PTP_ENGINE_H

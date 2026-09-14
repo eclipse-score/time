@@ -22,9 +22,7 @@
 #include <cstdint>
 #include <optional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -35,10 +33,8 @@ class SharedMemoryHandler
 {
   public:
     explicit SharedMemoryHandler(const std::string& shared_memory_path)
-        : shared_memory_path_{shared_memory_path},
-          shared_memory_resource_{},
-          shared_memory_data_{nullptr},
-          max_number_of_read_retries_{10U}
+        : shared_memory_path_{shared_memory_path}, shared_memory_resource_{}
+
     {
     }
 
@@ -46,12 +42,12 @@ class SharedMemoryHandler
     /// \brief Initialize shared memory
     /// \return true -> init succeeded
     ///
-    bool Init();
+    auto Init() -> bool;
 
     ///
     /// \brief Safely read data from shared memory.
     ///
-    std::optional<DataType> Receive() const;
+    auto Receive() const -> std::optional<DataType>;
 
     ///
     /// \brief Safely write data to shared memory
@@ -65,8 +61,8 @@ class SharedMemoryHandler
 
     SharedMemoryHandler(const SharedMemoryHandler&) = delete;
     SharedMemoryHandler(SharedMemoryHandler&&) = delete;
-    SharedMemoryHandler& operator=(const SharedMemoryHandler&) = delete;
-    SharedMemoryHandler& operator=(SharedMemoryHandler&&) = delete;
+    auto operator=(const SharedMemoryHandler&) -> SharedMemoryHandler& = delete;
+    auto operator=(SharedMemoryHandler&&) -> SharedMemoryHandler& = delete;
 
   private:
     ///
@@ -94,12 +90,12 @@ class SharedMemoryHandler
 
     const std::string shared_memory_path_;
     std::shared_ptr<score::memory::shared::ManagedMemoryResource> shared_memory_resource_;
-    SharedMemoryHandler::SharedData* shared_memory_data_;
-    const std::size_t max_number_of_read_retries_;
+    SharedMemoryHandler::SharedData* shared_memory_data_{nullptr};
+    const std::size_t max_number_of_read_retries_{10U};
 };
 
 template <typename DataType>
-bool SharedMemoryHandler<DataType>::Init()
+auto SharedMemoryHandler<DataType>::Init() -> bool
 {
     if (shared_memory_resource_ == nullptr)
     {
@@ -134,7 +130,7 @@ bool SharedMemoryHandler<DataType>::Init()
 }
 
 template <typename DataType>
-std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
+auto SharedMemoryHandler<DataType>::Receive() const -> std::optional<DataType>
 {
     if (shared_memory_data_ != nullptr)
     {
@@ -181,7 +177,6 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H

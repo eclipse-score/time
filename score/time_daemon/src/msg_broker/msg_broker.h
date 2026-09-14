@@ -23,9 +23,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -52,7 +50,7 @@ class MessageBroker : public std::enable_shared_from_this<MessageBroker<T>>
 template <typename T>
 void MessageBroker<T>::AddSubscriber(const Topic& topic, std::weak_ptr<Consumer<T>> subscriber_weak)
 {
-    Subscribe(topic, Subscription<T>([subscriber_weak](const T& data) {
+    Subscribe(topic, Subscription<T>([subscriber_weak](const T& data) -> auto {
                   const auto subscriber = subscriber_weak.lock();
                   if (subscriber)
                   {
@@ -69,7 +67,7 @@ void MessageBroker<T>::AddProducer(const Topic& topic, std::weak_ptr<Producer<T>
     {
         std::weak_ptr<MessageBroker<T>> weak_broker = this->shared_from_this();
 
-        producer->SetPublishCallback([weak_broker, topic](const T& data) {
+        producer->SetPublishCallback([weak_broker, topic](const T& data) -> auto {
             const auto broker = weak_broker.lock();
             if (broker)
             {
@@ -105,7 +103,6 @@ void MessageBroker<T>::OnNewData(const Topic& topic, const T& data) const
     Publish(topic, data);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_MSG_BROKER_H

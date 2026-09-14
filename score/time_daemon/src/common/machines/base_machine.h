@@ -15,9 +15,7 @@
 
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -35,11 +33,11 @@ class BaseMachine
      *
      * @param name The name of the machine.
      */
-    explicit BaseMachine(const std::string& name);
+    explicit BaseMachine(std::string name);
 
     virtual ~BaseMachine() = default;
 
-    inline std::string GetName() const noexcept
+    [[nodiscard]] auto GetName() const noexcept -> std::string
     {
         return name_;
     }
@@ -49,19 +47,19 @@ class BaseMachine
      *
      * @return initialization status
      **/
-    virtual bool Init() = 0;
+    virtual auto Init() -> bool = 0;
 
-  protected:
+    // Kept public and deleted (not protected) so misuse fails with a clear "call to deleted
+    // function" diagnostic instead of a confusing "is protected within this context" one.
     BaseMachine(const BaseMachine& other) = delete;
-    BaseMachine& operator=(const BaseMachine& other) = delete;
+    auto operator=(const BaseMachine& other) -> BaseMachine& = delete;
     BaseMachine(BaseMachine&& other) noexcept = delete;
-    BaseMachine& operator=(BaseMachine&& other) noexcept = delete;
+    auto operator=(BaseMachine&& other) noexcept -> BaseMachine& = delete;
 
   private:
     const std::string name_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_BASE_MACHINE_H

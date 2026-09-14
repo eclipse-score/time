@@ -22,9 +22,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -51,8 +49,8 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
         : PeriodicMachine(name, updateInterval),
           Producer<PtpTimeInfo>(),
           publish_callback_(nullptr),
-          engine_impl_(std::make_unique<PTPEngine>(std::forward<PTPEngineArgs>(args)...)),
-          is_initialized_(false)
+          engine_impl_(std::make_unique<PTPEngine>(std::forward<PTPEngineArgs>(args)...))
+
     {
         score::mw::log::LogInfo(kPtpMachineContext)
             << "PTPMachine created with update interval: " << updateInterval.count() << "ms";
@@ -61,9 +59,9 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
     ~PTPMachine() override;
 
     PTPMachine(const PTPMachine&) = delete;
-    PTPMachine& operator=(const PTPMachine&) = delete;
+    auto operator=(const PTPMachine&) -> PTPMachine& = delete;
     PTPMachine(PTPMachine&&) = delete;
-    PTPMachine& operator=(PTPMachine&&) = delete;
+    auto operator=(PTPMachine&&) -> PTPMachine& = delete;
 
     /**
      * @brief Initializes the PTP stack and prepares the machine for operation.
@@ -73,7 +71,7 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
      *
      * @return true if initialization was successful, false otherwise
      */
-    bool Init() override;
+    auto Init() -> bool override;
 
     /**
      * @brief Sets the callback function to be invoked when publishing data.
@@ -114,7 +112,7 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
 
     std::unique_ptr<PTPEngine> engine_impl_;
 
-    bool is_initialized_;
+    bool is_initialized_{false};
 };
 
 template <class PTPEngine>
@@ -130,7 +128,7 @@ void PTPMachine<PTPEngine>::SetPublishCallback(std::function<void(const PtpTimeI
 }
 
 template <class PTPEngine>
-bool PTPMachine<PTPEngine>::Init()
+auto PTPMachine<PTPEngine>::Init() -> bool
 {
     if (!is_initialized_)
     {
@@ -191,7 +189,6 @@ void PTPMachine<PTPEngine>::Publish(const PtpTimeInfo& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H

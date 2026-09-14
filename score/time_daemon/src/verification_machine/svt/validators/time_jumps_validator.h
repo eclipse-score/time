@@ -19,9 +19,7 @@
 #include <chrono>
 #include <optional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -48,7 +46,7 @@ class TimeJumpsValidator : public VerificationStage<PtpTimeInfo>
     void HandleIdleState(const PtpTimeInfo& data);
     void HandleInitialSyncDebouncingState();
     void SyncFramesHandler(PtpTimeInfo& data);
-    bool IsTimeJumpDetected(const PtpTimeInfo& data);
+    auto IsTimeJumpDetected(const PtpTimeInfo& data) -> bool;
     void UpdateStatus(PtpTimeInfo& data);
     void GoToInitialSyncDebouncing();
     void GoToTimeJumpHandling();
@@ -70,15 +68,14 @@ class TimeJumpsValidator : public VerificationStage<PtpTimeInfo>
     const std::chrono::nanoseconds max_time_jump_allowed_;
     const std::chrono::nanoseconds sync_debounce_threshold_;
     const std::uint8_t valid_frames_threshold_;
-    TimeJumpState time_jump_state_;
-    ProcessingStates current_state_;
+    TimeJumpState time_jump_state_{TimeJumpState::kNoTimeJump};
+    ProcessingStates current_state_{ProcessingStates::kIdle};
     std::optional<PtpTimeInfo> last_sync_frame_;
     PtpTimeInfo::ReferenceClock::duration sync_debouncing_init_time_;
     PtpTimeInfo::ReferenceClock debouncing_clock_;
-    std::uint8_t valid_frames_cnt_;
+    std::uint8_t valid_frames_cnt_{0U};
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_VALIDATORS_TIME_JUMPS_VALIDATOR_H

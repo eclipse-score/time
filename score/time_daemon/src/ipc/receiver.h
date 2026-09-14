@@ -15,9 +15,7 @@
 
 #include <optional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -29,24 +27,23 @@ class Receiver
   public:
     Receiver() = default;
     Receiver(const Receiver&) = default;
-    Receiver& operator=(const Receiver&) = default;
+    auto operator=(const Receiver&) -> Receiver& = default;
     Receiver(Receiver&&) = default;
-    Receiver& operator=(Receiver&&) = default;
+    auto operator=(Receiver&&) -> Receiver& = default;
     virtual ~Receiver() = default;
 
     ///
     /// \brief As long as it uses IPC handler below, it need to be explicitly initalized before use
     ///
-    virtual bool Init() noexcept = 0;
+    virtual auto Init() noexcept -> bool = 0;
 
     ///
     /// \brief method Update read data from ipc
     /// \return optional Data: optional is set when read of specific data is successful
     ///
-    virtual std::optional<T> Receive() noexcept = 0;
+    virtual auto Receive() noexcept -> std::optional<T> = 0;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_H

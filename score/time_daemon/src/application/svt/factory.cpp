@@ -13,16 +13,15 @@
 #include "score/time_daemon/src/application/svt/factory.h"
 
 #include "score/time_daemon/src/application/svt/svt_handler.h"
+#include "score/time_daemon/src/application/timebase_handler.h"
+#include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
-std::unique_ptr<TimebaseHandler> CreateSvtTimebase()
+auto CreateSvtTimebase() -> std::unique_ptr<TimebaseHandler>
 {
     return std::make_unique<SvtHandler>();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

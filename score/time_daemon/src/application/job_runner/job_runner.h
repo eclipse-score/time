@@ -16,13 +16,13 @@
 #include <score/jthread.hpp>
 #include <score/stop_token.hpp>
 #include <chrono>
+#include <cstdint>
 #include <functional>
+#include <mutex>
 #include <string>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -33,7 +33,7 @@ struct Job
     std::function<bool()> fn;
     std::string name;
     std::chrono::seconds timeout;
-    std::chrono::steady_clock::time_point start{};
+    std::chrono::steady_clock::time_point start;
 };
 
 /**
@@ -51,12 +51,12 @@ class JobRunner
      * @param jobs Vector of jobs to run.
      * @param name name of the job.
      */
-    JobRunner(std::vector<Job> jobs, const std::string name);
+    JobRunner(std::vector<Job> jobs, std::string name);
 
     /**
      * @brief Represents the jobs status
      */
-    enum class Result
+    enum class Result : std::uint8_t
     {
         kIdle,
         kInProgress,
@@ -76,7 +76,7 @@ class JobRunner
      *
      * @return enum Result
      */
-    Result GetResult() const;
+    auto GetResult() const -> Result;
 
   private:
     /**
@@ -85,16 +85,15 @@ class JobRunner
      * @param token A stop token that can request early termination of job execution.
      * @return true if all jobs completed successfully; false if any job failed or timed out.
      */
-    bool RunJobs(const score::cpp::stop_token& token);
+    auto RunJobs(const score::cpp::stop_token& token) -> bool;
 
     std::vector<Job> jobs_;
     const std::string name_;
-    Result status_;
+    Result status_{Result::kIdle};
     mutable std::mutex status_mutex_;
     score::cpp::jthread worker_thread_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_JOB_RUNNER_JOB_RUNNER_H

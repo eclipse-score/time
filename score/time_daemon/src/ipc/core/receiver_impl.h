@@ -17,9 +17,7 @@
 
 #include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -35,32 +33,31 @@ class ReceiverImpl : public Receiver<IpcDataType>
     }
 
     ReceiverImpl(const ReceiverImpl&) = delete;
-    ReceiverImpl& operator=(const ReceiverImpl&) = delete;
+    auto operator=(const ReceiverImpl&) -> ReceiverImpl& = delete;
     ReceiverImpl(ReceiverImpl&&) = delete;
-    ReceiverImpl& operator=(ReceiverImpl&&) = delete;
+    auto operator=(ReceiverImpl&&) -> ReceiverImpl& = delete;
     ~ReceiverImpl() override = default;
 
-    bool Init() noexcept override;
+    auto Init() noexcept -> bool override;
 
-    std::optional<IpcDataType> Receive() noexcept override;
+    auto Receive() noexcept -> std::optional<IpcDataType> override;
 
   private:
     SharedMemoryHandler<IpcDataType> shm_handler_;
 };
 
 template <typename IpcDataType>
-bool ReceiverImpl<IpcDataType>::Init() noexcept
+auto ReceiverImpl<IpcDataType>::Init() noexcept -> bool
 {
     return shm_handler_.Init();
 }
 
 template <typename IpcDataType>
-std::optional<IpcDataType> ReceiverImpl<IpcDataType>::Receive() noexcept
+auto ReceiverImpl<IpcDataType>::Receive() noexcept -> std::optional<IpcDataType>
 {
     return shm_handler_.Receive();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_RECEIVER_IMPL_H

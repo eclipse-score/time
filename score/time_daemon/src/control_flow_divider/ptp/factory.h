@@ -19,9 +19,7 @@
 #include <memory>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -35,10 +33,9 @@ namespace td
  * @param timeout Maximum time to wait for new data before publishing empty data
  * @return A fully configured PtpControlFlowDivider instance
  */
-std::shared_ptr<PtpControlFlowDivider> CreatePtpControlFlowDivider(const std::string& name,
-                                                                   std::chrono::milliseconds timeout);
+auto CreatePtpControlFlowDivider(const std::string& name, std::chrono::milliseconds timeout)
+    -> std::shared_ptr<PtpControlFlowDivider>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_FACTORY_H

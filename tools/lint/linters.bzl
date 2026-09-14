@@ -21,7 +21,7 @@ load("@score_cpp_policies//clang_tidy:defs.bzl", "make_clang_tidy_aspect", "make
 
 clang_tidy_aspect = make_clang_tidy_aspect(
     binary = Label("@llvm_toolchain//:clang-tidy"),
-    # No local_configs: use only the S-CORE baseline from score_cpp_policies.
+    local_configs = [Label("//:.clang-tidy")],
 )
 
 clang_tidy_test = make_clang_tidy_test(aspect = clang_tidy_aspect)

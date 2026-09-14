@@ -12,16 +12,16 @@
  ********************************************************************************/
 #include "score/time_daemon/src/ipc/svt/publisher/factory.h"
 #include "score/time_daemon/src/ipc/svt/config.h"
+#include "score/time_daemon/src/ipc/svt/publisher/svt_publisher.h"
+#include <memory>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
-std::shared_ptr<SvtPublisher> CreateSvtPublisher(const std::string& machine_name)
+auto CreateSvtPublisher(const std::string& machine_name) -> std::shared_ptr<SvtPublisher>
 {
     return std::make_shared<SvtPublisher>(machine_name, kSvtShmemPath);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

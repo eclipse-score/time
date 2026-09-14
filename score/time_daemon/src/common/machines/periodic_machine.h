@@ -20,9 +20,7 @@
 #include <chrono>
 #include <mutex>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -42,12 +40,12 @@ class PeriodicMachine : public ProactiveMachine
      * @param name The name of the machine instance
      * @param threadCycle The periodic execution interval in milliseconds
      */
-    explicit PeriodicMachine(const std::string& name, const std::chrono::milliseconds threadCycle);
+    explicit PeriodicMachine(const std::string& name, std::chrono::milliseconds threadCycle);
 
     PeriodicMachine(const PeriodicMachine&) = delete;
-    PeriodicMachine& operator=(const PeriodicMachine&) = delete;
+    auto operator=(const PeriodicMachine&) -> PeriodicMachine& = delete;
     PeriodicMachine(PeriodicMachine&&) noexcept = delete;
-    PeriodicMachine& operator=(PeriodicMachine&&) noexcept = delete;
+    auto operator=(PeriodicMachine&&) noexcept -> PeriodicMachine& = delete;
 
     ~PeriodicMachine() override = default;
 
@@ -91,7 +89,6 @@ class PeriodicMachine : public ProactiveMachine
     const std::chrono::milliseconds kCycleTime_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_PERIODIC_MACHINE_H

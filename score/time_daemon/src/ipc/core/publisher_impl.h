@@ -20,9 +20,7 @@
 #include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 #include "score/time_daemon/src/ipc/data_converter.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -38,12 +36,12 @@ class PublisherImpl : public ReactiveMachine, public Consumer<DataType>
     }
 
     PublisherImpl(const PublisherImpl&) = delete;
-    PublisherImpl& operator=(const PublisherImpl&) = delete;
+    auto operator=(const PublisherImpl&) -> PublisherImpl& = delete;
     PublisherImpl(PublisherImpl&&) = delete;
-    PublisherImpl& operator=(PublisherImpl&&) = delete;
+    auto operator=(PublisherImpl&&) -> PublisherImpl& = delete;
     ~PublisherImpl() override = default;
 
-    bool Init() override;
+    auto Init() -> bool override;
     void OnMessage(DataType data) override;
 
   private:
@@ -51,7 +49,7 @@ class PublisherImpl : public ReactiveMachine, public Consumer<DataType>
 };
 
 template <typename DataType, typename IpcDataType>
-bool PublisherImpl<DataType, IpcDataType>::Init()
+auto PublisherImpl<DataType, IpcDataType>::Init() -> bool
 {
     return shm_handler_.Init();
 }
@@ -63,7 +61,6 @@ void PublisherImpl<DataType, IpcDataType>::OnMessage(DataType data)
     shm_handler_.Send(ipc_data);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_PUBLISHER_IMPL_H

@@ -11,20 +11,19 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/control_flow_divider/ptp/factory.h"
-#include "score/time_daemon/src/common/logging_contexts.h"
 
-#include "score/mw/log/logging.h"
+#include "score/time_daemon/src/control_flow_divider/ptp/ptp_control_flow_divider.h"
+#include <chrono>
+#include <memory>
+#include <string>
 
-namespace score
+namespace score::td
 {
-namespace td
-{
 
-std::shared_ptr<PtpControlFlowDivider> CreatePtpControlFlowDivider(const std::string& name,
-                                                                   std::chrono::milliseconds timeout)
+auto CreatePtpControlFlowDivider(const std::string& name, std::chrono::milliseconds timeout)
+    -> std::shared_ptr<PtpControlFlowDivider>
 {
     return std::make_shared<PtpControlFlowDivider>(name, timeout);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

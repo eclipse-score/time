@@ -15,9 +15,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -54,9 +52,9 @@ class VerificationStage
 
   protected:
     VerificationStage(const VerificationStage& other) = delete;
-    VerificationStage& operator=(const VerificationStage& other) = delete;
+    auto operator=(const VerificationStage& other) -> VerificationStage& = delete;
     VerificationStage(VerificationStage&& other) = delete;
-    VerificationStage& operator=(VerificationStage&& other) = delete;
+    auto operator=(VerificationStage&& other) -> VerificationStage& = delete;
 
     /**
      * @brief Performs the actual validation logic for this stage.
@@ -93,7 +91,6 @@ void VerificationStage<DataType>::SetNext(std::unique_ptr<VerificationStage<Data
     next_stage_ = std::move(next);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H

@@ -19,9 +19,7 @@
 
 #include <array>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 struct ValidatorMockData
@@ -30,7 +28,7 @@ struct ValidatorMockData
 };
 
 template <typename OutputStream>
-auto& operator<<(OutputStream& output_stream, const ValidatorMockData& data)
+auto operator<<(OutputStream& output_stream, const ValidatorMockData& data) -> auto&
 {
     std::for_each(std::begin(data.data), std::end(data.data), [&](const auto& value) {
         output_stream << value << " ";
@@ -50,7 +48,6 @@ class VerificationStageMock : public VerificationStage<ValidatorMockData>
     size_t id_{0};
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_MOCK_H

@@ -15,9 +15,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class VerificationMachineTest : public ::testing::Test
@@ -84,22 +82,22 @@ TEST_F(VerificationMachineTest, DataFlowVerification)
         });
 
     auto expectedDataStage1 = 2;
-    ON_CALL(*stage_raw1, DoValidation(testing::_)).WillByDefault([expectedDataStage1](ValidatorMockData& data) {
+    ON_CALL(*stage_raw1, DoValidation(testing::_)).WillByDefault([expectedDataStage1](ValidatorMockData& data) -> void {
         data.data[1] = expectedDataStage1;
     });
     auto expectedDataStage2 = 9;
-    ON_CALL(*stage_raw2, DoValidation(testing::_)).WillByDefault([expectedDataStage2](ValidatorMockData& data) {
+    ON_CALL(*stage_raw2, DoValidation(testing::_)).WillByDefault([expectedDataStage2](ValidatorMockData& data) -> void {
         data.data[5] = expectedDataStage2;
     });
     auto expectedDataStage3 = 20;
-    ON_CALL(*stage_raw3, DoValidation(testing::_)).WillByDefault([expectedDataStage3](ValidatorMockData& data) {
+    ON_CALL(*stage_raw3, DoValidation(testing::_)).WillByDefault([expectedDataStage3](ValidatorMockData& data) -> void {
         data.data[9] = expectedDataStage3;
     });
 
     ValidatorMockData actualData;
 
     // Subscribe to the publish events of the verification machine
-    verificationMachine.SetPublishCallback([&actualData](const ValidatorMockData& publishedData) {
+    verificationMachine.SetPublishCallback([&actualData](const ValidatorMockData& publishedData) -> void {
         actualData = publishedData;
     });
 
@@ -147,5 +145,4 @@ TEST_F(VerificationMachineDeathTest, FactoryReturningNullptrAborts)
                  "");
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

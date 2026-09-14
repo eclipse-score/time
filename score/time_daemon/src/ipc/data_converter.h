@@ -15,9 +15,7 @@
 
 #include <type_traits>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 template <typename>
@@ -28,7 +26,7 @@ struct DependentFalse : std::false_type
 template <typename Src, typename Dst>
 struct DataConverter
 {
-    static Dst Convert(const Src&)
+    static auto Convert(const Src&) -> Dst
     {
         static_assert(DependentFalse<Src>::value,
                       "Missing DataConverter<Src, Dst> specialization for this PublisherImpl message type.");
@@ -40,12 +38,11 @@ struct DataConverter
  * \brief Helper function to convert data to ipc data using the DataConverter struct
  */
 template <typename Dst, typename Src>
-inline Dst ConvertToIpcData(const Src& src)
+inline auto ConvertToIpcData(const Src& src) -> Dst
 {
     return DataConverter<Src, Dst>::Convert(src);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_IPC_DATA_CONVERTER_H

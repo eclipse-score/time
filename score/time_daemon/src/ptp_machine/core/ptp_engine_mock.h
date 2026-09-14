@@ -19,20 +19,16 @@
 
 #include <gmock/gmock.h>
 
-namespace score
-{
-namespace td
-{
-namespace testing
+namespace score::td::testing
 {
 
 class PTPEngineMockInterface
 {
   public:
     virtual ~PTPEngineMockInterface() = default;
-    virtual bool Initialize() = 0;
-    virtual bool Deinitialize() = 0;
-    virtual bool ReadPTPSnapshot(PtpTimeInfo& info) = 0;
+    virtual auto Initialize() -> bool = 0;
+    virtual auto Deinitialize() -> bool = 0;
+    virtual auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool = 0;
 };
 
 class PTPEngineMock : public PTPEngineMockInterface
@@ -48,13 +44,13 @@ class PTPEngineMock : public PTPEngineMockInterface
 class PTPEngineMockProvider
 {
   public:
-    static PTPEngineMockProvider& GetInstance()
+    static auto GetInstance() -> PTPEngineMockProvider&
     {
         static PTPEngineMockProvider provider;
         return provider;
     }
 
-    std::shared_ptr<PTPEngineMock> GetMock()
+    auto GetMock() -> std::shared_ptr<PTPEngineMock>
     {
         return obj_;
     }
@@ -86,24 +82,22 @@ class FakePTPEngine
         PTPEngineMockProvider::GetInstance().DestroyMock();
     }
 
-    bool Initialize()
+    auto Initialize() -> bool
     {
         return PTPEngineMockProvider::GetInstance().GetMock()->Initialize();
     }
 
-    bool Deinitialize()
+    auto Deinitialize() -> bool
     {
         return PTPEngineMockProvider::GetInstance().GetMock()->Deinitialize();
     }
 
-    bool ReadPTPSnapshot(PtpTimeInfo& info)
+    auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool
     {
         return PTPEngineMockProvider::GetInstance().GetMock()->ReadPTPSnapshot(info);
     }
 };
 
-}  // namespace testing
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::testing
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H

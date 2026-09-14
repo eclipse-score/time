@@ -16,13 +16,10 @@
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
 #include <chrono>
+#include <cstdint>
 #include <memory>
 
-namespace score
-{
-namespace td
-{
-namespace details
+namespace score::td::details
 {
 
 /**
@@ -39,8 +36,8 @@ class StubPTPEngine final
   public:
     explicit StubPTPEngine(PtpTimeInfo::ReferenceClock local_clock) noexcept;
     ~StubPTPEngine() noexcept = default;
-    StubPTPEngine& operator=(const StubPTPEngine&) & noexcept = delete;
-    StubPTPEngine& operator=(StubPTPEngine&&) & noexcept = delete;
+    auto operator=(const StubPTPEngine&) & noexcept -> StubPTPEngine& = delete;
+    auto operator=(StubPTPEngine&&) & noexcept -> StubPTPEngine& = delete;
     StubPTPEngine(const StubPTPEngine&) noexcept = delete;
     StubPTPEngine(StubPTPEngine&&) noexcept = delete;
 
@@ -48,44 +45,47 @@ class StubPTPEngine final
     ///
     /// \return true - initialize success, otherwise false
     ///
-    bool Initialize() const;
+    // Not static: kept as an instance method to match the shape of PTPEngineMockInterface and
+    // ShmPTPEngine (the other PTPEngine implementations), even though this particular stub
+    // doesn't need instance state — PTPEngine implementations are meant to be interchangeable.
+    // (clang-tidy flags this at the definition in the .cpp, not here.)
+    [[nodiscard]] auto Initialize() const -> bool;
 
     /// \brief Method to deinitialize libgptp client
     ///
     /// \return true - deinitialize success, otherwise false
     ///
-    bool Deinitialize() const;
+    [[nodiscard]] auto Deinitialize() const -> bool;
 
     /// \brief Method that reads PTP snapshot from libgptp
     /// \param info Reference to PtpTimeInfo structure to fill with data
     /// \return true - read success, otherwise false
     ///
-    bool ReadPTPSnapshot(PtpTimeInfo& info);
+    auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool;
 
     /// \brief Method that calls Libgptp and read current time, timebase status and rate deviation
     ///
     /// \param time_info Reference to PtpTimeInfo structure to fill with data
     ///
-    bool ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept;
+    auto ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept -> bool;
 
     /// \brief Method that calls libgptp and read last PDelay ptp data
     ///
     /// \param time_info Reference to PtpTimeInfo structure to fill with PDelay data
     ///
-    bool ReadPDelayMeasurementData(PtpTimeInfo& time_info) const noexcept;
+    auto ReadPDelayMeasurementData(PtpTimeInfo& time_info) const noexcept -> bool;
 
     /// \brief Method that calls libgptp and read last Sync ptp data
     ///
     /// \param time_info Reference to PtpTimeInfo structure to fill with Sync data
     ///
-    bool ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept;
+    auto ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept -> bool;
 
   private:
     PtpTimeInfo::ReferenceClock local_clock_;
+    std::uint16_t sequence_id_{0U};
 };
 
-}  // namespace details
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::details
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_STUB_DETAILS_STUB_PTP_ENGINE_H

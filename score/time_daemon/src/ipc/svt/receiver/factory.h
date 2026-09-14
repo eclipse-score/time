@@ -17,9 +17,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -27,9 +25,8 @@ namespace td
 ///
 /// \return Ipc receiver implementation for svt
 ///
-std::shared_ptr<SvtReceiver> CreateSvtReceiver();
+auto CreateSvtReceiver() -> std::shared_ptr<SvtReceiver>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_RECEIVER_FACTORY_H

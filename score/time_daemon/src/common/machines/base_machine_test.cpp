@@ -13,17 +13,16 @@
 #include "score/time_daemon/src/common/machines/base_machine.h"
 
 #include <gtest/gtest.h>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class FakeMachine : public BaseMachine
 {
   public:
     explicit FakeMachine(const std::string& name) : BaseMachine(name) {}
-    bool Init() override
+    auto Init() -> bool override
     {
         return true;
     };
@@ -36,5 +35,4 @@ TEST(BaseMachineTest, Construction)
     EXPECT_EQ(machine.GetName(), "TestMachine");
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

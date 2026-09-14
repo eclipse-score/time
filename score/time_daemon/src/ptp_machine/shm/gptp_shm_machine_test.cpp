@@ -11,32 +11,33 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/ptp_machine/shm/factory.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/ts_client/src/gptp_ipc_publisher.h"
 
 #include <gtest/gtest.h>
 
 #include <atomic>
-#include <chrono>
 #include <future>
+#include <memory>
 #include <mutex>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 namespace
 {
 
-std::string UniqueShmName()
+auto UniqueShmName() -> std::string
 {
     static std::atomic<int> counter{0};
     return "/gptp_rm_it_" + std::to_string(::getpid()) + "_" +
            std::to_string(counter.fetch_add(1, std::memory_order_relaxed));
 }
 
-score::ts::GptpIpcData MakePublishedInfo()
+auto MakePublishedInfo() -> score::ts::GptpIpcData
 {
     score::ts::GptpIpcData info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{5'000'000'000LL};
@@ -123,5 +124,4 @@ TEST_F(GPTPShmMachineIntegrationTest, Init_CalledTwice_SecondCallReturnsSameResu
     EXPECT_TRUE(machine_->Init());
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

@@ -18,9 +18,7 @@
 #include <chrono>
 #include <thread>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -35,7 +33,8 @@ class JobRunnerTest : public ::testing::Test
     /**
      * @brief Wait until JobRunner finishes or timeout occurs.
      */
-    JobRunner::Result WaitForCompletion(JobRunner& runner, std::chrono::milliseconds timeout = std::chrono::seconds(5))
+    auto WaitForCompletion(JobRunner& runner, std::chrono::milliseconds timeout = std::chrono::seconds(5))
+        -> JobRunner::Result
     {
         auto start = std::chrono::steady_clock::now();
         JobRunner::Result result = runner.GetResult();
@@ -179,5 +178,4 @@ TEST_F(JobRunnerTest, StopMultipleJobsEarly)
     EXPECT_LE(counter.load(), 2);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

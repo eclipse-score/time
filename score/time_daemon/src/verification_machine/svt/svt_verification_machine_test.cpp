@@ -11,14 +11,15 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/svt_verification_machine.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/verification_machine/svt/factory.h"
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <chrono>
+#include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class SvtVerificationMachineTest : public ::testing::Test
@@ -52,7 +53,7 @@ TEST_F(SvtVerificationMachineTest, HandlesPipelineValidation)
     bool publish_called = false;
     PtpTimeInfo published_data;
 
-    vm->SetPublishCallback([&](const PtpTimeInfo& data) {
+    vm->SetPublishCallback([&](const PtpTimeInfo& data) -> void {
         publish_called = true;
         published_data = data;
     });
@@ -63,5 +64,4 @@ TEST_F(SvtVerificationMachineTest, HandlesPipelineValidation)
     EXPECT_EQ(published_data, test_data);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

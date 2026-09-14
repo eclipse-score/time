@@ -14,7 +14,7 @@
 
 #include "score/mw/lifecycle/runapplication.h"
 
-int main(int argc, const char* argv[])
+auto main(int argc, const char* argv[]) -> int
 {
     return score::mw::lifecycle::run_application<score::td::TimeDaemon>(argc, argv);
 }

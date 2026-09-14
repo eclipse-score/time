@@ -12,20 +12,18 @@
  ********************************************************************************/
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
-#include <algorithm>
 #include <cmath>
 #include <limits>
+#include <ostream>
 #include <tuple>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 namespace
 {
 
-bool NearlyEqual(const double first, const double second) noexcept
+auto NearlyEqual(const double first, const double second) noexcept -> bool
 {
     const double diff = std::fabs(first - second);
     return diff <= std::numeric_limits<double>::epsilon();
@@ -35,7 +33,7 @@ bool NearlyEqual(const double first, const double second) noexcept
 
 /// \brief Comparing operators:
 
-bool operator==(const PtpStatus& first, const PtpStatus& second) noexcept
+auto operator==(const PtpStatus& first, const PtpStatus& second) noexcept -> bool
 {
     const bool same_sync = (first.is_synchronized == second.is_synchronized);
     const bool same_timeout = (first.is_timeout == second.is_timeout);
@@ -46,7 +44,7 @@ bool operator==(const PtpStatus& first, const PtpStatus& second) noexcept
     return (same_sync && same_timeout && same_jump_future && same_jump_past && same_unknown);
 }
 
-bool operator==(const SyncFupData& first, const SyncFupData& second) noexcept
+auto operator==(const SyncFupData& first, const SyncFupData& second) noexcept -> bool
 {
     const bool same_precise_origin_timestamp = (first.precise_origin_timestamp == second.precise_origin_timestamp);
     const bool same_reference_global_timestamp =
@@ -63,12 +61,12 @@ bool operator==(const SyncFupData& first, const SyncFupData& second) noexcept
             same_port_number && same_clock_identity);
 }
 
-bool operator!=(const SyncFupData& first, const SyncFupData& second) noexcept
+auto operator!=(const SyncFupData& first, const SyncFupData& second) noexcept -> bool
 {
     return !(first == second);
 }
 
-bool operator==(const PDelayData& first, const PDelayData& second) noexcept
+auto operator==(const PDelayData& first, const PDelayData& second) noexcept -> bool
 {
     const bool same_request_origin_timestamp = (first.request_origin_timestamp == second.request_origin_timestamp);
     const bool same_request_receipt_timestamp = (first.request_receipt_timestamp == second.request_receipt_timestamp);
@@ -90,12 +88,12 @@ bool operator==(const PDelayData& first, const PDelayData& second) noexcept
             same_resp_port_number && same_resp_clock_identity);
 }
 
-bool operator!=(const PDelayData& first, const PDelayData& second) noexcept
+auto operator!=(const PDelayData& first, const PDelayData& second) noexcept -> bool
 {
     return !(first == second);
 }
 
-bool operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept
+auto operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept -> bool
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -107,31 +105,30 @@ bool operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept
     return (same_local && same_ptp && same_rate_deviation && same_status && same_sync && same_pdelay);
 }
 
-bool operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept
+auto operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept -> bool
 {
     return !(first == second);
 }
 
 /// \brief  gtest compatibility:
-void PrintTo(const PtpStatus& status, std::ostream* os)
+void PrintTo(const PtpStatus& status, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(status, *os);
+    std::ignore = PrintTo(status, *out_stream);
 }
 
-void PrintTo(const SyncFupData& data, std::ostream* os)
+void PrintTo(const SyncFupData& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const PDelayData& data, std::ostream* os)
+void PrintTo(const PDelayData& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const PtpTimeInfo& info, std::ostream* os)
+void PrintTo(const PtpTimeInfo& info, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(info, *os);
+    std::ignore = PrintTo(info, *out_stream);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

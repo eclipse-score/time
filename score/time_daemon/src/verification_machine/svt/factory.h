@@ -15,9 +15,7 @@
 
 #include "score/time_daemon/src/verification_machine/svt/svt_verification_machine.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -27,9 +25,8 @@ namespace td
  *
  * @return A fully configured SvtVerificationMachine instance
  */
-std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::string& name);
+auto CreateSvtVerificationMachine(const std::string& name) -> std::shared_ptr<SvtVerificationMachine>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_FACTORY_H

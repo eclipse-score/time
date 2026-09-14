@@ -13,10 +13,9 @@
 #include "score/time_daemon/src/msg_broker/topic.h"
 
 #include "score/mw/log/logging.h"
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 Topic::Topic(const std::string& name) noexcept
@@ -34,25 +33,24 @@ Topic::Topic(const std::string& name) noexcept
 
 Topic::Topic(const char* name) noexcept : Topic(std::string(name)) {}
 
-const std::string& Topic::Name() const noexcept
+auto Topic::Name() const noexcept -> const std::string&
 {
     return name_;
 }
 
-bool operator==(const Topic& lhs, const Topic& rhs) noexcept
+auto operator==(const Topic& lhs, const Topic& rhs) noexcept -> bool
 {
     return lhs.Name() == rhs.Name();
 }
 
-bool operator!=(const Topic& lhs, const Topic& rhs) noexcept
+auto operator!=(const Topic& lhs, const Topic& rhs) noexcept -> bool
 {
     return !(lhs == rhs);
 }
 
-bool operator<(const Topic& lhs, const Topic& rhs) noexcept
+auto operator<(const Topic& lhs, const Topic& rhs) noexcept -> bool
 {
     return lhs.Name() < rhs.Name();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

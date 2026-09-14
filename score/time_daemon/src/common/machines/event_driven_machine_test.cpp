@@ -14,10 +14,10 @@
 
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
+#include <chrono>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace test
 {
@@ -68,7 +68,7 @@ class EventDrivenMachineFake : public EventDrivenMachine
         job_shower_->OnTimeout();
     }
 
-    bool Init() override
+    auto Init() -> bool override
     {
         return true;
     }
@@ -151,5 +151,4 @@ TEST_F(EventDrivenMachineTest, NotificationOnEvent)
     sut_->Stop();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

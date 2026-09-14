@@ -10,26 +10,24 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.h"
 
+#include "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/ts_client/src/gptp_ipc_publisher.h"
 
 #include <gtest/gtest.h>
 
 #include <atomic>
-#include <chrono>
+#include <string>
 
-namespace score
-{
-namespace td
-{
-namespace details
+namespace score::td::details
 {
 
 namespace
 {
 
-std::string UniqueShmName()
+auto UniqueShmName() -> std::string
 {
     static std::atomic<int> counter{0};
     return "/gptp_shm_ut_" + std::to_string(::getpid()) + "_" +
@@ -37,7 +35,7 @@ std::string UniqueShmName()
 }
 
 /// Build a fully-populated GptpIpcData for roundtrip verification.
-score::ts::GptpIpcData MakeTestIpcData()
+auto MakeTestIpcData() -> score::ts::GptpIpcData
 {
     score::ts::GptpIpcData d{};
     d.ptp_assumed_time = std::chrono::nanoseconds{9'876'543'210LL};
@@ -211,6 +209,4 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesPDelayDataCorrectly)
     EXPECT_EQ(result.pdelay_data.resp_clock_identity, src.pdelay_data.resp_clock_identity);
 }
 
-}  // namespace details
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::details

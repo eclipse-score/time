@@ -17,9 +17,7 @@
 
 #include "score/mw/lifecycle/application.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class TimeDaemon final : public score::mw::lifecycle::Application
@@ -30,17 +28,16 @@ class TimeDaemon final : public score::mw::lifecycle::Application
 
     TimeDaemon(TimeDaemon&&) noexcept = delete;
     TimeDaemon(const TimeDaemon&) noexcept = delete;
-    TimeDaemon& operator=(TimeDaemon&&) & noexcept = delete;
-    TimeDaemon& operator=(const TimeDaemon&) & noexcept = delete;
+    auto operator=(TimeDaemon&&) & noexcept -> TimeDaemon& = delete;
+    auto operator=(const TimeDaemon&) & noexcept -> TimeDaemon& = delete;
 
-    std::int32_t Initialize(const score::mw::lifecycle::ApplicationContext& context) override;
-    std::int32_t Run(const score::cpp::stop_token& token) override;
+    auto Initialize(const score::mw::lifecycle::ApplicationContext& context) -> std::int32_t override;
+    auto Run(const score::cpp::stop_token& token) -> std::int32_t override;
 
   private:
     std::unique_ptr<TimebaseHandler> svt_timebase_handler_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIME_DAEMON_H

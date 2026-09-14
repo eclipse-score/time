@@ -16,13 +16,12 @@
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
 
-#include <map>
+#include <functional>
+#include <string>
 
 using ::testing::_;
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace test
 {
@@ -33,7 +32,7 @@ struct FakeTimeInfo
     uint64_t local_time;
 };
 
-bool operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept
+auto operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept -> bool
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -94,7 +93,7 @@ class FakeConsumerProducerMachine : public Consumer<FakeTimeInfo>, public Produc
     }
 
     // Consumer interface
-    virtual void OnMessage(FakeTimeInfo data) override
+    void OnMessage(FakeTimeInfo data) override
     {
         Publish(std::move(data));
     }
@@ -138,7 +137,7 @@ class FakeSubscriptionManager
     void RegisterProducer(const std::string& topic, Producer<FakeTimeInfo>* producer)
     {
         // Set up the callback that the producer will use when publishing
-        producer->SetPublishCallback([this, topic](const FakeTimeInfo& data) {
+        producer->SetPublishCallback([this, topic](const FakeTimeInfo& data) -> void {
             messageBroker_.Publish(topic, data);
         });
     }
@@ -221,5 +220,4 @@ TEST_F(ProducerConsumerTest, TestProducerConsumerNotificationChain)
     initialProducer.Publish(testData);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

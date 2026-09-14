@@ -14,10 +14,10 @@
 
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
+#include <chrono>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace test
 {
@@ -61,7 +61,7 @@ class PeriodicMachineFake : public PeriodicMachine
         job_shower_->ShowJob();
     }
 
-    bool Init() override
+    auto Init() -> bool override
     {
         return true;
     }
@@ -127,5 +127,4 @@ TEST_F(PeriodicMachineTest, NoActionsWithoutStartButWithStop)
     std::this_thread::sleep_for(std::chrono::milliseconds(500));
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

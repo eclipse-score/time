@@ -12,23 +12,20 @@
  ********************************************************************************/
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
-#include <chrono>
 #include <functional>
 #include <limits>
+#include <ostream>
 #include <string>
-#include <vector>
 
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 namespace
 {
 
-PtpTimeInfo MakePtpTimeInfoWithRateDeviation(const double rate_deviation)
+auto MakePtpTimeInfoWithRateDeviation(const double rate_deviation) -> PtpTimeInfo
 {
     PtpTimeInfo info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{1234};
@@ -48,7 +45,7 @@ struct FieldMutation
 };
 
 template <typename T>
-std::string FieldMutationName(const ::testing::TestParamInfo<FieldMutation<T>>& info)
+auto FieldMutationName(const ::testing::TestParamInfo<FieldMutation<T>>& info) -> std::string
 {
     return info.param.name;
 }
@@ -347,5 +344,4 @@ INSTANTIATE_TEST_SUITE_P(
                                                  }}),
     FieldMutationName<PtpTimeInfo>);
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

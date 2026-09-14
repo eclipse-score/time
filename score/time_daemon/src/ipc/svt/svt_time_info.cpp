@@ -12,24 +12,22 @@
  ********************************************************************************/
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include <score/assert.hpp>
 
-#include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <limits>
+#include <ostream>
 #include <tuple>
 
-namespace score
-{
-namespace td
-{
-namespace svt
+namespace score::td::svt
 {
 
 namespace
 {
 
-bool NearlyEqual(const double first, const double second) noexcept
+auto NearlyEqual(const double first, const double second) noexcept -> bool
 {
     const double diff = std::fabs(first - second);
     return diff <= std::numeric_limits<double>::epsilon();
@@ -39,7 +37,7 @@ bool NearlyEqual(const double first, const double second) noexcept
 
 /// \brief Comparing operators:
 
-bool operator==(const TimeBaseStatus& first, const TimeBaseStatus& second) noexcept
+auto operator==(const TimeBaseStatus& first, const TimeBaseStatus& second) noexcept -> bool
 {
     const bool same_sync = (first.is_synchronized == second.is_synchronized);
     const bool same_timeout = (first.is_timeout == second.is_timeout);
@@ -50,7 +48,7 @@ bool operator==(const TimeBaseStatus& first, const TimeBaseStatus& second) noexc
     return (same_sync && same_timeout && same_jump_future && same_jump_past && same_correct);
 }
 
-bool operator==(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept
+auto operator==(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept -> bool
 {
     const bool same_precise_origin_timestamp = (first.precise_origin_timestamp == second.precise_origin_timestamp);
     const bool same_reference_global_timestamp =
@@ -67,12 +65,12 @@ bool operator==(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noe
             same_port_number && same_clock_identity);
 }
 
-bool operator!=(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept
+auto operator!=(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept -> bool
 {
     return !(first == second);
 }
 
-bool operator==(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept
+auto operator==(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept -> bool
 {
     const bool same_request_origin_timestamp = (first.request_origin_timestamp == second.request_origin_timestamp);
     const bool same_request_receipt_timestamp = (first.request_receipt_timestamp == second.request_receipt_timestamp);
@@ -94,12 +92,12 @@ bool operator==(const PDelayDataSnapshot& first, const PDelayDataSnapshot& secon
             same_resp_port_number && same_resp_clock_identity);
 }
 
-bool operator!=(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept
+auto operator!=(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept -> bool
 {
     return !(first == second);
 }
 
-bool operator==(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept
+auto operator==(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept -> bool
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -111,7 +109,7 @@ bool operator==(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) n
     return (same_local && same_ptp && same_status && same_sync && same_pdelay && same_rate_deviation);
 }
 
-bool operator!=(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept
+auto operator!=(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept -> bool
 {
     return !(first == second);
 }
@@ -155,7 +153,7 @@ void TimeBaseSnapshot::CreateFrom(const PtpTimeInfo& info)
     pdelay_data.resp_port_number = info.pdelay_data.resp_port_number;
 }
 
-bool operator==(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept
+auto operator==(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept -> bool
 {
     const bool same_local = (ipcdata.local_time == static_cast<uint64_t>(data.local_time.time_since_epoch().count()));
 
@@ -197,32 +195,30 @@ bool operator==(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexce
     return (same_local && same_ptp && same_status && same_sync && same_pdelay && same_rate_deviation);
 }
 
-bool operator!=(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept
+auto operator!=(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept -> bool
 {
     return !(ipcdata == data);
 }
 
 /// \brief  gtest compatibility:
-void PrintTo(const TimeBaseStatus& status, std::ostream* os)
+void PrintTo(const TimeBaseStatus& status, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(status, *os);
+    std::ignore = PrintTo(status, *out_stream);
 }
 
-void PrintTo(const SyncFupSnapshot& data, std::ostream* os)
+void PrintTo(const SyncFupSnapshot& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const PDelayDataSnapshot& data, std::ostream* os)
+void PrintTo(const PDelayDataSnapshot& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const TimeBaseSnapshot& info, std::ostream* os)
+void PrintTo(const TimeBaseSnapshot& info, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(info, *os);
+    std::ignore = PrintTo(info, *out_stream);
 }
 
-}  // namespace svt
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::svt

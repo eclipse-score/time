@@ -17,9 +17,7 @@
 #include <ostream>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -32,24 +30,23 @@ class Topic
     Topic(const char* name) noexcept;
 
     Topic(const Topic&) = default;
-    Topic& operator=(const Topic&) noexcept = delete;
+    auto operator=(const Topic&) noexcept -> Topic& = delete;
     Topic(Topic&&) noexcept = default;
-    Topic& operator=(Topic&&) noexcept = delete;
+    auto operator=(Topic&&) noexcept -> Topic& = delete;
     ~Topic() noexcept = default;
 
-    const std::string& Name() const noexcept;
+    [[nodiscard]] auto Name() const noexcept -> const std::string&;
 
   private:
     std::string name_;
-    const std::size_t kMaxLength{32U};
+    static constexpr std::size_t kMaxLength{32U};
 };
 
-bool operator==(const Topic& lhs, const Topic& rhs) noexcept;
-bool operator!=(const Topic& lhs, const Topic& rhs) noexcept;
-bool operator<(const Topic& lhs, const Topic& rhs) noexcept;
+auto operator==(const Topic& lhs, const Topic& rhs) noexcept -> bool;
+auto operator!=(const Topic& lhs, const Topic& rhs) noexcept -> bool;
+auto operator<(const Topic& lhs, const Topic& rhs) noexcept -> bool;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 // Specialize hash for score::td::Topic
 namespace std
@@ -57,9 +54,9 @@ namespace std
 template <>
 struct hash<score::td::Topic>
 {
-    std::size_t operator()(const score::td::Topic& t) const noexcept
+    auto operator()(const score::td::Topic& topic) const noexcept -> std::size_t
     {
-        return std::hash<std::string>()(t.Name());
+        return std::hash<std::string>()(topic.Name());
     }
 };
 }  // namespace std

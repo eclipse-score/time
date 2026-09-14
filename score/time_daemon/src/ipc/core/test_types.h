@@ -17,9 +17,7 @@
 
 #include "score/time_daemon/src/ipc/data_converter.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace test
 {
@@ -30,7 +28,7 @@ struct FakeTimeInfo
     uint64_t local_time;
 };
 
-bool operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept
+auto operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept -> bool
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -38,7 +36,7 @@ bool operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept
     return (same_local && same_ptp);
 }
 
-bool operator!=(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept
+auto operator!=(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept -> bool
 {
     return !(first == second);
 }
@@ -57,7 +55,7 @@ void FakeTimeInfoIpc::CreateFrom(const FakeTimeInfo& info)
     local_time = info.local_time;
 }
 
-bool operator==(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept
+auto operator==(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept -> bool
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -65,12 +63,12 @@ bool operator==(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noe
     return (same_local && same_ptp);
 }
 
-bool operator!=(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept
+auto operator!=(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept -> bool
 {
     return !(first == second);
 }
 
-bool operator==(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept
+auto operator==(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept -> bool
 {
     const bool same_local = (data.local_time == ipcdata.local_time);
     const bool same_ptp = (data.ptp_assumed_time == ipcdata.ptp_assumed_time);
@@ -78,17 +76,17 @@ bool operator==(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexce
     return (same_local && same_ptp);
 }
 
-bool operator==(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept
+auto operator==(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept -> bool
 {
     return (data == ipcdata);
 }
 
-bool operator!=(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept
+auto operator!=(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept -> bool
 {
     return !(data == ipcdata);
 }
 
-bool operator!=(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept
+auto operator!=(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept -> bool
 {
     return !(ipcdata == data);
 }
@@ -101,7 +99,7 @@ bool operator!=(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexce
 template <>
 struct DataConverter<test::FakeTimeInfo, test::FakeTimeInfoIpc>
 {
-    static test::FakeTimeInfoIpc Convert(const test::FakeTimeInfo& src)
+    static auto Convert(const test::FakeTimeInfo& src) -> test::FakeTimeInfoIpc
     {
         test::FakeTimeInfoIpc dst{};
         dst.CreateFrom(src);
@@ -109,7 +107,6 @@ struct DataConverter<test::FakeTimeInfo, test::FakeTimeInfoIpc>
     }
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_IPC_CORE_TEST_TYPES_H

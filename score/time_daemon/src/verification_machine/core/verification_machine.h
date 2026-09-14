@@ -24,9 +24,7 @@
 #include <string>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -63,9 +61,9 @@ class VerificationMachine final : public ReactiveMachine, public Consumer<DataTy
     }
 
     VerificationMachine(const VerificationMachine&) = delete;
-    VerificationMachine& operator=(const VerificationMachine&) = delete;
+    auto operator=(const VerificationMachine&) -> VerificationMachine& = delete;
     VerificationMachine(VerificationMachine&&) = delete;
-    VerificationMachine& operator=(VerificationMachine&&) = delete;
+    auto operator=(VerificationMachine&&) -> VerificationMachine& = delete;
     ~VerificationMachine() override = default;
 
     /**
@@ -95,7 +93,7 @@ class VerificationMachine final : public ReactiveMachine, public Consumer<DataTy
      *
      * @param bool Init result
      */
-    bool Init() override;
+    auto Init() -> bool override;
 
   private:
     // Factory function type for creating validator stages with custom arguments
@@ -161,7 +159,7 @@ void VerificationMachine<DataType>::OnMessage(DataType data)
 }
 
 template <typename DataType>
-bool VerificationMachine<DataType>::Init()
+auto VerificationMachine<DataType>::Init() -> bool
 {
     return true;
 }
@@ -201,7 +199,6 @@ void VerificationMachine<DataType>::SetupPipeline(const std::vector<StageFactory
     pipeline_ = std::move(stages[0]);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H

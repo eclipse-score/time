@@ -15,9 +15,7 @@
 
 #include <functional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -47,9 +45,9 @@ class Producer
   protected:
     Producer() = default;
     Producer(const Producer&) = default;
-    Producer& operator=(const Producer&) = default;
+    auto operator=(const Producer&) -> Producer& = default;
     Producer(Producer&&) = default;
-    Producer& operator=(Producer&&) = default;
+    auto operator=(Producer&&) -> Producer& = default;
 
     /**
      * @brief Publishes the time information data using the registered callback.
@@ -63,7 +61,6 @@ class Producer
     virtual void Publish(const T& data) = 0;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_DATA_FLOW_PRODUCER_H

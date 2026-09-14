@@ -1,0 +1,44 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
+---
+# Default clang-tidy configuration for S-CORE C++ modules.
+# NOTE: the set of enabled checks is yet subject to be tailored per module.
+Checks: >-
+  -*,
+  clang-analyzer-*,
+  cert-*,
+  cppcoreguidelines-*,
+  bugprone-*,
+  misc-*,
+  performance-*,
+  readability-*,
+  modernize-*
+
+# NOTE: WarningsAsErrors is yet subject to be expanded per module as compliance increases.
+WarningsAsErrors: >-
+  clang-analyzer-*
+
+# HeaderFilterRegex is intentionally absent from the central baseline.
+# Each consuming module must set this in their local .clang-tidy to match
+# their own source tree (e.g., HeaderFilterRegex: 'score/mw/').
+# Setting it here would either suppress all header analysis (empty string)
+# or generate noise from external dependency headers (broad regex).
+# LLVM's regex engine does not reliably support POSIX lookaheads, so
+# negative-lookahead patterns like (?!.*/external/) must not be used here.
+
+FormatStyle: none
+
+# NOTE: CheckOptions are yet subject to be provided for each enabled check per module.
+#CheckOptions:
+# none yet
