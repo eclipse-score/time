@@ -11,8 +11,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-#ifndef SCORE_TIME_SLAVE_SRC_COMMON_ENVIRONMENT_H
-#define SCORE_TIME_SLAVE_SRC_COMMON_ENVIRONMENT_H
+#ifndef SCORE_TIME_SLAVE_SRC_COMMON_DEFINITIONS_H
+#define SCORE_TIME_SLAVE_SRC_COMMON_DEFINITIONS_H
 
 namespace score::ts::env
 {
@@ -43,4 +43,4 @@ static constexpr auto kRawSeeSentEnv = "QNX_RAW_SEESENT";
 }  // namespace qnx
 }  // namespace score::ts::env
 
-#endif  // SCORE_TIME_SLAVE_SRC_COMMON_ENVIRONMENT_H
+#endif  // SCORE_TIME_SLAVE_SRC_COMMON_DEFINITIONS_H

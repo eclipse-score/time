@@ -18,7 +18,7 @@ cc_library(
 )
 
 cc_library(
-    name = "environment",
-    hdrs = ["environment.h"],
+    name = "definitions",
+    hdrs = ["definitions.h"],
     visibility = ["//score/time_slave:__subpackages__"],
 )

@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 
-#include "score/time_slave/src/common/environment.h"
+#include "score/time_slave/src/common/definitions.h"
 
 #include <arpa/inet.h>
 #include <fcntl.h>

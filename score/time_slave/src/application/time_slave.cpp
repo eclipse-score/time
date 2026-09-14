@@ -14,7 +14,7 @@
 
 #include "score/mw/log/logging.h"
 #include "score/time_slave/src/application/configuration/config_parser.h"
-#include "score/time_slave/src/common/environment.h"
+#include "score/time_slave/src/common/definitions.h"
 #include "score/time_slave/src/common/logging_contexts.h"
 
 #include <cstdlib>

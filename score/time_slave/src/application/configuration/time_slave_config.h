@@ -13,7 +13,7 @@
 #ifndef SCORE_TIME_SLAVE_CONFIGURATION_TIME_SLAVE_CONFIG_H
 #define SCORE_TIME_SLAVE_CONFIGURATION_TIME_SLAVE_CONFIG_H
 
-#include "score/time_slave/src/common/environment.h"
+#include "score/time_slave/src/common/definitions.h"
 #include "score/time_slave/src/gptp/gptp_engine.h"
 #include "score/time_slave/src/gptp/phc/phc_adjuster.h"
 
