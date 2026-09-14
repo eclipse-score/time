@@ -32,7 +32,7 @@ Time Daemon
    :safety: ASIL_B
    :status: valid
    :version: 1
-   :belongs_to: feat__time
+   :belongs_to: feat__time[version==1]
 
 Abstract
 ========
@@ -50,10 +50,10 @@ The component operates as a continuous loop with the following stages:
 2. **Verification Pipeline**: Validates data through three checks:
 
    * Synchronization status validation
-   * Time jump detection (>500μs between consecutive frames)
-   * Timeout detection (no new data within 3.3 seconds)
+   * Timeout detection (no new time sync data within configured span of time)
+   * Time jump detection (received master timestamp deviates from its expected value by more than the configured threshold)
 
-3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface at a fixed 250ms interval
+3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface at a fixed interval
 
 Key Behaviors
 -------------
@@ -61,7 +61,9 @@ Key Behaviors
 **Startup Stabilization**: Synchronization state changes are not reported during the first 5 seconds after initial synchronization to avoid spurious time jump detection.
 
 **Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after 2 consecutive valid frames.
+**Startup Stabilization**: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.
 
+**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
 **Multi-Client Support**: Multiple client applications can concurrently read published time data.
 
 **Platform Support**: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.
