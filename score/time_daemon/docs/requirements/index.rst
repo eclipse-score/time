@@ -12,17 +12,17 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Component Time Daemon Requirements
+Time Daemon Component Requirements
 ##################################
 
 .. document:: Time Daemon Requirements
    :id: doc__time_daemon_requirements
-   :status: draft
+   :status: valid
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__requirements_comp[version==1]
-   :tags: time_daemon
+   :tags: requirements, time_daemon
 
 Functional Requirements
 -----------------------
@@ -40,7 +40,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall initialize the configured time synchronization data receiver, time data verification (synchronization validation, time jump detection, timeout detection), and IPC publisher during initialization. Initialization shall fail if not completed within 20 seconds.
+   On startup the time_daemon component shall determine its configuration, initialize the configured time synchronization data receiver, time data verification pipeline (synchronization validation, timeout detection, time jump detection), and IPC publisher. If initialization of any of those units fails, the time_daemon shall retry to initialize the respective unit. Overall initialization shall fail if not completed within 20 seconds and shall end the time_slave process.
 
 .. comp_req:: Component Shutdown
    :id: comp_req__time_daemon__shutdown
@@ -94,7 +94,7 @@ Verification Pipeline
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall not report time jumps during the first 5 seconds after initial synchronization to avoid spuriously detected time jumps during startup.
+   The time_daemon component shall not report time jumps during the configured time span (default: 5 seconds) after initial synchronization to avoid spuriously detected time jumps during startup.
 
 .. comp_req:: Time Jump Detection
    :id: comp_req__time_daemon__time_jump_detection
@@ -106,7 +106,7 @@ Verification Pipeline
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall detect time jumps when consecutive gPTP updates differ by more than 500 microseconds. Both forward and backward time jumps shall be detected.
+   The time_daemon component shall detect time jumps when the master clock timestamp of a gPTP time sync data update differs from the expected value by more than the configured time span (default: 500 microseconds). Both forward and backward time jumps shall be detected.
 
 .. comp_req:: Timeout Detection
    :id: comp_req__time_daemon__timeout_detection
@@ -118,7 +118,7 @@ Verification Pipeline
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall detect timeout condition when no new time synchronization data is received within 3.3 seconds.
+   The time_daemon component shall detect timeout condition when no new time synchronization data is received within the configured time span (default: 3.3 seconds).
 
 Data Publishing
 ^^^^^^^^^^^^^^^
@@ -133,7 +133,7 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall publish time data with the determined verification result to client applications via a lock-free non-blocking shared memory IPC interface.
+   The time_daemon component shall publish the verified time synchronization data to the time component linked as a library into client applications.
 
 .. comp_req:: Published Time Data Content
    :id: comp_req__time_daemon__published_data_content
@@ -145,7 +145,9 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall include in published time data: time value, synchronization status, time jump status, and timeout status.
+   The time_daemon component shall include in published time data: the timestamp of the master clock, the corresponding timestamp of the local reference clock, the rate deviation between those two clocks, synchronization status, time jump status, and timeout status.
+   
+   Also it shall include condensed raw data of the last received Sync/FollowUp pair and the last finished Pdelay measurement.
 
 .. comp_req:: Time Point Qualifier Production
    :id: comp_req__time_daemon__time_point_qualifier
@@ -169,7 +171,7 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall publish time data to client applications at a fixed interval of maximum 250 milliseconds.
+   The time_daemon component shall publish time data to client applications at a fixed configurable interval (default: 250 milliseconds).
 
 .. comp_req:: Non-Blocking Access Path
    :id: comp_req__time_daemon__non_blocking
@@ -193,7 +195,7 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall support concurrent lock-free read access from multiple client applications to the published time data.
+   The time_daemon component shall support concurrent non-blocking read access from multiple client applications to the published time data.
 
 Error Handling and Recovery
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
