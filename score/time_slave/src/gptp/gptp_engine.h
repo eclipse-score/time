@@ -60,13 +60,16 @@ struct GptpEngineOptions
 /// @b RxThread responsibilities:
 ///   1. Receive raw gPTP Ethernet frames with hardware timestamps from the NIC via raw sockets.
 ///   2. Decode and parse PTP messages (Sync, FollowUp, PdelayResp, PdelayRespFollowUp, PdelayReq).
-///   3a. Correlate Sync/FollowUp pairs and compute the clock offset and neighborRateRatio. Update @c pending_snapshot_ under @c snapshot_mutex_ protection.
-///   3b. Correlate PdelayResp/PdelayRespFollowUp pairs and sent PdelayReq using the PeerDelayMeasurer unit and compute the propagation delay as defined in the IEEE 802.1AS standard.
+///   3a. Correlate Sync/FollowUp pairs and compute the clock offset and neighborRateRatio. Update @c pending_snapshot_
+///   under @c snapshot_mutex_ protection.
+///   3b. Correlate PdelayResp/PdelayRespFollowUp pairs and sent PdelayReq using
+///   the PeerDelayMeasurer unit and compute the propagation delay as defined in the IEEE 802.1AS standard.
 ///   3c. React on incoming PdelayReq by sending PdelayResp and PdelayRespFollowUp
 ///
 /// @b PdelayThread responsibilities:
 ///   1. Delay sending the first PdelayReq by the configured pdelay_warmup timespan.
-///   2. Periodically trigger the PeerDelayMeasurer unit to send PdelayReq frames and capture hardware transmit timestamps.
+///   2. Periodically trigger the PeerDelayMeasurer unit to send PdelayReq frames and capture hardware transmit
+///   timestamps.
 ///
 /// @b Dual-snapshot design:
 ///   - @c pending_snapshot_: filled by the RxThread on every Sync+FollowUp.

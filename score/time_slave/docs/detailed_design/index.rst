@@ -134,9 +134,10 @@ Each control flow has dedicated thread and runs independently.
   #. receive raw gPTP Ethernet frames with hardware timestamps from NIC via raw sockets
   #. decode and parse PTP messages (Sync, FollowUp, PdelayResp, PdelayRespFollowUp, PdelayReq)
   #. depending on message type:
-    #. correlate Sync/FollowUp pairs and compute clock offset and neighborRateRatio. Update shared snapshot under mutex protection
-    #. correlate PdelayResp/PdelayRespFollowUp pairs with sent PdelayReq using the PeerDelayMeasurer unit and compute the propagation delay as defined in the IEEE 802.1AS standard
-    #. react on incoming PdelayReq by sending PdelayResp and PdelayRespFollowUp
+
+     #. correlate Sync/FollowUp pairs and compute clock offset and neighborRateRatio. Update shared snapshot under mutex protection
+     #. correlate PdelayResp/PdelayRespFollowUp pairs with sent PdelayReq using the PeerDelayMeasurer unit and compute the propagation delay as defined in the IEEE 802.1AS standard
+     #. react on incoming PdelayReq by sending PdelayResp and PdelayRespFollowUp
 
 - **PdelayThread scope**
 
