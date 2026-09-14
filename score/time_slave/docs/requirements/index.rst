@@ -316,6 +316,8 @@ Assumption of Use Requirements
    :version: 1
 
    If the user has high demands regarding the synchronization accuracy and precision, they must configure a NIC providing hardware timestamping and driver software support.
+
+
 .. needextend:: "c.this_doc()"
    :+tags: time_slave
 
