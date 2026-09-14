@@ -58,12 +58,10 @@ The component operates as a continuous loop with the following stages:
 Key Behaviors
 -------------
 
-**Startup Stabilization**: Synchronization state changes are not reported during the first 5 seconds after initial synchronization to avoid spurious time jump detection.
-
-**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after 2 consecutive valid frames.
 **Startup Stabilization**: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.
 
 **Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
+
 **Multi-Client Support**: Multiple client applications can concurrently read published time data.
 
 **Platform Support**: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.
