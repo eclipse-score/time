@@ -25,8 +25,8 @@ cc_binary(
     visibility = ["//score/time_slave:__pkg__"],
     deps = [
         "//score/time_slave/src/application/configuration",
-        "//score/time_slave/src/common:logging_contexts",
         "//score/time_slave/src/common:environment",
+        "//score/time_slave/src/common:logging_contexts",
         "//score/time_slave/src/gptp:gptp_engine",
         "//score/ts_client/src:gptp_ipc",
         "@score_baselibs//score/mw/log:console_only_backend",

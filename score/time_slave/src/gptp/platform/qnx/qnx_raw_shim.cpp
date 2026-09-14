@@ -227,10 +227,7 @@ static int open_tx_loopback_fd(const char* ifname) noexcept
     u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
     (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
 
-    struct bpf_program prog
-    {
-        kPdelayReqFilterLen, kPdelayReqFilterInsns
-    };
+    struct bpf_program prog{kPdelayReqFilterLen, kPdelayReqFilterInsns};
     if (::ioctl(fd, BIOCSETF, &prog) < 0)
     {
         ::close(fd);
@@ -288,10 +285,7 @@ extern "C" int qnx_raw_open(const char* ifname)
     u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
     (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
 
-    struct bpf_program prog
-    {
-        kPtp1588FilterLen, kPtp1588FilterInsns
-    };
+    struct bpf_program prog{kPtp1588FilterLen, kPtp1588FilterInsns};
     if (::ioctl(fd, BIOCSETF, &prog) < 0)
     {
         ::close(fd);
@@ -349,10 +343,7 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
         {
             if (nonblock == 0)
             {
-                struct pollfd pfd
-                {
-                    fd, POLLIN, 0
-                };
+                struct pollfd pfd{fd, POLLIN, 0};
                 const int pr = ::poll(&pfd, 1, 100);
                 if (pr < 0)
                     return -1;
