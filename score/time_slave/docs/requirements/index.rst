@@ -85,7 +85,7 @@ gPTP Message Processing
    :version: 1
    :satisfied_by: comp__time_slave
 
-   According to IEEE 802.1AS, the time_slave component shall only process received gPTP Sync and FollowUp messages matching the configured domain number (0-127 per IEEE 802.1AS). The time_slave component shall only process received gPTP Pdelay messages matching the domain number 0. It shall use the domain number 0 in send gPTP Pdelay messages.
+   According to IEEE 802.1AS, the time_slave component shall only process received gPTP Sync and FollowUp messages matching the configured domain number (0-127 per IEEE 802.1AS). The time_slave component shall ignore the domain number contained in received gPTP Pdelay messages. It shall set the domain number to 0 in sent gPTP Pdelay messages.
 
 .. comp_req:: Ethernet address usage
    :id: comp_req__time_slave__ethernet_address
@@ -97,7 +97,7 @@ gPTP Message Processing
    :version: 1
    :satisfied_by: comp__time_slave
 
-   The time_slave component shall receive IEEE 802.1AS event messages (Sync, Follow_Up, Pdelay_Resp, Pdelay_Resp_Follow_Up) sent to the Ethernet address specified in the IEEE 801.1AS standard. It shall send event messages (Pdelay_Req) to the same address.
+   The time_slave component shall receive the IEEE 802.1AS messages Sync, Follow_Up, PdelayReq, Pdelay_Resp, and Pdelay_Resp_Follow_Up sent to the Ethernet address specified in the IEEE 801.1AS standard. It shall send outgoing Pdelay messages (Pdelay_Req, Pdelay_Resp, and Pdelay_Resp_Follow_Up) to the same address.
 
 .. comp_req:: Sync Message Reception
    :id: comp_req__time_slave__sync_reception
@@ -145,7 +145,7 @@ gPTP Message Processing
    :version: 1
    :satisfied_by: comp__time_slave
 
-   The time_slave component shall transmit IEEE 802.1AS PDelayReq messages at the configured interval (configurable, default 1000 milliseconds) and record the transmit timestamp.
+   After the configured initial warmup delay (default: 2000 milliseconds), the time_slave component shall periodically transmit IEEE 802.1AS PDelayReq messages at the configured interval (default: 1000 milliseconds) and record the transmit timestamp.
 
 .. comp_req:: PDelayReq Response
    :id: comp_req__time_slave__pdelay_req_response
@@ -305,8 +305,17 @@ Assumption of Use Requirements
    :status: valid
    :version: 1
 
-   The user shall run exactly one time_slave instance per network interface to prevent gPTP protocol conflicts. Multiple instances binding to the same interface will cause raw socket binding failures or multicast group membership conflicts.
+   The user shall run exactly one time_slave instance only. Multiple instances are not supported and will cause failures or conflicts on the single IPC interface to the TimeDaemon.
 
+.. aou_req:: Hardware Timestamping Support
+   :id: aou_req__time_slave__hw_timestamping
+   :reqtype: Process
+   :security: NO
+   :safety: QM
+   :status: valid
+   :version: 1
+
+   If the user has high demands regarding the synchronization accuracy and precision, they must configure a NIC providing hardware timestamping and driver software support.
 .. needextend:: "c.this_doc()"
    :+tags: time_slave
 
