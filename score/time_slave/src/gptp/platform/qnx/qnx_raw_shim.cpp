@@ -10,6 +10,9 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+
+#include "score/time_slave/src/common/environment.h"
+
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <net/bpf.h>
@@ -65,7 +68,6 @@ struct GptpEthHdr
 
 static constexpr int64_t kNsPerSec = 1'000'000'000LL;
 static constexpr std::size_t kMaxBpfBufSz = 65536U;
-static constexpr const char* kQnxBpfDevicePrefixEnv = "QNX_BPF_DEVICE_PREFIX";
 
 // PHC frequency adjustment state (PI controller).
 // g_skip_freq_after_step: skip N cycles after a step correction so the
@@ -200,11 +202,11 @@ static int set_iface_promisc(const char* ifname) noexcept
 static int open_tx_loopback_fd(const char* ifname) noexcept
 {
     char devpath[256]{};
-    const char* bpf_env = std::getenv(kQnxBpfDevicePrefixEnv);
+    const char* bpf_env = std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv);
     if (bpf_env != nullptr && bpf_env[0] != '\0')
-        std::snprintf(devpath, sizeof(devpath), "%s/dev/bpf0", bpf_env);
+        std::snprintf(devpath, sizeof(devpath), "%s%s", bpf_env, score::ts::env::qnx::kBpfDeviceDefault);
     else
-        std::snprintf(devpath, sizeof(devpath), "/dev/bpf");
+        std::snprintf(devpath, sizeof(devpath), score::ts::env::qnx::kBpfDevicePrefixDefault);
 
     const int fd = ::open(devpath, O_RDWR);
     if (fd < 0)
@@ -225,7 +227,10 @@ static int open_tx_loopback_fd(const char* ifname) noexcept
     u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
     (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
 
-    struct bpf_program prog{kPdelayReqFilterLen, kPdelayReqFilterInsns};
+    struct bpf_program prog
+    {
+        kPdelayReqFilterLen, kPdelayReqFilterInsns
+    };
     if (::ioctl(fd, BIOCSETF, &prog) < 0)
     {
         ::close(fd);
@@ -253,11 +258,11 @@ extern "C" int qnx_raw_open(const char* ifname)
     ::strlcpy(g_qnx_ctx.iface_name, ifname, sizeof(g_qnx_ctx.iface_name));
 
     char devpath[256]{};
-    const char* bpf_env = std::getenv(kQnxBpfDevicePrefixEnv);
+    const char* bpf_env = std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv);
     if (bpf_env != nullptr && bpf_env[0] != '\0')
-        std::snprintf(devpath, sizeof(devpath), "%s/dev/bpf0", bpf_env);
+        std::snprintf(devpath, sizeof(devpath), "%s%s", bpf_env, score::ts::env::qnx::kBpfDeviceDefault);
     else
-        std::snprintf(devpath, sizeof(devpath), "/dev/bpf");
+        std::snprintf(devpath, sizeof(devpath), score::ts::env::qnx::kBpfDevicePrefixDefault);
 
     int fd = ::open(devpath, O_RDWR);
     if (fd < 0)
@@ -283,7 +288,10 @@ extern "C" int qnx_raw_open(const char* ifname)
     u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
     (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
 
-    struct bpf_program prog{kPtp1588FilterLen, kPtp1588FilterInsns};
+    struct bpf_program prog
+    {
+        kPtp1588FilterLen, kPtp1588FilterInsns
+    };
     if (::ioctl(fd, BIOCSETF, &prog) < 0)
     {
         ::close(fd);
@@ -341,7 +349,10 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
         {
             if (nonblock == 0)
             {
-                struct pollfd pfd{fd, POLLIN, 0};
+                struct pollfd pfd
+                {
+                    fd, POLLIN, 0
+                };
                 const int pr = ::poll(&pfd, 1, 100);
                 if (pr < 0)
                     return -1;
