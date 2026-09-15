@@ -58,15 +58,18 @@ jobs:
             | xargs cat 2>/dev/null > clang_tidy_findings.txt || true
 
       - name: Check violation baseline
-        # Baseline recorded on 2026-07-03. Decrease when violations are fixed.
+        # Scoped to score/time_daemon/ (#77): the repo-wide baseline no longer means much once
+        # the S-CORE check set actually runs everywhere — score/time, score/time_slave and
+        # score/ts_client have their own pre-existing findings tracked under #76/#78/#79.
         # Remove this step once https://github.com/eclipse-score/time/issues/111 is resolved.
         if: always()
         run: |
-          BASELINE=85
-          COUNT=$(wc -l < clang_tidy_findings.txt 2>/dev/null || echo 0)
-          echo "Clang-tidy violations: $COUNT (baseline: $BASELINE)"
+          BASELINE=0
+          COUNT=$(grep -cE "score/time_daemon/[^:]*:[0-9]+:[0-9]+: (warning|error):" clang_tidy_findings.txt 2>/dev/null || true)
+          COUNT=${COUNT:-0}
+          echo "Clang-tidy violations in score/time_daemon/: $COUNT (baseline: $BASELINE)"
           if [ "$COUNT" -gt "$BASELINE" ]; then
-            echo "::error::Clang-tidy violations grew: $COUNT > baseline $BASELINE. Fix new violations before merging."
+            echo "::error::Clang-tidy violations in score/time_daemon/ grew: $COUNT > baseline $BASELINE. Fix new violations before merging."
             exit 1
           fi
 
