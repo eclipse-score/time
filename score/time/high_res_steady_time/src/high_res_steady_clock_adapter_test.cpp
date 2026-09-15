@@ -28,11 +28,11 @@ namespace time
 
 TEST(HighResSteadyClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
 {
-    ::testing::Test::RecordProperty("FullyVerifies", "comp_req__high_res_steady_time__snapshot");
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__high_res_steady_time__snapshot");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
     ::testing::Test::RecordProperty("Description",
-                                    "HighResSteadyClock::Now returns a monotonic snapshot without requiring Init.");
+                                    "HighResSteadyClock::Now returns a timepoint suitable for duration arithmetic without requiring Init.");
 
     auto mock = std::make_shared<HighResSteadyClockBackendMock>();
     test_utils::ScopedClockOverride<HighResSteadyTime> guard{mock};

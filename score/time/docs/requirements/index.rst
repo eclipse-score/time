@@ -19,7 +19,7 @@ Time Component Requirements
    :id: doc__time_requirements
    :status: valid
    :version: 1
-   :safety: QM
+   :safety: ASIL_B
    :security: NO
    :realizes: wp__requirements_comp[version==1]
    :tags: requirements, time
@@ -31,7 +31,7 @@ Functional Requirements
    :id: comp_req__time__unified_clock_facade
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__high_res_clock_api, feat_req__time__monotonic_clock_api, feat_req__time__abs_base_api, feat_req__time__vehicle_time_time_api
    :status: valid
    :version: 1
@@ -46,7 +46,7 @@ Functional Requirements
    :id: comp_req__time__snapshot_with_status
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__vehicle_time_time_api
    :status: valid
    :version: 1
@@ -62,7 +62,7 @@ Functional Requirements
    :id: comp_req__time__explicit_lifecycle
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__vehicle_time_ctrl_flow
    :status: valid
    :version: 1
@@ -77,7 +77,7 @@ Functional Requirements
    :id: comp_req__vehicle_time__snapshot
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__vehicle_time_time_api
    :status: valid
    :version: 1
@@ -91,7 +91,7 @@ Functional Requirements
    :id: comp_req__vehicle_time__lifecycle
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__vehicle_time_ctrl_flow
    :status: valid
    :version: 1
@@ -106,7 +106,7 @@ Functional Requirements
    :id: comp_req__high_res_steady_time__snapshot
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__high_res_clock_api
    :status: valid
    :version: 1
@@ -119,7 +119,7 @@ Functional Requirements
    :id: comp_req__steady_time__snapshot
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__monotonic_clock_api
    :status: valid
    :version: 1
@@ -134,7 +134,7 @@ Functional Requirements
    :id: comp_req__system_time__snapshot
    :reqtype: Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :derived_from: feat_req__time__abs_base_api
    :status: valid
    :version: 1
@@ -149,7 +149,7 @@ Functional Requirements
    :id: comp_req__time__supported_platforms
    :reqtype: Non-Functional
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -165,7 +165,7 @@ Assumption of Use Requirements
    :id: aou_req__time__user_initializes_backend
    :reqtype: Process
    :security: NO
-   :safety: QM
+   :safety: ASIL_B
    :status: valid
    :version: 1
 
