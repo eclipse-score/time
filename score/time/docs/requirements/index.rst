@@ -12,7 +12,7 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-Component Time Requirements
+Time Component Requirements
 ###########################
 
 .. document:: Time Requirements
@@ -32,7 +32,7 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__high_prec_clock_api, feat_req__time__monotonic_clock_api, feat_req__time__abs_base_api, feat_req__time__vehicle_time_time_api
+   :derived_from: feat_req__time__high_res_clock_api, feat_req__time__monotonic_clock_api, feat_req__time__abs_base_api, feat_req__time__vehicle_time_time_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -107,12 +107,12 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__high_prec_clock_api
+   :derived_from: feat_req__time__high_res_clock_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time
 
-   The Component shall provide monotonic high-resolution time snapshots
+   The Component shall provide steady high-resolution time snapshots
    without requiring prior initialization.
 
 .. comp_req:: SteadyClock always-ready snapshot
