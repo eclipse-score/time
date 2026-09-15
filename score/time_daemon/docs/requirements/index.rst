@@ -31,7 +31,7 @@ Initialization and Lifecycle
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Component Initialization
-   :id: comp_req__time_daemon__initialization
+   :id: comp_req__time_daemon__startup
    :reqtype: Functional
    :security: NO
    :safety: ASIL_B
@@ -146,7 +146,7 @@ Data Publishing
    :satisfied_by: comp__time_daemon
 
    The time_daemon component shall include in published time data: the timestamp of the master clock, the corresponding timestamp of the local reference clock, the rate deviation between those two clocks, synchronization status, time jump status, and timeout status.
-   
+
    Also it shall include condensed raw data of the last received Sync/FollowUp pair and the last finished Pdelay measurement.
 
 .. comp_req:: Time Point Qualifier Production
