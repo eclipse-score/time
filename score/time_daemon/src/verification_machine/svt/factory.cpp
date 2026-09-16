@@ -43,8 +43,8 @@ auto CreateSvtVerificationMachine(const std::string& name) -> std::shared_ptr<Sv
         []() -> auto {
             return std::make_unique<TimeJumpsValidator>(score::time::HighResSteadyClock::GetInstance(),
                                                         kTimeJumpThreshold,
-                                                        kSyncDebounceThreshold,
-                                                        kValidFramesThreshold);
+                                                        kValidFramesThreshold,
+                                                        kSyncDebounceThreshold);
         });
 
     return machine;

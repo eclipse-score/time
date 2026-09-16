@@ -66,8 +66,8 @@ TEST_P(TimeJumpsValidatorParamTest, ValidationTest)
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     // Pass synchronized state debouncing
     EXPECT_CALL(*mock, Now())
@@ -107,8 +107,8 @@ TEST(TimeJumpsValidatorTest, JumpToPastWithinThresholdIsNotFlagged)
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     // Pass synchronized state debouncing
     EXPECT_CALL(*mock, Now())
@@ -153,8 +153,8 @@ TEST(TimeJumpsValidatorTest, JumpToFutureWithinThresholdIsNotFlagged)
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     // Pass synchronized state debouncing
     EXPECT_CALL(*mock, Now())
@@ -199,8 +199,8 @@ TEST(TimeJumpsValidatorTest, StaysInInitialSyncDebouncingWhenThresholdNotElapsed
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     EXPECT_CALL(*mock, Now())
         // Enter kInitialSyncDebouncing

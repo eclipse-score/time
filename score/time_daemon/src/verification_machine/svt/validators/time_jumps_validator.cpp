@@ -22,14 +22,10 @@
 namespace score::td
 {
 
-// NOLINTBEGIN(bugprone-easily-swappable-parameters) — debouncing_clock and max_time_jump_allowed
-// have unrelated, non-convertible types (ReferenceClock vs. chrono::nanoseconds), so swapping the
-// call-site arguments would fail to compile rather than silently misbehave.
 TimeJumpsValidator::TimeJumpsValidator(PtpTimeInfo::ReferenceClock debouncing_clock,
                                        std::chrono::nanoseconds max_time_jump_allowed,
-                                       std::chrono::nanoseconds sync_debounce_threshold,
-                                       std::uint8_t valid_frames_threshold)
-    // NOLINTEND(bugprone-easily-swappable-parameters)
+                                       std::uint8_t valid_frames_threshold,
+                                       std::chrono::nanoseconds sync_debounce_threshold)
     : max_time_jump_allowed_{max_time_jump_allowed},
       sync_debounce_threshold_{sync_debounce_threshold},
       valid_frames_threshold_{valid_frames_threshold},

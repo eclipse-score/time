@@ -27,17 +27,17 @@ namespace score::td
  * @param debouncing_clock - reference clock object - used to calculate time between when SYNC flag is set to the moment
  * when time jump validation is enabled
  * @param max_time_jump_allowed - threshold in nanoseconds to define max allowed time jump value
- * @param sync_debounce_threshold - threshold in nanoseconds to define max sync debounce time
  * @param valid_frames_threshold - threshold to define number of valid packages to receive to swith from time jump state
  * to normal
+ * @param sync_debounce_threshold - threshold in nanoseconds to define max sync debounce time
  */
 class TimeJumpsValidator : public VerificationStage<PtpTimeInfo>
 {
   public:
     TimeJumpsValidator(PtpTimeInfo::ReferenceClock debouncing_clock,
                        std::chrono::nanoseconds max_time_jump_allowed,
-                       std::chrono::nanoseconds sync_debounce_threshold,
-                       std::uint8_t valid_frames_threshold);
+                       std::uint8_t valid_frames_threshold,
+                       std::chrono::nanoseconds sync_debounce_threshold);
 
   protected:
     void DoValidation(PtpTimeInfo& data) override;
