@@ -55,7 +55,8 @@ class StubPTPEngine final
     ///
     /// \return true - deinitialize success, otherwise false
     ///
-    [[nodiscard]] auto Deinitialize() const -> bool;
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
+    auto Deinitialize() const -> bool;
 
     /// \brief Method that reads PTP snapshot from libgptp
     /// \param info Reference to PtpTimeInfo structure to fill with data

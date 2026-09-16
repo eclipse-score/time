@@ -37,7 +37,8 @@ class BaseMachine
 
     virtual ~BaseMachine() = default;
 
-    [[nodiscard]] auto GetName() const noexcept -> std::string
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
+    auto GetName() const noexcept -> std::string
     {
         return name_;
     }
