@@ -43,8 +43,8 @@ struct TimeSlaveConfig
     /// QNX-specific settings. Only relevant on QNX builds.
     struct QnxSettings
     {
-        std::string bpf_device_prefix = env::qnx::kBpfDevicePrefixDefault;  ///< BPF device path prefix.
-        bool see_sent = false;                                              ///< Deliver sent frames to RX BPF.
+        std::string bpf_device_path = env::qnx::kBpfDevicePathDefault;  ///< Complete BPF clone-device path.
+        bool see_sent = false;                                         ///< Deliver sent frames to RX BPF.
     };
 
     QnxSettings qnx{};

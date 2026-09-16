@@ -10,7 +10,7 @@
         "enabled": false
     },
     "qnx": {
-        "bpf_device_prefix": "/dev/bpf",
+        "bpf_device_path": "/dev/bpf",
         "see_sent": true
     }
 }

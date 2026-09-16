@@ -28,15 +28,11 @@ static constexpr auto kGptpInterfaceEnv = "GPTP_IFACE";
 
 namespace qnx
 {
-/// Environment variable name for the QNX BPF device prefix.
-/// Used to override the default BPF device prefix (e.g., "/dev/bpf") for raw socket operations.
-static constexpr auto kBpfDevicePrefixEnv = "QNX_BPF_DEVICE_PREFIX";
+/// Environment variable name for the QNX BPF clone-device path.
+static constexpr auto kBpfDevicePathEnv = "QNX_BPF_DEVICE_PATH";
 
-/// Default QNX BPF device prefix ("/dev/bpf").
-static constexpr auto kBpfDevicePrefixDefault = "/dev/bpf";
-
-/// Default QNX BPF device default("/dev/bpf0").
-static constexpr auto kBpfDeviceDefault = "/dev/bpf0";
+/// Default QNX BPF clone-device path.
+static constexpr auto kBpfDevicePathDefault = "/dev/bpf";
 
 /// Environment variable name for enabling raw SEE sent.
 static constexpr auto kRawSeeSentEnv = "QNX_RAW_SEESENT";
