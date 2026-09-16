@@ -49,7 +49,7 @@ TEST(ConfigParserTest, EmptyObjectReturnsDefaults)
     EXPECT_EQ(cfg.engine_opts.jump_future_threshold_ns, 500'000'000LL);
     EXPECT_EQ(cfg.shm_path, "/gptp_shmem");
     EXPECT_FALSE(cfg.engine_opts.phc_config.enabled);
-    EXPECT_EQ(cfg.qnx.bpf_device_prefix, "/dev/bpf");
+    EXPECT_EQ(cfg.qnx.bpf_device_prefix, score::ts::env::qnx::kBpfDevicePrefixDefault);
     EXPECT_FALSE(cfg.qnx.see_sent);
 }
 

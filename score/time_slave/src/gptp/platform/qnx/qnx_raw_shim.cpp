@@ -10,6 +10,9 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+
+#include "score/time_slave/src/common/definitions.h"
+
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <net/bpf.h>
@@ -199,11 +202,11 @@ static int set_iface_promisc(const char* ifname) noexcept
 static int open_tx_loopback_fd(const char* ifname) noexcept
 {
     char devpath[256]{};
-    const char* sock_env = std::getenv("SOCK");
-    if (sock_env != nullptr && sock_env[0] != '\0')
-        std::snprintf(devpath, sizeof(devpath), "%s/dev/bpf0", sock_env);
+    const char* bpf_env = std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv);
+    if (bpf_env != nullptr && bpf_env[0] != '\0')
+        std::snprintf(devpath, sizeof(devpath), "%s%s", bpf_env, score::ts::env::qnx::kBpfDeviceDefault);
     else
-        std::snprintf(devpath, sizeof(devpath), "/dev/bpf");
+        std::snprintf(devpath, sizeof(devpath), score::ts::env::qnx::kBpfDevicePrefixDefault);
 
     const int fd = ::open(devpath, O_RDWR);
     if (fd < 0)
@@ -252,11 +255,11 @@ extern "C" int qnx_raw_open(const char* ifname)
     ::strlcpy(g_qnx_ctx.iface_name, ifname, sizeof(g_qnx_ctx.iface_name));
 
     char devpath[256]{};
-    const char* sock_env = std::getenv("SOCK");
-    if (sock_env != nullptr && sock_env[0] != '\0')
-        std::snprintf(devpath, sizeof(devpath), "%s/dev/bpf0", sock_env);
+    const char* bpf_env = std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv);
+    if (bpf_env != nullptr && bpf_env[0] != '\0')
+        std::snprintf(devpath, sizeof(devpath), "%s%s", bpf_env, score::ts::env::qnx::kBpfDeviceDefault);
     else
-        std::snprintf(devpath, sizeof(devpath), "/dev/bpf");
+        std::snprintf(devpath, sizeof(devpath), score::ts::env::qnx::kBpfDevicePrefixDefault);
 
     int fd = ::open(devpath, O_RDWR);
     if (fd < 0)

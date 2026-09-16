@@ -14,6 +14,7 @@
 
 #include "score/mw/log/logging.h"
 #include "score/time_slave/src/application/configuration/config_parser.h"
+#include "score/time_slave/src/common/definitions.h"
 #include "score/time_slave/src/common/logging_contexts.h"
 
 #include <cstdlib>
@@ -48,13 +49,14 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     {
         config_path = cli_config;
     }
-    else if (const char* env_config = std::getenv("TIMESLAVE_CONFIG"); env_config != nullptr && env_config[0] != '\0')
+    else if (const char* env_config = std::getenv(score::ts::env::kTimeSlaveConfigEnv);
+             env_config != nullptr && env_config[0] != '\0')
     {
         config_path = env_config;
     }
     else
     {
-        config_path = "./etc/time_slave_config.json";
+        config_path = score::ts::env::kTimeSlaveConfigDefaultPath;
     }
 
     TimeSlaveConfig cfg;
@@ -74,7 +76,8 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     }
 
     // Legacy env-var override: GPTP_IFACE overrides iface_name.
-    if (const char* iface_env = std::getenv("GPTP_IFACE"); iface_env != nullptr && iface_env[0] != '\0')
+    if (const char* iface_env = std::getenv(score::ts::env::kGptpInterfaceEnv);
+        iface_env != nullptr && iface_env[0] != '\0')
     {
         opts_.iface_name = iface_env;
         score::mw::log::LogInfo(kTimeSlaveAppContext) << "Using interface from GPTP_IFACE: " << opts_.iface_name;
@@ -83,13 +86,15 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     // Apply QNX-specific settings via environment variables (read by the QNX
     // raw-socket shim). Pre-existing env vars are never overridden so users can
     // still override at the command line.
-    if (!cfg.qnx.bpf_device_prefix.empty() && std::getenv("SOCK") == nullptr)
+    // NOTE: do not write to SOCK here. On QNX that variable is used by socket
+    // APIs; setting it to a BPF device path can break socket/getifaddrs calls.
+    if (!cfg.qnx.bpf_device_prefix.empty() && std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv) == nullptr)
     {
-        ::setenv("SOCK", cfg.qnx.bpf_device_prefix.c_str(), 0);
+        ::setenv(score::ts::env::qnx::kBpfDevicePrefixEnv, cfg.qnx.bpf_device_prefix.c_str(), 0);
     }
-    if (cfg.qnx.see_sent && std::getenv("QNX_RAW_SEESENT") == nullptr)
+    if (cfg.qnx.see_sent && std::getenv(score::ts::env::qnx::kRawSeeSentEnv) == nullptr)
     {
-        ::setenv("QNX_RAW_SEESENT", "1", 0);
+        ::setenv(score::ts::env::qnx::kRawSeeSentEnv, "1", 0);
     }
 
     engine_ = std::make_unique<details::GptpEngine>(opts_);
