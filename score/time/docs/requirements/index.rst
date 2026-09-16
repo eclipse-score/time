@@ -32,7 +32,7 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: ASIL_B
-   :derived_from: feat_req__time__high_res_clock_api, feat_req__time__monotonic_clock_api, feat_req__time__abs_base_api, feat_req__time__vehicle_time_time_api
+   :derived_from: feat_req__time__high_prec_clock_api, feat_req__time__monotonic_clock_api, feat_req__time__abs_base_api, feat_req__time__vehicle_time_time_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time
@@ -107,7 +107,7 @@ Functional Requirements
    :reqtype: Functional
    :security: NO
    :safety: ASIL_B
-   :derived_from: feat_req__time__high_res_clock_api
+   :derived_from: feat_req__time__high_prec_clock_api
    :status: valid
    :version: 1
    :satisfied_by: comp__time
