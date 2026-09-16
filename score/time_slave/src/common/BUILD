@@ -16,3 +16,9 @@ cc_library(
     hdrs = ["logging_contexts.h"],
     visibility = ["//score/time_slave:__subpackages__"],
 )
+
+cc_library(
+    name = "definitions",
+    hdrs = ["definitions.h"],
+    visibility = ["//score/time_slave:__subpackages__"],
+)
