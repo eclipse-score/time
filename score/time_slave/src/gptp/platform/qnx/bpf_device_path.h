@@ -22,7 +22,7 @@ namespace score::ts::details
 constexpr const char* ResolveBpfDevicePath(const char* configured_path) noexcept
 {
     return (configured_path != nullptr && configured_path[0] != '\0') ? configured_path
-                                                                       : env::qnx::kBpfDevicePathDefault;
+                                                                      : env::qnx::kBpfDevicePathDefault;
 }
 
 }  // namespace score::ts::details
