@@ -14,24 +14,10 @@
 filegroup(
     name = "raw_socket_src",
     srcs = [
-        "bpf_device_path.h",
         "qnx_raw_shim.cpp",
         "raw_socket.cpp",
     ],
     visibility = ["//score:__subpackages__"],
-)
-
-cc_test(
-    name = "bpf_device_path_test",
-    srcs = [
-        "bpf_device_path.h",
-        "bpf_device_path_test.cpp",
-    ],
-    tags = ["unit"],
-    deps = [
-        "//score/time_slave/src/common:definitions",
-        "@googletest//:gtest_main",
-    ],
 )
 
 filegroup(
