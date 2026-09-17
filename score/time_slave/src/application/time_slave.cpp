@@ -88,9 +88,9 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     // still override at the command line.
     // NOTE: do not write to SOCK here. On QNX that variable is used by socket
     // APIs; setting it to a BPF device path can break socket/getifaddrs calls.
-    if (!cfg.qnx.bpf_device_prefix.empty() && std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv) == nullptr)
+    if (!cfg.qnx.bpf_device_path.empty() && std::getenv(score::ts::env::qnx::kBpfDevicePathEnv) == nullptr)
     {
-        ::setenv(score::ts::env::qnx::kBpfDevicePrefixEnv, cfg.qnx.bpf_device_prefix.c_str(), 0);
+        ::setenv(score::ts::env::qnx::kBpfDevicePathEnv, cfg.qnx.bpf_device_path.c_str(), 0);
     }
     if (cfg.qnx.see_sent && std::getenv(score::ts::env::qnx::kRawSeeSentEnv) == nullptr)
     {

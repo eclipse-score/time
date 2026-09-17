@@ -199,16 +199,15 @@ static int set_iface_promisc(const char* ifname) noexcept
     return s;  // keep open — closed in ~QnxRawContext()
 }
 
+static const char* get_bpf_device_path() noexcept
+{
+    return score::ts::env::GetEnvWithDefault(score::ts::env::qnx::kBpfDevicePathEnv,
+                                             score::ts::env::qnx::kBpfDevicePathDefault);
+}
+
 static int open_tx_loopback_fd(const char* ifname) noexcept
 {
-    char devpath[256]{};
-    const char* bpf_env = std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv);
-    if (bpf_env != nullptr && bpf_env[0] != '\0')
-        std::snprintf(devpath, sizeof(devpath), "%s%s", bpf_env, score::ts::env::qnx::kBpfDeviceDefault);
-    else
-        std::snprintf(devpath, sizeof(devpath), score::ts::env::qnx::kBpfDevicePrefixDefault);
-
-    const int fd = ::open(devpath, O_RDWR);
+    const int fd = ::open(get_bpf_device_path(), O_RDWR);
     if (fd < 0)
         return -1;
 
@@ -254,14 +253,7 @@ extern "C" int qnx_raw_open(const char* ifname)
 
     ::strlcpy(g_qnx_ctx.iface_name, ifname, sizeof(g_qnx_ctx.iface_name));
 
-    char devpath[256]{};
-    const char* bpf_env = std::getenv(score::ts::env::qnx::kBpfDevicePrefixEnv);
-    if (bpf_env != nullptr && bpf_env[0] != '\0')
-        std::snprintf(devpath, sizeof(devpath), "%s%s", bpf_env, score::ts::env::qnx::kBpfDeviceDefault);
-    else
-        std::snprintf(devpath, sizeof(devpath), score::ts::env::qnx::kBpfDevicePrefixDefault);
-
-    int fd = ::open(devpath, O_RDWR);
+    int fd = ::open(get_bpf_device_path(), O_RDWR);
     if (fd < 0)
         return -1;
 

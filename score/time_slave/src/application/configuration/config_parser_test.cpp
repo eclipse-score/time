@@ -49,7 +49,7 @@ TEST(ConfigParserTest, EmptyObjectReturnsDefaults)
     EXPECT_EQ(cfg.engine_opts.jump_future_threshold_ns, 500'000'000LL);
     EXPECT_EQ(cfg.shm_path, "/gptp_shmem");
     EXPECT_FALSE(cfg.engine_opts.phc_config.enabled);
-    EXPECT_EQ(cfg.qnx.bpf_device_prefix, score::ts::env::qnx::kBpfDevicePrefixDefault);
+    EXPECT_EQ(cfg.qnx.bpf_device_path, score::ts::env::qnx::kBpfDevicePathDefault);
     EXPECT_FALSE(cfg.qnx.see_sent);
 }
 
@@ -97,14 +97,14 @@ TEST(ConfigParserTest, ParseQnxConfig)
 {
     const std::string json = R"({
         "qnx": {
-            "bpf_device_prefix": "/dev/bpf_test",
+            "bpf_device_path": "/dev/bpf_test",
             "see_sent": true
         }
     })";
     const auto path = WriteTempFile("qnx_config.json", json);
     const auto cfg = ParseConfig(path);
 
-    EXPECT_EQ(cfg.qnx.bpf_device_prefix, "/dev/bpf_test");
+    EXPECT_EQ(cfg.qnx.bpf_device_path, "/dev/bpf_test");
     EXPECT_TRUE(cfg.qnx.see_sent);
 }
 
@@ -142,7 +142,7 @@ TEST(ConfigParserTest, FullExampleConfigRoundTrip)
                                     "        \"step_threshold_ns\": 100000000\n"
                                     "    },\n"
                                     "    \"qnx\": {\n"
-                                    "        \"bpf_device_prefix\": \"/dev/bpf\",\n"
+                                    "        \"bpf_device_path\": \"/dev/bpf\",\n"
                                     "        \"see_sent\": true\n"
                                     "    }\n"
                                     "}\n");
@@ -159,7 +159,7 @@ TEST(ConfigParserTest, FullExampleConfigRoundTrip)
     EXPECT_TRUE(cfg.engine_opts.phc_config.enabled);
     EXPECT_EQ(cfg.engine_opts.phc_config.device, "emac0");
     EXPECT_EQ(cfg.engine_opts.phc_config.step_threshold_ns, 100'000'000);
-    EXPECT_EQ(cfg.qnx.bpf_device_prefix, "/dev/bpf");
+    EXPECT_EQ(cfg.qnx.bpf_device_path, "/dev/bpf");
     EXPECT_TRUE(cfg.qnx.see_sent);
 }
 
