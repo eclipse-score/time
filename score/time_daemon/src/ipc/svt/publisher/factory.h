@@ -25,7 +25,7 @@ namespace score::td
 ///
 /// \return Ipc publisher implementation for svt
 ///
-auto CreateSvtPublisher(const std::string& machine_name) -> std::shared_ptr<SvtPublisher>;
+std::shared_ptr<SvtPublisher> CreateSvtPublisher(const std::string& machine_name);
 
 }  // namespace score::td
 

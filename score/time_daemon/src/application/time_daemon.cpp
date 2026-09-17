@@ -30,7 +30,7 @@ TimeDaemon::TimeDaemon()
     svt_timebase_handler_ = CreateSvtTimebase();
 }
 
-auto TimeDaemon::Initialize(const score::mw::lifecycle::ApplicationContext& /*context*/) -> std::int32_t
+std::int32_t TimeDaemon::Initialize(const score::mw::lifecycle::ApplicationContext& /*context*/)
 {
     score::mw::log::LogInfo(kAppContext) << "TimeDaemon initializing...";
 
@@ -40,7 +40,7 @@ auto TimeDaemon::Initialize(const score::mw::lifecycle::ApplicationContext& /*co
     return EXIT_SUCCESS;
 }
 
-auto TimeDaemon::Run(const score::cpp::stop_token& token) -> std::int32_t
+std::int32_t TimeDaemon::Run(const score::cpp::stop_token& token)
 {
     score::mw::log::LogInfo(kAppContext) << "Run() started";
 

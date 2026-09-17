@@ -36,8 +36,8 @@ class StubPTPEngine final
   public:
     explicit StubPTPEngine(PtpTimeInfo::ReferenceClock local_clock) noexcept;
     ~StubPTPEngine() noexcept = default;
-    auto operator=(const StubPTPEngine&) & noexcept -> StubPTPEngine& = delete;
-    auto operator=(StubPTPEngine&&) & noexcept -> StubPTPEngine& = delete;
+    StubPTPEngine& operator=(const StubPTPEngine&) & noexcept = delete;
+    StubPTPEngine& operator=(StubPTPEngine&&) & noexcept = delete;
     StubPTPEngine(const StubPTPEngine&) noexcept = delete;
     StubPTPEngine(StubPTPEngine&&) noexcept = delete;
 
@@ -49,38 +49,38 @@ class StubPTPEngine final
     // ShmPTPEngine (the other PTPEngine implementations), even though this particular stub
     // doesn't need instance state — PTPEngine implementations are meant to be interchangeable.
     // (clang-tidy flags this at the definition in the .cpp, not here.)
-    [[nodiscard]] auto Initialize() const -> bool;
+    [[nodiscard]] bool Initialize() const;
 
     /// \brief Method to deinitialize libgptp client
     ///
     /// \return true - deinitialize success, otherwise false
     ///
     // NOLINTNEXTLINE(modernize-use-nodiscard)
-    auto Deinitialize() const -> bool;
+    bool Deinitialize() const;
 
     /// \brief Method that reads PTP snapshot from libgptp
     /// \param info Reference to PtpTimeInfo structure to fill with data
     /// \return true - read success, otherwise false
     ///
-    auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool;
+    bool ReadPTPSnapshot(PtpTimeInfo& info);
 
     /// \brief Method that calls Libgptp and read current time, timebase status and rate deviation
     ///
     /// \param time_info Reference to PtpTimeInfo structure to fill with data
     ///
-    auto ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept -> bool;
+    bool ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept;
 
     /// \brief Method that calls libgptp and read last PDelay ptp data
     ///
     /// \param time_info Reference to PtpTimeInfo structure to fill with PDelay data
     ///
-    auto ReadPDelayMeasurementData(PtpTimeInfo& time_info) const noexcept -> bool;
+    bool ReadPDelayMeasurementData(PtpTimeInfo& time_info) const noexcept;
 
     /// \brief Method that calls libgptp and read last Sync ptp data
     ///
     /// \param time_info Reference to PtpTimeInfo structure to fill with Sync data
     ///
-    auto ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept -> bool;
+    bool ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept;
 
   private:
     PtpTimeInfo::ReferenceClock local_clock_;

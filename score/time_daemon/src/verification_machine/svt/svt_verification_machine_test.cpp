@@ -53,7 +53,7 @@ TEST_F(SvtVerificationMachineTest, HandlesPipelineValidation)
     bool publish_called = false;
     PtpTimeInfo published_data;
 
-    vm->SetPublishCallback([&](const PtpTimeInfo& data) -> void {
+    vm->SetPublishCallback([&](const PtpTimeInfo& data) {
         publish_called = true;
         published_data = data;
     });

@@ -25,7 +25,7 @@ namespace score::td
 ///
 /// \return Ipc receiver implementation for svt
 ///
-auto CreateSvtReceiver() -> std::shared_ptr<SvtReceiver>;
+std::shared_ptr<SvtReceiver> CreateSvtReceiver();
 
 }  // namespace score::td
 

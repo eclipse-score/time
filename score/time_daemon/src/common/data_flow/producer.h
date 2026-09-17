@@ -45,9 +45,9 @@ class Producer
   protected:
     Producer() = default;
     Producer(const Producer&) = default;
-    auto operator=(const Producer&) -> Producer& = default;
+    Producer& operator=(const Producer&) = default;
     Producer(Producer&&) = default;
-    auto operator=(Producer&&) -> Producer& = default;
+    Producer& operator=(Producer&&) = default;
 
     /**
      * @brief Publishes the time information data using the registered callback.

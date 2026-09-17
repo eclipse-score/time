@@ -20,8 +20,8 @@
 namespace score::td
 {
 
-auto CreatePtpControlFlowDivider(const std::string& name, std::chrono::milliseconds timeout)
-    -> std::shared_ptr<PtpControlFlowDivider>
+std::shared_ptr<PtpControlFlowDivider> CreatePtpControlFlowDivider(const std::string& name,
+                                                                   std::chrono::milliseconds timeout)
 {
     return std::make_shared<PtpControlFlowDivider>(name, timeout);
 }

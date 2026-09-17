@@ -53,7 +53,7 @@ void TimeJumpsValidator::DoValidation(PtpTimeInfo& data)
     }
 }
 
-auto TimeJumpsValidator::IsTimeJumpDetected(const PtpTimeInfo& data) -> bool
+bool TimeJumpsValidator::IsTimeJumpDetected(const PtpTimeInfo& data)
 {
     bool is_time_jump_detected{false};
 

@@ -23,7 +23,7 @@ namespace score::td
 namespace
 {
 
-auto MakePtpInfo() -> PtpTimeInfo
+PtpTimeInfo MakePtpInfo()
 {
     PtpTimeInfo info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{1234};
@@ -35,7 +35,7 @@ auto MakePtpInfo() -> PtpTimeInfo
     return info;
 }
 
-auto MakeSnapshot() -> svt::TimeBaseSnapshot
+svt::TimeBaseSnapshot MakeSnapshot()
 {
     svt::TimeBaseSnapshot snapshot{};
     snapshot.ptp_assumed_time = 1234U;
@@ -70,19 +70,19 @@ TEST(TimeBaseStatusTest, NotEqualsWhenEachFieldDiffers)
     const svt::TimeBaseStatus baseline{true, false, true, false, true};
 
     const std::vector<std::function<void(svt::TimeBaseStatus&)>> mutations = {
-        [](svt::TimeBaseStatus& value) -> void {
+        [](svt::TimeBaseStatus& value) {
             value.is_synchronized = !value.is_synchronized;
         },
-        [](svt::TimeBaseStatus& value) -> void {
+        [](svt::TimeBaseStatus& value) {
             value.is_timeout = !value.is_timeout;
         },
-        [](svt::TimeBaseStatus& value) -> void {
+        [](svt::TimeBaseStatus& value) {
             value.is_time_jump_future = !value.is_time_jump_future;
         },
-        [](svt::TimeBaseStatus& value) -> void {
+        [](svt::TimeBaseStatus& value) {
             value.is_time_jump_past = !value.is_time_jump_past;
         },
-        [](svt::TimeBaseStatus& value) -> void {
+        [](svt::TimeBaseStatus& value) {
             value.is_correct = !value.is_correct;
         },
     };
@@ -116,31 +116,31 @@ TEST(SyncFupSnapshotTest, NotEqualsWhenEachFieldDiffers)
     const svt::SyncFupSnapshot baseline{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U};
 
     const std::vector<std::function<void(svt::SyncFupSnapshot&)>> mutations = {
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.precise_origin_timestamp += 10U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.reference_global_timestamp += 10U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.reference_local_timestamp += 10U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.sync_ingress_timestamp += 10U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.correction_field += 10U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.sequence_id += 1U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.pdelay += 10U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.port_number += 1U;
         },
-        [](svt::SyncFupSnapshot& value) -> void {
+        [](svt::SyncFupSnapshot& value) {
             value.clock_identity += 10U;
         },
     };
@@ -174,40 +174,40 @@ TEST(PDelayDataSnapshotTest, NotEqualsWhenEachFieldDiffers)
     const svt::PDelayDataSnapshot baseline{1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U};
 
     const std::vector<std::function<void(svt::PDelayDataSnapshot&)>> mutations = {
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.request_origin_timestamp += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.request_receipt_timestamp += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.response_origin_timestamp += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.response_receipt_timestamp += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.reference_global_timestamp += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.reference_local_timestamp += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.sequence_id += 1U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.pdelay += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.req_port_number += 1U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.req_clock_identity += 10U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.resp_port_number += 1U;
         },
-        [](svt::PDelayDataSnapshot& value) -> void {
+        [](svt::PDelayDataSnapshot& value) {
             value.resp_clock_identity += 10U;
         },
     };
@@ -291,22 +291,22 @@ TEST(TimeBaseSnapshotTest, NotEqualsPtpTimeInfoWhenEachTopLevelFieldDiffers)
     const svt::TimeBaseSnapshot baseline = MakeSnapshot();
 
     const std::vector<std::function<void(svt::TimeBaseSnapshot&)>> mutations = {
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.local_time += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.ptp_assumed_time += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.status.is_correct = !value.status.is_correct;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.sequence_id += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.sequence_id += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.rate_deviation += std::numeric_limits<double>::epsilon() * 4.0;
         },
     };
@@ -325,19 +325,19 @@ TEST(TimeBaseSnapshotTest, NotEqualsPtpTimeInfoWhenAnyStatusFieldDiffers)
     const svt::TimeBaseSnapshot baseline = MakeSnapshot();
 
     const std::vector<std::function<void(svt::TimeBaseSnapshot&)>> mutations = {
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.status.is_correct = !value.status.is_correct;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.status.is_synchronized = !value.status.is_synchronized;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.status.is_timeout = !value.status.is_timeout;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.status.is_time_jump_future = !value.status.is_time_jump_future;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.status.is_time_jump_past = !value.status.is_time_jump_past;
         },
     };
@@ -356,31 +356,31 @@ TEST(TimeBaseSnapshotTest, NotEqualsPtpTimeInfoWhenAnySyncFieldDiffers)
     const svt::TimeBaseSnapshot baseline = MakeSnapshot();
 
     const std::vector<std::function<void(svt::TimeBaseSnapshot&)>> mutations = {
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.clock_identity += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.correction_field += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.port_number += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.precise_origin_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.reference_global_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.reference_local_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.sequence_id += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.sync_ingress_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.pdelay += 10U;
         },
     };
@@ -399,40 +399,40 @@ TEST(TimeBaseSnapshotTest, NotEqualsPtpTimeInfoWhenAnyPdelayFieldDiffers)
     const svt::TimeBaseSnapshot baseline = MakeSnapshot();
 
     const std::vector<std::function<void(svt::TimeBaseSnapshot&)>> mutations = {
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.req_clock_identity += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.req_port_number += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.request_origin_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.request_receipt_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.response_origin_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.response_receipt_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.reference_global_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.reference_local_timestamp += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.sequence_id += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.pdelay += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.resp_clock_identity += 10U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.resp_port_number += 1U;
         },
     };
@@ -450,22 +450,22 @@ TEST(TimeBaseSnapshotTest, NotEqualsWhenEachTopLevelFieldDiffers)
     const svt::TimeBaseSnapshot baseline = MakeSnapshot();
 
     const std::vector<std::function<void(svt::TimeBaseSnapshot&)>> mutations = {
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.local_time += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.ptp_assumed_time += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.status.is_correct = !value.status.is_correct;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.sync_fup_data.sequence_id += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.pdelay_data.sequence_id += 1U;
         },
-        [](svt::TimeBaseSnapshot& value) -> void {
+        [](svt::TimeBaseSnapshot& value) {
             value.rate_deviation += std::numeric_limits<double>::epsilon() * 4.0;
         },
     };

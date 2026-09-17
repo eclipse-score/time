@@ -50,7 +50,7 @@ void JobRunner::Start(const score::cpp::stop_token& token)
     });
 }
 
-auto JobRunner::RunJobs(const score::cpp::stop_token& token) -> bool
+bool JobRunner::RunJobs(const score::cpp::stop_token& token)
 {
     bool all_success = true;
 
@@ -98,7 +98,7 @@ auto JobRunner::RunJobs(const score::cpp::stop_token& token) -> bool
     return all_success;
 }
 
-auto JobRunner::GetResult() const -> JobRunner::Result
+JobRunner::Result JobRunner::GetResult() const
 {
     const std::lock_guard<std::mutex> lock(status_mutex_);
     return status_;

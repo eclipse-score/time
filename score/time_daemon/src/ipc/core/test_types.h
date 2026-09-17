@@ -28,7 +28,7 @@ struct FakeTimeInfo
     uint64_t local_time;
 };
 
-auto operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept -> bool
+bool operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -36,7 +36,7 @@ auto operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept 
     return (same_local && same_ptp);
 }
 
-auto operator!=(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept -> bool
+bool operator!=(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept
 {
     return !(first == second);
 }
@@ -55,7 +55,7 @@ void FakeTimeInfoIpc::CreateFrom(const FakeTimeInfo& info)
     local_time = info.local_time;
 }
 
-auto operator==(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept -> bool
+bool operator==(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -63,12 +63,12 @@ auto operator==(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noe
     return (same_local && same_ptp);
 }
 
-auto operator!=(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept -> bool
+bool operator!=(const FakeTimeInfoIpc& first, const FakeTimeInfoIpc& second) noexcept
 {
     return !(first == second);
 }
 
-auto operator==(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept -> bool
+bool operator==(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept
 {
     const bool same_local = (data.local_time == ipcdata.local_time);
     const bool same_ptp = (data.ptp_assumed_time == ipcdata.ptp_assumed_time);
@@ -76,17 +76,17 @@ auto operator==(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexce
     return (same_local && same_ptp);
 }
 
-auto operator==(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept -> bool
+bool operator==(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept
 {
     return (data == ipcdata);
 }
 
-auto operator!=(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept -> bool
+bool operator!=(const FakeTimeInfo& data, const FakeTimeInfoIpc& ipcdata) noexcept
 {
     return !(data == ipcdata);
 }
 
-auto operator!=(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept -> bool
+bool operator!=(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexcept
 {
     return !(ipcdata == data);
 }
@@ -99,7 +99,7 @@ auto operator!=(const FakeTimeInfoIpc& ipcdata, const FakeTimeInfo& data) noexce
 template <>
 struct DataConverter<test::FakeTimeInfo, test::FakeTimeInfoIpc>
 {
-    static auto Convert(const test::FakeTimeInfo& src) -> test::FakeTimeInfoIpc
+    static test::FakeTimeInfoIpc Convert(const test::FakeTimeInfo& src)
     {
         test::FakeTimeInfoIpc dst{};
         dst.CreateFrom(src);

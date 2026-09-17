@@ -43,9 +43,9 @@ class Consumer
   protected:
     Consumer() = default;
     Consumer(const Consumer&) = default;
-    auto operator=(const Consumer&) -> Consumer& = default;
+    Consumer& operator=(const Consumer&) = default;
     Consumer(Consumer&&) = default;
-    auto operator=(Consumer&&) -> Consumer& = default;
+    Consumer& operator=(Consumer&&) = default;
 };
 
 }  // namespace score::td

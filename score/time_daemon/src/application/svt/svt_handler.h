@@ -42,8 +42,8 @@ class SvtHandler : public TimebaseHandler
     ~SvtHandler() noexcept override = default;
     SvtHandler(const SvtHandler&) = delete;
     SvtHandler(SvtHandler&&) = delete;
-    auto operator=(const SvtHandler&) -> SvtHandler& = delete;
-    auto operator=(SvtHandler&&) -> SvtHandler& = delete;
+    SvtHandler& operator=(const SvtHandler&) = delete;
+    SvtHandler& operator=(SvtHandler&&) = delete;
 
     /// \brief Initializes the SVT timebase handler
     ///

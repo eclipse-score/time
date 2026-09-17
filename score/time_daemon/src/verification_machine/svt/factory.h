@@ -25,7 +25,7 @@ namespace score::td
  *
  * @return A fully configured SvtVerificationMachine instance
  */
-auto CreateSvtVerificationMachine(const std::string& name) -> std::shared_ptr<SvtVerificationMachine>;
+std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::string& name);
 
 }  // namespace score::td
 

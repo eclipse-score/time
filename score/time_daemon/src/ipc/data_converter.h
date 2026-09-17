@@ -26,7 +26,7 @@ struct DependentFalse : std::false_type
 template <typename Src, typename Dst>
 struct DataConverter
 {
-    static auto Convert(const Src&) -> Dst
+    static Dst Convert(const Src&)
     {
         static_assert(DependentFalse<Src>::value,
                       "Missing DataConverter<Src, Dst> specialization for this PublisherImpl message type.");
@@ -38,7 +38,7 @@ struct DataConverter
  * \brief Helper function to convert data to ipc data using the DataConverter struct
  */
 template <typename Dst, typename Src>
-inline auto ConvertToIpcData(const Src& src) -> Dst
+inline Dst ConvertToIpcData(const Src& src)
 {
     return DataConverter<Src, Dst>::Convert(src);
 }

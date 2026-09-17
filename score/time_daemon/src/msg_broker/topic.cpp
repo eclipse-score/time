@@ -33,22 +33,22 @@ Topic::Topic(const std::string& name) noexcept
 
 Topic::Topic(const char* name) noexcept : Topic(std::string(name)) {}
 
-auto Topic::Name() const noexcept -> const std::string&
+const std::string& Topic::Name() const noexcept
 {
     return name_;
 }
 
-auto operator==(const Topic& lhs, const Topic& rhs) noexcept -> bool
+bool operator==(const Topic& lhs, const Topic& rhs) noexcept
 {
     return lhs.Name() == rhs.Name();
 }
 
-auto operator!=(const Topic& lhs, const Topic& rhs) noexcept -> bool
+bool operator!=(const Topic& lhs, const Topic& rhs) noexcept
 {
     return !(lhs == rhs);
 }
 
-auto operator<(const Topic& lhs, const Topic& rhs) noexcept -> bool
+bool operator<(const Topic& lhs, const Topic& rhs) noexcept
 {
     return lhs.Name() < rhs.Name();
 }

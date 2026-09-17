@@ -42,12 +42,12 @@ class SharedMemoryHandler
     /// \brief Initialize shared memory
     /// \return true -> init succeeded
     ///
-    auto Init() -> bool;
+    bool Init();
 
     ///
     /// \brief Safely read data from shared memory.
     ///
-    auto Receive() const -> std::optional<DataType>;
+    std::optional<DataType> Receive() const;
 
     ///
     /// \brief Safely write data to shared memory
@@ -61,8 +61,8 @@ class SharedMemoryHandler
 
     SharedMemoryHandler(const SharedMemoryHandler&) = delete;
     SharedMemoryHandler(SharedMemoryHandler&&) = delete;
-    auto operator=(const SharedMemoryHandler&) -> SharedMemoryHandler& = delete;
-    auto operator=(SharedMemoryHandler&&) -> SharedMemoryHandler& = delete;
+    SharedMemoryHandler& operator=(const SharedMemoryHandler&) = delete;
+    SharedMemoryHandler& operator=(SharedMemoryHandler&&) = delete;
 
   private:
     ///
@@ -95,7 +95,7 @@ class SharedMemoryHandler
 };
 
 template <typename DataType>
-auto SharedMemoryHandler<DataType>::Init() -> bool
+bool SharedMemoryHandler<DataType>::Init()
 {
     if (shared_memory_resource_ == nullptr)
     {
@@ -130,7 +130,7 @@ auto SharedMemoryHandler<DataType>::Init() -> bool
 }
 
 template <typename DataType>
-auto SharedMemoryHandler<DataType>::Receive() const -> std::optional<DataType>
+std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 {
     if (shared_memory_data_ != nullptr)
     {

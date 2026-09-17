@@ -32,7 +32,7 @@ struct FakeTimeInfo
     uint64_t local_time;
 };
 
-auto operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept -> bool
+bool operator==(const FakeTimeInfo& first, const FakeTimeInfo& second) noexcept
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -137,7 +137,7 @@ class FakeSubscriptionManager
     void RegisterProducer(const std::string& topic, Producer<FakeTimeInfo>* producer)
     {
         // Set up the callback that the producer will use when publishing
-        producer->SetPublishCallback([this, topic](const FakeTimeInfo& data) -> void {
+        producer->SetPublishCallback([this, topic](const FakeTimeInfo& data) {
             messageBroker_.Publish(topic, data);
         });
     }

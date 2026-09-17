@@ -52,9 +52,9 @@ class VerificationStage
 
   protected:
     VerificationStage(const VerificationStage& other) = delete;
-    auto operator=(const VerificationStage& other) -> VerificationStage& = delete;
+    VerificationStage& operator=(const VerificationStage& other) = delete;
     VerificationStage(VerificationStage&& other) = delete;
-    auto operator=(VerificationStage&& other) -> VerificationStage& = delete;
+    VerificationStage& operator=(VerificationStage&& other) = delete;
 
     /**
      * @brief Performs the actual validation logic for this stage.

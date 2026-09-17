@@ -19,7 +19,7 @@
 namespace score::td
 {
 
-auto CreateGPTPShmMachine(const std::string& name, const std::string& ipc_name) -> std::shared_ptr<GPTPShmMachine>
+std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(const std::string& name, const std::string& ipc_name)
 {
     constexpr std::chrono::milliseconds updateInterval(50);
     return std::make_shared<GPTPShmMachine>(name, updateInterval, ipc_name);

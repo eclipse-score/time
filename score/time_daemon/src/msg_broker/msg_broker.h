@@ -50,7 +50,7 @@ class MessageBroker : public std::enable_shared_from_this<MessageBroker<T>>
 template <typename T>
 void MessageBroker<T>::AddSubscriber(const Topic& topic, std::weak_ptr<Consumer<T>> subscriber_weak)
 {
-    Subscribe(topic, Subscription<T>([subscriber_weak](const T& data) -> auto {
+    Subscribe(topic, Subscription<T>([subscriber_weak](const T& data) {
                   const auto subscriber = subscriber_weak.lock();
                   if (subscriber)
                   {
@@ -67,7 +67,7 @@ void MessageBroker<T>::AddProducer(const Topic& topic, std::weak_ptr<Producer<T>
     {
         std::weak_ptr<MessageBroker<T>> weak_broker = this->shared_from_this();
 
-        producer->SetPublishCallback([weak_broker, topic](const T& data) -> auto {
+        producer->SetPublishCallback([weak_broker, topic](const T& data) {
             const auto broker = weak_broker.lock();
             if (broker)
             {

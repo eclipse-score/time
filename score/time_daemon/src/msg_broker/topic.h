@@ -30,21 +30,21 @@ class Topic
     Topic(const char* name) noexcept;
 
     Topic(const Topic&) = default;
-    auto operator=(const Topic&) noexcept -> Topic& = delete;
+    Topic& operator=(const Topic&) noexcept = delete;
     Topic(Topic&&) noexcept = default;
-    auto operator=(Topic&&) noexcept -> Topic& = delete;
+    Topic& operator=(Topic&&) noexcept = delete;
     ~Topic() noexcept = default;
 
-    [[nodiscard]] auto Name() const noexcept -> const std::string&;
+    [[nodiscard]] const std::string& Name() const noexcept;
 
   private:
     std::string name_;
     static constexpr std::size_t kMaxLength{32U};
 };
 
-auto operator==(const Topic& lhs, const Topic& rhs) noexcept -> bool;
-auto operator!=(const Topic& lhs, const Topic& rhs) noexcept -> bool;
-auto operator<(const Topic& lhs, const Topic& rhs) noexcept -> bool;
+bool operator==(const Topic& lhs, const Topic& rhs) noexcept;
+bool operator!=(const Topic& lhs, const Topic& rhs) noexcept;
+bool operator<(const Topic& lhs, const Topic& rhs) noexcept;
 
 }  // namespace score::td
 
@@ -54,7 +54,7 @@ namespace std
 template <>
 struct hash<score::td::Topic>
 {
-    auto operator()(const score::td::Topic& topic) const noexcept -> std::size_t
+    std::size_t operator()(const score::td::Topic& topic) const noexcept
     {
         return std::hash<std::string>()(topic.Name());
     }

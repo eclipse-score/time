@@ -61,9 +61,9 @@ class VerificationMachine final : public ReactiveMachine, public Consumer<DataTy
     }
 
     VerificationMachine(const VerificationMachine&) = delete;
-    auto operator=(const VerificationMachine&) -> VerificationMachine& = delete;
+    VerificationMachine& operator=(const VerificationMachine&) = delete;
     VerificationMachine(VerificationMachine&&) = delete;
-    auto operator=(VerificationMachine&&) -> VerificationMachine& = delete;
+    VerificationMachine& operator=(VerificationMachine&&) = delete;
     ~VerificationMachine() override = default;
 
     /**
@@ -93,7 +93,7 @@ class VerificationMachine final : public ReactiveMachine, public Consumer<DataTy
      *
      * @param bool Init result
      */
-    auto Init() -> bool override;
+    bool Init() override;
 
   private:
     // Factory function type for creating validator stages with custom arguments
@@ -159,7 +159,7 @@ void VerificationMachine<DataType>::OnMessage(DataType data)
 }
 
 template <typename DataType>
-auto VerificationMachine<DataType>::Init() -> bool
+bool VerificationMachine<DataType>::Init()
 {
     return true;
 }

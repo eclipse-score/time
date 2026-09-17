@@ -28,7 +28,7 @@ struct ValidatorMockData
 };
 
 template <typename OutputStream>
-auto operator<<(OutputStream& output_stream, const ValidatorMockData& data) -> auto&
+auto& operator<<(OutputStream& output_stream, const ValidatorMockData& data)
 {
     std::for_each(std::begin(data.data), std::end(data.data), [&](const auto& value) {
         output_stream << value << " ";

@@ -41,10 +41,10 @@ class TimebaseHandler
     TimebaseHandler(TimebaseHandler&&) = delete;
 
     /// \brief Deleted copy assignment operator
-    auto operator=(const TimebaseHandler&) -> TimebaseHandler& = delete;
+    TimebaseHandler& operator=(const TimebaseHandler&) = delete;
 
     /// \brief Deleted move assignment operator
-    auto operator=(TimebaseHandler&&) -> TimebaseHandler& = delete;
+    TimebaseHandler& operator=(TimebaseHandler&&) = delete;
 
     /// \brief Status of the timebase handler
     enum class Status : std::uint8_t

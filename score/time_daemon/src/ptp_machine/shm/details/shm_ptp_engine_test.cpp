@@ -27,7 +27,7 @@ namespace score::td::details
 namespace
 {
 
-auto UniqueShmName() -> std::string
+std::string UniqueShmName()
 {
     static std::atomic<int> counter{0};
     return "/gptp_shm_ut_" + std::to_string(::getpid()) + "_" +
@@ -35,7 +35,7 @@ auto UniqueShmName() -> std::string
 }
 
 /// Build a fully-populated GptpIpcData for roundtrip verification.
-auto MakeTestIpcData() -> score::ts::GptpIpcData
+score::ts::GptpIpcData MakeTestIpcData()
 {
     score::ts::GptpIpcData d{};
     d.ptp_assumed_time = std::chrono::nanoseconds{9'876'543'210LL};

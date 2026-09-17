@@ -47,9 +47,9 @@ class EventDrivenMachine : public ProactiveMachine
     explicit EventDrivenMachine(const std::string& name, std::chrono::milliseconds timeout);
 
     EventDrivenMachine(const EventDrivenMachine&) = delete;
-    auto operator=(const EventDrivenMachine&) -> EventDrivenMachine& = delete;
+    EventDrivenMachine& operator=(const EventDrivenMachine&) = delete;
     EventDrivenMachine(EventDrivenMachine&&) noexcept = delete;
-    auto operator=(EventDrivenMachine&&) noexcept -> EventDrivenMachine& = delete;
+    EventDrivenMachine& operator=(EventDrivenMachine&&) noexcept = delete;
 
     ~EventDrivenMachine() override = default;
 

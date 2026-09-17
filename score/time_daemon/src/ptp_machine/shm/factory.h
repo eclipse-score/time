@@ -35,10 +35,10 @@ namespace score::td
  */
 // kGptpIpcName is a char-array constant used as a default arg for a const std::string&; the
 // decay is just the ordinary literal-to-temporary-std::string construction, not raw pointer use.
-auto CreateGPTPShmMachine(const std::string& name,
-                          // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
-                          const std::string& ipc_name = score::ts::details::kGptpIpcName)
-    -> std::shared_ptr<GPTPShmMachine>;
+std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(
+    const std::string& name,
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
+    const std::string& ipc_name = score::ts::details::kGptpIpcName);
 
 }  // namespace score::td
 

@@ -19,7 +19,7 @@
 namespace score::td
 {
 
-auto CreateSvtTimebase() -> std::unique_ptr<TimebaseHandler>
+std::unique_ptr<TimebaseHandler> CreateSvtTimebase()
 {
     return std::make_unique<SvtHandler>();
 }

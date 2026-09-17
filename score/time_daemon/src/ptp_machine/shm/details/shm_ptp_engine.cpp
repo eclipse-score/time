@@ -24,7 +24,7 @@ namespace score::td::details
 
 ShmPTPEngine::ShmPTPEngine(std::string ipc_name) noexcept : ipc_name_{std::move(ipc_name)} {}
 
-auto ShmPTPEngine::Initialize() -> bool
+bool ShmPTPEngine::Initialize()
 {
     if (initialized_)
     {
@@ -43,7 +43,7 @@ auto ShmPTPEngine::Initialize() -> bool
     return initialized_;
 }
 
-auto ShmPTPEngine::Deinitialize() -> bool
+bool ShmPTPEngine::Deinitialize()
 {
     if (initialized_)
     {
@@ -53,7 +53,7 @@ auto ShmPTPEngine::Deinitialize() -> bool
     return true;
 }
 
-auto ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info) -> bool
+bool ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 {
     if (!initialized_)
     {

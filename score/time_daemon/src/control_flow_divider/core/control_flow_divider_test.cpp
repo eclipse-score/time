@@ -36,13 +36,13 @@ struct TestData
     size_t value;
 };
 
-inline auto operator==(const TestData& lhs, const TestData& rhs) -> bool
+inline bool operator==(const TestData& lhs, const TestData& rhs)
 {
     return lhs.value == rhs.value;
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& os, const TestData& data) -> auto&
+inline auto& operator<<(OutputStream& os, const TestData& data)
 {
     return os << "TestData(value=" << data.value << ")";
 }

@@ -39,7 +39,7 @@ StubPTPEngine::StubPTPEngine(PtpTimeInfo::ReferenceClock local_clock) noexcept :
 // though this stub body doesn't touch instance state — PTPEngine implementations are meant to
 // be interchangeable.
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-auto StubPTPEngine::Initialize() const -> bool
+bool StubPTPEngine::Initialize() const
 {
     score::mw::log::LogInfo(kGPtpMachineContext) << "StubPTPEngine initialization succeeded!";
 
@@ -47,13 +47,13 @@ auto StubPTPEngine::Initialize() const -> bool
 }
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-auto StubPTPEngine::Deinitialize() const -> bool
+bool StubPTPEngine::Deinitialize() const
 {
     score::mw::log::LogInfo(kGPtpMachineContext) << "StubPTPEngine deinitialization succeeded!";
     return true;
 }
 
-auto StubPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info) -> bool
+bool StubPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 {
     const bool time_status_ok = ReadTimeValueAndStatus(info);
     const bool pdelay_ok = ReadPDelayMeasurementData(info);
@@ -62,7 +62,7 @@ auto StubPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info) -> bool
     return (time_status_ok && pdelay_ok && sync_ok);
 }
 
-auto StubPTPEngine::ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept -> bool
+bool StubPTPEngine::ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept
 {
     const auto snapshot = local_clock_.Now();
     time_info.local_time = snapshot.TimePoint();
@@ -75,7 +75,7 @@ auto StubPTPEngine::ReadTimeValueAndStatus(PtpTimeInfo& time_info) noexcept -> b
     return true;
 }
 
-auto StubPTPEngine::ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept -> bool
+bool StubPTPEngine::ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexcept
 {
     // Stub: timestamps derived from local clock so they increase monotonically
     const auto now_ns = static_cast<std::uint64_t>(local_clock_.Now().TimeSinceEpoch().count());
@@ -93,7 +93,7 @@ auto StubPTPEngine::ReadSyncMeasurementData(PtpTimeInfo& time_info) const noexce
     return true;
 }
 
-auto StubPTPEngine::ReadPDelayMeasurementData(PtpTimeInfo& time_info) const noexcept -> bool
+bool StubPTPEngine::ReadPDelayMeasurementData(PtpTimeInfo& time_info) const noexcept
 {
     // Stub: simulate a round-trip with 1 µs one-way pdelay anchored to local clock
     const auto now_ns = static_cast<std::uint64_t>(local_clock_.Now().TimeSinceEpoch().count());

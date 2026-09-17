@@ -28,11 +28,11 @@ class TimeDaemon final : public score::mw::lifecycle::Application
 
     TimeDaemon(TimeDaemon&&) noexcept = delete;
     TimeDaemon(const TimeDaemon&) noexcept = delete;
-    auto operator=(TimeDaemon&&) & noexcept -> TimeDaemon& = delete;
-    auto operator=(const TimeDaemon&) & noexcept -> TimeDaemon& = delete;
+    TimeDaemon& operator=(TimeDaemon&&) & noexcept = delete;
+    TimeDaemon& operator=(const TimeDaemon&) & noexcept = delete;
 
-    auto Initialize(const score::mw::lifecycle::ApplicationContext& context) -> std::int32_t override;
-    auto Run(const score::cpp::stop_token& token) -> std::int32_t override;
+    std::int32_t Initialize(const score::mw::lifecycle::ApplicationContext& context) override;
+    std::int32_t Run(const score::cpp::stop_token& token) override;
 
   private:
     std::unique_ptr<TimebaseHandler> svt_timebase_handler_;

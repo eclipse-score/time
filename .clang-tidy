@@ -13,7 +13,7 @@
 
 # Default clang-tidy configuration for S-CORE C++ modules.
 # NOTE: the set of enabled checks is yet subject to be tailored per module.
-Checks: "-*,clang-analyzer-*,cert-*,cppcoreguidelines-*,bugprone-*,misc-*,performance-*,readability-*,modernize-*"
+Checks: "-*,clang-analyzer-*,cert-*,cppcoreguidelines-*,bugprone-*,misc-*,performance-*,readability-*,modernize-*,-modernize-use-trailing-return-type"
 
 # NOTE: WarningsAsErrors is yet subject to be expanded per module as compliance increases.
 WarningsAsErrors: "clang-analyzer-*"

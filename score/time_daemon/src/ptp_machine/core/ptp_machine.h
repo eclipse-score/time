@@ -59,9 +59,9 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
     ~PTPMachine() override;
 
     PTPMachine(const PTPMachine&) = delete;
-    auto operator=(const PTPMachine&) -> PTPMachine& = delete;
+    PTPMachine& operator=(const PTPMachine&) = delete;
     PTPMachine(PTPMachine&&) = delete;
-    auto operator=(PTPMachine&&) -> PTPMachine& = delete;
+    PTPMachine& operator=(PTPMachine&&) = delete;
 
     /**
      * @brief Initializes the PTP stack and prepares the machine for operation.
@@ -71,7 +71,7 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
      *
      * @return true if initialization was successful, false otherwise
      */
-    auto Init() -> bool override;
+    bool Init() override;
 
     /**
      * @brief Sets the callback function to be invoked when publishing data.
@@ -128,7 +128,7 @@ void PTPMachine<PTPEngine>::SetPublishCallback(std::function<void(const PtpTimeI
 }
 
 template <class PTPEngine>
-auto PTPMachine<PTPEngine>::Init() -> bool
+bool PTPMachine<PTPEngine>::Init()
 {
     if (!is_initialized_)
     {

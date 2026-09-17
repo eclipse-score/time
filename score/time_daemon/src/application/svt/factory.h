@@ -23,7 +23,7 @@ namespace score::td
 /// \brief Creates a new SVT timebase handler
 ///
 /// \return std::unique_ptr<TimebaseHandler> New SVT timebase handler
-auto CreateSvtTimebase() -> std::unique_ptr<TimebaseHandler>;
+std::unique_ptr<TimebaseHandler> CreateSvtTimebase();
 
 }  // namespace score::td
 

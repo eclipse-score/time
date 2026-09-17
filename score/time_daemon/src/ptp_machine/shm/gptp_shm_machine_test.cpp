@@ -30,14 +30,14 @@ namespace score::td
 namespace
 {
 
-auto UniqueShmName() -> std::string
+std::string UniqueShmName()
 {
     static std::atomic<int> counter{0};
     return "/gptp_rm_it_" + std::to_string(::getpid()) + "_" +
            std::to_string(counter.fetch_add(1, std::memory_order_relaxed));
 }
 
-auto MakePublishedInfo() -> score::ts::GptpIpcData
+score::ts::GptpIpcData MakePublishedInfo()
 {
     score::ts::GptpIpcData info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{5'000'000'000LL};

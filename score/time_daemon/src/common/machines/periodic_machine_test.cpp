@@ -61,7 +61,7 @@ class PeriodicMachineFake : public PeriodicMachine
         job_shower_->ShowJob();
     }
 
-    auto Init() -> bool override
+    bool Init() override
     {
         return true;
     }

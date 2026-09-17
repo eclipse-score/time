@@ -21,7 +21,7 @@ namespace score::td
 // Declared in factory.h; this is one of two alternate definitions (see factory.cpp)
 // selected via Bazel target, so it must stay externally linked.
 // NOLINTNEXTLINE(misc-use-internal-linkage)
-auto CreateSvtReceiver() -> std::shared_ptr<SvtReceiver>
+std::shared_ptr<SvtReceiver> CreateSvtReceiver()
 {
     static auto receiver = std::make_shared<ReceiverMock<svt::TimeBaseSnapshot>>();
     return receiver;

@@ -88,18 +88,18 @@ struct PtpTimeInfo
 };
 
 /// \brief Comparing operators:
-auto operator==(const PtpStatus& first, const PtpStatus& second) noexcept -> bool;
-auto operator==(const SyncFupData& first, const SyncFupData& second) noexcept -> bool;
-auto operator!=(const SyncFupData& first, const SyncFupData& second) noexcept -> bool;
-auto operator==(const PDelayData& first, const PDelayData& second) noexcept -> bool;
-auto operator!=(const PDelayData& first, const PDelayData& second) noexcept -> bool;
-auto operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept -> bool;
-auto operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept -> bool;
+bool operator==(const PtpStatus& first, const PtpStatus& second) noexcept;
+bool operator==(const SyncFupData& first, const SyncFupData& second) noexcept;
+bool operator!=(const SyncFupData& first, const SyncFupData& second) noexcept;
+bool operator==(const PDelayData& first, const PDelayData& second) noexcept;
+bool operator!=(const PDelayData& first, const PDelayData& second) noexcept;
+bool operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept;
+bool operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept;
 
 /// \brief PrintTo and stream operators:
 
 template <typename OutputStream>
-inline auto PrintTo(const PtpStatus& status, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const PtpStatus& status, OutputStream& out_stream)
 {
     return out_stream << "Status: [" << status.is_synchronized << "|" << status.is_timeout << "|"
                       << status.is_time_jump_future << "|" << status.is_time_jump_past << "|" << status.is_correct
@@ -107,13 +107,13 @@ inline auto PrintTo(const PtpStatus& status, OutputStream& out_stream) -> auto&
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const PtpStatus& status) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const PtpStatus& status)
 {
     return PrintTo(status, out_stream);
 }
 
 template <typename OutputStream>
-inline auto PrintTo(const SyncFupData& data, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const SyncFupData& data, OutputStream& out_stream)
 {
     return out_stream << "SyncFupData:" << "[" << data.precise_origin_timestamp << "|"
                       << data.reference_global_timestamp << "|" << data.reference_local_timestamp << "|"
@@ -122,13 +122,13 @@ inline auto PrintTo(const SyncFupData& data, OutputStream& out_stream) -> auto&
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const SyncFupData& data) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const SyncFupData& data)
 {
     return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto PrintTo(const PDelayData& data, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const PDelayData& data, OutputStream& out_stream)
 {
     return out_stream << "PDelayData:" << "[" << data.request_origin_timestamp << "|" << data.request_receipt_timestamp
                       << "|" << data.response_origin_timestamp << "|" << data.response_receipt_timestamp << "|"
@@ -139,20 +139,20 @@ inline auto PrintTo(const PDelayData& data, OutputStream& out_stream) -> auto&
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const PDelayData& data) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const PDelayData& data)
 {
     return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto PrintTo(const PtpTimeInfo& info, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const PtpTimeInfo& info, OutputStream& out_stream)
 {
     return out_stream << "[" << info.ptp_assumed_time.count() << "|" << info.local_time.time_since_epoch().count()
                       << "|" << info.status << "|" << info.sync_fup_data << "|" << info.pdelay_data << "]";
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const PtpTimeInfo& info) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const PtpTimeInfo& info)
 {
     return PrintTo(info, out_stream);
 }

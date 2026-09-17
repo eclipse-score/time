@@ -104,7 +104,7 @@ TEST_F(PTPMachineTest, DataFlowTest)
     expectedData.rate_deviation = 0.;
 
     EXPECT_CALL(*testing::PTPEngineMockProvider::GetInstance().GetMock(), ReadPTPSnapshot(_))
-        .WillRepeatedly(DoAll(Invoke([&expectedData](PtpTimeInfo& data) -> void {
+        .WillRepeatedly(DoAll(Invoke([&expectedData](PtpTimeInfo& data) {
                                   data = expectedData;
                               }),
                               Return(true)));

@@ -35,7 +35,7 @@ class TimeoutValidator : public VerificationStage<PtpTimeInfo>
     void DoValidation(PtpTimeInfo& data) override;
 
   private:
-    auto IsNewFrameReceived(const PtpTimeInfo& data) -> bool;
+    bool IsNewFrameReceived(const PtpTimeInfo& data);
 
     const std::chrono::nanoseconds threshold_;
     PtpTimeInfo::ReferenceClock timeout_clock_;

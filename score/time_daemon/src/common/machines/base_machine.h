@@ -38,7 +38,7 @@ class BaseMachine
     virtual ~BaseMachine() = default;
 
     // NOLINTNEXTLINE(modernize-use-nodiscard)
-    auto GetName() const noexcept -> std::string
+    std::string GetName() const noexcept
     {
         return name_;
     }
@@ -48,14 +48,14 @@ class BaseMachine
      *
      * @return initialization status
      **/
-    virtual auto Init() -> bool = 0;
+    virtual bool Init() = 0;
 
     // Kept public and deleted (not protected) so misuse fails with a clear "call to deleted
     // function" diagnostic instead of a confusing "is protected within this context" one.
     BaseMachine(const BaseMachine& other) = delete;
-    auto operator=(const BaseMachine& other) -> BaseMachine& = delete;
+    BaseMachine& operator=(const BaseMachine& other) = delete;
     BaseMachine(BaseMachine&& other) noexcept = delete;
-    auto operator=(BaseMachine&& other) noexcept -> BaseMachine& = delete;
+    BaseMachine& operator=(BaseMachine&& other) noexcept = delete;
 
   private:
     const std::string name_;

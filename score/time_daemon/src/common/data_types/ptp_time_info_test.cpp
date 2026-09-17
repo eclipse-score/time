@@ -25,7 +25,7 @@ namespace score::td
 namespace
 {
 
-auto MakePtpTimeInfoWithRateDeviation(const double rate_deviation) -> PtpTimeInfo
+PtpTimeInfo MakePtpTimeInfoWithRateDeviation(const double rate_deviation)
 {
     PtpTimeInfo info{};
     info.ptp_assumed_time = std::chrono::nanoseconds{1234};
@@ -45,7 +45,7 @@ struct FieldMutation
 };
 
 template <typename T>
-auto FieldMutationName(const ::testing::TestParamInfo<FieldMutation<T>>& info) -> std::string
+std::string FieldMutationName(const ::testing::TestParamInfo<FieldMutation<T>>& info)
 {
     return info.param.name;
 }

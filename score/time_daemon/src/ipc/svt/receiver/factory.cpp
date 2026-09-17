@@ -22,7 +22,7 @@ namespace score::td
 // Declared in factory.h; this is one of two alternate definitions (see factory_stub.cpp)
 // selected via Bazel target, so it must stay externally linked.
 // NOLINTNEXTLINE(misc-use-internal-linkage)
-auto CreateSvtReceiver() -> std::shared_ptr<SvtReceiver>
+std::shared_ptr<SvtReceiver> CreateSvtReceiver()
 {
     return std::make_shared<ReceiverImpl<svt::TimeBaseSnapshot>>(kSvtShmemPath);
 }

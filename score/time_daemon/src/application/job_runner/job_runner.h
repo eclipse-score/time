@@ -76,7 +76,7 @@ class JobRunner
      *
      * @return enum Result
      */
-    auto GetResult() const -> Result;
+    Result GetResult() const;
 
   private:
     /**
@@ -85,7 +85,7 @@ class JobRunner
      * @param token A stop token that can request early termination of job execution.
      * @return true if all jobs completed successfully; false if any job failed or timed out.
      */
-    auto RunJobs(const score::cpp::stop_token& token) -> bool;
+    bool RunJobs(const score::cpp::stop_token& token);
 
     std::vector<Job> jobs_;
     const std::string name_;

@@ -33,27 +33,27 @@ class ReceiverImpl : public Receiver<IpcDataType>
     }
 
     ReceiverImpl(const ReceiverImpl&) = delete;
-    auto operator=(const ReceiverImpl&) -> ReceiverImpl& = delete;
+    ReceiverImpl& operator=(const ReceiverImpl&) = delete;
     ReceiverImpl(ReceiverImpl&&) = delete;
-    auto operator=(ReceiverImpl&&) -> ReceiverImpl& = delete;
+    ReceiverImpl& operator=(ReceiverImpl&&) = delete;
     ~ReceiverImpl() override = default;
 
-    auto Init() noexcept -> bool override;
+    bool Init() noexcept override;
 
-    auto Receive() noexcept -> std::optional<IpcDataType> override;
+    std::optional<IpcDataType> Receive() noexcept override;
 
   private:
     SharedMemoryHandler<IpcDataType> shm_handler_;
 };
 
 template <typename IpcDataType>
-auto ReceiverImpl<IpcDataType>::Init() noexcept -> bool
+bool ReceiverImpl<IpcDataType>::Init() noexcept
 {
     return shm_handler_.Init();
 }
 
 template <typename IpcDataType>
-auto ReceiverImpl<IpcDataType>::Receive() noexcept -> std::optional<IpcDataType>
+std::optional<IpcDataType> ReceiverImpl<IpcDataType>::Receive() noexcept
 {
     return shm_handler_.Receive();
 }

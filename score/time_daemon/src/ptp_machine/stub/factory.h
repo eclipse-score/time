@@ -25,7 +25,7 @@ namespace score::td
  *
  * @return A fully configured GPTPStubMachine instance
  */
-auto CreateGPTPStubMachine(const std::string& name) -> std::shared_ptr<GPTPStubMachine>;
+std::shared_ptr<GPTPStubMachine> CreateGPTPStubMachine(const std::string& name);
 
 }  // namespace score::td
 

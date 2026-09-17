@@ -58,9 +58,9 @@ class ControlFlowDivider final : public EventDrivenMachine, public Consumer<Data
     ~ControlFlowDivider() override = default;
 
     ControlFlowDivider(const ControlFlowDivider&) = delete;
-    auto operator=(const ControlFlowDivider&) -> ControlFlowDivider& = delete;
+    ControlFlowDivider& operator=(const ControlFlowDivider&) = delete;
     ControlFlowDivider(ControlFlowDivider&&) = delete;
-    auto operator=(ControlFlowDivider&&) -> ControlFlowDivider& = delete;
+    ControlFlowDivider& operator=(ControlFlowDivider&&) = delete;
 
     /**
      * @brief Initialize machine
@@ -69,7 +69,7 @@ class ControlFlowDivider final : public EventDrivenMachine, public Consumer<Data
      *
      * @param bool Init result
      */
-    auto Init() -> bool override;
+    bool Init() override;
 
     /**
      * @brief Sets the callback function to be invoked when publishing data.
@@ -120,7 +120,7 @@ ControlFlowDivider<DataType, BufferSize>::ControlFlowDivider(const std::string& 
 }
 
 template <typename DataType, size_t BufferSize>
-auto ControlFlowDivider<DataType, BufferSize>::Init() -> bool
+bool ControlFlowDivider<DataType, BufferSize>::Init()
 {
     return true;
 }

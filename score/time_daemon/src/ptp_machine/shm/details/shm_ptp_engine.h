@@ -38,15 +38,15 @@ class ShmPTPEngine final
     ~ShmPTPEngine() noexcept = default;
 
     ShmPTPEngine(const ShmPTPEngine&) = delete;
-    auto operator=(const ShmPTPEngine&) -> ShmPTPEngine& = delete;
+    ShmPTPEngine& operator=(const ShmPTPEngine&) = delete;
     ShmPTPEngine(ShmPTPEngine&&) = delete;
-    auto operator=(ShmPTPEngine&&) -> ShmPTPEngine& = delete;
+    ShmPTPEngine& operator=(ShmPTPEngine&&) = delete;
 
-    auto Initialize() -> bool;
+    bool Initialize();
 
-    auto Deinitialize() -> bool;
+    bool Deinitialize();
 
-    auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool;
+    bool ReadPTPSnapshot(PtpTimeInfo& info);
 
   private:
     std::string ipc_name_;

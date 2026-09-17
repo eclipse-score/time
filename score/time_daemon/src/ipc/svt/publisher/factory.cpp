@@ -19,7 +19,7 @@
 namespace score::td
 {
 
-auto CreateSvtPublisher(const std::string& machine_name) -> std::shared_ptr<SvtPublisher>
+std::shared_ptr<SvtPublisher> CreateSvtPublisher(const std::string& machine_name)
 {
     return std::make_shared<SvtPublisher>(machine_name, kSvtShmemPath);
 }

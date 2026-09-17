@@ -43,9 +43,9 @@ class PeriodicMachine : public ProactiveMachine
     explicit PeriodicMachine(const std::string& name, std::chrono::milliseconds threadCycle);
 
     PeriodicMachine(const PeriodicMachine&) = delete;
-    auto operator=(const PeriodicMachine&) -> PeriodicMachine& = delete;
+    PeriodicMachine& operator=(const PeriodicMachine&) = delete;
     PeriodicMachine(PeriodicMachine&&) noexcept = delete;
-    auto operator=(PeriodicMachine&&) noexcept -> PeriodicMachine& = delete;
+    PeriodicMachine& operator=(PeriodicMachine&&) noexcept = delete;
 
     ~PeriodicMachine() override = default;
 

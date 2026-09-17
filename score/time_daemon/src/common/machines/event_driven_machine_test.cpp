@@ -68,7 +68,7 @@ class EventDrivenMachineFake : public EventDrivenMachine
         job_shower_->OnTimeout();
     }
 
-    auto Init() -> bool override
+    bool Init() override
     {
         return true;
     }

@@ -30,7 +30,7 @@ class MockConsumer : public Consumer<T>
   public:
     MockConsumer()
     {
-        ON_CALL(*this, OnMessage(::testing::_)).WillByDefault([this](T data) -> auto {
+        ON_CALL(*this, OnMessage(::testing::_)).WillByDefault([this](T data) {
             received_data.push_back(data);
         });
     }

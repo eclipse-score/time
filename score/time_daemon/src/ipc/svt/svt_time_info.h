@@ -98,22 +98,22 @@ struct TimeBaseSnapshot
     void CreateFrom(const PtpTimeInfo& info);
 };
 
-auto operator==(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept -> bool;
-auto operator!=(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept -> bool;
+bool operator==(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept;
+bool operator!=(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexcept;
 
 /// \brief Comparing operators:
-auto operator==(const TimeBaseStatus& first, const TimeBaseStatus& second) noexcept -> bool;
-auto operator==(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept -> bool;
-auto operator!=(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept -> bool;
-auto operator==(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept -> bool;
-auto operator!=(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept -> bool;
-auto operator==(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept -> bool;
-auto operator!=(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept -> bool;
+bool operator==(const TimeBaseStatus& first, const TimeBaseStatus& second) noexcept;
+bool operator==(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept;
+bool operator!=(const SyncFupSnapshot& first, const SyncFupSnapshot& second) noexcept;
+bool operator==(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept;
+bool operator!=(const PDelayDataSnapshot& first, const PDelayDataSnapshot& second) noexcept;
+bool operator==(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept;
+bool operator!=(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) noexcept;
 
 /// \brief PrintTo and stream operators:
 
 template <typename OutputStream>
-inline auto PrintTo(const TimeBaseStatus& status, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const TimeBaseStatus& status, OutputStream& out_stream)
 {
     return out_stream << "Status: [" << status.is_synchronized << "|" << status.is_timeout << "|"
                       << status.is_time_jump_future << "|" << status.is_time_jump_past << "|" << status.is_correct
@@ -121,13 +121,13 @@ inline auto PrintTo(const TimeBaseStatus& status, OutputStream& out_stream) -> a
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const TimeBaseStatus& status) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const TimeBaseStatus& status)
 {
     return PrintTo(status, out_stream);
 }
 
 template <typename OutputStream>
-inline auto PrintTo(const SyncFupSnapshot& data, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const SyncFupSnapshot& data, OutputStream& out_stream)
 {
     return out_stream << "SyncFupSnapshot:" << "[" << data.precise_origin_timestamp << "|"
                       << data.reference_global_timestamp << "|" << data.reference_local_timestamp << "|"
@@ -136,13 +136,13 @@ inline auto PrintTo(const SyncFupSnapshot& data, OutputStream& out_stream) -> au
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const SyncFupSnapshot& data) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const SyncFupSnapshot& data)
 {
     return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto PrintTo(const PDelayDataSnapshot& data, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const PDelayDataSnapshot& data, OutputStream& out_stream)
 {
     return out_stream << "PDelayDataSnapshot:" << "[" << data.request_origin_timestamp << "|"
                       << data.request_receipt_timestamp << "|" << data.response_origin_timestamp << "|"
@@ -153,20 +153,20 @@ inline auto PrintTo(const PDelayDataSnapshot& data, OutputStream& out_stream) ->
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const PDelayDataSnapshot& data) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const PDelayDataSnapshot& data)
 {
     return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto PrintTo(const TimeBaseSnapshot& info, OutputStream& out_stream) -> auto&
+inline auto& PrintTo(const TimeBaseSnapshot& info, OutputStream& out_stream)
 {
     return out_stream << "[" << info.ptp_assumed_time << "|" << info.local_time << "|" << info.status << "|"
                       << info.sync_fup_data << "|" << info.pdelay_data << "]";
 }
 
 template <typename OutputStream>
-inline auto operator<<(OutputStream& out_stream, const TimeBaseSnapshot& info) -> auto&
+inline auto& operator<<(OutputStream& out_stream, const TimeBaseSnapshot& info)
 {
     return PrintTo(info, out_stream);
 }
@@ -185,7 +185,7 @@ void PrintTo(const TimeBaseSnapshot& info, std::ostream* out_stream);
 template <>
 struct DataConverter<PtpTimeInfo, svt::TimeBaseSnapshot>
 {
-    static auto Convert(const PtpTimeInfo& src) -> svt::TimeBaseSnapshot
+    static svt::TimeBaseSnapshot Convert(const PtpTimeInfo& src)
     {
         svt::TimeBaseSnapshot dst{};
         dst.CreateFrom(src);

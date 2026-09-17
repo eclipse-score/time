@@ -36,12 +36,12 @@ class PublisherImpl : public ReactiveMachine, public Consumer<DataType>
     }
 
     PublisherImpl(const PublisherImpl&) = delete;
-    auto operator=(const PublisherImpl&) -> PublisherImpl& = delete;
+    PublisherImpl& operator=(const PublisherImpl&) = delete;
     PublisherImpl(PublisherImpl&&) = delete;
-    auto operator=(PublisherImpl&&) -> PublisherImpl& = delete;
+    PublisherImpl& operator=(PublisherImpl&&) = delete;
     ~PublisherImpl() override = default;
 
-    auto Init() -> bool override;
+    bool Init() override;
     void OnMessage(DataType data) override;
 
   private:
@@ -49,7 +49,7 @@ class PublisherImpl : public ReactiveMachine, public Consumer<DataType>
 };
 
 template <typename DataType, typename IpcDataType>
-auto PublisherImpl<DataType, IpcDataType>::Init() -> bool
+bool PublisherImpl<DataType, IpcDataType>::Init()
 {
     return shm_handler_.Init();
 }

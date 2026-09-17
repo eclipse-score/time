@@ -82,22 +82,22 @@ TEST_F(VerificationMachineTest, DataFlowVerification)
         });
 
     auto expectedDataStage1 = 2;
-    ON_CALL(*stage_raw1, DoValidation(testing::_)).WillByDefault([expectedDataStage1](ValidatorMockData& data) -> void {
+    ON_CALL(*stage_raw1, DoValidation(testing::_)).WillByDefault([expectedDataStage1](ValidatorMockData& data) {
         data.data[1] = expectedDataStage1;
     });
     auto expectedDataStage2 = 9;
-    ON_CALL(*stage_raw2, DoValidation(testing::_)).WillByDefault([expectedDataStage2](ValidatorMockData& data) -> void {
+    ON_CALL(*stage_raw2, DoValidation(testing::_)).WillByDefault([expectedDataStage2](ValidatorMockData& data) {
         data.data[5] = expectedDataStage2;
     });
     auto expectedDataStage3 = 20;
-    ON_CALL(*stage_raw3, DoValidation(testing::_)).WillByDefault([expectedDataStage3](ValidatorMockData& data) -> void {
+    ON_CALL(*stage_raw3, DoValidation(testing::_)).WillByDefault([expectedDataStage3](ValidatorMockData& data) {
         data.data[9] = expectedDataStage3;
     });
 
     ValidatorMockData actualData;
 
     // Subscribe to the publish events of the verification machine
-    verificationMachine.SetPublishCallback([&actualData](const ValidatorMockData& publishedData) -> void {
+    verificationMachine.SetPublishCallback([&actualData](const ValidatorMockData& publishedData) {
         actualData = publishedData;
     });
 

@@ -22,7 +22,7 @@ class FakeMachine : public BaseMachine
 {
   public:
     explicit FakeMachine(const std::string& name) : BaseMachine(name) {}
-    auto Init() -> bool override
+    bool Init() override
     {
         return true;
     };

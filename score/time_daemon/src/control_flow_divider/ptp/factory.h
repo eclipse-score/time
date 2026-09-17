@@ -33,8 +33,8 @@ namespace score::td
  * @param timeout Maximum time to wait for new data before publishing empty data
  * @return A fully configured PtpControlFlowDivider instance
  */
-auto CreatePtpControlFlowDivider(const std::string& name, std::chrono::milliseconds timeout)
-    -> std::shared_ptr<PtpControlFlowDivider>;
+std::shared_ptr<PtpControlFlowDivider> CreatePtpControlFlowDivider(const std::string& name,
+                                                                   std::chrono::milliseconds timeout);
 
 }  // namespace score::td
 

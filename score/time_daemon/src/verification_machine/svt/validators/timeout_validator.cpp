@@ -70,7 +70,7 @@ void TimeoutValidator::DoValidation(PtpTimeInfo& data)
     }
 }
 
-auto TimeoutValidator::IsNewFrameReceived(const PtpTimeInfo& data) -> bool
+bool TimeoutValidator::IsNewFrameReceived(const PtpTimeInfo& data)
 {
     // For the initial call, it will always return true, since
     // detection is based on sequence ID, last_received_data_

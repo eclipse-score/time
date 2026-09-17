@@ -26,9 +26,9 @@ class PTPEngineMockInterface
 {
   public:
     virtual ~PTPEngineMockInterface() = default;
-    virtual auto Initialize() -> bool = 0;
-    virtual auto Deinitialize() -> bool = 0;
-    virtual auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool = 0;
+    virtual bool Initialize() = 0;
+    virtual bool Deinitialize() = 0;
+    virtual bool ReadPTPSnapshot(PtpTimeInfo& info) = 0;
 };
 
 class PTPEngineMock : public PTPEngineMockInterface
@@ -44,13 +44,13 @@ class PTPEngineMock : public PTPEngineMockInterface
 class PTPEngineMockProvider
 {
   public:
-    static auto GetInstance() -> PTPEngineMockProvider&
+    static PTPEngineMockProvider& GetInstance()
     {
         static PTPEngineMockProvider provider;
         return provider;
     }
 
-    auto GetMock() -> std::shared_ptr<PTPEngineMock>
+    std::shared_ptr<PTPEngineMock> GetMock()
     {
         return obj_;
     }
@@ -82,17 +82,17 @@ class FakePTPEngine
         PTPEngineMockProvider::GetInstance().DestroyMock();
     }
 
-    auto Initialize() -> bool
+    bool Initialize()
     {
         return PTPEngineMockProvider::GetInstance().GetMock()->Initialize();
     }
 
-    auto Deinitialize() -> bool
+    bool Deinitialize()
     {
         return PTPEngineMockProvider::GetInstance().GetMock()->Deinitialize();
     }
 
-    auto ReadPTPSnapshot(PtpTimeInfo& info) -> bool
+    bool ReadPTPSnapshot(PtpTimeInfo& info)
     {
         return PTPEngineMockProvider::GetInstance().GetMock()->ReadPTPSnapshot(info);
     }

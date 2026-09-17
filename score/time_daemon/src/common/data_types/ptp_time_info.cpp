@@ -23,7 +23,7 @@ namespace score::td
 namespace
 {
 
-auto NearlyEqual(const double first, const double second) noexcept -> bool
+bool NearlyEqual(const double first, const double second) noexcept
 {
     const double diff = std::fabs(first - second);
     return diff <= std::numeric_limits<double>::epsilon();
@@ -33,7 +33,7 @@ auto NearlyEqual(const double first, const double second) noexcept -> bool
 
 /// \brief Comparing operators:
 
-auto operator==(const PtpStatus& first, const PtpStatus& second) noexcept -> bool
+bool operator==(const PtpStatus& first, const PtpStatus& second) noexcept
 {
     const bool same_sync = (first.is_synchronized == second.is_synchronized);
     const bool same_timeout = (first.is_timeout == second.is_timeout);
@@ -44,7 +44,7 @@ auto operator==(const PtpStatus& first, const PtpStatus& second) noexcept -> boo
     return (same_sync && same_timeout && same_jump_future && same_jump_past && same_unknown);
 }
 
-auto operator==(const SyncFupData& first, const SyncFupData& second) noexcept -> bool
+bool operator==(const SyncFupData& first, const SyncFupData& second) noexcept
 {
     const bool same_precise_origin_timestamp = (first.precise_origin_timestamp == second.precise_origin_timestamp);
     const bool same_reference_global_timestamp =
@@ -61,12 +61,12 @@ auto operator==(const SyncFupData& first, const SyncFupData& second) noexcept ->
             same_port_number && same_clock_identity);
 }
 
-auto operator!=(const SyncFupData& first, const SyncFupData& second) noexcept -> bool
+bool operator!=(const SyncFupData& first, const SyncFupData& second) noexcept
 {
     return !(first == second);
 }
 
-auto operator==(const PDelayData& first, const PDelayData& second) noexcept -> bool
+bool operator==(const PDelayData& first, const PDelayData& second) noexcept
 {
     const bool same_request_origin_timestamp = (first.request_origin_timestamp == second.request_origin_timestamp);
     const bool same_request_receipt_timestamp = (first.request_receipt_timestamp == second.request_receipt_timestamp);
@@ -88,12 +88,12 @@ auto operator==(const PDelayData& first, const PDelayData& second) noexcept -> b
             same_resp_port_number && same_resp_clock_identity);
 }
 
-auto operator!=(const PDelayData& first, const PDelayData& second) noexcept -> bool
+bool operator!=(const PDelayData& first, const PDelayData& second) noexcept
 {
     return !(first == second);
 }
 
-auto operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept -> bool
+bool operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept
 {
     const bool same_local = (first.local_time == second.local_time);
     const bool same_ptp = (first.ptp_assumed_time == second.ptp_assumed_time);
@@ -105,7 +105,7 @@ auto operator==(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept ->
     return (same_local && same_ptp && same_rate_deviation && same_status && same_sync && same_pdelay);
 }
 
-auto operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept -> bool
+bool operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept
 {
     return !(first == second);
 }

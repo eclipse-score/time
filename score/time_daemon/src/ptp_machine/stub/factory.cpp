@@ -20,7 +20,7 @@
 namespace score::td
 {
 
-auto CreateGPTPStubMachine(const std::string& name) -> std::shared_ptr<GPTPStubMachine>
+std::shared_ptr<GPTPStubMachine> CreateGPTPStubMachine(const std::string& name)
 {
     constexpr std::chrono::milliseconds updateInterval(50);
     return std::make_shared<GPTPStubMachine>(name, updateInterval, score::time::HighResSteadyClock::GetInstance());

@@ -33,8 +33,7 @@ class JobRunnerTest : public ::testing::Test
     /**
      * @brief Wait until JobRunner finishes or timeout occurs.
      */
-    auto WaitForCompletion(JobRunner& runner, std::chrono::milliseconds timeout = std::chrono::seconds(5))
-        -> JobRunner::Result
+    JobRunner::Result WaitForCompletion(JobRunner& runner, std::chrono::milliseconds timeout = std::chrono::seconds(5))
     {
         auto start = std::chrono::steady_clock::now();
         JobRunner::Result result = runner.GetResult();

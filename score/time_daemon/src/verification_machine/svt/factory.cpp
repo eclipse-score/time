@@ -29,18 +29,18 @@ constexpr auto kSyncDebounceThreshold = std::chrono::nanoseconds{5'000'000'000};
 constexpr auto kValidFramesThreshold = 2U;
 }  // namespace
 
-auto CreateSvtVerificationMachine(const std::string& name) -> std::shared_ptr<SvtVerificationMachine>
+std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::string& name)
 {
     auto machine = std::make_shared<SvtVerificationMachine>(
         name,
-        []() -> auto {
+        []() {
             return std::make_unique<SynchronizationValidator>(/*args for validation*/);
         },
-        []() -> auto {
+        []() {
             return std::make_unique<TimeoutValidator>(score::time::HighResSteadyClock::GetInstance(),
                                                       kTimeoutThreshold);
         },
-        []() -> auto {
+        []() {
             return std::make_unique<TimeJumpsValidator>(score::time::HighResSteadyClock::GetInstance(),
                                                         kTimeJumpThreshold,
                                                         kValidFramesThreshold,
