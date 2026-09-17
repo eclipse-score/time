@@ -12,7 +12,6 @@
  ********************************************************************************/
 
 #include "score/time_slave/src/common/definitions.h"
-#include "score/time_slave/src/gptp/platform/qnx/bpf_device_path.h"
 
 #include <arpa/inet.h>
 #include <fcntl.h>
