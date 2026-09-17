@@ -98,13 +98,13 @@ Check formatting for all files (Python, Starlark, YAML, C++):
 
 .. code-block:: bash
 
-   bazel test //:format.check
+   bazel test //tools:format.check
 
 Auto-fix formatting for all files:
 
 .. code-block:: bash
 
-   bazel run //:format.fix
+   bazel run //tools:format.fix
 
 **Static Code Analysis**
 
