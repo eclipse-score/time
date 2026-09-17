@@ -26,7 +26,7 @@ namespace
 
 class GetEnvWithDefaultTest : public ::testing::Test
 {
-protected:
+  protected:
     void SetUp() override
     {
         const char* original = std::getenv(qnx::kBpfDevicePathEnv);
@@ -68,8 +68,7 @@ TEST_F(GetEnvWithDefaultTest, ReturnsDefaultWhenEnvVarEmpty)
 TEST_F(GetEnvWithDefaultTest, ReturnsEnvVarWhenSet)
 {
     setenv(qnx::kBpfDevicePathEnv, "/alt/dev/bpf", 1);
-    EXPECT_EQ(std::string_view{GetEnvWithDefault(qnx::kBpfDevicePathEnv, qnx::kBpfDevicePathDefault)},
-              "/alt/dev/bpf");
+    EXPECT_EQ(std::string_view{GetEnvWithDefault(qnx::kBpfDevicePathEnv, qnx::kBpfDevicePathDefault)}, "/alt/dev/bpf");
 }
 
 }  // namespace

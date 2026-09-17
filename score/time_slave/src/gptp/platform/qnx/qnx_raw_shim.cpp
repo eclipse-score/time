@@ -202,7 +202,8 @@ static int set_iface_promisc(const char* ifname) noexcept
 
 static const char* get_bpf_device_path() noexcept
 {
-    return score::ts::env::GetEnvWithDefault(score::ts::env::qnx::kBpfDevicePathEnv, score::ts::env::qnx::kBpfDevicePathDefault);
+    return score::ts::env::GetEnvWithDefault(score::ts::env::qnx::kBpfDevicePathEnv,
+                                             score::ts::env::qnx::kBpfDevicePathDefault);
 }
 
 static int open_tx_loopback_fd(const char* ifname) noexcept
