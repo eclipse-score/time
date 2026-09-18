@@ -85,7 +85,7 @@ gPTP Message Processing
    :version: 1
    :satisfied_by: comp__time_slave
 
-   According to IEEE 802.1AS, the time_slave component shall only process received gPTP Sync and FollowUp messages matching the configured domain number (0-127 per IEEE 802.1AS). The time_slave component shall set the domain number to the configured domain value in sent gPTP Pdelay messages.
+   According to IEEE 802.1AS, the time_slave component shall only process received gPTP Sync and FollowUp messages matching the configured domain number (0-127 per IEEE 802.1AS). The time_slave component shall ignore the domain number contained in received gPTP Pdelay messages. It shall set the domain number to 0 in sent gPTP Pdelay messages (see IEEE 802.1AS-2011, section 8.1 and IEEE 802.1AS-2020, section 11.1.2, 2nd paragraph).
 
 .. comp_req:: Ethernet address usage
    :id: comp_req__time_slave__ethernet_address
