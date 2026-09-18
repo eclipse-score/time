@@ -143,7 +143,7 @@ Data Exchange Interfaces
    :version: 1
    :satisfied_by: comp__ts_client
 
-   The ts_client component shall exchange gPTP Peer Delay (PDelay) message metadata containing request origin timestamp, request receipt timestamp, response origin timestamp, response receipt timestamp, path delay measurement, request port number, response port number, and request clock identity.
+   The ts_client component shall exchange gPTP Peer Delay (PDelay) message metadata containing request origin timestamp, request receipt timestamp, response origin timestamp, response receipt timestamp, path delay measurement, request port number, response port number, request clock identity, response clock identity, reference global timestamp, and reference local timestamp.
 
 .. comp_req:: Time Correlation Data Exchange
    :id: comp_req__ts_client__time_correlation_data
