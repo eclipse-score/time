@@ -58,7 +58,6 @@ jobs:
             | xargs cat 2>/dev/null > clang_tidy_findings.txt || true
 
       - name: Check violation baseline
-        # score/time_daemon/ (#77) is held to zero. Rest baseline is counted 17.09.2026 to 1024
         # Remove this step once https://github.com/eclipse-score/time/issues/111 is resolved.
         if: always()
         run: |

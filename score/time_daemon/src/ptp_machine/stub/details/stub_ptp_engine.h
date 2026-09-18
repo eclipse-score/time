@@ -45,10 +45,6 @@ class StubPTPEngine final
     ///
     /// \return true - initialize success, otherwise false
     ///
-    // Not static: kept as an instance method to match the shape of PTPEngineMockInterface and
-    // ShmPTPEngine (the other PTPEngine implementations), even though this particular stub
-    // doesn't need instance state — PTPEngine implementations are meant to be interchangeable.
-    // (clang-tidy flags this at the definition in the .cpp, not here.)
     [[nodiscard]] bool Initialize() const;
 
     /// \brief Method to deinitialize libgptp client
