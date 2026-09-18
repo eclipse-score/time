@@ -104,9 +104,8 @@ class GptpEngine final
     ///
     /// Calls @c RawSocket::EnableHwTimestamping() to request NIC-level receive
     /// timestamps (@c SO_TIMESTAMPING on Linux). If the NIC does not support
-    /// hardware timestamping, the call returns @c false and a warning is logged;
-    /// the engine continues normally with software timestamps (higher jitter but
-    /// protocol correctness is unaffected).
+    /// hardware timestamping, a warning is logged; the engine continues normally
+    /// with software timestamps (higher jitter but protocol correctness is unaffected).
     ///
     /// @return true on success.
     bool Initialize();

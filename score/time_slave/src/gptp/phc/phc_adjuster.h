@@ -46,8 +46,8 @@ struct PhcConfig
 ///   - @b Linux: @c clock_adjtime() (@c SYS_clock_adjtime syscall);
 ///     step via @c ADJ_SETOFFSET|ADJ_NANO; slew via @c ADJ_FREQUENCY (scaled-ppm).
 ///   - @b QNX: @c SIOCGDRVSPEC / @c SIOCSDRVSPEC on a UDP socket;
-///     step via @c PTP_GET_TIME (0x102) + @c PTP_SET_TIME (0x103);
-///     slew via @c EMAC_PTP_ADJ_FREQ_PPM (0x200) in ppm.
+///     step via @c PTP_GET_TIME + @c PTP_SET_TIME;
+///     slew via @c EMAC_PTP_ADJ_FREQ_PPM in ppm.
 ///
 /// @b Fallback when PHC is unavailable:
 /// On Linux the constructor calls @c open(device, O_RDWR); on failure
