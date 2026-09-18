@@ -67,6 +67,7 @@ cc_library(
         ":os_syscalls",
         ":ptp_types",
         ":raw_socket",
+        "//score/time_slave/src/common:definitions",
     ],
 )
 

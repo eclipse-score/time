@@ -45,4 +45,4 @@ jobs:
           unique-cache-name: ${{ github.workflow }}-${{ github.job }}
 
       - name: Run format check
-        run: bazel test //:format.check
+        run: bazel test //tools:format.check

@@ -31,6 +31,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score/time_slave:__subpackages__"],
     deps = [
+        "//score/time_slave/src/common:definitions",
         "//score/time_slave/src/common:logging_contexts",
         "//score/time_slave/src/gptp:gptp_engine",
         "@score_baselibs//score/json",
