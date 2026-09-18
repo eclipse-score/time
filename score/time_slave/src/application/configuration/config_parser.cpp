@@ -115,7 +115,7 @@ void ParseQnxConfig(const Object& obj, TimeSlaveConfig::QnxSettings& qnx)
     }
     const auto& qnx_obj = obj_result.value().get();
 
-    ParseOptionalString(qnx_obj, "bpf_device_prefix", qnx.bpf_device_prefix);
+    ParseOptionalString(qnx_obj, "bpf_device_path", qnx.bpf_device_path);
     ParseOptionalBool(qnx_obj, "see_sent", qnx.see_sent);
 }
 

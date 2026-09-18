@@ -13,6 +13,7 @@
 #ifndef SCORE_TIME_SLAVE_CONFIGURATION_TIME_SLAVE_CONFIG_H
 #define SCORE_TIME_SLAVE_CONFIGURATION_TIME_SLAVE_CONFIG_H
 
+#include "score/time_slave/src/common/definitions.h"
 #include "score/time_slave/src/gptp/gptp_engine.h"
 #include "score/time_slave/src/gptp/phc/phc_adjuster.h"
 
@@ -42,8 +43,8 @@ struct TimeSlaveConfig
     /// QNX-specific settings. Only relevant on QNX builds.
     struct QnxSettings
     {
-        std::string bpf_device_prefix = "/dev/bpf";  ///< BPF device path prefix.
-        bool see_sent = false;                       ///< Deliver sent frames to RX BPF.
+        std::string bpf_device_path = env::qnx::kBpfDevicePathDefault;  ///< Complete BPF clone-device path.
+        bool see_sent = false;                                          ///< Deliver sent frames to RX BPF.
     };
 
     QnxSettings qnx{};

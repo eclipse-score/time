@@ -12,7 +12,7 @@
    # SPDX-License-Identifier: Apache-2.0
    # *******************************************************************************
 
-.. _user_manual:
+.. _user_manual_time:
 
 User Manual
 ###########
@@ -92,8 +92,8 @@ Component Manuals
 
 For detailed component-specific user manuals, see:
 
-* :doc:`/time_slave/manuals/user_manual`
-* :doc:`/time_daemon/manuals/user_manual`
+* :ref:`time_slave_user_manual`
+* :ref:`time_daemon_user_manual`
 
 Examples
 --------
@@ -200,8 +200,8 @@ If your application uses ``VehicleTime``, both ``TimeSlave`` and ``TimeDaemon`` 
 
 For service deployment and configuration details, refer to:
 
-* :doc:`/time_slave/manuals/user_manual`
-* :doc:`/time_daemon/manuals/user_manual`
+* :ref:`time_slave_user_manual`
+* :ref:`time_daemon_user_manual`
 
 System Services Deployment
 ---------------------------

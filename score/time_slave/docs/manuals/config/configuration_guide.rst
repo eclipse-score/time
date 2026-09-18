@@ -117,13 +117,13 @@ Linux):
 
    {
        "qnx": {
-           "bpf_device_prefix": "/dev/bpf",
+           "bpf_device_path": "/dev/bpf",
            "see_sent": true
        }
    }
 
-``bpf_device_prefix``
-  Path prefix for the BPF (Berkeley Packet Filter) devices used for raw
+``bpf_device_path``
+  Path to the BPF (Berkeley Packet Filter) clone device used for raw
   Ethernet frame capture. Defaults to ``/dev/bpf``.
 
 ``see_sent``
@@ -163,7 +163,7 @@ A representative QNX configuration:
            "step_threshold_ns": 100000000
        },
        "qnx": {
-           "bpf_device_prefix": "/dev/bpf",
+           "bpf_device_path": "/dev/bpf",
            "see_sent": true
        }
    }
