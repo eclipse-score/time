@@ -50,6 +50,7 @@ The primary interface for applications to access synchronized time is the ``scor
    :maxdepth: 2
 
    api_description/api_usage
+   api_description/use_cases
    api_description/lifecycle
    api_description/testing_guide
 
