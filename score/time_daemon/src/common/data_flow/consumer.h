@@ -16,9 +16,7 @@
 #include <functional>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -50,7 +48,6 @@ class Consumer
     Consumer& operator=(Consumer&&) = default;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_DATA_FLOW_CONSUMER_H

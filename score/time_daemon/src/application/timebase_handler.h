@@ -14,11 +14,10 @@
 #define SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H
 
 #include <score/stop_token.hpp>
+#include <cstdint>
 #include <future>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// \brief Abstract base class to handle timebase operations
@@ -48,7 +47,7 @@ class TimebaseHandler
     TimebaseHandler& operator=(TimebaseHandler&&) = delete;
 
     /// \brief Status of the timebase handler
-    enum class Status
+    enum class Status : std::uint8_t
     {
         kIdle = 0,    ///< Handler is idle, not initialized
         kInitialize,  ///< Handle is initializing
@@ -76,7 +75,6 @@ class TimebaseHandler
     virtual void Stop() noexcept = 0;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H

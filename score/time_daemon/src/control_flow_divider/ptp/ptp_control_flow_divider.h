@@ -18,9 +18,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -31,7 +29,6 @@ namespace td
 constexpr size_t kBufferSize = 10U;
 using PtpControlFlowDivider = ControlFlowDivider<PtpTimeInfo, kBufferSize>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_PTP_PTP_CONTROL_FLOW_DIVIDER_H

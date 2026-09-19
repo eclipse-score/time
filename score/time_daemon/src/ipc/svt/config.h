@@ -15,9 +15,7 @@
 
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -25,7 +23,6 @@ namespace td
 ///
 const std::string kSvtShmemPath{"/svt_shmem_path"};
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_SHMEM_PATH_H

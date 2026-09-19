@@ -15,9 +15,7 @@
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 struct TestParams
@@ -61,5 +59,4 @@ TEST_P(SynchronizationValidatorParamTest, ValidationTest)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

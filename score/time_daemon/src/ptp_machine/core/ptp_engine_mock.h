@@ -19,11 +19,7 @@
 
 #include <gmock/gmock.h>
 
-namespace score
-{
-namespace td
-{
-namespace testing
+namespace score::td::testing
 {
 
 class PTPEngineMockInterface
@@ -102,8 +98,6 @@ class FakePTPEngine
     }
 };
 
-}  // namespace testing
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::testing
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_ENGINE_MOCK_H

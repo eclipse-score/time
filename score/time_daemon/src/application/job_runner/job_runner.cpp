@@ -13,22 +13,23 @@
 #include "score/time_daemon/src/application/job_runner/job_runner.h"
 #include "score/concurrency/interruptible_wait.h"
 #include "score/mw/log/logging.h"
+#include "score/stop_token.hpp"
 #include "score/time_daemon/src/common/logging_contexts.h"
+#include <chrono>
+#include <mutex>
+#include <string>
+#include <utility>
+#include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
-JobRunner::JobRunner(std::vector<Job> jobs, const std::string name)
-    : jobs_(std::move(jobs)), name_(name), status_{Result::kIdle}
-{
-}
+JobRunner::JobRunner(std::vector<Job> jobs, std::string name) : jobs_(std::move(jobs)), name_(std::move(name)) {}
 
 void JobRunner::Start(const score::cpp::stop_token& token)
 {
     {
-        std::lock_guard<std::mutex> lock(status_mutex_);
+        const std::lock_guard<std::mutex> lock(status_mutex_);
         if (status_ != Result::kIdle)
         {
             return;  // Already running
@@ -41,9 +42,9 @@ void JobRunner::Start(const score::cpp::stop_token& token)
 
     const auto thread_name = "td_" + name_ + "_worker";
     worker_thread_ = score::cpp::jthread(score::cpp::jthread::name_hint{thread_name}, [this, &token]() {
-        bool success = RunJobs(token);
+        const bool success = RunJobs(token);
         {
-            std::lock_guard<std::mutex> lock(status_mutex_);
+            const std::lock_guard<std::mutex> lock(status_mutex_);
             status_ = success ? Result::kSucceed : Result::kFailed;
         }
     });
@@ -83,7 +84,10 @@ bool JobRunner::RunJobs(const score::cpp::stop_token& token)
         }
 
         if (!jobs_.empty())
-            score::concurrency::wait_for(token, std::chrono::milliseconds(10));
+        {
+            constexpr auto kJobPollInterval = std::chrono::milliseconds(10);
+            score::concurrency::wait_for(token, kJobPollInterval);
+        }
     }
     // If the loop exited due to stop token, mark as failure
     if (token.stop_requested())
@@ -96,9 +100,8 @@ bool JobRunner::RunJobs(const score::cpp::stop_token& token)
 
 JobRunner::Result JobRunner::GetResult() const
 {
-    std::lock_guard<std::mutex> lock(status_mutex_);
+    const std::lock_guard<std::mutex> lock(status_mutex_);
     return status_;
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

@@ -11,10 +11,12 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/shm/factory.h"
+#include "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine.h"
+#include <chrono>
+#include <memory>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(const std::string& name, const std::string& ipc_name)
@@ -23,5 +25,4 @@ std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(const std::string& name, co
     return std::make_shared<GPTPShmMachine>(name, updateInterval, ipc_name);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
