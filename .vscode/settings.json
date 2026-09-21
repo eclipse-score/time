@@ -55,7 +55,7 @@
     "bazel.lsp.command": "bazel",
     "bazel.lsp.args": [
         "run",
-        "//:starpls_server"
+        "//tools:starpls_server"
     ],
 
     // RST Settings

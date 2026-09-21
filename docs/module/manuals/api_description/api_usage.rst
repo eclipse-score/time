@@ -28,7 +28,7 @@ Supported time bases in this module:
 * ``score::time::HighResSteadyTime`` via ``score::time::HighResSteadyClock``
 * ``score::time::VehicleTime`` via ``score::time::VehicleClock``
 
-For more detail, see the :ref:`module user manual<user_manual>`.
+For more detail, see the :ref:`module user manual<user_manual_time>`.
 
 Polling Local Time Bases
 ------------------------
@@ -53,6 +53,10 @@ All supported clocks use the same API shape: ``GetInstance()`` and ``Now()``.
        const auto steady_tp = steady_snapshot.TimePoint();
        const auto high_res_tp = high_res_snapshot.TimePoint();
    }
+
+.. seealso::
+
+   For sequence diagrams showing how these clocks work internally, see :ref:`use_cases_basic_clocks`.
 
 Polling Vehicle Time with Quality Checks
 ----------------------------------------
@@ -115,6 +119,11 @@ This method involves actively requesting the current vehicle time from the ``sco
 
     Never use ``TimePoint`` from ``ClockSnapshot`` before verifying status.
     For robust handling, check ``Status().IsConsistent()``, ``Status().HasBeenSynchronized()``, and ``Status().IsReliable()``.
+
+.. seealso::
+
+   For detailed VehicleTime behavioral patterns including initialization, status checking,
+   and subscription workflows, see :ref:`use_cases_vehicle_time`.
 
 Advanced API Usage: Subscribing to PTP Protocol Events
 ======================================================

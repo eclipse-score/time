@@ -12,7 +12,7 @@
         "step_threshold_ns": 100000000
     },
     "qnx": {
-        "bpf_device_prefix": "/dev/bpf",
+        "bpf_device_path": "/dev/bpf",
         "see_sent": true
     }
 }

@@ -14,6 +14,8 @@
 #ifndef SCORE_TIME_SLAVE_SRC_COMMON_DEFINITIONS_H
 #define SCORE_TIME_SLAVE_SRC_COMMON_DEFINITIONS_H
 
+#include <cstdlib>
+
 namespace score::ts::env
 {
 
@@ -26,17 +28,19 @@ static constexpr auto kTimeSlaveConfigDefaultPath = "./etc/time_slave_config.jso
 /// Environment variable name for the gPTP interface override.
 static constexpr auto kGptpInterfaceEnv = "GPTP_IFACE";
 
+static inline const char* GetEnvWithDefault(const char* env_var, const char* default_value)
+{
+    const char* value = std::getenv(env_var);
+    return (value != nullptr && value[0] != '\0') ? value : default_value;
+}
+
 namespace qnx
 {
-/// Environment variable name for the QNX BPF device prefix.
-/// Used to override the default BPF device prefix (e.g., "/dev/bpf") for raw socket operations.
-static constexpr auto kBpfDevicePrefixEnv = "QNX_BPF_DEVICE_PREFIX";
+/// Environment variable name for the QNX BPF clone-device path.
+static constexpr auto kBpfDevicePathEnv = "QNX_BPF_DEVICE_PATH";
 
-/// Default QNX BPF device prefix ("/dev/bpf").
-static constexpr auto kBpfDevicePrefixDefault = "/dev/bpf";
-
-/// Default QNX BPF device default("/dev/bpf0").
-static constexpr auto kBpfDeviceDefault = "/dev/bpf0";
+/// Default QNX BPF clone-device path.
+static constexpr auto kBpfDevicePathDefault = "/dev/bpf";
 
 /// Environment variable name for enabling raw SEE sent.
 static constexpr auto kRawSeeSentEnv = "QNX_RAW_SEESENT";

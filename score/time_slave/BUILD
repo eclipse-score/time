@@ -24,6 +24,7 @@ cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
     cc_unit_tests = [],
     test_suites_from_sub_packages = [
+        "//score/time_slave/src/common:unit_test_suite",
         "//score/time_slave/src/gptp:unit_test_suite",
     ],
     visibility = ["//score:__subpackages__"],
