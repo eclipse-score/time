@@ -15,11 +15,12 @@
 #include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
 
 #include "gmock/gmock.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include <gtest/gtest.h>
+#include <chrono>
+#include <cstdint>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 using namespace std::chrono_literals;
@@ -146,5 +147,4 @@ TEST(TimeoutValidatorTest, LogsErrorWhenClockAppearsToGoBackward)
     EXPECT_FALSE(second_result.status.is_timeout);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

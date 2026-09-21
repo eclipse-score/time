@@ -16,9 +16,7 @@
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/verification_machine/core/verification_stage.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -27,7 +25,7 @@ namespace td
 class SynchronizationValidator : public VerificationStage<PtpTimeInfo>
 {
   public:
-    SynchronizationValidator();
+    SynchronizationValidator() = default;
 
   protected:
     /**
@@ -36,10 +34,9 @@ class SynchronizationValidator : public VerificationStage<PtpTimeInfo>
     void DoValidation(PtpTimeInfo& data) override;
 
   private:
-    bool is_synchronized_;
+    bool is_synchronized_{false};
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_VALIDATORS_SYNCHRONIZATION_VALIDATOR_H

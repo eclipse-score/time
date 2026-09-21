@@ -10,14 +10,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/ipc/svt/publisher/factory.h"
 #include "score/time_daemon/src/ipc/svt/receiver/factory.h"
 
 #include <gtest/gtest.h>
+#include <chrono>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 TEST(FactoryImplTest, TestReadAndWrite)
@@ -41,5 +41,4 @@ TEST(FactoryImplTest, TestReadAndWrite)
     EXPECT_EQ(receiver->Receive().value(), input_data);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

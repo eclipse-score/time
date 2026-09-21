@@ -20,9 +20,7 @@
 #include <chrono>
 #include <mutex>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -63,7 +61,6 @@ class ProactiveMachine : public BaseMachine
     virtual void Stop() noexcept = 0;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_PROACTIVE_MACHINE_H

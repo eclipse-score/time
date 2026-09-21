@@ -10,14 +10,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 #include "score/time_daemon/src/ipc/core/test_types.h"
 
+#include "score/memory/shared/shared_memory_factory.h"
+#include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 #include <gtest/gtest.h>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class SharedMemoryHandlerTest : public ::testing::Test
@@ -67,5 +67,4 @@ TEST_F(SharedMemoryHandlerTest, TestWriteWithoutInit)
     EXPECT_FALSE(data.has_value());
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

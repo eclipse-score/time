@@ -10,20 +10,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.h"
 
+#include "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/ts_client/src/gptp_ipc_publisher.h"
 
 #include <gtest/gtest.h>
 
 #include <atomic>
-#include <chrono>
+#include <string>
 
-namespace score
-{
-namespace td
-{
-namespace details
+namespace score::td::details
 {
 
 namespace
@@ -211,6 +209,4 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesPDelayDataCorrectly)
     EXPECT_EQ(result.pdelay_data.resp_clock_identity, src.pdelay_data.resp_clock_identity);
 }
 
-}  // namespace details
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::details

@@ -12,14 +12,11 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.h"
 #include "score/mw/log/logging.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 
-namespace score
+namespace score::td
 {
-namespace td
-{
-
-SynchronizationValidator::SynchronizationValidator() : is_synchronized_{false} {}
 
 void SynchronizationValidator::DoValidation(PtpTimeInfo& data)
 {
@@ -40,5 +37,4 @@ void SynchronizationValidator::DoValidation(PtpTimeInfo& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

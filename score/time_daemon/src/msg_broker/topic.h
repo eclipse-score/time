@@ -17,9 +17,7 @@
 #include <ostream>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -37,19 +35,18 @@ class Topic
     Topic& operator=(Topic&&) noexcept = delete;
     ~Topic() noexcept = default;
 
-    const std::string& Name() const noexcept;
+    [[nodiscard]] const std::string& Name() const noexcept;
 
   private:
     std::string name_;
-    const std::size_t kMaxLength{32U};
+    static constexpr std::size_t kMaxLength{32U};
 };
 
 bool operator==(const Topic& lhs, const Topic& rhs) noexcept;
 bool operator!=(const Topic& lhs, const Topic& rhs) noexcept;
 bool operator<(const Topic& lhs, const Topic& rhs) noexcept;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 // Specialize hash for score::td::Topic
 namespace std
@@ -57,9 +54,9 @@ namespace std
 template <>
 struct hash<score::td::Topic>
 {
-    std::size_t operator()(const score::td::Topic& t) const noexcept
+    std::size_t operator()(const score::td::Topic& topic) const noexcept
     {
-        return std::hash<std::string>()(t.Name());
+        return std::hash<std::string>()(topic.Name());
     }
 };
 }  // namespace std

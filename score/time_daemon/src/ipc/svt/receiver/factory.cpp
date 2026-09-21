@@ -13,16 +13,18 @@
 #include "score/time_daemon/src/ipc/core/receiver_impl.h"
 #include "score/time_daemon/src/ipc/svt/config.h"
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
+#include "score/time_daemon/src/ipc/svt/svt_time_info.h"
+#include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
+// Declared in factory.h; this is one of two alternate definitions (see factory_stub.cpp)
+// selected via Bazel target, so it must stay externally linked.
+// NOLINTNEXTLINE(misc-use-internal-linkage)
 std::shared_ptr<SvtReceiver> CreateSvtReceiver()
 {
     return std::make_shared<ReceiverImpl<svt::TimeBaseSnapshot>>(kSvtShmemPath);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

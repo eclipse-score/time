@@ -17,9 +17,7 @@
 
 #include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -60,7 +58,6 @@ std::optional<IpcDataType> ReceiverImpl<IpcDataType>::Receive() noexcept
     return shm_handler_.Receive();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_RECEIVER_IMPL_H

@@ -27,9 +27,7 @@
 #include <mutex>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -108,20 +106,14 @@ class ControlFlowDivider final : public EventDrivenMachine, public Consumer<Data
     score::cpp::circular_buffer<DataType, BufferSize> data_buffer_;
 
     /** @brief Callback function for publishing data */
-    std::function<void(const DataType&)> publish_callback_;
+    std::function<void(const DataType&)> publish_callback_{nullptr};
 
-    DataType last_data_;
+    DataType last_data_{};
 };
 
 template <typename DataType, size_t BufferSize>
 ControlFlowDivider<DataType, BufferSize>::ControlFlowDivider(const std::string& name, std::chrono::milliseconds timeout)
-    : EventDrivenMachine(name, timeout),
-      Consumer<DataType>(),
-      Producer<DataType>(),
-      data_buffer_mutex_{},
-      data_buffer_{},
-      publish_callback_{nullptr},
-      last_data_{}
+    : EventDrivenMachine(name, timeout), Consumer<DataType>(), Producer<DataType>(), data_buffer_{}
 {
     score::mw::log::LogInfo(kControlFlowDividerContext)
         << "ControlFlowDivider created with timeout: " << timeout.count() << "ms";
@@ -204,7 +196,6 @@ void ControlFlowDivider<DataType, BufferSize>::Publish(const DataType& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H

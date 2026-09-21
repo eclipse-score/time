@@ -11,6 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/core/ptp_machine.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/ptp_machine/core/ptp_engine_mock.h"
 
 #include <gmock/gmock.h>
@@ -22,9 +23,7 @@
 
 using namespace std::chrono_literals;
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 using ::testing::_;
@@ -170,5 +169,4 @@ TEST(PTPMachineStandaloneTest, PublishWithoutCallbackDoesNotCrash)
     machine.Stop();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

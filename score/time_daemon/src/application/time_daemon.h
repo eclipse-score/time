@@ -17,9 +17,7 @@
 
 #include "score/mw/lifecycle/application.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class TimeDaemon final : public score::mw::lifecycle::Application
@@ -40,7 +38,6 @@ class TimeDaemon final : public score::mw::lifecycle::Application
     std::unique_ptr<TimebaseHandler> svt_timebase_handler_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIME_DAEMON_H

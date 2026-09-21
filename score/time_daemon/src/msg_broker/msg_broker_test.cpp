@@ -14,14 +14,14 @@
 #include "score/time_daemon/src/common/data_flow/consumer.h"
 #include "score/time_daemon/src/common/data_flow/producer.h"
 
+#include "score/time_daemon/src/msg_broker/topic.h"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <functional>
 #include <memory>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 template <typename T>
@@ -54,7 +54,9 @@ class MockProducer : public Producer<T>
     void Publish(const T& data) override
     {
         if (publish_callback_)
+        {
             publish_callback_(data);
+        }
     }
 
     void Produce(const T& data)
@@ -129,11 +131,15 @@ TEST_F(MessageBrokerTest, MultipleDataProduction)
     broker->AddProducer(Topic("topic1"), producer);
 
     for (int i = 0; i < 5; ++i)
+    {
         producer->Produce(i);
+    }
 
     ASSERT_EQ(consumer->received_data.size(), 5);
     for (int i = 0; i < 5; ++i)
+    {
         EXPECT_EQ(consumer->received_data[i], i);
+    }
 }
 
 TEST_F(MessageBrokerTest, ExpiredSubscriberDoesNotReceiveData)
@@ -202,5 +208,4 @@ TEST(MessageBrokerTopicTest, TopicComparisonOperators)
     EXPECT_TRUE(a < c);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
