@@ -64,7 +64,7 @@ class ControlFlowDivider final : public EventDrivenMachine, public Consumer<Data
     ControlFlowDivider(ControlFlowDivider&&) = delete;
     ControlFlowDivider& operator=(ControlFlowDivider&&) = delete;
 
-    /// @brief Initialise the machine. Stubbed — returns true immediately as no
+    /// @brief Initialise the machine. Returns true immediately as no
     /// explicit initialisation actions are required.
     bool Init() override;
 
@@ -77,7 +77,7 @@ class ControlFlowDivider final : public EventDrivenMachine, public Consumer<Data
     ///
     /// This method receives incoming data, stores it in the internal buffer,
     /// and triggers the event-driven processing mechanism to handle the data.
-    /// The operation is thread-safe and non-blocking.
+    /// The operation is thread-safe.
     ///
     /// @param data The data to be queued for processing.
     void OnMessage(DataType data) override;

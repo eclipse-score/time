@@ -128,11 +128,12 @@ The data and control flow between units is presented in the following diagram:
 
 On this view you can see several execution scopes:
 
-1. **PTP retrieving scope** — retrieves latest PTP data and publishes to ``raw_ptp_data`` topic
-2. **PTPTimeInfo handling scope** — validates time data and publishes to ``verified_ptp_data`` topic
-3. **PTPTimeInfo receiving scope** — propagates qualified time to client applications
+#. **PTP retrieving scope** — retrieves latest PTP data and publishes to ``input_ptp_data`` topic
+#. **PTP decoupling scope** — decouples the retrieving scope from the following scopes for cases when PTP data is coming in rapidly or new data is missing too long. It publishes PTP data to ``raw_ptp_data`` topic.
+#. **PTPTimeInfo handling scope** — validates time data and publishes to ``verified_ptp_data`` topic
+#. **PTPTimeInfo receiving scope** — propagates qualified time to client applications```
 
-Each control flow is implemented with a dedicated thread or process and is independent from the others.
+Each control flow is implemented with a dedicated thread and is independent from the others.
 
 Data Types or Events
 ^^^^^^^^^^^^^^^^^^^^^
@@ -143,17 +144,17 @@ Main data exchanged between units via MessageBroker topics:
 
 Topic names:
 
-.. _raw_ptp_data:
-
-.. rubric:: raw_ptp_data
-
-Raw PTP snapshot from ``PtpMachine``; published to ``ControlFlowDivider`` for thread separation.
-
 .. _input_ptp_data:
 
 .. rubric:: input_ptp_data
 
-Same data as :ref:`raw_ptp_data` but republished at consistent rate by ``ControlFlowDivider``; consumed by ``VerificationMachine``.
+Input PTP snapshot from ``PtpMachine``; published to ``ControlFlowDivider`` for thread separation.
+
+.. _raw_ptp_data:
+
+.. rubric:: raw_ptp_data
+
+Same data as :ref:`input_ptp_data` but republished at consistent rate by ``ControlFlowDivider``; consumed by ``VerificationMachine``.
 
 .. _verified_ptp_data:
 

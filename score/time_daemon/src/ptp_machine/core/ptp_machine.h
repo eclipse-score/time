@@ -27,7 +27,7 @@ namespace score
 namespace td
 {
 
-/// @brief Retrieves raw PTP time data from the PTP stack and publishes it to
+/// @brief Retrieves raw PTP time data from a customizable gPTP handler (e.g. Time Slave) and publishes it to
 /// the MessageBroker.
 ///
 /// Wraps platform-specific PTP stack communication (e.g. ptpd via devctl or

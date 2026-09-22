@@ -65,9 +65,10 @@ class ReceiverImpl : public Receiver<IpcDataType>
 
     /// @brief Reads the latest time data from shared memory.
     ///
-    /// Non-blocking. Returns @c std::nullopt if no new or valid sample is available.
+    /// Non-blocking. Returns @c std::nullopt if shared memory channel in not initialized or sample data is invalid (due
+    /// to ongoing data write).
     ///
-    /// @return Latest IPC data if available, @c std::nullopt otherwise.
+    /// @return Latest IPC data could be read, @c std::nullopt otherwise.
     std::optional<IpcDataType> Receive() noexcept override;
 
   private:

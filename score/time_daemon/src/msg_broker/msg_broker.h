@@ -31,10 +31,10 @@ namespace td
 /// @brief Central publish-subscribe communication hub within the TimeDaemon.
 ///
 /// Manages topics and distributes messages to interested subscribers, enabling
-/// decoupled communication: components evolve independently without direct
+/// decoupled communication: components exist independently without direct
 /// dependencies on each other.
 ///
-/// MessageBroker does not provide synchronization between publish and callback
+/// MessageBroker does not provide decoupling between publish and callback
 /// invocation. Callbacks run synchronously in caller's thread; no queuing.
 /// To separate control flows, use @c ControlFlowDivider.
 ///
