@@ -16,6 +16,7 @@
 #include "score/time/clock/src/no_status.h"
 #include "score/time/clock/src/scoped_clock_override.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock_backend_mock.h"
+#include "score/time/vehicle_time/src/details/td_impl/svt_test_helpers.h"
 #include "score/time_daemon/src/ipc/receiver_mock.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
@@ -23,6 +24,7 @@
 
 #include <chrono>
 #include <optional>
+#include <thread>
 
 namespace score
 {
@@ -45,7 +47,9 @@ class VehicleClockBackendImplTest : public ::testing::Test
         : mock_hirs_{std::make_shared<HighResSteadyClockBackendMock>()},
           hirs_guard_{mock_hirs_},
           mock_svt_{std::make_shared<SvtMock>()},
-          impl_{std::make_unique<detail::VehicleClockBackendImpl>(mock_svt_, HighResSteadyClock::GetInstance())}
+          impl_{std::make_unique<detail::VehicleClockBackendImpl>(mock_svt_,
+                                                                  HighResSteadyClock::GetInstance(),
+                                                                  test_helpers::kPollInterval)}
     {
     }
 
@@ -260,14 +264,42 @@ TEST_F(VehicleClockBackendImplTest, WaitUntilAvailableReturnsFalseWhenDeadlinePa
     EXPECT_FALSE(impl_->WaitUntilAvailable(score::cpp::stop_source{}.get_token(), past_deadline));
 }
 
-TEST_F(VehicleClockBackendImplTest, CallbackMethodsAreNoOps)
+TEST_F(VehicleClockBackendImplTest, CallbacksAreNotDeliveredBeforeInit)
 {
-    impl_->SetTimeSlaveSyncDataReceivedCallback([](const TimeSlaveSyncData<VehicleTime>&) {});
-    impl_->UnsetTimeSlaveSyncDataReceivedCallback();
-    impl_->SetPDelayMeasurementFinishedCallback([](const PDelayMeasurementData<VehicleTime>&) {});
-    impl_->UnsetPDelayMeasurementFinishedCallback();
-    impl_->SetStatusChangedCallback([](const VehicleTimeStatus&) {});
-    impl_->UnsetStatusChangedCallback();
+    EXPECT_CALL(*mock_svt_, Receive()).Times(0);
+
+    test_helpers::Recorder<VehicleTimeStatus> recorder;
+    impl_->SetStatusChangedCallback(recorder.Callback());
+
+    std::this_thread::sleep_for(20 * test_helpers::kPollInterval);
+    EXPECT_EQ(recorder.Count(), 0U);
+}
+
+TEST_F(VehicleClockBackendImplTest, CallbacksAreNotDeliveredWhenInitFails)
+{
+    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(false));
+    EXPECT_CALL(*mock_svt_, Receive()).Times(0);
+    EXPECT_FALSE(impl_->Init());
+
+    test_helpers::Recorder<VehicleTimeStatus> recorder;
+    impl_->SetStatusChangedCallback(recorder.Callback());
+
+    std::this_thread::sleep_for(20 * test_helpers::kPollInterval);
+    EXPECT_EQ(recorder.Count(), 0U);
+}
+
+TEST_F(VehicleClockBackendImplTest, CallbackRegisteredBeforeInitIsDeliveredOnceInitSucceeds)
+{
+    test_helpers::Recorder<VehicleTimeStatus> recorder;
+    impl_->SetStatusChangedCallback(recorder.Callback());
+
+    const SvtSnapshot data{1000ULL, 0ULL, 0.0, {true, false, false, false, true}, {}, {}};
+    EXPECT_CALL(*mock_svt_, Receive()).WillRepeatedly(Return(data));
+    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
+    EXPECT_TRUE(impl_->Init());
+
+    ASSERT_TRUE(recorder.WaitForCount(1U));
+    EXPECT_TRUE(recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
 }
 
 }  // namespace

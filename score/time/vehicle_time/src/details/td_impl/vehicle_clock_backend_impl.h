@@ -17,6 +17,7 @@
 // NOT part of the public API of td_impl.
 
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/vehicle_time/src/details/td_impl/svt_callback_dispatcher.h"
 #include "score/time/vehicle_time/src/vehicle_clock.h"
 #include "score/time/vehicle_time/src/vehicle_clock_backend.h"
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
@@ -47,8 +48,11 @@ namespace detail
 /// where the local reference clock is supplied via @c HighResSteadyClock::GetInstance()
 /// (captured once at construction to avoid per-call mutex overhead).
 ///
-/// Callback registration is not yet supported; all Set/Unset methods are no-ops
-/// until the TimeDaemon IPC layer provides a subscription facility.
+/// @par Callback delivery
+/// Subscription callbacks are delivered by an owned @c SvtCallbackDispatcher, which runs a dedicated
+/// worker thread polling the receiver. Dispatching is enabled by the first successful @c Init(); the
+/// worker thread starts once dispatching is enabled and the first callback is registered, and runs
+/// until this backend is destroyed.
 ///
 /// @note Placed in @c score::time::detail (rather than an anonymous namespace) so
 /// that vehicle_clock_backend_impl_test.cpp can construct it directly with injected mocks.
@@ -56,11 +60,17 @@ namespace detail
 class VehicleClockBackendImpl final : public VehicleClockBackend
 {
   public:
+    /// @brief Default interval at which the worker thread polls the receiver for new snapshots.
+    static constexpr std::chrono::milliseconds kDefaultPollInterval{50};
+
     /// @brief Constructs backend with injected TimeDaemon receiver and local steady clock.
     ///
-    /// @param receiver    SvtReceiver instance used to read TimeDaemon SVT samples.
-    /// @param local_clock Local steady clock used for PTP-to-now extrapolation.
-    VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver, HighResSteadyClock local_clock) noexcept;
+    /// @param receiver      SvtReceiver instance used to read TimeDaemon SVT samples.
+    /// @param local_clock   Local steady clock used for PTP-to-now extrapolation.
+    /// @param poll_interval Interval at which the worker thread polls the receiver for new snapshots.
+    VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver,
+                            HighResSteadyClock local_clock,
+                            std::chrono::milliseconds poll_interval = kDefaultPollInterval) noexcept;
 
     ~VehicleClockBackendImpl() noexcept override = default;
     VehicleClockBackendImpl(const VehicleClockBackendImpl&) = delete;
@@ -89,36 +99,33 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     bool WaitUntilAvailable(const score::cpp::stop_token& token,
                             std::chrono::steady_clock::time_point until) const noexcept override;
 
-    /// @brief No-op in production backend until callback transport support is available.
+    /// @brief Installs the time-sync data callback, delivered from the worker thread.
     void SetTimeSlaveSyncDataReceivedCallback(
         VehicleTime::TimeSlaveSyncDataReceivedCallback&& callback) noexcept override;
 
-    /// @brief No-op in production backend until callback transport support is available.
+    /// @brief Removes the time-sync data callback, waiting for an in-flight invocation.
     void UnsetTimeSlaveSyncDataReceivedCallback() noexcept override;
 
-    /// @brief No-op in production backend until callback transport support is available.
+    /// @brief Installs the pDelay measurement callback, delivered from the worker thread.
     void SetPDelayMeasurementFinishedCallback(
         VehicleTime::PDelayMeasurementFinishedCallback&& callback) noexcept override;
 
-    /// @brief No-op in production backend until callback transport support is available.
+    /// @brief Removes the pDelay measurement callback, waiting for an in-flight invocation.
     void UnsetPDelayMeasurementFinishedCallback() noexcept override;
 
-    /// @brief No-op in production backend until callback transport support is available.
+    /// @brief Installs the status-changed callback, delivered from the worker thread.
     void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept override;
 
-    /// @brief No-op in production backend until callback transport support is available.
+    /// @brief Removes the status-changed callback, waiting for an in-flight invocation.
     void UnsetStatusChangedCallback() noexcept override;
 
   private:
-    /// @brief Converts PTP status flags from the TimeDaemon IPC representation to
-    ///        the @c ClockStatus<VehicleTime::StatusFlag> representation.
-    static ClockStatus<VehicleTime::StatusFlag> ConvertPtpStatus(
-        const score::td::svt::TimeBaseStatus& ptp_status) noexcept;
-
     std::atomic_bool is_ready_;
     std::mutex init_mutex_;
     std::shared_ptr<score::td::SvtReceiver> svt_receiver_;
     HighResSteadyClock local_clock_;
+
+    SvtCallbackDispatcher dispatcher_;
 };
 
 }  // namespace detail
