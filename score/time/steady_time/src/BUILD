@@ -68,7 +68,6 @@ cc_test(
     srcs = ["steady_clock_adapter_test.cpp"],
     features = COMPILER_WARNING_FEATURES,
     tags = [
-        "component",
         "exclusive",
         "unit",
     ],
