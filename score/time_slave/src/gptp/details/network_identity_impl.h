@@ -30,7 +30,7 @@ namespace details
  *
  * The identity is built from the interface's EUI-48 MAC address by inserting
  * 0xFF 0xFE at positions 3–4 to form an EUI-64 (per IEEE 1588-2019 §7.5.2.2).
- * Platform implementation: Linux + QNX via #ifdef.
+ * Platform implementation: Linux + QNX, selected via Bazel select() in BUILD.
  */
 class NetworkIdentityImpl : public NetworkIdentity
 {
