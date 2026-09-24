@@ -36,10 +36,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config: [asan_ubsan_lsan]
+        config: [asan_ubsan_lsan, tsan]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
+
+      - name: Reduce ASLR entropy for TSan
+        if: matrix.config == 'tsan'
+        run: |
+          sudo sysctl -w vm.mmap_rnd_bits=28
+          test "$(sudo sysctl -n vm.mmap_rnd_bits)" = 28
 
       - name: Setup Bazel
         uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
