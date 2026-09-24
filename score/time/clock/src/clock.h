@@ -93,6 +93,7 @@ class Clock
     ///
     /// Acquires @c instance_guard_ mutex to protect static state. Returns override if active,
     /// cached instance if alive, or creates fresh backend via @c detail::CreateBackend<Tag>().
+    // # req-Id: comp_req__time__unified_clock_facade
     [[nodiscard]] static Clock GetInstance() noexcept
     {
         std::lock_guard<std::mutex> lock{instance_guard_};
@@ -112,6 +113,7 @@ class Clock
     /// @brief Returns the current clock snapshot (time_point + optional status).
     ///
     /// Delegates to backend via @c Trait::CallNow(). Synchronous; thread safety depends on backend.
+    // # req-Id: comp_req__time__snapshot_with_status
     [[nodiscard]] Snapshot Now() const noexcept
     {
         return Trait::CallNow(*impl_);
@@ -149,6 +151,7 @@ class Clock
     /// Calling this on an always-ready clock (HighResSteadyTime, steady_clock) is a compile error.
     ///
     /// @return @c true if the backend is ready; @c false on failure.
+    // # req-Id: comp_req__time__explicit_lifecycle
     template <typename T = Tag, std::enable_if_t<HasInitialization<T>::value, bool> = true>
     [[nodiscard]] bool Init() noexcept
     {
@@ -159,6 +162,7 @@ class Clock
     ///
     /// Only available for clock domains that require a readiness check (e.g. VehicleTime).
     /// Calling this on an always-available clock (HighResSteadyTime, steady_clock) is a compile error.
+    // # req-Id: comp_req__time__explicit_lifecycle
     template <typename T = Tag, std::enable_if_t<HasAvailability<T>::value, int> = 0>
     [[nodiscard]] bool IsAvailable() const noexcept
     {
@@ -174,6 +178,7 @@ class Clock
     /// @param until  Steady-clock deadline after which the wait is abandoned.
     ///
     /// @return @c true if the resource became available before the deadline.
+    // # req-Id: comp_req__time__explicit_lifecycle
     template <typename T = Tag, std::enable_if_t<HasAvailability<T>::value, int> = 0>
     [[nodiscard]] bool WaitUntilAvailable(const score::cpp::stop_token& token,
                                           std::chrono::steady_clock::time_point until) const noexcept

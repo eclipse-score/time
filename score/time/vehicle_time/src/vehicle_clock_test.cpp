@@ -52,6 +52,12 @@ class SampleVehicleService
 
 TEST(VehicleClockTest, NowReturnsSynchronizedStatusAndTimepoint)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__snapshot");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "equivalence-classes");
+    ::testing::Test::RecordProperty("Description",
+                                    "VehicleClock::Now returns a snapshot combining backend timepoint and status.");
+
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
@@ -97,6 +103,11 @@ TEST(VehicleClockTest, NowIsReliableReturnsFalseWhenTimeoutSet)
 
 TEST(VehicleClockTest, InitForwardsToBackend)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__lifecycle");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
+    ::testing::Test::RecordProperty("Description", "VehicleClock::Init delegates to the backend Init call.");
+
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
@@ -107,6 +118,12 @@ TEST(VehicleClockTest, InitForwardsToBackend)
 
 TEST(VehicleClockTest, IsAvailableReturnsTrueWhenBackendReports)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__lifecycle");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
+    ::testing::Test::RecordProperty("Description",
+                                    "VehicleClock::IsAvailable delegates to the backend IsAvailable call.");
+
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
@@ -117,6 +134,12 @@ TEST(VehicleClockTest, IsAvailableReturnsTrueWhenBackendReports)
 
 TEST(VehicleClockTest, IsAvailableReturnsFalseWhenBackendUnavailable)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__lifecycle");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
+    ::testing::Test::RecordProperty("Description",
+                                    "VehicleClock::IsAvailable delegates to the failing backend IsAvailable call.");
+
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
@@ -127,6 +150,12 @@ TEST(VehicleClockTest, IsAvailableReturnsFalseWhenBackendUnavailable)
 
 TEST(VehicleClockTest, WaitUntilAvailableForwardsTokenAndDeadlineToBackend)
 {
+    ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__lifecycle");
+    ::testing::Test::RecordProperty("TestType", "requirements-based");
+    ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
+    ::testing::Test::RecordProperty(
+        "Description", "VehicleClock::WaitUntilAvailable delegates to the backend WaitUntilAvailable call.");
+
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
 
