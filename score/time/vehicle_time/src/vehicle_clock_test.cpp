@@ -121,7 +121,8 @@ TEST(VehicleClockTest, IsAvailableReturnsTrueWhenBackendReports)
     ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__lifecycle");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
-    ::testing::Test::RecordProperty("Description", "VehicleClock::IsAvailable delegates to the backend IsAvailable call.");
+    ::testing::Test::RecordProperty("Description",
+                                    "VehicleClock::IsAvailable delegates to the backend IsAvailable call.");
 
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
@@ -136,7 +137,8 @@ TEST(VehicleClockTest, IsAvailableReturnsFalseWhenBackendUnavailable)
     ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__lifecycle");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
-    ::testing::Test::RecordProperty("Description", "VehicleClock::IsAvailable delegates to the failing backend IsAvailable call.");
+    ::testing::Test::RecordProperty("Description",
+                                    "VehicleClock::IsAvailable delegates to the failing backend IsAvailable call.");
 
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
@@ -151,7 +153,8 @@ TEST(VehicleClockTest, WaitUntilAvailableForwardsTokenAndDeadlineToBackend)
     ::testing::Test::RecordProperty("PartiallyVerifies", "comp_req__vehicle_time__lifecycle");
     ::testing::Test::RecordProperty("TestType", "requirements-based");
     ::testing::Test::RecordProperty("DerivationTechnique", "requirements-analysis");
-    ::testing::Test::RecordProperty("Description", "VehicleClock::WaitUntilAvailable delegates to the backend WaitUntilAvailable call.");
+    ::testing::Test::RecordProperty(
+        "Description", "VehicleClock::WaitUntilAvailable delegates to the backend WaitUntilAvailable call.");
 
     auto mock = std::make_shared<VehicleClockBackendMock>();
     test_utils::ScopedClockOverride<VehicleTime> guard{mock};
