@@ -12,9 +12,7 @@
  ********************************************************************************/
 #include "score/time_slave/src/gptp/details/raw_socket_impl.h"
 
-#include <net/bpf.h>
 #include <net/if.h>
-#include <net/if_dl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <cerrno>
@@ -24,7 +22,7 @@
 extern "C" {
 int qnx_raw_open(const char* ifname);
 int qnx_raw_recv(int fd, void* buf, int len, ::timespec* hwts, int nonblock);
-int qnx_raw_send(int fd, void* buf, int len, ::timespec* hwts);
+int qnx_raw_send(int fd, const void* buf, int len, ::timespec* hwts);
 }  // extern "C"
 
 namespace score
@@ -83,7 +81,7 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
 {
     if (fd_ < 0 || buf == nullptr || len <= 0)
         return -1;
-    return qnx_raw_send(fd_, const_cast<void*>(buf), len, &hwts);
+    return qnx_raw_send(fd_, buf, len, &hwts);
 }
 
 }  // namespace details

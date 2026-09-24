@@ -45,6 +45,12 @@ For a detailed concept and architectural design, please refer to the :doc:`time_
    features/index
    module/index
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Internal
+
+   internal/qnx_code_inventory
+
 
 Project Layout
 --------------
