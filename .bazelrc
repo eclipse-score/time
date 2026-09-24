@@ -106,6 +106,17 @@ build:asan  --config=asan_ubsan_lsan
 build:ubsan --config=asan_ubsan_lsan
 build:lsan  --config=asan_ubsan_lsan
 
+# ThreadSanitizer — must run as a separate job
+build:tsan --config=with_debug_symbols
+build:tsan --copt=-O1
+build:tsan --copt=-fsanitize=thread
+build:tsan --linkopt=-fsanitize=thread
+build:tsan --platform_suffix=tsan
+build:tsan --@score_cpp_policies//sanitizers/flags:tsan=True
+test:tsan --run_under=@score_cpp_policies//sanitizers:wrapper
+test:tsan --test_tag_filters=-no-tsan
+test:tsan --build_tests_only
+
 # -------------------------------------------------------------------------------
 # Clang-tidy static analysis — powered by score_cpp_policies
 # -------------------------------------------------------------------------------
