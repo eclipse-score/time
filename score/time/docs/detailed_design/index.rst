@@ -263,7 +263,7 @@ Working code examples for all clock domains are available in ``examples/time/``:
 
 Each example includes buildable source code with unit tests demonstrating API usage and testing patterns.
 
-For comprehensive usage guidance, see :doc:`User Manual </module/manuals/user_manual>`.
+For comprehensive usage guidance, see the :ref:`module user manual<user_manual_time>`.
 
 Bazel Dependencies
 ------------------
