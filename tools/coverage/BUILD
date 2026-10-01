@@ -11,7 +11,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-load("@score_tooling//coverage:defs.bzl", "score_coverage_reporter", "score_coverage_scope")
+load("@score_coverage//:defs.bzl", "score_coverage_reporter", "score_coverage_scope")
 
 # The production components of this module (the public faces the old
 # cpp-coverage workflow also targeted via //score/...). The scope aspect walks
@@ -31,10 +31,9 @@ score_coverage_scope(
         "//score/time/vehicle_time",
         # The daemons transitively bring in clock_core, high_res_steady_clock
         # and ts_client's gptp_ipc (verified via bazel query deps()).
-        # KNOWN GAP: the cc_binary entry-point sources themselves (main.cpp,
-        # time_daemon.cpp, time_slave.cpp) are not collected — cc_binary
-        # provides no CcInfo for the scope aspect. Entry-point wiring is not
-        # unit-testable; tracked as a scope-aspect enhancement in score_tooling.
+        # The cc_binary entry-point sources (main.cpp, time_daemon.cpp,
+        # time_slave.cpp) are collected too and appear in unmapped_files.txt
+        # as no-data: entry-point wiring is not unit-testable.
         "//score/time_daemon",
         "//score/time_slave",
     ],
