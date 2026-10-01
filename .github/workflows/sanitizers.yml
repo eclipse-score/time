@@ -41,6 +41,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
+      # libtsan aborts on ubuntu-24.04 with the default mmap_rnd_bits=32
       - name: Reduce ASLR entropy for TSan
         if: matrix.config == 'tsan'
         run: |
