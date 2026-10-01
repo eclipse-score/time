@@ -19,9 +19,7 @@
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -29,7 +27,6 @@ namespace td
  */
 using SvtVerificationMachine = VerificationMachine<PtpTimeInfo>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_SVT_VERIFICATION_MACHINE_H

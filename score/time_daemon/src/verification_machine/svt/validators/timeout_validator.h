@@ -18,9 +18,7 @@
 
 #include <optional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -32,7 +30,6 @@ class TimeoutValidator : public VerificationStage<PtpTimeInfo>
 {
   public:
     explicit TimeoutValidator(PtpTimeInfo::ReferenceClock timeout_clock, std::chrono::nanoseconds reception_timeout);
-    virtual ~TimeoutValidator() = default;
 
   protected:
     void DoValidation(PtpTimeInfo& data) override;
@@ -46,7 +43,6 @@ class TimeoutValidator : public VerificationStage<PtpTimeInfo>
     std::optional<PtpTimeInfo> last_received_data_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_SVT_VALIDATORS_TIMEOUT_VALIDATOR_H

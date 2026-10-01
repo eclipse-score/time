@@ -15,9 +15,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class VerificationMachineTest : public ::testing::Test
@@ -147,5 +145,4 @@ TEST_F(VerificationMachineDeathTest, FactoryReturningNullptrAborts)
                  "");
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

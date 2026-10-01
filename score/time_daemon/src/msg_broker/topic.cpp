@@ -13,10 +13,9 @@
 #include "score/time_daemon/src/msg_broker/topic.h"
 
 #include "score/mw/log/logging.h"
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 Topic::Topic(const std::string& name) noexcept
@@ -54,5 +53,4 @@ bool operator<(const Topic& lhs, const Topic& rhs) noexcept
     return lhs.Name() < rhs.Name();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

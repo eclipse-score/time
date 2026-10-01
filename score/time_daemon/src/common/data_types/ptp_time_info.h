@@ -19,9 +19,7 @@
 
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -101,69 +99,70 @@ bool operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept;
 /// \brief PrintTo and stream operators:
 
 template <typename OutputStream>
-inline auto& PrintTo(const PtpStatus& status, OutputStream& os)
+inline auto& PrintTo(const PtpStatus& status, OutputStream& out_stream)
 {
-    return os << "Status: [" << status.is_synchronized << "|" << status.is_timeout << "|" << status.is_time_jump_future
-              << "|" << status.is_time_jump_past << "|" << status.is_correct << "]";
+    return out_stream << "Status: [" << status.is_synchronized << "|" << status.is_timeout << "|"
+                      << status.is_time_jump_future << "|" << status.is_time_jump_past << "|" << status.is_correct
+                      << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const PtpStatus& status)
+inline auto& operator<<(OutputStream& out_stream, const PtpStatus& status)
 {
-    return PrintTo(status, os);
+    return PrintTo(status, out_stream);
 }
 
 template <typename OutputStream>
-inline auto& PrintTo(const SyncFupData& data, OutputStream& os)
+inline auto& PrintTo(const SyncFupData& data, OutputStream& out_stream)
 {
-    return os << "SyncFupData:" << "[" << data.precise_origin_timestamp << "|" << data.reference_global_timestamp << "|"
-              << data.reference_local_timestamp << "|" << data.sync_ingress_timestamp << "|" << data.correction_field
-              << "|" << data.sequence_id << "|" << data.pdelay << "|" << data.port_number << "|" << data.clock_identity
-              << "]";
+    return out_stream << "SyncFupData:" << "[" << data.precise_origin_timestamp << "|"
+                      << data.reference_global_timestamp << "|" << data.reference_local_timestamp << "|"
+                      << data.sync_ingress_timestamp << "|" << data.correction_field << "|" << data.sequence_id << "|"
+                      << data.pdelay << "|" << data.port_number << "|" << data.clock_identity << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const SyncFupData& data)
+inline auto& operator<<(OutputStream& out_stream, const SyncFupData& data)
 {
-    return PrintTo(data, os);
+    return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto& PrintTo(const PDelayData& data, OutputStream& os)
+inline auto& PrintTo(const PDelayData& data, OutputStream& out_stream)
 {
-    return os << "PDelayData:" << "[" << data.request_origin_timestamp << "|" << data.request_receipt_timestamp << "|"
-              << data.response_origin_timestamp << "|" << data.response_receipt_timestamp << "|"
-              << data.reference_global_timestamp << "|" << data.reference_local_timestamp << "|" << data.sequence_id
-              << "|" << data.pdelay << "|" << data.req_port_number << "|" << data.req_clock_identity << "|"
-              << data.resp_port_number << "|" << data.resp_clock_identity << "]";
+    return out_stream << "PDelayData:" << "[" << data.request_origin_timestamp << "|" << data.request_receipt_timestamp
+                      << "|" << data.response_origin_timestamp << "|" << data.response_receipt_timestamp << "|"
+                      << data.reference_global_timestamp << "|" << data.reference_local_timestamp << "|"
+                      << data.sequence_id << "|" << data.pdelay << "|" << data.req_port_number << "|"
+                      << data.req_clock_identity << "|" << data.resp_port_number << "|" << data.resp_clock_identity
+                      << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const PDelayData& data)
+inline auto& operator<<(OutputStream& out_stream, const PDelayData& data)
 {
-    return PrintTo(data, os);
+    return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto& PrintTo(const PtpTimeInfo& info, OutputStream& os)
+inline auto& PrintTo(const PtpTimeInfo& info, OutputStream& out_stream)
 {
-    return os << "[" << info.ptp_assumed_time.count() << "|" << info.local_time.time_since_epoch().count() << "|"
-              << info.status << "|" << info.sync_fup_data << "|" << info.pdelay_data << "]";
+    return out_stream << "[" << info.ptp_assumed_time.count() << "|" << info.local_time.time_since_epoch().count()
+                      << "|" << info.status << "|" << info.sync_fup_data << "|" << info.pdelay_data << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const PtpTimeInfo& info)
+inline auto& operator<<(OutputStream& out_stream, const PtpTimeInfo& info)
 {
-    return PrintTo(info, os);
+    return PrintTo(info, out_stream);
 }
 
 /// \brief  gtest compatibility:
-void PrintTo(const PtpStatus& status, std::ostream* os);
-void PrintTo(const SyncFupData& data, std::ostream* os);
-void PrintTo(const PDelayData& data, std::ostream* os);
-void PrintTo(const PtpTimeInfo& info, std::ostream* os);
+void PrintTo(const PtpStatus& status, std::ostream* out_stream);
+void PrintTo(const SyncFupData& data, std::ostream* out_stream);
+void PrintTo(const PDelayData& data, std::ostream* out_stream);
+void PrintTo(const PtpTimeInfo& info, std::ostream* out_stream);
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_DATA_TYPES_PTP_TIME_INFO_H

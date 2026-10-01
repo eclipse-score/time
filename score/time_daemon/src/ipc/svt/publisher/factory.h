@@ -17,9 +17,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -29,7 +27,6 @@ namespace td
 ///
 std::shared_ptr<SvtPublisher> CreateSvtPublisher(const std::string& machine_name);
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_SVT_PUBLISHER_FACTORY_H

@@ -20,9 +20,7 @@
 #include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 #include "score/time_daemon/src/ipc/data_converter.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -63,7 +61,6 @@ void PublisherImpl<DataType, IpcDataType>::OnMessage(DataType data)
     shm_handler_.Send(ipc_data);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_CORE_PUBLISHER_IMPL_H

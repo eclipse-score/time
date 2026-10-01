@@ -12,14 +12,12 @@
  ********************************************************************************/
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
-#include <algorithm>
 #include <cmath>
 #include <limits>
+#include <ostream>
 #include <tuple>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 namespace
@@ -113,25 +111,24 @@ bool operator!=(const PtpTimeInfo& first, const PtpTimeInfo& second) noexcept
 }
 
 /// \brief  gtest compatibility:
-void PrintTo(const PtpStatus& status, std::ostream* os)
+void PrintTo(const PtpStatus& status, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(status, *os);
+    std::ignore = PrintTo(status, *out_stream);
 }
 
-void PrintTo(const SyncFupData& data, std::ostream* os)
+void PrintTo(const SyncFupData& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const PDelayData& data, std::ostream* os)
+void PrintTo(const PDelayData& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const PtpTimeInfo& info, std::ostream* os)
+void PrintTo(const PtpTimeInfo& info, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(info, *os);
+    std::ignore = PrintTo(info, *out_stream);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

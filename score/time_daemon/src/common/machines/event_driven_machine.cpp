@@ -11,14 +11,18 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/common/machines/event_driven_machine.h"
+#include "score/stop_token.hpp"
+#include "score/time_daemon/src/common/machines/proactive_machine.h"
+#include "score/utility.hpp"
+#include <chrono>
+#include <mutex>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 EventDrivenMachine::EventDrivenMachine(const std::string& name, const std::chrono::milliseconds timeout)
-    : ProactiveMachine(name), cv_mutex_{}, cv_{}, worker_{}, kTimeout_(timeout), event_pending_{false}
+    : ProactiveMachine(name), kTimeout_(timeout)
 {
 }
 
@@ -26,17 +30,20 @@ void EventDrivenMachine::Start() noexcept
 {
     const auto thread_name = "td_" + GetName() + "_worker";
     worker_ = score::cpp::jthread{score::cpp::jthread::name_hint{thread_name},
-                                  [this](const score::cpp::stop_token token) noexcept {
+                                  [this](const score::cpp::stop_token& token) noexcept {
                                       WorkerFunction(token);
                                   }};
 }
 
+// join()/notify_one() escaping here means shutdown is broken beyond recovery; terminating via
+// noexcept is the intended behavior, not swallowed here.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 void EventDrivenMachine::Stop() noexcept
 {
     if (worker_.joinable())
     {
         {
-            std::lock_guard<std::mutex> guard{cv_mutex_};
+            const std::lock_guard<std::mutex> guard{cv_mutex_};
             score::cpp::ignore = worker_.request_stop();
             cv_.notify_one();
         }
@@ -47,7 +54,7 @@ void EventDrivenMachine::Stop() noexcept
 
 void EventDrivenMachine::NotifyEvent() noexcept
 {
-    std::lock_guard<std::mutex> guard{cv_mutex_};
+    const std::lock_guard<std::mutex> guard{cv_mutex_};
     event_pending_ = true;
     cv_.notify_one();
 }
@@ -88,5 +95,4 @@ void EventDrivenMachine::WorkerFunction(const score::cpp::stop_token& stop_token
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

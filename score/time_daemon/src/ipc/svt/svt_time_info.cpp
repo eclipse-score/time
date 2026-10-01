@@ -12,18 +12,16 @@
  ********************************************************************************/
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include <score/assert.hpp>
 
-#include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <limits>
+#include <ostream>
 #include <tuple>
 
-namespace score
-{
-namespace td
-{
-namespace svt
+namespace score::td::svt
 {
 
 namespace
@@ -203,26 +201,24 @@ bool operator!=(const TimeBaseSnapshot& ipcdata, const PtpTimeInfo& data) noexce
 }
 
 /// \brief  gtest compatibility:
-void PrintTo(const TimeBaseStatus& status, std::ostream* os)
+void PrintTo(const TimeBaseStatus& status, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(status, *os);
+    std::ignore = PrintTo(status, *out_stream);
 }
 
-void PrintTo(const SyncFupSnapshot& data, std::ostream* os)
+void PrintTo(const SyncFupSnapshot& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const PDelayDataSnapshot& data, std::ostream* os)
+void PrintTo(const PDelayDataSnapshot& data, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(data, *os);
+    std::ignore = PrintTo(data, *out_stream);
 }
 
-void PrintTo(const TimeBaseSnapshot& info, std::ostream* os)
+void PrintTo(const TimeBaseSnapshot& info, std::ostream* out_stream)
 {
-    std::ignore = PrintTo(info, *os);
+    std::ignore = PrintTo(info, *out_stream);
 }
 
-}  // namespace svt
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::svt

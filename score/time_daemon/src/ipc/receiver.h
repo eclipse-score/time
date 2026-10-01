@@ -15,9 +15,7 @@
 
 #include <optional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -46,7 +44,6 @@ class Receiver
     virtual std::optional<T> Receive() noexcept = 0;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_H

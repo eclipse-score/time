@@ -16,9 +16,7 @@
 #include "score/time_daemon/src/ipc/receiver.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -26,7 +24,6 @@ namespace td
  */
 using SvtReceiver = Receiver<svt::TimeBaseSnapshot>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_RECEIVER_H

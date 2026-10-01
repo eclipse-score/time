@@ -15,17 +15,14 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-#include <atomic>
-#include <chrono>
+#include <cstddef>
 #include <future>
 #include <mutex>
 #include <thread>
 
 using namespace std::chrono_literals;
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 using ::testing::_;
@@ -210,5 +207,4 @@ TEST_F(ControlFlowDividerTest, TestNormalQueueBehavior)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

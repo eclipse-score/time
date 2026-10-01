@@ -12,17 +12,14 @@
  ********************************************************************************/
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
-#include <chrono>
 #include <functional>
 #include <limits>
+#include <ostream>
 #include <string>
-#include <vector>
 
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 namespace
@@ -347,5 +344,4 @@ INSTANTIATE_TEST_SUITE_P(
                                                  }}),
     FieldMutationName<PtpTimeInfo>);
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

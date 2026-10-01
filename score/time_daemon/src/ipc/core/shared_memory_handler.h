@@ -22,9 +22,7 @@
 #include <cstdint>
 #include <optional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -35,10 +33,8 @@ class SharedMemoryHandler
 {
   public:
     explicit SharedMemoryHandler(const std::string& shared_memory_path)
-        : shared_memory_path_{shared_memory_path},
-          shared_memory_resource_{},
-          shared_memory_data_{nullptr},
-          max_number_of_read_retries_{10U}
+        : shared_memory_path_{shared_memory_path}, shared_memory_resource_{}
+
     {
     }
 
@@ -94,8 +90,8 @@ class SharedMemoryHandler
 
     const std::string shared_memory_path_;
     std::shared_ptr<score::memory::shared::ManagedMemoryResource> shared_memory_resource_;
-    SharedMemoryHandler::SharedData* shared_memory_data_;
-    const std::size_t max_number_of_read_retries_;
+    SharedMemoryHandler::SharedData* shared_memory_data_{nullptr};
+    const std::size_t max_number_of_read_retries_{10U};
 };
 
 template <typename DataType>
@@ -181,7 +177,6 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H

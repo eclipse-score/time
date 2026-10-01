@@ -17,9 +17,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// \brief Creates a new SVT timebase handler
@@ -27,7 +25,6 @@ namespace td
 /// \return std::unique_ptr<TimebaseHandler> New SVT timebase handler
 std::unique_ptr<TimebaseHandler> CreateSvtTimebase();
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_FACTORY_H

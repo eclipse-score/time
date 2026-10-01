@@ -11,14 +11,18 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/common/machines/periodic_machine.h"
+#include "score/stop_token.hpp"
+#include "score/time_daemon/src/common/machines/proactive_machine.h"
+#include "score/utility.hpp"
+#include <chrono>
+#include <mutex>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 PeriodicMachine::PeriodicMachine(const std::string& name, const std::chrono::milliseconds threadCycle)
-    : ProactiveMachine(name), cv_mutex_{}, cv_{}, worker_{}, kCycleTime_(threadCycle)
+    : ProactiveMachine(name), kCycleTime_(threadCycle)
 {
 }
 
@@ -26,17 +30,20 @@ void PeriodicMachine::Start() noexcept
 {
     const auto thread_name = "td_" + GetName() + "_worker";
     worker_ = score::cpp::jthread{score::cpp::jthread::name_hint{thread_name},
-                                  [this](const score::cpp::stop_token token) noexcept {
+                                  [this](const score::cpp::stop_token& token) noexcept {
                                       WorkerFunction(token);
                                   }};
 }
 
+// join()/notify_one() escaping here means shutdown is broken beyond recovery; terminating via
+// noexcept is the intended behavior, not swallowed here.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 void PeriodicMachine::Stop() noexcept
 {
     if (worker_.joinable())
     {
         {
-            std::lock_guard<std::mutex> guard{cv_mutex_};
+            const std::lock_guard<std::mutex> guard{cv_mutex_};
             score::cpp::ignore = worker_.request_stop();
             cv_.notify_one();
         }
@@ -62,5 +69,4 @@ void PeriodicMachine::WorkerFunction(const score::cpp::stop_token& stop_token) n
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
