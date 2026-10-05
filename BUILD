@@ -56,8 +56,11 @@ test_suite(
     name = "component_tests",
     tests = [
         "//score/time/high_res_steady_time/src:high_res_steady_clock_adapter_test",
+        "//score/time/high_res_steady_time/src:high_res_steady_clock_integration_test",
         "//score/time/steady_time/src:steady_clock_adapter_test",
+        "//score/time/steady_time/src:steady_clock_integration_test",
         "//score/time/system_time/src:system_clock_adapter_test",
+        "//score/time/system_time/src:system_clock_integration_test",
         "//score/time/vehicle_time/src:vehicle_clock_test",
     ],
     visibility = ["//visibility:public"],
