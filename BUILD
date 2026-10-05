@@ -53,6 +53,17 @@ exports_files(
 )
 
 test_suite(
+    name = "unit_tests",
+    tests = [
+        "//score/time:unit_test_suite_host",
+        "//score/time_daemon:unit_test_suite_host",
+        "//score/time_slave:unit_test_suite_host",
+        "//score/ts_client/src:unit_test_suite_host",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+test_suite(
     name = "component_tests",
     tests = [
         "//score/time/high_res_steady_time/src:high_res_steady_clock_adapter_test",
