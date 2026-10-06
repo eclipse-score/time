@@ -46,7 +46,7 @@ jobs:
       - name: Install Graphviz (required by PlantUML for non-sequence diagrams)
         run: sudo apt-get update && sudo apt-get install -y graphviz
       - name: Build unit + component tests (needed for test links)
-        run: bazel test //:unit_tests //:component_tests
+        run: bazel test --config=x86_64-linux //:component_tests //score/...
       - name: Build docs
         run: bazel run //:docs
       # Thresholds default to 0 while comp_req coverage is being (re-)built up

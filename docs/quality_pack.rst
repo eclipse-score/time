@@ -46,9 +46,9 @@ layer and a domain-specific backend is covered end to end.
 - **Included tests (existing tests reclassified, not new ones):**
 
   - ``//score/time/vehicle_time/src:vehicle_clock_test``
-  - ``//score/time/high_res_steady_time/src:high_res_steady_clock_test``
-  - ``//score/time/system_time/src:system_clock_test``
-  - ``//score/time/steady_time/src:steady_clock_test``
+  - ``//score/time/high_res_steady_time/src:high_res_steady_clock_adapter_test``
+  - ``//score/time/system_time/src:system_clock_adapter_test``
+  - ``//score/time/steady_time/src:steady_clock_adapter_test``
 
 - **Results:** JUnit XML and stdout log per test target under
   ``bazel-testlogs/<package>/<test>/{test.log,test.xml}``.
