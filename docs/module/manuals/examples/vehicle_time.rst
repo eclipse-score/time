@@ -41,6 +41,11 @@ The main program:
 - Displays time values, reliability, and synchronization status
 - Handles SIGINT/SIGTERM for clean shutdown
 
+.. seealso::
+
+   For behavioral patterns and sequence diagrams showing how VehicleTime works internally,
+   see :ref:`use_cases_vehicle_time`.
+
 Building and Running
 --------------------
 
