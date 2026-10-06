@@ -43,6 +43,11 @@ All three examples share the same structure:
 **Unit Tests**
   Demonstrate mocking with ``ScopedClockOverride`` for dependency injection.
 
+.. seealso::
+
+   For behavioral patterns and sequence diagrams showing how these clocks work internally,
+   see :ref:`use_cases_basic_clocks`.
+
 Building and Running
 --------------------
 
