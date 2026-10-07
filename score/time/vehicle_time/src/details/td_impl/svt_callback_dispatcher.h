@@ -17,7 +17,6 @@
 #include "score/time/vehicle_time/src/details/td_impl/svt_callback_wrapper.h"
 #include "score/time/vehicle_time/src/vehicle_clock.h"
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
-#include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
 #include <score/jthread.hpp>
 #include <score/stop_token.hpp>
@@ -33,10 +32,6 @@ namespace time
 namespace detail
 {
 
-/// @brief Converts PTP status flags from the TimeDaemon IPC representation to
-///        the @c ClockStatus<VehicleTime::StatusFlag> representation.
-ClockStatus<VehicleTime::StatusFlag> ConvertPtpStatus(const score::td::svt::TimeBaseStatus& ptp_status) noexcept;
-
 /// @brief Owns the worker thread that delivers vehicle-time subscription callbacks.
 ///
 /// The TimeDaemon IPC is a shared-memory segment without a notification facility, so the
@@ -45,11 +40,12 @@ ClockStatus<VehicleTime::StatusFlag> ConvertPtpStatus(const score::td::svt::Time
 /// exactly once, as soon as dispatching is enabled and the first callback has been registered, and
 /// runs until the dispatcher is destroyed; while no callback is registered it sleeps until the next
 /// registration instead of ticking idly.
-/// Every snapshot read from the receiver is offered part by part to the three @c SvtCallbackWrapper s, which
-/// dispatch on the worker thread when the part differs from what they last delivered:
+/// Every snapshot read from the receiver is converted and offered part by part to the three
+/// @c SvtCallbackWrapper s, which dispatch on the worker thread when the converted value differs from
+/// what they last delivered:
 ///  - @c TimeSlaveSyncData — the sync/follow-up part;
 ///  - @c PDelayMeasurementData — the pDelay part;
-///  - @c VehicleTimeStatus — keyed on the status flags (rate deviation excluded from the comparison).
+///  - @c VehicleTimeStatus — compared without rate deviation (see @c IsSameForDelivery()).
 /// A newly registered callback (first registration, re-registration, or replacement) always receives
 /// the first snapshot polled after its registration, and afterwards only changes.
 ///
@@ -95,7 +91,7 @@ class SvtCallbackDispatcher final
     ///        registered, otherwise sleeps until the next registration or stop request.
     void WorkerFunction(const score::cpp::stop_token& token) noexcept;
 
-    /// @brief Returns @c true if at least one callback is currently registered.
+    /// @brief Returns @c true if at least one callback is currently registered. Lock-free.
     bool IsAnyCallbackSet() const noexcept;
 
     /// @brief Reads one snapshot from the receiver and offers each part to its slot.
@@ -112,9 +108,9 @@ class SvtCallbackDispatcher final
     std::shared_ptr<score::td::SvtReceiver> svt_receiver_;
     const std::chrono::milliseconds poll_interval_;
 
-    SvtCallbackWrapper<VehicleTime::TimeSlaveSyncDataReceivedCallback, score::td::svt::SyncFupSnapshot> sync_data_slot_;
-    SvtCallbackWrapper<VehicleTime::PDelayMeasurementFinishedCallback, score::td::svt::PDelayDataSnapshot> pdelay_slot_;
-    SvtCallbackWrapper<VehicleTime::StatusChangedCallback, ClockStatus<VehicleTime::StatusFlag>> status_slot_;
+    SvtCallbackWrapper<VehicleTime::TimeSlaveSyncDataReceivedCallback, TimeSlaveSyncData<VehicleTime>> sync_data_slot_;
+    SvtCallbackWrapper<VehicleTime::PDelayMeasurementFinishedCallback, PDelayMeasurementData<VehicleTime>> pdelay_slot_;
+    SvtCallbackWrapper<VehicleTime::StatusChangedCallback, VehicleTimeStatus> status_slot_;
 
     // Guards the worker state below and is the mutex the worker sleeps on. Never held while a slot
     // mutex is taken, so that a callback may (re-)register from the worker thread without risking a

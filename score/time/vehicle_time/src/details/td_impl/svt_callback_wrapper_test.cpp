@@ -34,14 +34,14 @@ namespace
 using TestCallback = score::cpp::callback<void(const int&), 64U>;
 using TestSvtCallbackWrapper = SvtCallbackWrapper<TestCallback, int>;
 
-TEST(SvtCallbackWrapperTest, InvokeIfChangedReturnsFalseWhenNoCallbackIsSet)
+TEST(SvtCallbackWrapperTest, TryDeliverChangedDataReturnsFalseWhenNoCallbackIsSet)
 {
     TestSvtCallbackWrapper sut;
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.InvokeIfChanged(1, 1));
+    EXPECT_FALSE(sut.TryDeliverChangedData(1));
 }
 
-TEST(SvtCallbackWrapperTest, InvokeIfChangedCallsStoredCallbackWithArgumentOnEveryNewKey)
+TEST(SvtCallbackWrapperTest, TryDeliverChangedDataCallsStoredCallbackWithDataOnEveryChange)
 {
     TestSvtCallbackWrapper sut;
     std::vector<int> received;
@@ -50,12 +50,12 @@ TEST(SvtCallbackWrapperTest, InvokeIfChangedCallsStoredCallbackWithArgumentOnEve
     });
 
     EXPECT_TRUE(sut.IsSet());
-    EXPECT_TRUE(sut.InvokeIfChanged(7, 70));
-    EXPECT_TRUE(sut.InvokeIfChanged(8, 80));
-    EXPECT_EQ(received, (std::vector<int>{70, 80}));
+    EXPECT_TRUE(sut.TryDeliverChangedData(7));
+    EXPECT_TRUE(sut.TryDeliverChangedData(8));
+    EXPECT_EQ(received, (std::vector<int>{7, 8}));
 }
 
-TEST(SvtCallbackWrapperTest, InvokeIfChangedSkipsRepeatedKey)
+TEST(SvtCallbackWrapperTest, TryDeliverChangedDataSkipsRepeatedData)
 {
     TestSvtCallbackWrapper sut;
     int invocations{0};
@@ -63,45 +63,44 @@ TEST(SvtCallbackWrapperTest, InvokeIfChangedSkipsRepeatedKey)
         ++invocations;
     });
 
-    EXPECT_TRUE(sut.InvokeIfChanged(7, 7));
-    EXPECT_FALSE(sut.InvokeIfChanged(7, 7));
-    EXPECT_FALSE(sut.InvokeIfChanged(7, 8));
-    EXPECT_TRUE(sut.InvokeIfChanged(9, 9));
+    EXPECT_TRUE(sut.TryDeliverChangedData(7));
+    EXPECT_FALSE(sut.TryDeliverChangedData(7));
+    EXPECT_TRUE(sut.TryDeliverChangedData(9));
     EXPECT_EQ(invocations, 2);
 }
 
-TEST(SvtCallbackWrapperTest, SetForgetsLastKeySoNewCallbackIsInvokedWithUnchangedKey)
+TEST(SvtCallbackWrapperTest, SetForgetsLastDataSoNewCallbackIsInvokedWithUnchangedData)
 {
     TestSvtCallbackWrapper sut;
     sut.Set([](const int&) {});
-    EXPECT_TRUE(sut.InvokeIfChanged(7, 7));
-    EXPECT_FALSE(sut.InvokeIfChanged(7, 7));
+    EXPECT_TRUE(sut.TryDeliverChangedData(7));
+    EXPECT_FALSE(sut.TryDeliverChangedData(7));
 
     int replacement_invocations{0};
     sut.Set([&replacement_invocations](const int&) {
         ++replacement_invocations;
     });
-    EXPECT_TRUE(sut.InvokeIfChanged(7, 7));
+    EXPECT_TRUE(sut.TryDeliverChangedData(7));
     EXPECT_EQ(replacement_invocations, 1);
 }
 
-TEST(SvtCallbackWrapperTest, UnsetRemovesCallbackAndForgetsLastKey)
+TEST(SvtCallbackWrapperTest, UnsetRemovesCallbackAndForgetsLastData)
 {
     TestSvtCallbackWrapper sut;
     int invocations{0};
     sut.Set([&invocations](const int&) {
         ++invocations;
     });
-    EXPECT_TRUE(sut.InvokeIfChanged(7, 7));
+    EXPECT_TRUE(sut.TryDeliverChangedData(7));
     sut.Unset();
 
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.InvokeIfChanged(7, 7));
+    EXPECT_FALSE(sut.TryDeliverChangedData(7));
 
     sut.Set([&invocations](const int&) {
         ++invocations;
     });
-    EXPECT_TRUE(sut.InvokeIfChanged(7, 7));
+    EXPECT_TRUE(sut.TryDeliverChangedData(7));
     EXPECT_EQ(invocations, 2);
 }
 
@@ -112,7 +111,7 @@ TEST(SvtCallbackWrapperTest, SettingEmptyCallbackBehavesLikeUnset)
     sut.Set(TestCallback{});
 
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.InvokeIfChanged(0, 0));
+    EXPECT_FALSE(sut.TryDeliverChangedData(0));
 }
 
 TEST(SvtCallbackWrapperTest, UnsetFromWithinCallbackDoesNotDeadlockAndTakesEffectAfterwards)
@@ -124,9 +123,9 @@ TEST(SvtCallbackWrapperTest, UnsetFromWithinCallbackDoesNotDeadlockAndTakesEffec
         sut.Unset();
     });
 
-    EXPECT_TRUE(sut.InvokeIfChanged(0, 0));
+    EXPECT_TRUE(sut.TryDeliverChangedData(0));
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.InvokeIfChanged(0, 0));
+    EXPECT_FALSE(sut.TryDeliverChangedData(0));
     EXPECT_EQ(invocations, 1);
 }
 
@@ -141,8 +140,8 @@ TEST(SvtCallbackWrapperTest, SetFromWithinCallbackReplacesCallbackForNextInvocat
         });
     });
 
-    EXPECT_TRUE(sut.InvokeIfChanged(0, 0));
-    EXPECT_TRUE(sut.InvokeIfChanged(0, 0));
+    EXPECT_TRUE(sut.TryDeliverChangedData(0));
+    EXPECT_TRUE(sut.TryDeliverChangedData(0));
     EXPECT_EQ(trace, (std::vector<int>{1, 2}));
 }
 
@@ -158,7 +157,7 @@ TEST(SvtCallbackWrapperTest, UnsetFromAnotherThreadBlocksUntilInFlightInvocation
     });
 
     std::thread invoker{[&sut]() {
-        std::ignore = sut.InvokeIfChanged(0, 0);
+        std::ignore = sut.TryDeliverChangedData(0);
     }};
     callback_entered.get_future().wait();
 
@@ -185,7 +184,7 @@ TEST(SvtCallbackWrapperTest, SetFromAnotherThreadBlocksUntilInFlightInvocationRe
     });
 
     std::thread invoker{[&sut]() {
-        std::ignore = sut.InvokeIfChanged(0, 0);
+        std::ignore = sut.TryDeliverChangedData(0);
     }};
     callback_entered.get_future().wait();
 
@@ -201,7 +200,7 @@ TEST(SvtCallbackWrapperTest, SetFromAnotherThreadBlocksUntilInFlightInvocationRe
     EXPECT_EQ(set_done.wait_for(std::chrono::seconds{5}), std::future_status::ready);
     invoker.join();
 
-    EXPECT_TRUE(sut.InvokeIfChanged(0, 0));
+    EXPECT_TRUE(sut.TryDeliverChangedData(0));
     EXPECT_EQ(replacement_invocations, 1);
 }
 

@@ -155,7 +155,7 @@ class FakeSvtReceiver final : public score::td::SvtReceiver
 
 /// Captures callback invocations so the test thread can wait for them and inspect the last one.
 template <typename Event>
-class Recorder
+class CallbackRecorder
 {
   public:
     auto Callback() noexcept

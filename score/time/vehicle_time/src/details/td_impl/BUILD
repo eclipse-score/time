@@ -22,12 +22,14 @@ cc_library(
     name = "td_impl",
     srcs = [
         "svt_callback_dispatcher.cpp",
+        "svt_converters.cpp",
         "vehicle_clock_backend_impl.cpp",
         "//score/time/vehicle_time/src/details:logging_contexts",  # internal header
     ],
     hdrs = [
         "svt_callback_dispatcher.h",
         "svt_callback_wrapper.h",
+        "svt_converters.h",
         "vehicle_clock_backend_impl.h",
     ],
     features = COMPILER_WARNING_FEATURES,
@@ -51,6 +53,7 @@ cc_test(
     features = COMPILER_WARNING_FEATURES,
     tags = ["unit"],
     deps = [
+        "//score/time/vehicle_time/src:vehicle_clock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/language/futurecpp",
@@ -64,13 +67,15 @@ cc_test(
         "svt_callback_dispatcher.h",
         "svt_callback_dispatcher_test.cpp",
         "svt_callback_wrapper.h",
+        "svt_converters.cpp",
+        "svt_converters.h",
         "svt_test_helpers.h",
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["unit"],
     deps = [
         "//score/time/vehicle_time/src:vehicle_clock",
-        "//score/time_daemon/src/ipc:svt_receiver",
+        "//score/time_daemon/src/ipc:svt_receiver_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/concurrency:condition_variable",
@@ -86,6 +91,8 @@ cc_test(
         "svt_callback_dispatcher.cpp",
         "svt_callback_dispatcher.h",
         "svt_callback_wrapper.h",
+        "svt_converters.cpp",
+        "svt_converters.h",
         "svt_test_helpers.h",
         "vehicle_clock_backend_impl.cpp",
         "vehicle_clock_backend_impl.h",
@@ -100,7 +107,6 @@ cc_test(
     deps = [
         "//score/time/high_res_steady_time:high_res_steady_time_mock",
         "//score/time/vehicle_time/src:vehicle_clock",
-        "//score/time_daemon/src/ipc:svt_receiver",
         "//score/time_daemon/src/ipc:svt_receiver_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",

@@ -313,13 +313,9 @@ diagnostics and PTP data sanity checks:
 
    </div>
 
-Delivery is performed by a dedicated worker thread owned by the ``VehicleTime`` backend.
-The TimeDaemon publishes into a shared-memory segment without a notification facility, so
-the worker polls that segment at a fixed interval (50 ms).  The thread is started when the
-first callback is registered and runs until the backend is destroyed; while no callback is
-registered it sleeps until the next registration.  A newly registered callback receives the first
-snapshot polled after its registration; afterwards it is invoked only for snapshots whose sync or
-pDelay content differs from the previously delivered one.
+Callbacks are invoked asynchronously, not on the thread that registered them.  The callback
+implementation must be thread-safe and should return quickly.  A newly registered callback
+receives the next available data once; afterwards it is invoked only when that data changes.
 
 .. code-block:: cpp
 

@@ -85,8 +85,11 @@ class VehicleClockBackend
     ///
     /// Fires for the first pDelay measurement result received from the TimeDaemon after
     /// registration and afterwards for every result that differs from the previously delivered
-    /// one.  Invoked on the backend's dedicated worker thread.  Same replacement guarantees as
-    /// @c SetTimeSlaveSyncDataReceivedCallback().
+    /// one.  Invoked on the backend's dedicated worker thread.
+    ///
+    /// Replacing an installed callback is safe while an invocation is in flight: the call
+    /// returns only once the previous callback is no longer running (unless made from
+    /// within that callback itself).
     virtual void SetPDelayMeasurementFinishedCallback(
         VehicleTime::PDelayMeasurementFinishedCallback&& callback) noexcept = 0;
 
@@ -103,8 +106,11 @@ class VehicleClockBackend
     ///    (rate deviation is ignored for comparison).
     ///
     /// The callback is invoked on the backend's dedicated worker thread — the callback
-    /// implementation must be thread-safe.  Same replacement guarantees as
-    /// @c SetTimeSlaveSyncDataReceivedCallback().
+    /// implementation must be thread-safe.
+    ///
+    /// Replacing an installed callback is safe while an invocation is in flight: the call
+    /// returns only once the previous callback is no longer running (unless made from
+    /// within that callback itself).
     virtual void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept = 0;
 
     /// @brief Removes the status-changed callback.

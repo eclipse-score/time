@@ -12,6 +12,7 @@
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.h"
 #include "score/time/vehicle_time/src/details/logging_contexts.h"
+#include "score/time/vehicle_time/src/details/td_impl/svt_converters.h"
 
 #include "score/time_daemon/src/ipc/svt/receiver/factory.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
@@ -29,14 +30,21 @@ namespace time
 namespace detail
 {
 
+namespace
+{
+
+/// @brief Interval at which the worker thread polls the TimeDaemon shared memory for new snapshots.
+constexpr std::chrono::milliseconds kPollInterval{50};
+
+}  // namespace
+
 VehicleClockBackendImpl::VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver,
-                                                 HighResSteadyClock local_clock,
-                                                 const std::chrono::milliseconds poll_interval) noexcept
+                                                 HighResSteadyClock local_clock) noexcept
     : is_ready_{false},
       init_mutex_{},
       svt_receiver_{std::move(receiver)},
       local_clock_{std::move(local_clock)},
-      dispatcher_{svt_receiver_, poll_interval}
+      dispatcher_{svt_receiver_, kPollInterval}
 {
 }
 
@@ -93,14 +101,16 @@ bool VehicleClockBackendImpl::Init() noexcept
     {
         score::mw::log::LogError(kVehicleTimeLogContext)
             << "VehicleClockBackendImpl: failed to open TimeDaemon shared memory segment.";
-        return false;
+    }
+    else
+    {
+        // The worker only ever reads from the receiver, so it must not run before the receiver is initialised.
+        dispatcher_.Start();
     }
 
-    // The worker only ever reads from the receiver, so it must not run before the receiver is initialised.
-    dispatcher_.Start();
-    is_ready_.store(true, std::memory_order_release);
+    is_ready_.store(ok, std::memory_order_release);
 
-    return true;
+    return ok;
 }
 
 bool VehicleClockBackendImpl::IsAvailable() const noexcept

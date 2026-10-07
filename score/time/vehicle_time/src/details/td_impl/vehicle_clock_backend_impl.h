@@ -60,17 +60,11 @@ namespace detail
 class VehicleClockBackendImpl final : public VehicleClockBackend
 {
   public:
-    /// @brief Default interval at which the worker thread polls the receiver for new snapshots.
-    static constexpr std::chrono::milliseconds kDefaultPollInterval{50};
-
     /// @brief Constructs backend with injected TimeDaemon receiver and local steady clock.
     ///
-    /// @param receiver      SvtReceiver instance used to read TimeDaemon SVT samples.
-    /// @param local_clock   Local steady clock used for PTP-to-now extrapolation.
-    /// @param poll_interval Interval at which the worker thread polls the receiver for new snapshots.
-    VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver,
-                            HighResSteadyClock local_clock,
-                            std::chrono::milliseconds poll_interval = kDefaultPollInterval) noexcept;
+    /// @param receiver    SvtReceiver instance used to read TimeDaemon SVT samples.
+    /// @param local_clock Local steady clock used for PTP-to-now extrapolation.
+    VehicleClockBackendImpl(std::shared_ptr<score::td::SvtReceiver> receiver, HighResSteadyClock local_clock) noexcept;
 
     ~VehicleClockBackendImpl() noexcept override = default;
     VehicleClockBackendImpl(const VehicleClockBackendImpl&) = delete;
