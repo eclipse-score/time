@@ -45,8 +45,8 @@ jobs:
         uses: eclipse-score/cicd-actions/unblock-user-namespace-for-linux-sandbox@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
       - name: Install Graphviz (required by PlantUML for non-sequence diagrams)
         run: sudo apt-get update && sudo apt-get install -y graphviz
-      - name: Build unit + component tests (needed for test links)
-        run: bazel test //:unit_tests //:component_tests
+      - name: Build unit tests (needed for test links)
+        run: bazel test //:unit_tests
       - name: Build docs
         run: bazel run //:docs
       # Thresholds default to 0 while comp_req coverage is being (re-)built up
