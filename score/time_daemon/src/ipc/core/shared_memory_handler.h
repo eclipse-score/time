@@ -142,17 +142,17 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 
         for (std::uint8_t retry_cnt = 0U; retry_cnt < max_number_of_read_retries_; ++retry_cnt)
         {
-            // Snapshot entry counter
-            auto entry_cnt_before_read = shared_memory_data_->entry_cnt_.load(std::memory_order_acquire);
+            // Snapshot the number of completed writes
+            const auto exit_cnt_before_read = shared_memory_data_->exit_cnt_.load(std::memory_order_acquire);
 
             // Copy the payload
             read_data = shared_memory_data_->data_;
 
-            // Snapshot exit counter
-            auto exit_cnt_after_read = shared_memory_data_->exit_cnt_.load(std::memory_order_acquire);
+            // Snapshot the number of started writes
+            const auto entry_cnt_after_read = shared_memory_data_->entry_cnt_.load(std::memory_order_acquire);
 
-            // Check if no data update happened during read
-            if (entry_cnt_before_read == exit_cnt_after_read)
+            // No write was in progress when the copy started and none started since
+            if (exit_cnt_before_read == entry_cnt_after_read)
             {
                 return read_data;
             }
