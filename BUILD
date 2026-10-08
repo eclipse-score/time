@@ -53,3 +53,14 @@ exports_files(
         ".clang-tidy",
     ],
 )
+
+test_suite(
+    name = "unit_tests",
+    tests = [
+        "//score/time:unit_test_suite_host",
+        "//score/time_daemon:unit_test_suite_host",
+        "//score/time_slave:unit_test_suite_host",
+        "//score/ts_client/src:unit_test_suite_host",
+    ],
+    visibility = ["//visibility:public"],
+)
