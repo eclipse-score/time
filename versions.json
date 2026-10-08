@@ -34,5 +34,9 @@
   {
     "version": "pr-210",
     "url": "https://eclipse-score.github.io/time/pr-210/"
+  },
+  {
+    "version": "pr-242",
+    "url": "https://eclipse-score.github.io/time/pr-242/"
   }
 ]
