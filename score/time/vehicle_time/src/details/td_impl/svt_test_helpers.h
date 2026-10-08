@@ -13,8 +13,6 @@
 #ifndef SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_SVT_TEST_HELPERS_H
 #define SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_SVT_TEST_HELPERS_H
 
-// Test-only helpers shared by the SvtCallbackDispatcher and VehicleClockBackendImpl unit tests.
-
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 

@@ -165,7 +165,7 @@ TEST_F(SharedMemoryHandlerTest, TestConcurrentWriteAndReadsReturnConsistentData)
     // Wait for all readers to be ready before starting the writer
     while (readers_ready.load() < kNumberOfReaders)
     {
-        std::this_thread::yield();
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
     }
 
     for (std::uint64_t sequence = 1U; sequence <= kNumberOfWrites; ++sequence)
@@ -182,8 +182,8 @@ TEST_F(SharedMemoryHandlerTest, TestConcurrentWriteAndReadsReturnConsistentData)
 
     for (std::size_t index = 0U; index < kNumberOfReaders; ++index)
     {
-        std::cout << "reader " << index << ": successful=" << successful_reads[index]
-                  << " torn=" << torn_reads[index] << " out_of_order=" << out_of_order_reads[index] << std::endl;
+        std::cout << "reader " << index << ": successful=" << successful_reads[index] << " torn=" << torn_reads[index]
+                  << " out_of_order=" << out_of_order_reads[index] << std::endl;
 
         EXPECT_GT(successful_reads[index], 0U) << "reader " << index;
         EXPECT_EQ(torn_reads[index], 0U) << "reader " << index << " of " << successful_reads[index] << " reads";

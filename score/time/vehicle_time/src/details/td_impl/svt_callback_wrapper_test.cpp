@@ -12,15 +12,15 @@
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/svt_callback_wrapper.h"
 
+#include "score/time/vehicle_time/src/details/td_impl/svt_test_helpers.h"
+
 #include <score/callback.hpp>
 
 #include <gtest/gtest.h>
 
 #include <chrono>
-#include <cstdint>
 #include <future>
 #include <thread>
-#include <vector>
 
 namespace score
 {
@@ -33,116 +33,138 @@ namespace
 
 using TestCallback = score::cpp::callback<void(const int&), 64U>;
 using TestSvtCallbackWrapper = SvtCallbackWrapper<TestCallback, int>;
+using score::time::test_helpers::CallbackRecorder;
 
-TEST(SvtCallbackWrapperTest, TryDeliverChangedDataReturnsFalseWhenNoCallbackIsSet)
+TEST(SvtCallbackWrapperTest, TryToEnvokeDoesNotRememberDataWhenNoCallbackIsSet)
 {
     TestSvtCallbackWrapper sut;
+    CallbackRecorder<int> recorder;
+
+    sut.TryToEnvoke(1);
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.TryDeliverChangedData(1));
+
+    sut.Set(recorder.Callback());
+    sut.TryToEnvoke(1);
+    EXPECT_EQ(recorder.Count(), 1U);
+    EXPECT_EQ(recorder.Last(), 1);
 }
 
-TEST(SvtCallbackWrapperTest, TryDeliverChangedDataCallsStoredCallbackWithDataOnEveryChange)
+TEST(SvtCallbackWrapperTest, TryToEnvokeCallsStoredCallbackWithDataOnEveryChange)
 {
     TestSvtCallbackWrapper sut;
-    std::vector<int> received;
-    sut.Set([&received](const int& value) {
-        received.push_back(value);
-    });
+    CallbackRecorder<int> recorder;
+    sut.Set(recorder.Callback());
 
     EXPECT_TRUE(sut.IsSet());
-    EXPECT_TRUE(sut.TryDeliverChangedData(7));
-    EXPECT_TRUE(sut.TryDeliverChangedData(8));
-    EXPECT_EQ(received, (std::vector<int>{7, 8}));
+    sut.TryToEnvoke(7);
+    EXPECT_EQ(recorder.Count(), 1U);
+    EXPECT_EQ(recorder.Last(), 7);
+    sut.TryToEnvoke(8);
+    EXPECT_EQ(recorder.Count(), 2U);
+    EXPECT_EQ(recorder.Last(), 8);
 }
 
-TEST(SvtCallbackWrapperTest, TryDeliverChangedDataSkipsRepeatedData)
+TEST(SvtCallbackWrapperTest, TryToEnvokeSkipsRepeatedData)
 {
     TestSvtCallbackWrapper sut;
-    int invocations{0};
-    sut.Set([&invocations](const int&) {
-        ++invocations;
-    });
+    CallbackRecorder<int> recorder;
+    sut.Set(recorder.Callback());
 
-    EXPECT_TRUE(sut.TryDeliverChangedData(7));
-    EXPECT_FALSE(sut.TryDeliverChangedData(7));
-    EXPECT_TRUE(sut.TryDeliverChangedData(9));
-    EXPECT_EQ(invocations, 2);
+    sut.TryToEnvoke(7);
+    sut.TryToEnvoke(7);
+    EXPECT_EQ(recorder.Count(), 1U);
+    EXPECT_EQ(recorder.Last(), 7);
+    sut.TryToEnvoke(9);
+    EXPECT_EQ(recorder.Count(), 2U);
+    EXPECT_EQ(recorder.Last(), 9);
 }
 
 TEST(SvtCallbackWrapperTest, SetForgetsLastDataSoNewCallbackIsInvokedWithUnchangedData)
 {
     TestSvtCallbackWrapper sut;
-    sut.Set([](const int&) {});
-    EXPECT_TRUE(sut.TryDeliverChangedData(7));
-    EXPECT_FALSE(sut.TryDeliverChangedData(7));
+    CallbackRecorder<int> first;
+    sut.Set(first.Callback());
+    sut.TryToEnvoke(7);
+    sut.TryToEnvoke(7);
+    EXPECT_EQ(first.Count(), 1U);
+    EXPECT_EQ(first.Last(), 7);
 
-    int replacement_invocations{0};
-    sut.Set([&replacement_invocations](const int&) {
-        ++replacement_invocations;
-    });
-    EXPECT_TRUE(sut.TryDeliverChangedData(7));
-    EXPECT_EQ(replacement_invocations, 1);
+    CallbackRecorder<int> replacement;
+    sut.Set(replacement.Callback());
+    sut.TryToEnvoke(7);
+    EXPECT_EQ(first.Count(), 1U);
+    EXPECT_EQ(replacement.Count(), 1U);
+    EXPECT_EQ(replacement.Last(), 7);
 }
 
 TEST(SvtCallbackWrapperTest, UnsetRemovesCallbackAndForgetsLastData)
 {
     TestSvtCallbackWrapper sut;
-    int invocations{0};
-    sut.Set([&invocations](const int&) {
-        ++invocations;
-    });
-    EXPECT_TRUE(sut.TryDeliverChangedData(7));
+    CallbackRecorder<int> recorder;
+    sut.Set(recorder.Callback());
+    sut.TryToEnvoke(7);
     sut.Unset();
 
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.TryDeliverChangedData(7));
+    sut.TryToEnvoke(7);
+    EXPECT_EQ(recorder.Count(), 1U);
 
-    sut.Set([&invocations](const int&) {
-        ++invocations;
-    });
-    EXPECT_TRUE(sut.TryDeliverChangedData(7));
-    EXPECT_EQ(invocations, 2);
+    sut.Set(recorder.Callback());
+    sut.TryToEnvoke(7);
+    EXPECT_EQ(recorder.Count(), 2U);
+    EXPECT_EQ(recorder.Last(), 7);
 }
 
 TEST(SvtCallbackWrapperTest, SettingEmptyCallbackBehavesLikeUnset)
 {
     TestSvtCallbackWrapper sut;
-    sut.Set([](const int&) {});
+    CallbackRecorder<int> recorder;
+    sut.Set(recorder.Callback());
+    sut.TryToEnvoke(0);
     sut.Set(TestCallback{});
 
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.TryDeliverChangedData(0));
+    sut.TryToEnvoke(0);
+    EXPECT_EQ(recorder.Count(), 1U);
+
+    sut.Set(recorder.Callback());
+    sut.TryToEnvoke(0);
+    EXPECT_EQ(recorder.Count(), 2U);
+    EXPECT_EQ(recorder.Last(), 0);
 }
 
 TEST(SvtCallbackWrapperTest, UnsetFromWithinCallbackDoesNotDeadlockAndTakesEffectAfterwards)
 {
     TestSvtCallbackWrapper sut;
-    int invocations{0};
-    sut.Set([&sut, &invocations](const int&) {
-        ++invocations;
+    CallbackRecorder<int> recorder;
+    sut.Set([&sut, &recorder](const int& value) {
+        recorder.Record(value);
         sut.Unset();
     });
 
-    EXPECT_TRUE(sut.TryDeliverChangedData(0));
+    sut.TryToEnvoke(0);
     EXPECT_FALSE(sut.IsSet());
-    EXPECT_FALSE(sut.TryDeliverChangedData(0));
-    EXPECT_EQ(invocations, 1);
+    sut.TryToEnvoke(0);
+    EXPECT_EQ(recorder.Count(), 1U);
+    EXPECT_EQ(recorder.Last(), 0);
 }
 
 TEST(SvtCallbackWrapperTest, SetFromWithinCallbackReplacesCallbackForNextInvocation)
 {
     TestSvtCallbackWrapper sut;
-    std::vector<int> trace;
-    sut.Set([&sut, &trace](const int&) {
-        trace.push_back(1);
-        sut.Set([&trace](const int&) {
-            trace.push_back(2);
-        });
+    CallbackRecorder<int> first;
+    CallbackRecorder<int> second;
+    sut.Set([&sut, &first, &second](const int& value) {
+        first.Record(value);
+        sut.Set(second.Callback());
     });
 
-    EXPECT_TRUE(sut.TryDeliverChangedData(0));
-    EXPECT_TRUE(sut.TryDeliverChangedData(0));
-    EXPECT_EQ(trace, (std::vector<int>{1, 2}));
+    sut.TryToEnvoke(0);
+    sut.TryToEnvoke(0);
+    EXPECT_EQ(first.Count(), 1U);
+    EXPECT_EQ(second.Count(), 1U);
+    EXPECT_EQ(first.Last(), 0);
+    EXPECT_EQ(second.Last(), 0);
 }
 
 TEST(SvtCallbackWrapperTest, UnsetFromAnotherThreadBlocksUntilInFlightInvocationReturns)
@@ -157,7 +179,7 @@ TEST(SvtCallbackWrapperTest, UnsetFromAnotherThreadBlocksUntilInFlightInvocation
     });
 
     std::thread invoker{[&sut]() {
-        std::ignore = sut.TryDeliverChangedData(0);
+        sut.TryToEnvoke(0);
     }};
     callback_entered.get_future().wait();
 
@@ -184,15 +206,13 @@ TEST(SvtCallbackWrapperTest, SetFromAnotherThreadBlocksUntilInFlightInvocationRe
     });
 
     std::thread invoker{[&sut]() {
-        std::ignore = sut.TryDeliverChangedData(0);
+        sut.TryToEnvoke(0);
     }};
     callback_entered.get_future().wait();
 
-    int replacement_invocations{0};
-    auto set_done = std::async(std::launch::async, [&sut, &replacement_invocations]() {
-        sut.Set([&replacement_invocations](const int&) {
-            ++replacement_invocations;
-        });
+    CallbackRecorder<int> replacement;
+    auto set_done = std::async(std::launch::async, [&sut, &replacement]() {
+        sut.Set(replacement.Callback());
     });
     EXPECT_EQ(set_done.wait_for(std::chrono::milliseconds{50}), std::future_status::timeout);
 
@@ -200,8 +220,9 @@ TEST(SvtCallbackWrapperTest, SetFromAnotherThreadBlocksUntilInFlightInvocationRe
     EXPECT_EQ(set_done.wait_for(std::chrono::seconds{5}), std::future_status::ready);
     invoker.join();
 
-    EXPECT_TRUE(sut.TryDeliverChangedData(0));
-    EXPECT_EQ(replacement_invocations, 1);
+    sut.TryToEnvoke(0);
+    EXPECT_EQ(replacement.Count(), 1U);
+    EXPECT_EQ(replacement.Last(), 0);
 }
 
 }  // namespace

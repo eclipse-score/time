@@ -49,11 +49,13 @@ cc_test(
     srcs = [
         "svt_callback_wrapper.h",
         "svt_callback_wrapper_test.cpp",
+        "svt_test_helpers.h",
     ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["unit"],
     deps = [
         "//score/time/vehicle_time/src:vehicle_clock",
+        "//score/time_daemon/src/ipc:svt_receiver_mock",
         "@googletest//:gtest",
         "@googletest//:gtest_main",
         "@score_baselibs//score/language/futurecpp",

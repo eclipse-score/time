@@ -81,6 +81,34 @@ struct PDelayMeasurementData
     }
 };
 
+/// @brief Compares two @c PDelayMeasurementData values field by field.
+template <typename Timebase>
+bool operator==(const PDelayMeasurementData<Timebase>& first, const PDelayMeasurementData<Timebase>& second) noexcept
+{
+    const bool same_request_origin_timestamp = (first.request_origin_timestamp == second.request_origin_timestamp);
+    const bool same_request_receipt_timestamp = (first.request_receipt_timestamp == second.request_receipt_timestamp);
+    const bool same_response_origin_timestamp = (first.response_origin_timestamp == second.response_origin_timestamp);
+    const bool same_response_receipt_timestamp =
+        (first.response_receipt_timestamp == second.response_receipt_timestamp);
+    const bool same_reference_global_timestamp =
+        (first.reference_global_timestamp == second.reference_global_timestamp);
+    const bool same_reference_local_timestamp = (first.reference_local_timestamp == second.reference_local_timestamp);
+    const bool same_sequence_id = (first.sequence_id == second.sequence_id);
+    const bool same_pdelay = (first.pdelay == second.pdelay);
+    const bool same_request_port_identity = (first.request_port_identity == second.request_port_identity);
+    const bool same_response_port_identity = (first.response_port_identity == second.response_port_identity);
+    return (same_request_origin_timestamp && same_request_receipt_timestamp && same_response_origin_timestamp &&
+            same_response_receipt_timestamp && same_reference_global_timestamp && same_reference_local_timestamp &&
+            same_sequence_id && same_pdelay && same_request_port_identity && same_response_port_identity);
+}
+
+/// @brief Inequality is the inverse of @c operator==.
+template <typename Timebase>
+bool operator!=(const PDelayMeasurementData<Timebase>& first, const PDelayMeasurementData<Timebase>& second) noexcept
+{
+    return !(first == second);
+}
+
 /// @brief Stream output operator for @c PDelayMeasurementData.
 template <typename OutputStream, typename Timebase>
 auto& operator<<(OutputStream& output_stream, const PDelayMeasurementData<Timebase>& pdelay_data)

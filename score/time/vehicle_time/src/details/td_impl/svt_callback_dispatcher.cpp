@@ -171,9 +171,9 @@ void SvtCallbackDispatcher::PollAndDispatch() noexcept
         return;
     }
 
-    score::cpp::ignore = sync_data_slot_.TryDeliverChangedData(ConvertSyncData(snapshot.value().sync_fup_data));
-    score::cpp::ignore = pdelay_slot_.TryDeliverChangedData(ConvertPDelayData(snapshot.value().pdelay_data));
-    score::cpp::ignore = status_slot_.TryDeliverChangedData(
+    sync_data_slot_.TryToEnvoke(ConvertSyncData(snapshot.value().sync_fup_data));
+    pdelay_slot_.TryToEnvoke(ConvertPDelayData(snapshot.value().pdelay_data));
+    status_slot_.TryToEnvoke(
         VehicleTimeStatus{ConvertPtpStatus(snapshot.value().status), snapshot.value().rate_deviation});
 }
 
