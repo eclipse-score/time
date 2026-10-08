@@ -32,16 +32,16 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/css/score.css?v=bb63a8e1" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/score.css?v=415257cb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/score_needs.css?v=82a1844f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/score_design.css?v=8048e6ee" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
@@ -73,7 +73,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Clock Lifecycle Management" href="lifecycle.html" />
+    <link rel="next" title="Use Cases" href="use_cases.html" />
     <link rel="prev" title="User Manual" href="../user_manual.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -169,6 +169,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../index.html">
     Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../quality_pack.html">
+    Quality Pack Targets
   </a>
 </li>
 
@@ -300,6 +307,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../quality_pack.html">
+    Quality Pack Targets
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -383,6 +397,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">API Usage: Accessing Supported Time Bases</a></li>
 
+<li class="toctree-l3"><a class="reference internal" href="use_cases.html">Use Cases</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lifecycle.html">Clock Lifecycle Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="testing_guide.html">Unit-Testing Time-Dependent Code</a></li>
 
@@ -474,7 +489,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">score::time::HighResSteadyTime</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::HighResSteadyClock</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">score::time::VehicleTime</span></code> via <code class="docutils literal notranslate"><span class="pre">score::time::VehicleClock</span></code></p></li>
 </ul>
-<p>For more detail, see the <a class="reference internal" href="../user_manual.html#user-manual"><span class="std std-ref">module user manual</span></a>.</p>
+<p>For more detail, see the <a class="reference internal" href="../user_manual.html#user-manual-time"><span class="std std-ref">module user manual</span></a>.</p>
 <section id="polling-local-time-bases">
 <h2>Polling Local Time Bases<a class="headerlink" href="#polling-local-time-bases" title="Link to this heading">#</a></h2>
 <p>All supported clocks use the same API shape: <code class="docutils literal notranslate"><span class="pre">GetInstance()</span></code> and <code class="docutils literal notranslate"><span class="pre">Now()</span></code>.</p>
@@ -495,6 +510,10 @@
 <span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">high_res_tp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">high_res_snapshot</span><span class="p">.</span><span class="n">TimePoint</span><span class="p">();</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For sequence diagrams showing how these clocks work internally, see <a class="reference internal" href="use_cases.html#use-cases-basic-clocks"><span class="std std-ref">HighResSteadyTime</span></a>.</p>
 </div>
 </section>
 <section id="polling-vehicle-time-with-quality-checks">
@@ -555,6 +574,11 @@
 <p class="admonition-title">Attention</p>
 <p>Never use <code class="docutils literal notranslate"><span class="pre">TimePoint</span></code> from <code class="docutils literal notranslate"><span class="pre">ClockSnapshot</span></code> before verifying status.
 For robust handling, check <code class="docutils literal notranslate"><span class="pre">Status().IsConsistent()</span></code>, <code class="docutils literal notranslate"><span class="pre">Status().HasBeenSynchronized()</span></code>, and <code class="docutils literal notranslate"><span class="pre">Status().IsReliable()</span></code>.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For detailed VehicleTime behavioral patterns including initialization, status checking,
+and subscription workflows, see <a class="reference internal" href="use_cases.html#use-cases-vehicle-time"><span class="std std-ref">VehicleTime</span></a>.</p>
 </div>
 </section>
 </section>
@@ -681,11 +705,11 @@ This event is triggered after the <code class="docutils literal notranslate"><sp
       </div>
     </a>
     <a class="right-next"
-       href="lifecycle.html"
+       href="use_cases.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Clock Lifecycle Management</p>
+        <p class="prev-next-title">Use Cases</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

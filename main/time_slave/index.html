@@ -32,16 +32,16 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../_static/css/score.css?v=bb63a8e1" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/score.css?v=415257cb" />
     <link rel="stylesheet" type="text/css" href="../_static/css/score_needs.css?v=82a1844f" />
     <link rel="stylesheet" type="text/css" href="../_static/css/score_design.css?v=8048e6ee" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/modern.css?v=803738c0" />
   
@@ -74,7 +74,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Time Slave User Manual" href="manuals/user_manual.html" />
-    <link rel="prev" title="Vehicle Time Example" href="../module/manuals/examples/vehicle_time.html" />
+    <link rel="prev" title="Testing with Clock Mocks" href="../module/manuals/examples/testing.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
@@ -169,6 +169,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../module/index.html">
     Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../quality_pack.html">
+    Quality Pack Targets
   </a>
 </li>
 
@@ -300,6 +307,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../quality_pack.html">
+    Quality Pack Targets
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -382,7 +396,7 @@
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Time Slave</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2"><a class="reference internal" href="manuals/user_manual.html">Time Slave User Manual</a></li>
 <li class="toctree-l2"><a class="reference internal" href="detailed_design/index.html">Time Slave Detailed Design</a></li>
-<li class="toctree-l2"><a class="reference internal" href="requirements/index.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements/index.html">Time Slave Component Requirements</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../time_daemon/index.html">Time Daemon</a></li>
@@ -450,11 +464,7 @@
                   
   <section id="time-slave">
 <span id="id1"></span><h1>Time Slave<a class="headerlink" href="#time-slave" title="Link to this heading">#</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Document header</p>
-</div>
-<div class="need_container docutils container" id="SNCB-5a2f7063">
+<div class="need_container docutils container" id="SNCB-ee533e01">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_slave">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -462,9 +472,9 @@
 </div>
 </td>
 <td class="head_center" colspan="2"><div class="needs_head line-block">
-<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">draft</span></span></span></div>
+<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
 <div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
 </div>
 </td>
 <td class="head_right" colspan="2"><div class="needs_head_right line-block">
@@ -473,7 +483,7 @@
 </td>
 </tr>
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_slave</span><span class="needs_spacer">, </span><span class="needs_data">time</span><span class="needs_spacer">, </span><span class="needs_data">time_slave</span></span></span></div>
+<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_slave</span></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/change_management/change_management_workproducts.html#wp__cmpt_request">wp__cmpt_request</a></span></span></div>
@@ -498,47 +508,80 @@
 </table>
 </div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.</p>
+<div class="need_container docutils container" id="SNCB-5744aee9">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp table" id="comp__time_slave">
+<tbody>
+<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
+<div class="line"><span><span class="needs_title"><span class="needs_data">Time Slave</span></span></span></div>
 </div>
-<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">comp</span><span class="p">::</span> Time Slave
-   <span class="nc">:id:</span> comp__time_slave_template
-   <span class="nc">:security:</span> YES
-   <span class="nc">:safety:</span> ASIL_B
-   <span class="nc">:status:</span> invalid
-   <span class="nc">:implements:</span> logic_arc_int__feature_name__interface_name1
-   <span class="nc">:consists_of:</span> comp__component_name_internal_1, comp__component_name_internal_2, comp__component_name_internal_3
-   <span class="nc">:belongs_to:</span> feat__feature_name
-</pre></div>
+</td>
+<td class="head_center" colspan="2"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
+<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
 </div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>The above directives must be updated according to your Component.</p>
-<ul class="simple">
-<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">status</span></code> to be <code class="docutils literal notranslate"><span class="pre">valid</span></code></p></li>
-<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">safety</span></code> and <code class="docutils literal notranslate"><span class="pre">tags</span></code> according to your needs</p></li>
-</ul>
+</td>
+<td class="head_right" colspan="2"><div class="needs_head_right line-block">
+<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
+</div>
+</td>
+</tr>
+<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
+<div class="line"><span><span><div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
+</span></span></div>
+<div class="line"><span><div class="line">belongs to: <span class="belongs_to"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/architecture/index.html#feat__time">feat__time</a></span></span></div>
+<div class="line">satisfies: <span class="satisfied_by"><span><a class="reference internal" href="requirements/index.html#comp_req__time_slave__configuration" title="comp__time_slave">comp_req__time_slave__configuration</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__diagnostics" title="comp__time_slave">comp_req__time_slave__diagnostics</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__domain_filtering" title="comp__time_slave">comp_req__time_slave__domain_filtering</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__error_reporting" title="comp__time_slave">comp_req__time_slave__error_reporting</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__ethernet_address" title="comp__time_slave">comp_req__time_slave__ethernet_address</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__followup_processing" title="comp__time_slave">comp_req__time_slave__followup_processing</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__offset_calculation" title="comp__time_slave">comp_req__time_slave__offset_calculation</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__pdelay_computation" title="comp__time_slave">comp_req__time_slave__pdelay_computation</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__pdelay_req" title="comp__time_slave">comp_req__time_slave__pdelay_req</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__pdelay_req_response" title="comp__time_slave">comp_req__time_slave__pdelay_req_response</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__pdelay_resp_fu_rx" title="comp__time_slave">comp_req__time_slave__pdelay_resp_fu_rx</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__pdelay_resp_reception" title="comp__time_slave">comp_req__time_slave__pdelay_resp_reception</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__phc_frequency" title="comp__time_slave">comp_req__time_slave__phc_frequency</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__phc_offset" title="comp__time_slave">comp_req__time_slave__phc_offset</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__platform_support" title="comp__time_slave">comp_req__time_slave__platform_support</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__shutdown" title="comp__time_slave">comp_req__time_slave__shutdown</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__startup" title="comp__time_slave">comp_req__time_slave__startup</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__sync_publishing" title="comp__time_slave">comp_req__time_slave__sync_publishing</a>, <a class="reference internal" href="requirements/index.html#comp_req__time_slave__sync_reception" title="comp__time_slave">comp_req__time_slave__sync_reception</a></span></span></div>
+</span></div>
+</div>
+</td>
+<td class="meta" colspan="3"></td>
+</tr>
+<tr class="content row-odd"><td class="content" colspan="6"></td>
+</tr>
+<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp__time_slave" title="comp__time_slave">comp__time_slave</a></span></span></div>
+</div>
+</td>
+<td class="footer" colspan="2"><div class="needs_footer line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component</span></span></span></div>
+</div>
+</td>
+<td class="footer_right" colspan="2"></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <section id="abstract">
 <h2>Abstract<a class="headerlink" href="#abstract" title="Link to this heading">#</a></h2>
-<p>[A short (~200 word) description of the component.]</p>
+<p>This component implements a gPTP (IEEE 802.1AS) time synchronization slave daemon that receives time synchronization data from network and sends it via ts_client to the time_daemon for validation.</p>
 </section>
 <section id="specification">
 <h2>Specification<a class="headerlink" href="#specification" title="Link to this heading">#</a></h2>
-<p>[Describe the requirements, architecture of any component.] or</p>
+<p>The time_slave component provides IEEE 802.1AS synchronization handling, i.e. it receives gPTP network messages from time master, does path delay measurement, computes local clock correction values, and publishes synchronized time snapshots via ts_client shared memory IPC.</p>
+<p>Runtime flow follows continuous loop:</p>
+<ol class="arabic simple">
+<li><p><strong>Initialization and setup</strong>: Bind configured network interface, initialize gPTP engine and IPC publisher, enable hardware timestamping when platform supports it.</p></li>
+<li><p><strong>Protocol processing</strong>: Filter by configured gPTP domain, process Sync and Follow_Up pairs, compute offset and peer delay from protocol timestamps and correction fields.</p></li>
+<li><p><strong>Clock adjustment and status tracking</strong>: Apply PHC step or frequency adjustment based on offset behavior, detect synchronization timeout and forward/backward time leaps.</p></li>
+<li><p><strong>Publishing</strong>: Publish synchronized time snapshot, peer delay, rate deviation, and status flags to IPC at fixed 50 millisecond interval.</p></li>
+</ol>
+<section id="key-behaviors">
+<h3>Key Behaviors<a class="headerlink" href="#key-behaviors" title="Link to this heading">#</a></h3>
+<p><strong>Timestamping Strategy</strong>: Hardware timestamping preferred; software timestamping fallback used when hardware capabilities are unavailable.</p>
+<p><strong>Clock Control Strategy</strong>: Large offset handled by step adjustment; stable offset evolution handled by frequency slew adjustment.</p>
+<p><strong>Fault and Quality Flags</strong>: Timeout status set when no valid Sync/Follow_Up pair is processed within configured timeout window. Time leap future and time leap past flags track forward and backward master time discontinuities.</p>
+<p><strong>Diagnostics</strong>: Optional runtime instrumentation can record synchronization events into CSV output when diagnostics option is enabled.</p>
+<p><strong>Platform Support</strong>: Linux and QNX 8.0 SDP supported for raw Ethernet, timestamp acquisition, and PHC control.</p>
+<p><strong>Error Reporting</strong>: Initialization, network, protocol, and timestamping fallback events are logged via score::mw::log.</p>
 </section>
-<section id="how-to-teach-this">
-<h2>How to Teach This<a class="headerlink" href="#how-to-teach-this" title="Link to this heading">#</a></h2>
-<p>[How to teach users, new and experienced, how to apply the CR to their work.]</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For a CR that adds new functionality or changes behaviour, it is helpful to include a section on how to teach users, new and experienced, how to apply the CR to their work.</p>
-</div>
+<section id="assumptions-of-use">
+<h3>Assumptions of Use<a class="headerlink" href="#assumptions-of-use" title="Link to this heading">#</a></h3>
+<p>Users must configure and bring up network interface before starting time_slave. Exactly one time_slave instance per network interface is supported.</p>
+</section>
 </section>
 <section id="footnotes">
 <h2>Footnotes<a class="headerlink" href="#footnotes" title="Link to this heading">#</a></h2>
-<p>[A collection of footnotes cited in the CR, and a place to list non-inline hyperlink targets.]</p>
 <p>Further Documentation of the component can be found in the following sections:</p>
 </section>
 <section id="component-detail-information">
@@ -547,7 +590,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="manuals/user_manual.html">Time Slave User Manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="detailed_design/index.html">Time Slave Detailed Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="requirements/index.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements/index.html">Time Slave Component Requirements</a></li>
 </ul>
 </div>
 </section>
@@ -564,12 +607,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../module/manuals/examples/vehicle_time.html"
+       href="../module/manuals/examples/testing.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Vehicle Time Example</p>
+        <p class="prev-next-title">Testing with Clock Mocks</p>
       </div>
     </a>
     <a class="right-next"
@@ -601,8 +644,11 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#abstract">Abstract</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-teach-this">How to Teach This</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-behaviors">Key Behaviors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assumptions-of-use">Assumptions of Use</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#footnotes">Footnotes</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#component-detail-information">Component Detail Information</a></li>
 </ul>
@@ -612,7 +658,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main/docs/time_slave/indexk/time/time/score/time_slave/docs/index.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main/score/time_slave/docs/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

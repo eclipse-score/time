@@ -32,16 +32,16 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/css/score.css?v=bb63a8e1" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/score.css?v=415257cb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/score_needs.css?v=82a1844f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/score_design.css?v=8048e6ee" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
@@ -169,6 +169,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../index.html">
     Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../quality_pack.html">
+    Quality Pack Targets
   </a>
 </li>
 
@@ -300,6 +307,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../quality_pack.html">
+    Quality Pack Targets
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -383,6 +397,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../user_manual.html">User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="../api_description/api_usage.html">API Usage: Accessing Supported Time Bases</a></li>
 
+<li class="toctree-l3"><a class="reference internal" href="../api_description/use_cases.html">Use Cases</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api_description/lifecycle.html">Clock Lifecycle Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api_description/testing_guide.html">Unit-Testing Time-Dependent Code</a></li>
 
@@ -391,6 +406,7 @@
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="index.html">Examples User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4 current active"><a class="current reference internal" href="#">Basic Clock Examples</a></li>
 <li class="toctree-l4"><a class="reference internal" href="vehicle_time.html">Vehicle Time Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="testing.html">Testing with Clock Mocks</a></li>
 </ul>
 </details></li>
 </ul>
@@ -497,6 +513,11 @@ method returning a <code class="docutils literal notranslate"><span class="pre">
 <dt><strong>Unit Tests</strong></dt><dd><p>Demonstrate mocking with <code class="docutils literal notranslate"><span class="pre">ScopedClockOverride</span></code> for dependency injection.</p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For behavioral patterns and sequence diagrams showing how these clocks work internally,
+see <a class="reference internal" href="../api_description/use_cases.html#use-cases-basic-clocks"><span class="std std-ref">HighResSteadyTime</span></a>.</p>
+</div>
 </section>
 <section id="building-and-running">
 <h2>Building and Running<a class="headerlink" href="#building-and-running" title="Link to this heading">#</a></h2>

@@ -32,16 +32,16 @@
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/css/score.css?v=bb63a8e1" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/score.css?v=415257cb" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/score_needs.css?v=82a1844f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/css/score_design.css?v=8048e6ee" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
@@ -73,7 +73,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Time Slave Detailed Design" href="../../detailed_design/index.html" />
+    <link rel="next" title="Running TimeSlave on QNX" href="../qnx_setup.html" />
     <link rel="prev" title="Time Slave User Manual" href="../user_manual.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -169,6 +169,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../../module/index.html">
     Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../quality_pack.html">
+    Quality Pack Targets
   </a>
 </li>
 
@@ -300,6 +307,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../quality_pack.html">
+    Quality Pack Targets
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -382,10 +396,11 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../index.html">Time Slave</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="../user_manual.html">Time Slave User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">TimeSlave Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../qnx_setup.html">Running TimeSlave on QNX</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../detailed_design/index.html">Time Slave Detailed Design</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../requirements/index.html">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../requirements/index.html">Time Slave Component Requirements</a></li>
 </ul>
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../time_daemon/index.html">Time Daemon</a></li>
@@ -459,10 +474,38 @@
                   
   <section id="timeslave-configuration">
 <span id="time-slave-configuration"></span><h1>TimeSlave Configuration<a class="headerlink" href="#timeslave-configuration" title="Link to this heading">#</a></h1>
-<p>The behavior of the <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> is controlled by the <code class="docutils literal notranslate"><span class="pre">GptpEngineOptions</span></code> structure. Currently, only a subset of these options can be overridden at runtime via command-line arguments. For all other options, the hard-coded default values are used.</p>
+<p>The behavior of the <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> is controlled via a JSON configuration
+file. The schema is defined in
+<code class="docutils literal notranslate"><span class="pre">score/time_slave/src/application/configuration/time_slave_config_schema.json</span></code>
+and covers all runtime parameters: network interface, gPTP timing, PHC
+adjustment, shared-memory path, and platform-specific options.</p>
+<section id="configuration-file-location">
+<h2>Configuration file location<a class="headerlink" href="#configuration-file-location" title="Link to this heading">#</a></h2>
+<p>The configuration file is resolved in the following order:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">&lt;path&gt;</span></code> command-line argument.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TIMESLAVE_CONFIG</span></code> environment variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">./etc/time_slave_config.json</span></code> relative to the process working
+directory.</p></li>
+</ol>
+<p>If no configuration file is found at the resolved path, TimeSlave uses
+built-in defaults (equivalent to the schema defaults) and logs an
+informational message.</p>
+<p>For backwards compatibility, the <code class="docutils literal notranslate"><span class="pre">GPTP_IFACE</span></code> environment variable
+(when set) still overrides the <code class="docutils literal notranslate"><span class="pre">iface_name</span></code> field after the JSON config
+is loaded.</p>
+</section>
 <section id="command-line-arguments">
 <h2>Command-Line Arguments<a class="headerlink" href="#command-line-arguments" title="Link to this heading">#</a></h2>
-<p>The following argument is available to configure the <code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> at runtime: &lt;tbd&gt;</p>
+<p>The following command-line arguments are available to configure the
+<code class="docutils literal notranslate"><span class="pre">TimeSlave</span></code> at runtime:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--config</span> <span class="pre">&lt;path&gt;</span></code></dt><dd><p>Path to the JSON configuration file. When provided, it takes precedence
+over the <code class="docutils literal notranslate"><span class="pre">TIMESLAVE_CONFIG</span></code> environment variable and the default
+<code class="docutils literal notranslate"><span class="pre">./etc/time_slave_config.json</span></code> path. See <a class="reference internal" href="#time-slave-configuration"><span class="std std-ref">TimeSlave Configuration</span></a>
+for the full resolution order.</p>
+</dd>
+</dl>
 </section>
 <section id="default-configuration-gptpengineoptions">
 <h2>Default Configuration (<cite>GptpEngineOptions</cite>)<a class="headerlink" href="#default-configuration-gptpengineoptions" title="Link to this heading">#</a></h2>
@@ -513,15 +556,77 @@
 </table>
 </div>
 </section>
-<section id="example-invocation">
-<h2>Example Invocation<a class="headerlink" href="#example-invocation" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the TimeSlave, overriding the default interface name &quot;emac0&quot;</span>
-./time_slave
+<section id="phc-configuration">
+<h2>PHC configuration<a class="headerlink" href="#phc-configuration" title="Link to this heading">#</a></h2>
+<p>To enable PTP Hardware Clock adjustment, set <code class="docutils literal notranslate"><span class="pre">&quot;phc&quot;.&quot;enabled&quot;</span></code> to
+<code class="docutils literal notranslate"><span class="pre">true</span></code>. The <code class="docutils literal notranslate"><span class="pre">device</span></code> field identifies the network interface whose
+PTP clock is adjusted (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;emac0&quot;</span></code> on QNX, <code class="docutils literal notranslate"><span class="pre">&quot;eth0&quot;</span></code> on Linux):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;phc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emac0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;step_threshold_ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100000000</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>The runtime configuration is currently incomplete. To change parameters, you must modify the default values in the <code class="docutils literal notranslate"><span class="pre">GptpEngineOptions</span></code> structure and recompile the application. A comprehensive configuration mechanism (e.g., via a JSON file) will come soon.</p>
+<p>When disabled (the default), gPTP runs in slave-only mode without
+disciplining a hardware clock.</p>
+</section>
+<section id="qnx-specific-fields">
+<h2>QNX-specific fields<a class="headerlink" href="#qnx-specific-fields" title="Link to this heading">#</a></h2>
+<p>The optional <code class="docutils literal notranslate"><span class="pre">&quot;qnx&quot;</span></code> section holds QNX-only settings (ignored on
+Linux):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;qnx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;bpf_device_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/dev/bpf&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;see_sent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">bpf_device_path</span></code></dt><dd><p>Path to the BPF (Berkeley Packet Filter) clone device used for raw
+Ethernet frame capture. Defaults to <code class="docutils literal notranslate"><span class="pre">/dev/bpf</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">see_sent</span></code></dt><dd><p>When <code class="docutils literal notranslate"><span class="pre">true</span></code>, sent frames are also delivered to the RX BPF. This is
+required to capture TX hardware timestamps for Pdelay_Req T1
+measurement. Defaults to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="example-invocation">
+<h2>Example Invocation<a class="headerlink" href="#example-invocation" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the TimeSlave with a custom configuration file</span>
+./time_slave<span class="w"> </span>--config<span class="w"> </span>etc/time_slave_config.json
+
+<span class="c1"># Use a non-default interface without a config file (backwards compat)</span>
+<span class="nv">GPTP_IFACE</span><span class="o">=</span>emac1<span class="w"> </span>./time_slave
+</pre></div>
+</div>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading">#</a></h2>
+<p>A representative QNX configuration:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;iface_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emac0&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;domain_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pdelay_req_interval_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pdelay_warmup_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;sync_timeout_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3300</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;jump_future_threshold_ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500000000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;shm_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/gptp_shmem&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;phc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emac0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;step_threshold_ns&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100000000</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;qnx&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;bpf_device_path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/dev/bpf&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;see_sent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 </div>
 </section>
 </section>
@@ -546,11 +651,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="../../detailed_design/index.html"
+       href="../qnx_setup.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Time Slave Detailed Design</p>
+        <p class="prev-next-title">Running TimeSlave on QNX</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -573,9 +678,13 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-file-location">Configuration file location</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-arguments">Command-Line Arguments</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#default-configuration-gptpengineoptions">Default Configuration (<cite>GptpEngineOptions</cite>)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#phc-configuration">PHC configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qnx-specific-fields">QNX-specific fields</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-invocation">Example Invocation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example">Example</a></li>
 </ul>
   </nav></div>
 
@@ -583,7 +692,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main/docs/time_slave/manuals/config/configuration_guidedocs/manuals/config/configuration_guide.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main/score/time_slave/docs/manuals/config/configuration_guide.rst">
       <i class="fa-solid fa-pencil"></i>
       
       

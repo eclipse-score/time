@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Component Time Requirements &#8212; S-CORE Time  documentation</title>
+    <title>Running TimeSlave on QNX &#8212; S-CORE Time  documentation</title>
   
   
   
@@ -32,16 +32,16 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=bb63a8e1" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=415257cb" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=82a1844f" />
     <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=8048e6ee" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/modern.css?v=803738c0" />
   
@@ -62,7 +62,7 @@
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'time/requirements/requirements';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'time_slave/manuals/qnx_setup';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
@@ -73,8 +73,8 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Requirement Inspection Checklist" href="chklst_req_inspection.html" />
-    <link rel="prev" title="Requirements" href="index.html" />
+    <link rel="next" title="Time Slave Detailed Design" href="../detailed_design/index.html" />
+    <link rel="prev" title="TimeSlave Configuration" href="config/configuration_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="0.0.0" />
@@ -169,6 +169,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../module/index.html">
     Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../quality_pack.html">
+    Quality Pack Targets
   </a>
 </li>
 
@@ -300,6 +307,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../quality_pack.html">
+    Quality Pack Targets
+  </a>
+</li>
+
   </ul>
 </nav></div>
           
@@ -379,18 +393,19 @@
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../module/manuals/index.html">Manuals</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../time_slave/index.html">Time Slave</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time Slave</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="user_manual.html">Time Slave User Manual</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="config/configuration_guide.html">TimeSlave Configuration</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">Running TimeSlave on QNX</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../detailed_design/index.html">Time Slave Detailed Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../requirements/index.html">Time Slave Component Requirements</a></li>
+</ul>
+</details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../ts_client/index.html">Time Sync Client</a></li>
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">Time</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../detailed_design/index.html">Detailed Design</a></li>
-<li class="toctree-l2 current active has-children"><a class="reference internal" href="index.html">Requirements</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 current active"><a class="current reference internal" href="#">Component Time Requirements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chklst_req_inspection.html">Requirement Inspection Checklist</a></li>
-</ul>
-</details></li>
-</ul>
-</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time/index.html">Time</a></li>
 </ul>
 </div>
 </nav></div>
@@ -435,12 +450,12 @@
     <li class="breadcrumb-item"><a href="../../module/index.html" class="nav-link">Module</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time</a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Time Slave</a></li>
     
     
-    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Requirements</a></li>
+    <li class="breadcrumb-item"><a href="user_manual.html" class="nav-link">Time Slave User Manual</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Component Time Requirements</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Running TimeSlave on QNX</span></li>
   </ul>
 </nav>
 </div>
@@ -457,204 +472,97 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="component-time-requirements">
-<h1>Component Time Requirements<a class="headerlink" href="#component-time-requirements" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-1b0f49bb">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_requirements">
-<tbody>
-<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">Time Requirements</span></span></span></div>
-</div>
-</td>
-<td class="head_center" colspan="2"><div class="needs_head line-block">
-<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">draft</span></span></span></div>
-<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
-</div>
-</td>
-<td class="head_right" colspan="2"><div class="needs_head_right line-block">
-<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
-</div>
-</td>
-</tr>
-<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span><span class="needs_spacer">, </span><span class="needs_data">time</span></span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
-</span></span></div>
-<div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/requirements_engineering/requirements_workproducts.html#wp__requirements_comp">wp__requirements_comp</a></span></span></div>
-</span></div>
-</div>
-</td>
-<td class="meta" colspan="3"></td>
-</tr>
-<tr class="content row-odd"><td class="content" colspan="6"></td>
-</tr>
-<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__time_requirements" title="doc__time_requirements">doc__time_requirements</a></span></span></div>
-</div>
-</td>
-<td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Generic Document</span></span></span></div>
-</div>
-</td>
-<td class="footer_right" colspan="2"></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Work in progress: structure, titles, and needs IDs only. Content and req/comp/feat traceability links to follow in later PRs.</p>
-</div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>The above directive must be updated according to your Component.</p>
+  <section id="running-timeslave-on-qnx">
+<h1>Running TimeSlave on QNX<a class="headerlink" href="#running-timeslave-on-qnx" title="Link to this heading">#</a></h1>
+<p>This manual explains how to configure, build, and run the TimeSlave
+process on QNX (SDP 8.0.4, x86_64).</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">status</span></code> to be <code class="docutils literal notranslate"><span class="pre">valid</span></code></p></li>
-<li><p>Adjust <code class="docutils literal notranslate"><span class="pre">safety</span></code>, <code class="docutils literal notranslate"><span class="pre">security</span></code> and <code class="docutils literal notranslate"><span class="pre">tags</span></code> according to your needs</p></li>
+<li><p><a class="reference external" href="https://www.qnx.com/download/">QNX Software Center</a> installed on the
+build host, with <strong>QNX SDP 8.0</strong> deployed.</p></li>
+<li><p>A valid QNX license, placed under <code class="docutils literal notranslate"><span class="pre">/var/tmp/.qnx/license/licenses</span></code>
+(the QNX tools hard-code <code class="docutils literal notranslate"><span class="pre">QNX_CONFIGURATION_EXCLUSIVE=/var/tmp/.qnx</span></code>).</p></li>
+<li><p><a class="reference external" href="https://bazel.build/">Bazel</a> 8.6.0 or later. On first QNX build the
+toolchain is downloaded automatically (authenticated via the
+<code class="docutils literal notranslate"><span class="pre">qnx.com</span></code> credentials above); no additional toolchain setup script
+is needed.</p></li>
+<li><p>QEMU with KVM support for running the reference integration test
+(optional, but required for the QEMU-based integration test).</p></li>
+<li><p>Bazel user credentials for <code class="docutils literal notranslate"><span class="pre">qnx.com</span></code> (used by
+<code class="docutils literal notranslate"><span class="pre">tools/qnx_credential_helper.py</span></code>) — set via <code class="docutils literal notranslate"><span class="pre">~/.netrc</span></code> or the
+<code class="docutils literal notranslate"><span class="pre">SCORE_QNX_USER</span></code> / <code class="docutils literal notranslate"><span class="pre">SCORE_QNX_PASSWORD</span></code> environment variables.</p></li>
 </ul>
-</div>
-<section id="headlines-for-the-list-of-requirements-if-structuring-is-needed">
-<h2>&lt;Headlines (for the list of requirements if structuring is needed)&gt;<a class="headerlink" href="#headlines-for-the-list-of-requirements-if-structuring-is-needed" title="Link to this heading">#</a></h2>
-<section id="functional-requirements">
-<h3>Functional Requirements<a class="headerlink" href="#functional-requirements" title="Link to this heading">#</a></h3>
-<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">comp_req</span><span class="p">::</span> Some Title
-   <span class="nc">:id:</span> comp_req__time__some_title
-   <span class="nc">:reqtype:</span> Functional
-   <span class="nc">:security:</span> NO
-   <span class="nc">:safety:</span> ASIL_B
-   <span class="nc">:derived_from:</span> feat_req__time__example_req
-   <span class="nc">:status:</span> invalid
-   <span class="nc">:version:</span> 1
-   <span class="nc">:satisfied_by:</span> comp__time
-
-   The Component shall do xyz to another component to bring it to this condition at this time
-
-   Note: (optional, not to be verified)
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
+<p>For general TimeSlave configuration (config file lookup order, JSON
+schema reference, command-line arguments, PHC configuration, and
+QNX-specific fields), see the
+<a class="reference internal" href="config/configuration_guide.html#time-slave-configuration"><span class="std std-ref">TimeSlave Configuration</span></a> section.</p>
+</section>
+<section id="build-steps">
+<h2>Build steps<a class="headerlink" href="#build-steps" title="Link to this heading">#</a></h2>
+<section id="build-for-qnx-x86-64">
+<h3>Build for QNX x86_64<a class="headerlink" href="#build-for-qnx-x86-64" title="Link to this heading">#</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build TimeSlave for QNX x86_64.</span>
+<span class="c1"># The QNX toolchain is downloaded automatically on first build</span>
+<span class="c1"># (requires the qnx.com credentials configured above).</span>
+bazel<span class="w"> </span>build<span class="w"> </span>--config<span class="o">=</span>x86_64-qnx<span class="w"> </span>//score/time_slave:time_slave
 </pre></div>
 </div>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>The above directive must be updated according to your component requirements.</p>
-<ul class="simple">
-<li><p>Replace the example content by the real content for your first requirement</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">derived_from</span></code> with links to Feature requirements</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">satisfied_by</span></code> with a link to the right Component id</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">safety</span></code> and <code class="docutils literal notranslate"><span class="pre">security</span></code> to the right value</p></li>
-<li><p>Set the status to valid and start the review/merge process</p></li>
-<li><p>Add other needed requirements for your component</p></li>
-</ul>
+<p>The resulting binary appears under <code class="docutils literal notranslate"><span class="pre">bazel-bin/score/time_slave/src/application/time_slave</span></code>.</p>
+</section>
+<section id="packaging-for-deployment">
+<h3>Packaging for deployment<a class="headerlink" href="#packaging-for-deployment" title="Link to this heading">#</a></h3>
+<p>To produce a deployable layout (<code class="docutils literal notranslate"><span class="pre">/opt/time_slave/bin/</span></code> +
+<code class="docutils literal notranslate"><span class="pre">/opt/time_slave/etc/</span></code>) use the <code class="docutils literal notranslate"><span class="pre">pkg_application</span></code> macro defined in
+<code class="docutils literal notranslate"><span class="pre">score/time_slave/pkg_application.bzl</span></code>. A typical BUILD snippet:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;//score/time_slave:pkg_application.bzl&quot;</span><span class="p">,</span> <span class="s2">&quot;pkg_application&quot;</span><span class="p">)</span>
+
+<span class="n">pkg_application</span><span class="p">(</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;time_slave-pkg&quot;</span><span class="p">,</span>
+    <span class="n">app_name</span> <span class="o">=</span> <span class="s2">&quot;time_slave&quot;</span><span class="p">,</span>
+    <span class="nb">bin</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;//score/time_slave:time_slave&quot;</span><span class="p">],</span>
+    <span class="n">etc</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;//score/time_slave/config/qnx:time_slave_qnx_config.json&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting <code class="docutils literal notranslate"><span class="pre">pkg_filegroup</span></code> can be fed to <code class="docutils literal notranslate"><span class="pre">pkg_tar</span></code> (for
+archive-based deployment), <code class="docutils literal notranslate"><span class="pre">oci_image</span></code> (for Docker), or <code class="docutils literal notranslate"><span class="pre">qnx_ifs</span></code>
+(for inclusion in a QNX IFS image).</p>
+</section>
+</section>
+<section id="running-on-qnx">
+<h2>Running on QNX<a class="headerlink" href="#running-on-qnx" title="Link to this heading">#</a></h2>
+<p>On a QNX target (or in the QEMU reference integration), copy the binary
+and config to the conventional locations and run:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># On the QNX target shell:</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/time_slave/etc
+cp<span class="w"> </span>time_slave<span class="w"> </span>/opt/time_slave/bin/
+cp<span class="w"> </span>time_slave_qnx_config.json<span class="w"> </span>/opt/time_slave/etc/time_slave_config.json
+<span class="nb">cd</span><span class="w"> </span>/opt/time_slave
+./bin/time_slave<span class="w"> </span>--config<span class="w"> </span>etc/time_slave_config.json
+</pre></div>
+</div>
+<p>To use a non-default interface without a config file:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nv">GPTP_IFACE</span><span class="o">=</span>emac1<span class="w"> </span>./bin/time_slave
+</pre></div>
 </div>
 </section>
-<section id="assumption-of-use-requirements">
-<h3>Assumption of Use Requirements<a class="headerlink" href="#assumption-of-use-requirements" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-fb6c1cd6">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_aou_req table" id="aou_req__time__next_title">
-<tbody>
-<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">Next Title</span></span></span></div>
+<section id="reference-integration-test">
+<h2>Reference integration test<a class="headerlink" href="#reference-integration-test" title="Link to this heading">#</a></h2>
+<p>A reference integration test is provided at
+<code class="docutils literal notranslate"><span class="pre">score/time_slave/tests/reference_integration/</span></code>. It boots a minimal
+QNX QEMU image containing the TimeSlave binary and a QNX configuration
+file, starts the process, and verifies that it configures itself
+correctly, opens the shared-memory channel, and begins publishing gPTP
+snapshots.</p>
+<p>Run it with:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>x86_64-qnx<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>//score/time_slave/tests/reference_integration:time_slave_qnx_ref_integ
+</pre></div>
 </div>
-</td>
-<td class="head_center" colspan="2"><div class="needs_head line-block">
-<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">invalid</span></span></span></div>
-<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
-</div>
-</td>
-<td class="head_right" colspan="2"><div class="needs_head_right line-block">
-<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
-</div>
-</td>
-</tr>
-<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time</span></span></span></div>
-<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Process</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
-</span></span></div>
-<div class="line"><span></span></div>
-</div>
-</td>
-<td class="meta" colspan="3"></td>
-</tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The Component User shall do xyz to use the component safely/securely</p></td>
-</tr>
-<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#aou_req__time__next_title" title="aou_req__time__next_title">aou_req__time__next_title</a></span></span></div>
-</div>
-</td>
-<td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use Requirement</span></span></span></div>
-</div>
-</td>
-<td class="footer_right" colspan="2"></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="environmental-requirements">
-<h3>Environmental Requirements<a class="headerlink" href="#environmental-requirements" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-7065ec61">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_aou_req table" id="aou_req__time__another">
-<tbody>
-<tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
-<div class="line"><span><span class="needs_title"><span class="needs_data">Another Title</span></span></span></div>
-</div>
-</td>
-<td class="head_center" colspan="2"><div class="needs_head line-block">
-<div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">invalid</span></span></span></div>
-<div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
-</div>
-</td>
-<td class="head_right" colspan="2"><div class="needs_head_right line-block">
-<div class="line"><span><span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span></span></div>
-</div>
-</td>
-</tr>
-<tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
-<div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">environment</span><span class="needs_spacer">, </span><span class="needs_data">time</span></span></span></div>
-<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Process</span></span></div>
-<div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
-</span></span></div>
-<div class="line"><span></span></div>
-</div>
-</td>
-<td class="meta" colspan="3"></td>
-</tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The Component shall only be used in a xyz environment to ensure its proper functioning.</p></td>
-</tr>
-<tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#aou_req__time__another" title="aou_req__time__another">aou_req__time__another</a></span></span></div>
-</div>
-</td>
-<td class="footer" colspan="2"><div class="needs_footer line-block">
-<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use Requirement</span></span></span></div>
-</div>
-</td>
-<td class="footer_right" colspan="2"></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section>
-<section id="hints">
-<h3>Hints<a class="headerlink" href="#hints" title="Link to this heading">#</a></h3>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<p>The above directives must be updated according to your feature requirements.</p>
-<ul class="simple">
-<li><p>Replace the example content by the real content for your first requirement (according to <a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/requirements_engineering/guidance/requirements_guideline.html#gd_guidl__req_engineering">gd_guidl__req_engineering</a>)</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">safety</span></code> and <code class="docutils literal notranslate"><span class="pre">security</span></code> to the right value (ASIL B/QM; YES/NO)</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">reqtype</span></code> with a link to the right value (&lt;Functional|Interface|Process|Non-Functional&gt;)</p></li>
-<li><p>Add other needed requirements for your feature</p></li>
-<li><p>Set <code class="docutils literal notranslate"><span class="pre">status</span></code> to <code class="docutils literal notranslate"><span class="pre">valid</span></code> and start the review/merge process</p></li>
-</ul>
-</div>
-</section>
 </section>
 </section>
 
@@ -669,20 +577,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="config/configuration_guide.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Requirements</p>
+        <p class="prev-next-title">TimeSlave Configuration</p>
       </div>
     </a>
     <a class="right-next"
-       href="chklst_req_inspection.html"
+       href="../detailed_design/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Requirement Inspection Checklist</p>
+        <p class="prev-next-title">Time Slave Detailed Design</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -705,13 +613,15 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#headlines-for-the-list-of-requirements-if-structuring-is-needed">&lt;Headlines (for the list of requirements if structuring is needed)&gt;</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functional-requirements">Functional Requirements</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assumption-of-use-requirements">Assumption of Use Requirements</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#environmental-requirements">Environmental Requirements</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hints">Hints</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-steps">Build steps</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-for-qnx-x86-64">Build for QNX x86_64</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#packaging-for-deployment">Packaging for deployment</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-on-qnx">Running on QNX</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference-integration-test">Reference integration test</a></li>
 </ul>
   </nav></div>
 
@@ -719,7 +629,7 @@
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/eclipse-score/time/edit/main/docs/time/requirements/requirementsore/time/docs/requirements/requirements.rst">
+    <a href="https://github.com/eclipse-score/time/edit/main/score/time_slave/docs/manuals/qnx_setup.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
