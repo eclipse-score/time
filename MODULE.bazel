@@ -271,5 +271,5 @@ http_archive(
 
 bazel_dep(
     name = "score_devcontainer",
-    version = "1.8.0",
+    version = "1.11.1",
 )
