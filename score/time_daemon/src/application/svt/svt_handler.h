@@ -13,15 +13,9 @@
 #ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_SVT_HANDLER_H
 #define SCORE_TIME_DAEMON_SRC_APPLICATION_SVT_HANDLER_H
 
-#include "score/time_daemon/src/application/job_runner/job_runner.h"
+#include "score/time_daemon/src/application/generic/generic_timebase_handler.h"
 #include "score/time_daemon/src/application/timebase_handler.h"
-#include "score/time_daemon/src/control_flow_divider/ptp/ptp_control_flow_divider.h"
-#include "score/time_daemon/src/ipc/svt/publisher/svt_publisher.h"
-#include "score/time_daemon/src/msg_broker/msg_broker.h"
-#include "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine.h"
-#include "score/time_daemon/src/verification_machine/svt/svt_verification_machine.h"
-
-#include <memory>
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
 namespace score
 {
@@ -70,13 +64,7 @@ class SvtHandler : public TimebaseHandler
     virtual void Stop() noexcept override;
 
   private:
-    std::unique_ptr<JobRunner> job_runner_;                         ///< Manages periodic jobs and tasks
-    std::shared_ptr<MessageBroker<PtpTimeInfo>> msg_broker_;        ///< Handles message communication
-    std::shared_ptr<GPTPShmMachine> gptp_machine_;                  ///< Manages GPTP synchronization
-    std::shared_ptr<SvtVerificationMachine> verification_machine_;  ///< Handles SVT verification
-    std::shared_ptr<SvtPublisher> ipc_publisher_;                   ///< Publishes SVT data via IPC
-    std::shared_ptr<PtpControlFlowDivider> ctrl_flow_divider_;      ///< Divides PTP control flow
-    TimebaseHandler::Status handler_status_;                        ///< Current status of the handler
+    GenericTimebaseHandler<PtpTimeInfo> handler_;  ///< Owns the SVT machines and their topic wiring
 };
 
 }  // namespace td
