@@ -19,6 +19,8 @@ TimeDaemon Configuration
 
 The ``TimeDaemon`` process currently operates **without any external configuration**. It relies on default, built-in settings for IPC communication.
 
+The handler composition is selected at link time, not at runtime. See :ref:`time_daemon_user_manual`.
+
 Shared Memory Configuration
 ----------------------------
 

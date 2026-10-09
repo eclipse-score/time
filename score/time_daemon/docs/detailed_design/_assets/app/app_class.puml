@@ -26,8 +26,14 @@ legend top left
 endlegend
 
 class "TimeDaemon" as vtd_app #LightCyan {
+    +TimeDaemon()
+    +TimeDaemon(vector<unique_ptr<TimebaseHandler>> handlers)
     +std::int32_t Initialize(const ApplicationContext& context) override
-    +std::int32_t Run(score::cpp::stop_token& token) override
+    +std::int32_t Run(const score::cpp::stop_token& token) override
+}
+
+class "Link-selected provider" as factory {
+    +CreateTimebaseHandlers(): vector<unique_ptr<TimebaseHandler>>
 }
 
 class "TimebaseHandler" as tb_handler #LightCyan{
@@ -36,8 +42,8 @@ class "TimebaseHandler" as tb_handler #LightCyan{
     +void Stop()
 }
 note right
-    There might be multiple TimebaseHandlers
-    based on amount of supported time bases.
+    Handlers are initialized and polled in vector order,
+    and stopped in reverse order.
 end note
 
 class "MessageBroker" as msg_broker #PaleTurquoise
@@ -47,6 +53,8 @@ class "ControlFlowDivider" as cf_divider #LightBlue
 class "IpcPublisher" as ipc_publisher #LightPink
 
 vtd_app *-- "1..*" tb_handler : owns
+vtd_app ..> factory : default construction
+factory ..> tb_handler : creates
 
 tb_handler *-- msg_broker : owns
 tb_handler *-- ptp_machine : owns
