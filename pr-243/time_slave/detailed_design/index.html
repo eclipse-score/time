@@ -470,7 +470,7 @@
                   
   <section id="time-slave-detailed-design">
 <span id="time-slave-detailed-design-index"></span><h1>Time Slave Detailed Design<a class="headerlink" href="#time-slave-detailed-design" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-270eaa06">
+<div class="need_container docutils container" id="SNCB-0d596244">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_slave_detailed_design">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -665,7 +665,7 @@ consumer (<code class="docutils literal notranslate"><span class="pre">ShmPTPEng
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">recvHardwareTS</span></code> (Sync receive time)</p></td>
-<td><p>NIC hardware timestamp (nanosecond precision, captured at wire level)</p></td>
+<td><p>NIC hardware timestamp (nanosecond resolution, captured at wire level)</p></td>
 <td><p>Software timestamp (captured at socket receive, higher jitter)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sync_fup_data.reference_local_timestamp</span></code></p></td>
@@ -933,7 +933,7 @@ consuming side, are documented in the <a class="reference internal" href="../../
 <td><p><code class="docutils literal notranslate"><span class="pre">NetworkIdentity</span></code> (ioctl)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FakeIdentity</span></code> (fixed clock identity)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HighPrecisionLocalSteadyClock</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HighResolutionLocalSteadyClock</span></code></p></td>
 <td><p>Platform clock (Linux / QNX)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">FakeClock</span></code> (returns fixed timestamp)</p></td>
 </tr>
