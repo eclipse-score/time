@@ -47,7 +47,7 @@ Initialization and Lifecycle
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__vehicle_time_ctrl_flow[version==1]
+   :derived_from: feat_req__time__vehicle_time_sync[version==1]
    :status: valid
    :version: 1
    :satisfied_by: comp__time_slave
@@ -65,7 +65,7 @@ Initialization and Lifecycle
    :reqtype: Functional
    :security: NO
    :safety: QM
-   :derived_from: feat_req__time__vehicle_time_ctrl_flow[version==1]
+   :derived_from: feat_req__time__vehicle_time_sync[version==1]
    :status: valid
    :version: 1
    :satisfied_by: comp__time_slave
