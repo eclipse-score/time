@@ -178,6 +178,45 @@ TEST_F(TestVehicleTimeStatus, PrintToFormatsMixedFlagsCorrectly)
         os.str().c_str());
 }
 
+TEST_F(TestVehicleTimeStatus, EqualsWhenFlagsAndRateDeviationMatch)
+{
+    VehicleTimeStatus first{};
+    first.flags.AddFlag(Flag::kSynchronized);
+    first.rate_deviation = 1.0e-9;
+    VehicleTimeStatus second{};
+    second.flags.AddFlag(Flag::kSynchronized);
+    second.rate_deviation = 1.0e-9;
+
+    EXPECT_TRUE(first == second);
+    EXPECT_FALSE(first != second);
+}
+
+TEST_F(TestVehicleTimeStatus, NotEqualsWhenFlagsDiffer)
+{
+    VehicleTimeStatus first{};
+    first.flags.AddFlag(Flag::kSynchronized);
+    first.rate_deviation = 1.0e-9;
+    VehicleTimeStatus second{};
+    second.flags.AddFlag(Flag::kTimeOut);
+    second.rate_deviation = 1.0e-9;
+
+    EXPECT_FALSE(first == second);
+    EXPECT_TRUE(first != second);
+}
+
+TEST_F(TestVehicleTimeStatus, NotEqualsWhenOnlyRateDeviationDiffers)
+{
+    VehicleTimeStatus first{};
+    first.flags.AddFlag(Flag::kSynchronized);
+    first.rate_deviation = 1.0e-9;
+    VehicleTimeStatus second{};
+    second.flags.AddFlag(Flag::kSynchronized);
+    second.rate_deviation = 2.0e-9;
+
+    EXPECT_FALSE(first == second);
+    EXPECT_TRUE(first != second);
+}
+
 }  // namespace
 }  // namespace time
 }  // namespace score

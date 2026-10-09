@@ -77,6 +77,31 @@ struct TimeSlaveSyncData
     }
 };
 
+/// @brief Compares two @c TimeSlaveSyncData values field by field.
+template <typename Timebase>
+bool operator==(const TimeSlaveSyncData<Timebase>& first, const TimeSlaveSyncData<Timebase>& second) noexcept
+{
+    const bool same_precise_origin_timestamp = (first.precise_origin_timestamp == second.precise_origin_timestamp);
+    const bool same_reference_global_timestamp =
+        (first.reference_global_timestamp == second.reference_global_timestamp);
+    const bool same_reference_local_timestamp = (first.reference_local_timestamp == second.reference_local_timestamp);
+    const bool same_sync_ingress_timestamp = (first.sync_ingress_timestamp == second.sync_ingress_timestamp);
+    const bool same_correction_field = (first.correction_field == second.correction_field);
+    const bool same_sequence_id = (first.sequence_id == second.sequence_id);
+    const bool same_pdelay = (first.pdelay == second.pdelay);
+    const bool same_source_port_identity = (first.source_port_identity == second.source_port_identity);
+    return (same_precise_origin_timestamp && same_reference_global_timestamp && same_reference_local_timestamp &&
+            same_sync_ingress_timestamp && same_correction_field && same_sequence_id && same_pdelay &&
+            same_source_port_identity);
+}
+
+/// @brief Inequality is the inverse of @c operator==.
+template <typename Timebase>
+bool operator!=(const TimeSlaveSyncData<Timebase>& first, const TimeSlaveSyncData<Timebase>& second) noexcept
+{
+    return !(first == second);
+}
+
 /// @brief Stream output operator for @c TimeSlaveSyncData.
 template <typename OutputStream, typename Timebase>
 auto& operator<<(OutputStream& output_stream, const TimeSlaveSyncData<Timebase>& sync_data)

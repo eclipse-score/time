@@ -313,12 +313,9 @@ diagnostics and PTP data sanity checks:
 
    </div>
 
-.. warning::
-
-   Both PTP data callbacks (``TimeSlaveSyncData`` and ``PDelayMeasurementData``) are
-   **not yet delivered**.  Calling ``Subscribe<...>()`` compiles and runs without error,
-   but the registered callbacks will never be invoked.  Delivery will be wired from a
-   dedicated background thread in a future change.
+Callbacks are invoked asynchronously, not on the thread that registered them.  The callback
+implementation must be thread-safe and should return quickly.  A newly registered callback
+receives the next available data once; afterwards it is invoked only when that data changes.
 
 .. code-block:: cpp
 
@@ -375,13 +372,6 @@ excluded from the comparison.
 .. raw:: html
 
    </div>
-
-.. warning::
-
-   The ``VehicleTimeStatus`` callback is **not yet delivered**.  Calling
-   ``Subscribe<VehicleTimeStatus>()`` compiles and runs without error, but the registered
-   callback will never be invoked.  Delivery will be wired from a dedicated background
-   thread in a future change.
 
 .. code-block:: cpp
 

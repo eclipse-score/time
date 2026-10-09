@@ -44,6 +44,20 @@ struct PortIdentity
     }
 };
 
+/// @brief Compares two @c PortIdentity values member by member.
+inline bool operator==(const PortIdentity& first, const PortIdentity& second) noexcept
+{
+    const bool same_clock_identity = (first.clock_identity == second.clock_identity);
+    const bool same_port_number = (first.port_number == second.port_number);
+    return (same_clock_identity && same_port_number);
+}
+
+/// @brief Inequality is the inverse of @c operator==.
+inline bool operator!=(const PortIdentity& first, const PortIdentity& second) noexcept
+{
+    return !(first == second);
+}
+
 /// @brief Stream output operator for @c PortIdentity.
 ///
 /// @tparam OutputStream  Type of the output stream (e.g. std::ostream).
