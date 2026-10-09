@@ -20,7 +20,11 @@
 
 #include <atomic>
 #include <cstdint>
+#include <memory>
 #include <optional>
+#include <string>
+#include <thread>
+#include <type_traits>
 
 namespace score
 {
@@ -82,14 +86,12 @@ class SharedMemoryHandler
         static_assert(std::is_standard_layout_v<DataType>,
                       "DataType should be standard-layout for robust shared memory/IPC usage!");
 
-        std::atomic<std::uint16_t> entry_cnt_{0U};
+        /// \brief seq_ seqlock counter: odd while a write is in progress, even otherwise.
+        std::atomic<std::uint64_t> seq_{0U};
 
         /// \brief data_ specific data placed in share dmemory region. Note: It has to be trivially copyable with
-        // trivial simple types that are not allocated on cheap!
+        // trivial simple types that are not allocated on heap!
         DataType data_{};
-
-        /// \brief entry_cnt_ atomic entry counter to notify reader with exit_cnt_ that write occurred during reading
-        std::atomic<std::uint16_t> exit_cnt_{0U};
     };
 
     const std::string shared_memory_path_;
@@ -142,20 +144,21 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 
         for (std::uint8_t retry_cnt = 0U; retry_cnt < max_number_of_read_retries_; ++retry_cnt)
         {
-            // Snapshot the number of completed writes
-            const auto exit_cnt_before_read = shared_memory_data_->exit_cnt_.load(std::memory_order_acquire);
+            const auto seq_before_read = shared_memory_data_->seq_.load(std::memory_order_acquire);
 
-            // Copy the payload
-            read_data = shared_memory_data_->data_;
-
-            // Snapshot the number of started writes
-            const auto entry_cnt_after_read = shared_memory_data_->entry_cnt_.load(std::memory_order_acquire);
-
-            // No write was in progress when the copy started and none started since
-            if (exit_cnt_before_read == entry_cnt_after_read)
+            // Even: no write in progress
+            if ((seq_before_read & 1U) == 0U)
             {
-                return read_data;
+                // Copy the payload
+                read_data = shared_memory_data_->data_;
+
+                // Unchanged counter: no write started or completed during the copy
+                if (shared_memory_data_->seq_.load(std::memory_order_relaxed) == seq_before_read)
+                {
+                    return read_data;
+                }
             }
+            std::this_thread::yield();
         }
 
         score::mw::log::LogError(kIpcHandlerContext)
@@ -170,14 +173,15 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
 {
     if (shared_memory_data_ != nullptr)
     {
-        // Signal start of write (sequentially consistent by default)
-        std::ignore = shared_memory_data_->entry_cnt_.fetch_add(1U);
+        // Single writer: counter becomes odd to signal write in progress
+        const auto seq = shared_memory_data_->seq_.load(std::memory_order_relaxed);
+        shared_memory_data_->seq_.store(seq + 1U, std::memory_order_relaxed);
 
-        // Copy the non-atomic payload
+        // Copy the payload
         shared_memory_data_->data_ = data;
 
-        //  Publish completion (guarantees visibility of payload)
-        shared_memory_data_->exit_cnt_.store(shared_memory_data_->entry_cnt_.load());
+        // Even again: publishes the payload to readers
+        shared_memory_data_->seq_.store(seq + 2U, std::memory_order_release);
     }
 }
 
