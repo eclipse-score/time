@@ -25,7 +25,10 @@ cc_library(
         "topic.h",
     ],
     features = COMPILER_WARNING_FEATURES,
-    visibility = ["//score/time_daemon/src:__subpackages__"],
+    visibility = [
+        "//score/time_daemon:__pkg__",
+        "//score/time_daemon/src:__subpackages__",
+    ],
     deps = [
         "//score/time_daemon/src/common:logging_contexts",
         "//score/time_daemon/src/common/data_flow",

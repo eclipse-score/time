@@ -21,7 +21,10 @@ cc_library(
         "svt_publisher.h",
     ],
     features = COMPILER_WARNING_FEATURES,
-    visibility = ["//score/time_daemon/src:__subpackages__"],
+    visibility = [
+        "//score/time_daemon:__pkg__",
+        "//score/time_daemon/src:__subpackages__",
+    ],
     deps = [
         "//score/time_daemon/src/common/data_types:ptp_time_info",
         "//score/time_daemon/src/ipc/core:publisher_impl",

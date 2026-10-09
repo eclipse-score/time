@@ -15,6 +15,7 @@
 
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <atomic>
 #include <chrono>
 #include <future>
 #include <mutex>
@@ -168,6 +169,49 @@ TEST(PTPMachineStandaloneTest, PublishWithoutCallbackDoesNotCrash)
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
 
     machine.Stop();
+}
+
+TEST(PTPMachineStandaloneTest, DestructorWaitsForReadInProgressBeforeDeinitialize)
+{
+    auto machine = std::make_unique<PTPMachine<testing::FakePTPEngine>>("PTPMachineDestroyedWhileReading", 10ms);
+    // Keep the mock alive so its expectations can be checked after the engine is destroyed.
+    const auto engine = testing::PTPEngineMockProvider::GetInstance().GetMock();
+
+    std::promise<void> read_started;
+    std::promise<void> release_read;
+    std::future<void> read_released = release_read.get_future();
+    std::atomic<bool> read_in_progress{false};
+    std::atomic<bool> deinitialized_during_read{false};
+
+    EXPECT_CALL(*engine, Initialize()).WillOnce(Return(true));
+    EXPECT_CALL(*engine, ReadPTPSnapshot(_))
+        .WillOnce(Invoke([&](PtpTimeInfo&) {
+            read_in_progress = true;
+            read_started.set_value();
+            read_released.wait();
+            read_in_progress = false;
+            return false;
+        }))
+        .WillRepeatedly(Return(false));
+    EXPECT_CALL(*engine, Deinitialize()).WillOnce(Invoke([&]() {
+        deinitialized_during_read = read_in_progress.load();
+        return true;
+    }));
+
+    ASSERT_TRUE(machine->Init());
+    machine->Start();
+    ASSERT_EQ(read_started.get_future().wait_for(1s), std::future_status::ready);
+
+    // Destroy the machine during a read, without calling Stop().
+    std::thread destroyer([&machine]() {
+        machine.reset();
+    });
+    // Give a broken destructor time to call Deinitialize() before the read ends.
+    std::this_thread::sleep_for(50ms);
+    release_read.set_value();
+    destroyer.join();
+
+    EXPECT_FALSE(deinitialized_during_read);
 }
 
 }  // namespace td
