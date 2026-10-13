@@ -22,6 +22,7 @@
 
 #include <gtest/gtest.h>
 
+#include <atomic>
 #include <chrono>
 #include <optional>
 #include <thread>
@@ -301,6 +302,50 @@ TEST_F(VehicleClockBackendImplTest, CallbackRegisteredBeforeInitIsDeliveredOnceI
 
     ASSERT_TRUE(recorder.WaitForCount(1U));
     EXPECT_TRUE(recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
+}
+
+TEST_F(VehicleClockBackendImplTest, SecondStatusCallbackAddedDoesNotReplaceFirst)
+{
+    test_helpers::CallbackRecorder<VehicleTimeStatus> first;
+    test_helpers::CallbackRecorder<VehicleTimeStatus> second;
+    impl_->SetStatusChangedCallback(first.Callback());
+    impl_->SetStatusChangedCallback(second.Callback());
+
+    const SvtSnapshot data{1000ULL, 0ULL, 0.0, {true, false, false, false, true}, {}, {}};
+    EXPECT_CALL(*mock_svt_, Receive()).WillRepeatedly(Return(data));
+    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
+    EXPECT_TRUE(impl_->Init());
+
+    ASSERT_TRUE(first.WaitForCount(1U));
+    ASSERT_TRUE(second.WaitForCount(1U));
+    EXPECT_TRUE(first.Last().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
+    EXPECT_TRUE(second.Last().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
+}
+
+TEST_F(VehicleClockBackendImplTest, UnsetStatusChangedCallbackRemovesAllRegisteredCallbacks)
+{
+    const SvtSnapshot synchronized{1000ULL, 0ULL, 0.0, {true, false, false, false, true}, {}, {}};
+    const SvtSnapshot timeout{1000ULL, 0ULL, 0.0, {false, true, false, false, true}, {}, {}};
+    std::atomic<bool> serve_timeout{false};
+    EXPECT_CALL(*mock_svt_, Receive()).WillRepeatedly([&serve_timeout, &synchronized, &timeout]() {
+        return std::optional<SvtSnapshot>{serve_timeout.load() ? timeout : synchronized};
+    });
+    EXPECT_CALL(*mock_svt_, Init()).WillOnce(Return(true));
+
+    test_helpers::CallbackRecorder<VehicleTimeStatus> first;
+    test_helpers::CallbackRecorder<VehicleTimeStatus> second;
+    impl_->SetStatusChangedCallback(first.Callback());
+    impl_->SetStatusChangedCallback(second.Callback());
+    ASSERT_TRUE(impl_->Init());
+    ASSERT_TRUE(first.WaitForCount(1U));
+    ASSERT_TRUE(second.WaitForCount(1U));
+
+    impl_->UnsetStatusChangedCallback();
+    serve_timeout = true;
+
+    std::this_thread::sleep_for(kNoDeliveryWait);
+    EXPECT_EQ(first.Count(), 1U);
+    EXPECT_EQ(second.Count(), 1U);
 }
 
 }  // namespace
