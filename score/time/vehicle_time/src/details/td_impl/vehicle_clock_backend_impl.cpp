@@ -141,33 +141,33 @@ bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& t
 void VehicleClockBackendImpl::SetTimeSlaveSyncDataReceivedCallback(
     VehicleTime::TimeSlaveSyncDataReceivedCallback&& callback) noexcept
 {
-    dispatcher_.SetTimeSlaveSyncDataReceivedCallback(std::move(callback));
+    dispatcher_.AddCallback<TimeSlaveSyncData<VehicleTime>>(std::move(callback));
 }
 
 void VehicleClockBackendImpl::UnsetTimeSlaveSyncDataReceivedCallback() noexcept
 {
-    dispatcher_.UnsetTimeSlaveSyncDataReceivedCallback();
+    dispatcher_.UnsetCallback<TimeSlaveSyncData<VehicleTime>>();
 }
 
 void VehicleClockBackendImpl::SetPDelayMeasurementFinishedCallback(
     VehicleTime::PDelayMeasurementFinishedCallback&& callback) noexcept
 {
-    dispatcher_.SetPDelayMeasurementFinishedCallback(std::move(callback));
+    dispatcher_.AddCallback<PDelayMeasurementData<VehicleTime>>(std::move(callback));
 }
 
 void VehicleClockBackendImpl::UnsetPDelayMeasurementFinishedCallback() noexcept
 {
-    dispatcher_.UnsetPDelayMeasurementFinishedCallback();
+    dispatcher_.UnsetCallback<PDelayMeasurementData<VehicleTime>>();
 }
 
 void VehicleClockBackendImpl::SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept
 {
-    dispatcher_.SetStatusChangedCallback(std::move(callback));
+    dispatcher_.AddCallback<VehicleTimeStatus>(std::move(callback));
 }
 
 void VehicleClockBackendImpl::UnsetStatusChangedCallback() noexcept
 {
-    dispatcher_.UnsetStatusChangedCallback();
+    dispatcher_.UnsetCallback<VehicleTimeStatus>();
 }
 
 }  // namespace detail

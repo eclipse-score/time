@@ -317,6 +317,8 @@ Callbacks are invoked asynchronously, not on the thread that registered them.  T
 implementation must be thread-safe and should return quickly.  A newly registered callback
 receives the next available data once; afterwards it is invoked only when that data changes.
 
+Subscribing again adds another callback for the same event type. ``Unsubscribe<E>()`` removes all callbacks of that type.
+
 .. code-block:: cpp
 
    #include "score/time/vehicle_time/src/vehicle_clock.h"
@@ -361,6 +363,8 @@ but pushed proactively on every change rather than polled per call.
 The callback fires unconditionally on the first PTP status update received after
 registration, and subsequently only when the flag set changes.  Rate deviation is
 excluded from the comparison.
+
+Subscribing again adds another callback for the same status. ``Unsubscribe<VehicleTimeStatus>()`` removes all status callbacks.
 
 .. raw:: html
 

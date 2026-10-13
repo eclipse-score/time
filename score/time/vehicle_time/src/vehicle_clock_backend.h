@@ -63,44 +63,42 @@ class VehicleClockBackend
     virtual bool WaitUntilAvailable(const score::cpp::stop_token& token,
                                     std::chrono::steady_clock::time_point until) const noexcept = 0;
 
-    /// @brief Installs the callback invoked when new time-sync data arrives.
+    /// @brief Adds a callback invoked when new time-sync data arrives.
     ///
     /// Fires for the first Sync/Follow-Up snapshot received from the TimeDaemon after registration
     /// and afterwards for every snapshot whose content differs from the previously delivered one.
     /// Invoked on the backend's dedicated worker thread.
     ///
-    /// Replacing an installed callback is safe while an invocation is in flight: the call
-    /// returns only once the previous callback is no longer running (unless made from
-    /// within that callback itself).
+    /// Adding a callback is safe while an invocation is in flight: the call returns only once the
+    /// in-flight invocation has finished (unless made from within a callback itself).
     virtual void SetTimeSlaveSyncDataReceivedCallback(
         VehicleTime::TimeSlaveSyncDataReceivedCallback&& callback) noexcept = 0;
 
-    /// @brief Removes the time-sync data callback.
+    /// @brief Removes all time-sync data callbacks.
     ///
     /// Returns only once an in-flight invocation has completed (unless called from within
     /// the callback itself), so callers may release captured resources afterwards.
     virtual void UnsetTimeSlaveSyncDataReceivedCallback() noexcept = 0;
 
-    /// @brief Installs the callback invoked after a finished pDelay measurement.
+    /// @brief Adds a callback invoked after a finished pDelay measurement.
     ///
     /// Fires for the first pDelay measurement result received from the TimeDaemon after
     /// registration and afterwards for every result that differs from the previously delivered
     /// one.  Invoked on the backend's dedicated worker thread.
     ///
-    /// Replacing an installed callback is safe while an invocation is in flight: the call
-    /// returns only once the previous callback is no longer running (unless made from
-    /// within that callback itself).
+    /// Adding a callback is safe while an invocation is in flight: the call returns only once the
+    /// in-flight invocation has finished (unless made from within a callback itself).
     virtual void SetPDelayMeasurementFinishedCallback(
         VehicleTime::PDelayMeasurementFinishedCallback&& callback) noexcept = 0;
 
-    /// @brief Removes the pDelay measurement callback.
+    /// @brief Removes all pDelay measurement callbacks.
     ///
     /// Same completion guarantee as @c UnsetTimeSlaveSyncDataReceivedCallback().
     virtual void UnsetPDelayMeasurementFinishedCallback() noexcept = 0;
 
-    /// @brief Installs the callback invoked when VehicleTimeStatus flags change.
+    /// @brief Adds a callback invoked when VehicleTimeStatus flags change.
     ///
-    /// The callback fires:
+    /// Each callback fires:
     ///  - unconditionally on the first status snapshot received after registration; and
     ///  - afterwards only when the status flags differ from the last delivered value
     ///    (rate deviation is ignored for comparison).
@@ -108,12 +106,11 @@ class VehicleClockBackend
     /// The callback is invoked on the backend's dedicated worker thread — the callback
     /// implementation must be thread-safe.
     ///
-    /// Replacing an installed callback is safe while an invocation is in flight: the call
-    /// returns only once the previous callback is no longer running (unless made from
-    /// within that callback itself).
+    /// Adding a callback is safe while an invocation is in flight: the call returns only once the
+    /// in-flight invocation has finished (unless made from within a callback itself).
     virtual void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept = 0;
 
-    /// @brief Removes the status-changed callback.
+    /// @brief Removes all status-changed callbacks.
     ///
     /// Same completion guarantee as @c UnsetTimeSlaveSyncDataReceivedCallback().
     virtual void UnsetStatusChangedCallback() noexcept = 0;
