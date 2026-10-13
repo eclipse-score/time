@@ -84,7 +84,7 @@ bazel_dep(name = "score_tooling", version = "2.2.1", dev_dependency = True)
 
 # LLVM source-based coverage pipeline (C++): the qualified S-CORE coverage
 # tool, successor of @score_tooling//coverage. See tools/coverage/.
-bazel_dep(name = "score_coverage", version = "0.3.1", dev_dependency = True)
+bazel_dep(name = "score_coverage", version = "0.4.1", dev_dependency = True)
 
 # lobster is a non-dev bazel_dep of score_tooling; its own git_override is ignored
 # by Bazel for non-root modules, so the root module must declare it too.
