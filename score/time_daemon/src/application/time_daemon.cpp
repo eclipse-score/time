@@ -11,6 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/application/time_daemon.h"
+#include "score/mw/lifecycle/application.h"
 #include "score/mw/lifecycle/applicationcontext.h"
 #include "score/time_daemon/src/application/svt/factory.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
@@ -25,7 +26,7 @@
 namespace score::td
 {
 
-TimeDaemon::TimeDaemon()
+TimeDaemon::TimeDaemon() : score::mw::lifecycle::Application()
 {
     svt_timebase_handler_ = CreateSvtTimebase();
 }
