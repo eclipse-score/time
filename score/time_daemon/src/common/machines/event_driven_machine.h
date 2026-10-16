@@ -20,9 +20,7 @@
 #include <chrono>
 #include <mutex>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -46,7 +44,7 @@ class EventDrivenMachine : public ProactiveMachine
      * @param name The name of the machine instance.
      * @param timeout The timeout duration in milliseconds for waiting for events.
      */
-    explicit EventDrivenMachine(const std::string& name, const std::chrono::milliseconds timeout);
+    explicit EventDrivenMachine(const std::string& name, std::chrono::milliseconds timeout);
 
     EventDrivenMachine(const EventDrivenMachine&) = delete;
     EventDrivenMachine& operator=(const EventDrivenMachine&) = delete;
@@ -106,7 +104,6 @@ class EventDrivenMachine : public ProactiveMachine
     bool event_pending_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H

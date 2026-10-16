@@ -16,13 +16,12 @@
 #include "gmock/gmock.h"
 #include <gtest/gtest.h>
 
-#include <map>
+#include <functional>
+#include <string>
 
 using ::testing::_;
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace test
 {
@@ -94,7 +93,7 @@ class FakeConsumerProducerMachine : public Consumer<FakeTimeInfo>, public Produc
     }
 
     // Consumer interface
-    virtual void OnMessage(FakeTimeInfo data) override
+    void OnMessage(FakeTimeInfo data) override
     {
         Publish(std::move(data));
     }
@@ -221,5 +220,4 @@ TEST_F(ProducerConsumerTest, TestProducerConsumerNotificationChain)
     initialProducer.Publish(testData);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

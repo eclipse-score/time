@@ -24,9 +24,7 @@
 #include <string>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Validates and qualifies time information received from the PTP Machine.
@@ -188,7 +186,6 @@ void VerificationMachine<DataType>::SetupPipeline(const std::vector<StageFactory
     pipeline_ = std::move(stages[0]);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_MACHINE_H

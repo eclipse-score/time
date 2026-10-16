@@ -15,9 +15,7 @@
 
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 // Application context
@@ -38,7 +36,6 @@ constexpr auto kVerificationMachineContext = "VERM";
 // Control Flow Divider context
 constexpr auto kControlFlowDividerContext = "CFDV";
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_LOGGING_CONTEXTS_H
