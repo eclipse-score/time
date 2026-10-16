@@ -84,16 +84,12 @@ struct PDelayDataSnapshot
 /// \brief General type class to store and pass all necessary data
 struct TimeBaseSnapshot
 {
-    // NOLINTBEGIN(misc-non-private-member-variables-in-classes) — plain data aggregate, like the
-    // sibling *Snapshot structs above; CreateFrom() is a factory that fills the fields, it doesn't
-    // maintain any invariant over them that would require encapsulation.
     uint64_t ptp_assumed_time;
     uint64_t local_time;
     double rate_deviation;
     TimeBaseStatus status;
     SyncFupSnapshot sync_fup_data;
     PDelayDataSnapshot pdelay_data;
-    // NOLINTEND(misc-non-private-member-variables-in-classes)
 
     void CreateFrom(const PtpTimeInfo& info);
 };
