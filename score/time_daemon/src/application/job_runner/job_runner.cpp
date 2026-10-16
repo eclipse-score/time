@@ -24,7 +24,10 @@
 namespace score::td
 {
 
-JobRunner::JobRunner(std::vector<Job> jobs, std::string name) : jobs_(std::move(jobs)), name_(std::move(name)) {}
+JobRunner::JobRunner(std::vector<Job> jobs, std::string name)
+    : jobs_(std::move(jobs)), name_(std::move(name)), status_{Result::kIdle}
+{
+}
 
 void JobRunner::Start(const score::cpp::stop_token& token)
 {

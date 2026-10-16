@@ -22,7 +22,7 @@ namespace score::td
 {
 
 EventDrivenMachine::EventDrivenMachine(const std::string& name, const std::chrono::milliseconds timeout)
-    : ProactiveMachine(name), kTimeout_(timeout)
+    : ProactiveMachine(name), cv_mutex_{}, cv_{}, worker_{}, kTimeout_(timeout), event_pending_{false}
 {
 }
 

@@ -101,7 +101,7 @@ class EventDrivenMachine : public ProactiveMachine
     score::cpp::jthread worker_;
 
     const std::chrono::milliseconds kTimeout_;
-    bool event_pending_{false};
+    bool event_pending_;
 };
 
 }  // namespace score::td

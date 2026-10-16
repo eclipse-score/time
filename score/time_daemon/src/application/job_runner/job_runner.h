@@ -33,7 +33,7 @@ struct Job
     std::function<bool()> fn;
     std::string name;
     std::chrono::seconds timeout;
-    std::chrono::steady_clock::time_point start;
+    std::chrono::steady_clock::time_point start{};
 };
 
 /**
@@ -89,7 +89,7 @@ class JobRunner
 
     std::vector<Job> jobs_;
     const std::string name_;
-    Result status_{Result::kIdle};
+    Result status_;
     mutable std::mutex status_mutex_;
     score::cpp::jthread worker_thread_;
 };
