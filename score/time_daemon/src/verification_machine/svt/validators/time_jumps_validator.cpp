@@ -55,12 +55,12 @@ void TimeJumpsValidator::DoValidation(PtpTimeInfo& data)
 
 bool TimeJumpsValidator::IsTimeJumpDetected(const PtpTimeInfo& data)
 {
-    bool is_time_jump_detected{false};
-
     if (!last_sync_frame_.has_value())
     {
         return false;
     }
+
+    bool is_time_jump_detected{false};
 
     if (data.sync_fup_data.sync_ingress_timestamp > last_sync_frame_.value().sync_fup_data.sync_ingress_timestamp)
     {
