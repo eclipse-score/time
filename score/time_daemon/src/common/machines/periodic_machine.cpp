@@ -35,8 +35,6 @@ void PeriodicMachine::Start() noexcept
                                   }};
 }
 
-// join()/notify_one() escaping here means shutdown is broken beyond recovery; terminating via
-// noexcept is the intended behavior, not swallowed here.
 // NOLINTNEXTLINE(bugprone-exception-escape)
 void PeriodicMachine::Stop() noexcept
 {
