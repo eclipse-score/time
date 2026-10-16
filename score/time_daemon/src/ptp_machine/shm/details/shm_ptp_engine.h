@@ -35,9 +35,6 @@ namespace score::td::details
 class ShmPTPEngine final
 {
   public:
-    // kGptpIpcName is a char-array constant used as a default arg for a std::string param;
-    // ordinary literal decay, not raw pointer/buffer use.
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay)
     explicit ShmPTPEngine(std::string ipc_name = score::ts::details::kGptpIpcName) noexcept;
     ~ShmPTPEngine() noexcept = default;
 
