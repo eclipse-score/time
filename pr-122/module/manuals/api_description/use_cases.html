@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=cb8930eaaf36d9849b67" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -46,10 +46,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=cb8930eaaf36d9849b67"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67" />
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -64,7 +64,7 @@
     <script src="../../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'module/manuals/api_description/use_cases';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.20.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.21.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -704,13 +704,9 @@ completes; carries the measured peer delay and associated timestamps.</p></li>
 </ul>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../../_images/plantuml-830b724634ae99e1067720e80fc59b59b9a9b276.svg" type="image/svg+xml" style="width:1642px;height:1491px;background:#FFFFFF;"></object></p>
-</div><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Both PTP data callbacks (<code class="docutils literal notranslate"><span class="pre">TimeSlaveSyncData</span></code> and <code class="docutils literal notranslate"><span class="pre">PDelayMeasurementData</span></code>) are
-<strong>not yet delivered</strong>.  Calling <code class="docutils literal notranslate"><span class="pre">Subscribe&lt;...&gt;()</span></code> compiles and runs without error,
-but the registered callbacks will never be invoked.  Delivery will be wired from a
-dedicated background thread in a future change.</p>
-</div>
+</div><p>Callbacks are invoked asynchronously, not on the thread that registered them.  The callback
+implementation must be thread-safe and should return quickly.  A newly registered callback
+receives the next available data once; afterwards it is invoked only when that data changes.</p>
 <div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/ptp/src/time_slave_sync_data.h&quot;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/ptp/src/pdelay_measurement_data.h&quot;</span>
@@ -754,14 +750,7 @@ registration, and subsequently only when the flag set changes.  Rate deviation i
 excluded from the comparison.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../../_images/plantuml-13fd84c0e858985e9edf6f66eeefffc55316ebb7.svg" type="image/svg+xml" style="width:887px;height:964px;background:#FFFFFF;"></object></p>
-</div><div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">VehicleTimeStatus</span></code> callback is <strong>not yet delivered</strong>.  Calling
-<code class="docutils literal notranslate"><span class="pre">Subscribe&lt;VehicleTimeStatus&gt;()</span></code> compiles and runs without error, but the registered
-callback will never be invoked.  Delivery will be wired from a dedicated background
-thread in a future change.</p>
-</div>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
+</div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;score/time/vehicle_time/src/vehicle_clock.h&quot;</span>
 
 <span class="kt">void</span><span class="w"> </span><span class="nf">MyService::WatchClockReadiness</span><span class="p">()</span>
 <span class="p">{</span>
@@ -931,8 +920,8 @@ bits.  For the higher-level reliability predicates (<code class="docutils litera
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=cb8930eaaf36d9849b67"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=cb8930eaaf36d9849b67"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -956,7 +945,7 @@ bits.  For the higher-level reliability predicates (<code class="docutils litera
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.21.0.
 </p></div>
       
     </div>
