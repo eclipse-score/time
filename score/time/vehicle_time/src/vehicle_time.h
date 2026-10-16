@@ -137,6 +137,20 @@ struct VehicleTimeStatus
     }
 };
 
+/// @brief Compares two @c VehicleTimeStatus values field by field.
+inline bool operator==(const VehicleTimeStatus& first, const VehicleTimeStatus& second) noexcept
+{
+    const bool same_flags = (first.flags == second.flags);
+    const bool same_rate_deviation = (first.rate_deviation == second.rate_deviation);
+    return (same_flags && same_rate_deviation);
+}
+
+/// @brief Inequality is the inverse of @c operator==.
+inline bool operator!=(const VehicleTimeStatus& first, const VehicleTimeStatus& second) noexcept
+{
+    return !(first == second);
+}
+
 }  // namespace time
 }  // namespace score
 

@@ -40,7 +40,7 @@ jobs:
         with:
           unique-cache-name: ${{ github.workflow }}-${{ github.job }}
 
-      - name: Run coverage (LLVM source-based, @score_tooling//coverage)
+      - name: Run coverage (LLVM source-based, @score_coverage)
         run: |
           set -euo pipefail
           bazel coverage --lockfile_mode=error --config=llvm_cov \
@@ -51,7 +51,7 @@ jobs:
           COVERAGE_THRESHOLD: "85"
         run: |
           set -euo pipefail
-          bazel run --lockfile_mode=error @score_tooling//coverage:generate_coverage_html -- \
+          bazel run --lockfile_mode=error @score_coverage//:generate_coverage_html -- \
             --testlogs-subdir score \
             --archive-dir coverage_artifact \
             --yaml tools/coverage/coverage_justifications.yaml

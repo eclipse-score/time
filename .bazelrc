@@ -77,7 +77,7 @@ build:arm64-qnx --extra_toolchains=@score_qcc_aarch64_toolchain//:aarch64-qnx-sd
 # Import local user workspace file, if exists
 # -------------------------------------------------------------------------------
 # Unified LLVM source-based coverage (C++), see tools/coverage/ and
-# @score_tooling//coverage. Use: bazel coverage --config=llvm_cov //score/... --build_tests_only
+# @score_coverage. Use: bazel coverage --config=llvm_cov //score/... --build_tests_only
 import %workspace%/tools/coverage/coverage.bazelrc
 
 # Local user overrides — kept LAST so they can override everything above.

@@ -226,7 +226,7 @@ The engine continues to run normally. The difference between the two modes:
      - HW timestamping available
      - SW timestamping fallback
    * - ``recvHardwareTS`` (Sync receive time)
-     - NIC hardware timestamp (nanosecond precision, captured at wire level)
+     - NIC hardware timestamp (nanosecond resolution, captured at wire level)
      - Software timestamp (captured at socket receive, higher jitter)
    * - ``sync_fup_data.reference_local_timestamp``
      - Derived from NIC hardware timestamp
@@ -441,7 +441,7 @@ The ``TimeSlave`` and its constituent components can be tested on an x86 Linux h
    * - ``NetworkIdentity``
      - ``NetworkIdentity`` (ioctl)
      - ``FakeIdentity`` (fixed clock identity)
-   * - ``HighPrecisionLocalSteadyClock``
+   * - ``HighResolutionLocalSteadyClock``
      - Platform clock (Linux / QNX)
      - ``FakeClock`` (returns fixed timestamp)
 
