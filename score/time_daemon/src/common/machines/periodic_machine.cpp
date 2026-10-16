@@ -22,7 +22,7 @@ namespace score::td
 {
 
 PeriodicMachine::PeriodicMachine(const std::string& name, const std::chrono::milliseconds threadCycle)
-    : ProactiveMachine(name), kCycleTime_(threadCycle)
+    : ProactiveMachine(name), cv_mutex_{}, cv_{}, worker_{}, kCycleTime_(threadCycle)
 {
 }
 

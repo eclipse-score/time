@@ -80,7 +80,7 @@ class StubPTPEngine final
 
   private:
     PtpTimeInfo::ReferenceClock local_clock_;
-    std::uint16_t sequence_id_{0U};
+    std::uint16_t sequence_id_;
 };
 
 }  // namespace score::td::details

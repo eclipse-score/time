@@ -14,9 +14,12 @@
 #include "score/mw/log/logging.h"
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
+#include "score/time_daemon/src/verification_machine/core/verification_stage.h"
 
 namespace score::td
 {
+
+SynchronizationValidator::SynchronizationValidator() : VerificationStage<PtpTimeInfo>(), is_synchronized_{false} {}
 
 void SynchronizationValidator::DoValidation(PtpTimeInfo& data)
 {

@@ -30,7 +30,8 @@ constexpr std::uint64_t kStubClockIdentityA{0xAABBCCDDEEFF0011ULL};
 constexpr std::uint64_t kStubClockIdentityB{0x1122334455667788ULL};
 }  // namespace
 
-StubPTPEngine::StubPTPEngine(PtpTimeInfo::ReferenceClock local_clock) noexcept : local_clock_{std::move(local_clock)}
+StubPTPEngine::StubPTPEngine(PtpTimeInfo::ReferenceClock local_clock) noexcept
+    : local_clock_{std::move(local_clock)}, sequence_id_{0U}
 {
     score::mw::log::LogInfo(kGPtpMachineContext) << "StubPTPEngine created!";
 }
