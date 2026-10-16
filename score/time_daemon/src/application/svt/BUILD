@@ -27,10 +27,11 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
             "svt_handler.h",
         ],
         features = COMPILER_WARNING_FEATURES,
-        visibility = ["//score/time_daemon/src/application:__pkg__"],
+        visibility = ["//score/time_daemon/src/application:__pkg__"] + (["//score/time_daemon:__pkg__"] if not testonly else []),
         deps = [
             "//score/time_daemon/src/application:timebase_handler",
-            "//score/time_daemon/src/application/job_runner",
+            "//score/time_daemon/src/application/generic:generic_timebase_handler",
+            "//score/time_daemon/src/common/data_types:ptp_time_info",
             "//score/time_daemon/src/control_flow_divider/ptp:ptp_control_flow_divider",
             "//score/time_daemon/src/ipc/svt/publisher:factory",
             "//score/time_daemon/src/msg_broker",

@@ -39,3 +39,75 @@ alias(
     actual = "//score/time_daemon/src/application:time_daemon",
     visibility = ["//visibility:public"],
 )
+
+alias(
+    name = "time_daemon_core",
+    actual = "//score/time_daemon/src/application:time_daemon_core",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "time_daemon_main",
+    actual = "//score/time_daemon/src/application:time_daemon_main",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "timebase_handler",
+    actual = "//score/time_daemon/src/application:timebase_handler",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "timebase_handler_factory",
+    actual = "//score/time_daemon/src/application:timebase_handler_factory",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "svt_handler",
+    actual = "//score/time_daemon/src/application/svt:svt_handler",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "generic_timebase_handler",
+    actual = "//score/time_daemon/src/application/generic:generic_timebase_handler",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "msg_broker",
+    actual = "//score/time_daemon/src/msg_broker",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "ptp_time_info",
+    actual = "//score/time_daemon/src/common/data_types:ptp_time_info",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "ptp_control_flow_divider",
+    actual = "//score/time_daemon/src/control_flow_divider/ptp:ptp_control_flow_divider",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "gptp_shm_machine",
+    actual = "//score/time_daemon/src/ptp_machine/shm:gptp_shm_machine",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "svt_verification_machine",
+    actual = "//score/time_daemon/src/verification_machine/svt:svt_verification_machine",
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "svt_publisher",
+    actual = "//score/time_daemon/src/ipc/svt/publisher:factory",
+    visibility = ["//visibility:public"],
+)

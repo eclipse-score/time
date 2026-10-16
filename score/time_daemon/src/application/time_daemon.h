@@ -14,28 +14,31 @@
 #define SCORE_TIME_DAEMON_SRC_APPLICATION_TIME_DAEMON_H
 
 #include "score/time_daemon/src/application/timebase_handler.h"
+#include "score/time_daemon/src/application/timebase_handler_factory.h"
 
 #include "score/mw/lifecycle/application.h"
+
+#include <cstdint>
+#include <memory>
+#include <vector>
 
 namespace score
 {
 namespace td
 {
 
-/// @brief Main entry point for the TimeDaemon process. Orchestrates the lifecycle
-/// of all daemon components.
+/// @brief Orchestrates the timebase handlers: initializes, polls and stops them.
 ///
-/// Retrieves Vehicle Time from the PTP slave daemon, verifies and validates
-/// timepoints, and distributes time to clients via shared memory. Creates
-/// components in @c Initialize() and wires pub/sub relationships via
-/// MessageBroker.
+/// Owns the handlers. The default constructor takes them from CreateTimebaseHandlers(). It is defined inline, so
+/// that only executables which use it have to link a provider of that function.
 ///
 /// @see TimebaseHandler
 /// @see score::mw::lifecycle::Application
 class TimeDaemon final : public score::mw::lifecycle::Application
 {
   public:
-    explicit TimeDaemon();
+    explicit TimeDaemon() : TimeDaemon{CreateTimebaseHandlers()} {}
+    explicit TimeDaemon(std::vector<std::unique_ptr<TimebaseHandler>> timebase_handlers);
     ~TimeDaemon() noexcept override = default;
 
     TimeDaemon(TimeDaemon&&) noexcept = delete;
@@ -43,30 +46,25 @@ class TimeDaemon final : public score::mw::lifecycle::Application
     TimeDaemon& operator=(TimeDaemon&&) & noexcept = delete;
     TimeDaemon& operator=(const TimeDaemon&) & noexcept = delete;
 
-    /// @brief Creates the MessageBroker and all machine components, and sets up subscriptions.
+    /// @brief Initializes the handlers in vector order.
     ///
-    /// Creates components in dependency order:
-    ///   1. MessageBroker
-    ///   2. ProactiveMachines: PtpMachine, ControlFlowDivider
-    ///   3. ReactiveMachines: VerificationMachine, IPCMachine
-    ///
-    /// Wires all pub/sub relationships via MessageBroker topic configuration.
+    /// Fails before initializing any handler if there is none, or if one of them is null.
     ///
     /// @param context Application context from the middleware.
     /// @return 0 on success, non-zero on failure.
     std::int32_t Initialize(const score::mw::lifecycle::ApplicationContext& context) override;
 
-    /// @brief Starts the ProactiveMachines and monitors the stop token.
+    /// @brief Polls the handlers until stop is requested, then stops them in reverse order.
     ///
-    /// Execution loop monitors stop_token. On termination request, stops all
-    /// ProactiveMachines in reverse order of startup for clean shutdown.
+    /// Each pass calls RunOnce() of every handler in vector order, then waits 100 ms.
+    /// Requires a successful Initialize().
     ///
     /// @param token Stop token for graceful shutdown.
     /// @return 0 on success, non-zero on failure.
     std::int32_t Run(const score::cpp::stop_token& token) override;
 
   private:
-    std::unique_ptr<TimebaseHandler> svt_timebase_handler_;
+    std::vector<std::unique_ptr<TimebaseHandler>> timebase_handlers_;
 };
 
 }  // namespace td
