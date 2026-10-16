@@ -11,6 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ipc/receiver_mock.h"
+#include "score/time_daemon/src/ipc/svt/receiver/factory.h"
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 #include <memory>
@@ -18,9 +19,6 @@
 namespace score::td
 {
 
-// Declared in factory.h; this is one of two alternate definitions (see factory.cpp)
-// selected via Bazel target, so it must stay externally linked.
-// NOLINTNEXTLINE(misc-use-internal-linkage)
 std::shared_ptr<SvtReceiver> CreateSvtReceiver()
 {
     static auto receiver = std::make_shared<ReceiverMock<svt::TimeBaseSnapshot>>();
