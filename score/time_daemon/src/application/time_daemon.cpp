@@ -11,20 +11,21 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/application/time_daemon.h"
+#include "score/mw/lifecycle/applicationcontext.h"
 #include "score/time_daemon/src/application/timebase_handlers/timebase_handler_factory.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 
 #include "score/concurrency/interruptible_wait.h"
 #include "score/mw/log/logging.h"
+#include "score/stop_token.hpp"
 
 #include <algorithm>
 #include <chrono>
+#include <cstdint>
 #include <cstdlib>
 #include <utility>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 TimeDaemon::TimeDaemon() : TimeDaemon{CreateTimebaseHandlers()} {}
@@ -34,7 +35,7 @@ TimeDaemon::TimeDaemon(std::vector<std::unique_ptr<TimebaseHandler>> timebase_ha
 {
 }
 
-std::int32_t TimeDaemon::Initialize(const score::mw::lifecycle::ApplicationContext&)
+std::int32_t TimeDaemon::Initialize(const score::mw::lifecycle::ApplicationContext& /*context*/)
 {
     score::mw::log::LogInfo(kAppContext) << "TimeDaemon initializing...";
 
@@ -59,6 +60,7 @@ std::int32_t TimeDaemon::Run(const score::cpp::stop_token& token)
 
     StartAllTimebases(token);
 
+    constexpr auto kRunLoopPollInterval = std::chrono::milliseconds(100);
     bool failed{false};
     while (!token.stop_requested() && !failed)
     {
@@ -66,7 +68,7 @@ std::int32_t TimeDaemon::Run(const score::cpp::stop_token& token)
         failed = AnyTimebaseFailed();
         if (!failed)
         {
-            score::concurrency::wait_for(token, std::chrono::milliseconds(100));
+            score::concurrency::wait_for(token, kRunLoopPollInterval);
         }
     }
 
@@ -120,5 +122,4 @@ void TimeDaemon::StopAllTimebases()
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

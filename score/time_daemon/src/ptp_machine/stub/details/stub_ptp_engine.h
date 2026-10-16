@@ -16,13 +16,10 @@
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
 #include <chrono>
+#include <cstdint>
 #include <memory>
 
-namespace score
-{
-namespace td
-{
-namespace details
+namespace score::td::details
 {
 
 /**
@@ -48,12 +45,13 @@ class StubPTPEngine final
     ///
     /// \return true - initialize success, otherwise false
     ///
-    bool Initialize() const;
+    [[nodiscard]] bool Initialize() const;
 
     /// \brief Method to deinitialize libgptp client
     ///
     /// \return true - deinitialize success, otherwise false
     ///
+    // NOLINTNEXTLINE(modernize-use-nodiscard)
     bool Deinitialize() const;
 
     /// \brief Method that reads PTP snapshot from libgptp
@@ -82,10 +80,9 @@ class StubPTPEngine final
 
   private:
     PtpTimeInfo::ReferenceClock local_clock_;
+    std::uint16_t sequence_id_{0U};
 };
 
-}  // namespace details
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::details
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_STUB_DETAILS_STUB_PTP_ENGINE_H

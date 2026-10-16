@@ -11,13 +11,12 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/common/machines/base_machine.h"
+#include <string>
+#include <utility>
 
-namespace score
+namespace score::td
 {
-namespace td
-{
 
-BaseMachine::BaseMachine(const std::string& name) : name_(name) {}
+BaseMachine::BaseMachine(std::string name) : name_(std::move(name)) {}
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
