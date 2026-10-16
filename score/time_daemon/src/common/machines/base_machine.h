@@ -50,8 +50,6 @@ class BaseMachine
      **/
     virtual bool Init() = 0;
 
-    // Kept public and deleted (not protected) so misuse fails with a clear "call to deleted
-    // function" diagnostic instead of a confusing "is protected within this context" one.
     BaseMachine(const BaseMachine& other) = delete;
     BaseMachine& operator=(const BaseMachine& other) = delete;
     BaseMachine(BaseMachine&& other) noexcept = delete;
