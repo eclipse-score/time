@@ -23,9 +23,7 @@
 #include <memory>
 #include <utility>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Retrieves raw PTP time data from a customizable gPTP handler (e.g. Time Slave) and publishes it to
@@ -61,8 +59,8 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
         : PeriodicMachine(name, updateInterval),
           Producer<PtpTimeInfo>(),
           publish_callback_(nullptr),
-          engine_impl_(std::make_unique<PTPEngine>(std::forward<PTPEngineArgs>(args)...)),
-          is_initialized_(false)
+          engine_impl_(std::make_unique<PTPEngine>(std::forward<PTPEngineArgs>(args)...))
+
     {
         score::mw::log::LogInfo(kPtpMachineContext)
             << "PTPMachine created with update interval: " << updateInterval.count() << "ms";
@@ -113,7 +111,7 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
 
     std::unique_ptr<PTPEngine> engine_impl_;
 
-    bool is_initialized_;
+    bool is_initialized_{false};
 };
 
 template <class PTPEngine>
@@ -190,7 +188,6 @@ void PTPMachine<PTPEngine>::Publish(const PtpTimeInfo& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H

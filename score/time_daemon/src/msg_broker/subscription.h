@@ -15,9 +15,7 @@
 
 #include <functional>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -37,7 +35,6 @@ class Subscription
     std::function<void(const T&)> callback_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_MSG_BROKER_SUBSCRIPTION_H

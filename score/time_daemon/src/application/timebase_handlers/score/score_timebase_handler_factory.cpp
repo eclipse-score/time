@@ -16,9 +16,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 std::vector<std::unique_ptr<TimebaseHandler>> CreateTimebaseHandlers()
@@ -28,5 +26,4 @@ std::vector<std::unique_ptr<TimebaseHandler>> CreateTimebaseHandlers()
     return handlers;
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
