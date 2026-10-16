@@ -37,8 +37,10 @@ class SharedMemoryHandler
 {
   public:
     explicit SharedMemoryHandler(const std::string& shared_memory_path)
-        : shared_memory_path_{shared_memory_path}, shared_memory_resource_{}
-
+        : shared_memory_path_{shared_memory_path},
+          shared_memory_resource_{},
+          shared_memory_data_{nullptr},
+          max_number_of_read_retries_{10U}
     {
     }
 
@@ -97,8 +99,8 @@ class SharedMemoryHandler
 
     const std::string shared_memory_path_;
     std::shared_ptr<score::memory::shared::ManagedMemoryResource> shared_memory_resource_;
-    SharedMemoryHandler::SharedData* shared_memory_data_{nullptr};
-    const std::size_t max_number_of_read_retries_{10U};
+    SharedMemoryHandler::SharedData* shared_memory_data_;
+    const std::size_t max_number_of_read_retries_;
 };
 
 template <typename DataType>

@@ -58,8 +58,8 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
         : PeriodicMachine(name, updateInterval),
           Producer<PtpTimeInfo>(),
           publish_callback_(nullptr),
-          engine_impl_(std::make_unique<PTPEngine>(std::forward<PTPEngineArgs>(args)...))
-
+          engine_impl_(std::make_unique<PTPEngine>(std::forward<PTPEngineArgs>(args)...)),
+          is_initialized_(false)
     {
         score::mw::log::LogInfo(kPtpMachineContext)
             << "PTPMachine created with update interval: " << updateInterval.count() << "ms";
@@ -110,7 +110,7 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
 
     std::unique_ptr<PTPEngine> engine_impl_;
 
-    bool is_initialized_{false};
+    bool is_initialized_;
 };
 
 template <class PTPEngine>

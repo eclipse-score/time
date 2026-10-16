@@ -68,13 +68,13 @@ class SvtHandler : public TimebaseHandler
     void Stop() noexcept override;
 
   private:
-    std::unique_ptr<JobRunner> job_runner_;                                   ///< Manages periodic jobs and tasks
-    std::shared_ptr<MessageBroker<PtpTimeInfo>> msg_broker_;                  ///< Handles message communication
-    std::shared_ptr<GPTPShmMachine> gptp_machine_;                            ///< Manages GPTP synchronization
-    std::shared_ptr<SvtVerificationMachine> verification_machine_;            ///< Handles SVT verification
-    std::shared_ptr<SvtPublisher> ipc_publisher_;                             ///< Publishes SVT data via IPC
-    std::shared_ptr<PtpControlFlowDivider> ctrl_flow_divider_;                ///< Divides PTP control flow
-    TimebaseHandler::Status handler_status_{TimebaseHandler::Status::kIdle};  ///< Current status of the handler
+    std::unique_ptr<JobRunner> job_runner_;                         ///< Manages periodic jobs and tasks
+    std::shared_ptr<MessageBroker<PtpTimeInfo>> msg_broker_;        ///< Handles message communication
+    std::shared_ptr<GPTPShmMachine> gptp_machine_;                  ///< Manages GPTP synchronization
+    std::shared_ptr<SvtVerificationMachine> verification_machine_;  ///< Handles SVT verification
+    std::shared_ptr<SvtPublisher> ipc_publisher_;                   ///< Publishes SVT data via IPC
+    std::shared_ptr<PtpControlFlowDivider> ctrl_flow_divider_;      ///< Divides PTP control flow
+    TimebaseHandler::Status handler_status_;                        ///< Current status of the handler
 };
 
 }  // namespace score::td

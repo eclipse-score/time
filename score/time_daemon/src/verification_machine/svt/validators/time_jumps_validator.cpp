@@ -29,9 +29,12 @@ TimeJumpsValidator::TimeJumpsValidator(PtpTimeInfo::ReferenceClock debouncing_cl
     : max_time_jump_allowed_{max_time_jump_allowed},
       sync_debounce_threshold_{sync_debounce_threshold},
       valid_frames_threshold_{valid_frames_threshold},
+      time_jump_state_{TimeJumpState::kNoTimeJump},
+      current_state_{ProcessingStates::kIdle},
       last_sync_frame_{std::nullopt},
       sync_debouncing_init_time_{std::chrono::nanoseconds::zero()},
-      debouncing_clock_{std::move(debouncing_clock)}
+      debouncing_clock_{std::move(debouncing_clock)},
+      valid_frames_cnt_{0U}
 {
 }
 

@@ -25,7 +25,7 @@ namespace score::td
 class SynchronizationValidator : public VerificationStage<PtpTimeInfo>
 {
   public:
-    SynchronizationValidator() = default;
+    SynchronizationValidator();
 
   protected:
     /**
@@ -34,7 +34,7 @@ class SynchronizationValidator : public VerificationStage<PtpTimeInfo>
     void DoValidation(PtpTimeInfo& data) override;
 
   private:
-    bool is_synchronized_{false};
+    bool is_synchronized_;
 };
 
 }  // namespace score::td

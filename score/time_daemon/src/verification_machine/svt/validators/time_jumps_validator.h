@@ -68,12 +68,12 @@ class TimeJumpsValidator : public VerificationStage<PtpTimeInfo>
     const std::chrono::nanoseconds max_time_jump_allowed_;
     const std::chrono::nanoseconds sync_debounce_threshold_;
     const std::uint8_t valid_frames_threshold_;
-    TimeJumpState time_jump_state_{TimeJumpState::kNoTimeJump};
-    ProcessingStates current_state_{ProcessingStates::kIdle};
+    TimeJumpState time_jump_state_;
+    ProcessingStates current_state_;
     std::optional<PtpTimeInfo> last_sync_frame_;
     PtpTimeInfo::ReferenceClock::duration sync_debouncing_init_time_;
     PtpTimeInfo::ReferenceClock debouncing_clock_;
-    std::uint8_t valid_frames_cnt_{0U};
+    std::uint8_t valid_frames_cnt_;
 };
 
 }  // namespace score::td

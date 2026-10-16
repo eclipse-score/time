@@ -43,7 +43,8 @@ SvtHandler::SvtHandler() noexcept
       gptp_machine_{nullptr},
       verification_machine_{nullptr},
       ipc_publisher_{nullptr},
-      ctrl_flow_divider_{nullptr}
+      ctrl_flow_divider_{nullptr},
+      handler_status_{TimebaseHandler::Status::kIdle}
 {
     msg_broker_ = std::make_shared<MessageBroker<PtpTimeInfo>>();
     gptp_machine_ = CreateGPTPShmMachine("ptp_worker");

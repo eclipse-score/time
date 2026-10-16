@@ -104,14 +104,20 @@ class ControlFlowDivider final : public EventDrivenMachine, public Consumer<Data
     score::cpp::circular_buffer<DataType, BufferSize> data_buffer_;
 
     /// @brief Callback function for publishing data
-    std::function<void(const DataType&)> publish_callback_{nullptr};
+    std::function<void(const DataType&)> publish_callback_;
 
-    DataType last_data_{};
+    DataType last_data_;
 };
 
 template <typename DataType, size_t BufferSize>
 ControlFlowDivider<DataType, BufferSize>::ControlFlowDivider(const std::string& name, std::chrono::milliseconds timeout)
-    : EventDrivenMachine(name, timeout), Consumer<DataType>(), Producer<DataType>(), data_buffer_{}
+    : EventDrivenMachine(name, timeout),
+      Consumer<DataType>(),
+      Producer<DataType>(),
+      data_buffer_mutex_{},
+      data_buffer_{},
+      publish_callback_{nullptr},
+      last_data_{}
 {
     score::mw::log::LogInfo(kControlFlowDividerContext)
         << "ControlFlowDivider created with timeout: " << timeout.count() << "ms";
