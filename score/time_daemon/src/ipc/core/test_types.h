@@ -17,9 +17,7 @@
 
 #include "score/time_daemon/src/ipc/data_converter.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace test
 {
@@ -109,7 +107,6 @@ struct DataConverter<test::FakeTimeInfo, test::FakeTimeInfoIpc>
     }
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_IPC_CORE_TEST_TYPES_H

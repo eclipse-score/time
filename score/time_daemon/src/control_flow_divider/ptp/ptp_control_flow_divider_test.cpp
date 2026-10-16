@@ -10,21 +10,21 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+#include "score/time_daemon/src/control_flow_divider/ptp/ptp_control_flow_divider.h"
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/control_flow_divider/ptp/factory.h"
 
 #include <gtest/gtest.h>
 
 #include <chrono>
+#include <cstddef>
 #include <future>
 #include <memory>
 #include <mutex>
 
 using namespace std::chrono_literals;
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class PtpControlFlowDividerTest : public ::testing::Test
@@ -174,5 +174,4 @@ TEST_F(PtpControlFlowDividerTest, TestTimeoutBehavior)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

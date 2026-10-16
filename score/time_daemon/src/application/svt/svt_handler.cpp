@@ -11,23 +11,31 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/application/svt/svt_handler.h"
-#include "score/concurrency/interruptible_wait.h"
 #include "score/mw/log/logging.h"
+#include "score/stop_token.hpp"
+#include "score/time_daemon/src/application/job_runner/job_runner.h"
+#include "score/time_daemon/src/application/timebase_handler.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 #include "score/time_daemon/src/control_flow_divider/ptp/factory.h"
 #include "score/time_daemon/src/ipc/svt/publisher/factory.h"
-#include "score/time_daemon/src/msg_broker/subscription.h"
+#include "score/time_daemon/src/msg_broker/msg_broker.h"
 #include "score/time_daemon/src/msg_broker/topic.h"
 #include "score/time_daemon/src/ptp_machine/shm/factory.h"
 #include "score/time_daemon/src/verification_machine/svt/factory.h"
-
 #include <chrono>
-#include <future>
+#include <memory>
+#include <utility>
+#include <vector>
 
-namespace score
+namespace score::td
 {
-namespace td
+
+namespace
 {
+constexpr auto kCtrlFlowDividerTimeout = std::chrono::milliseconds{250};
+constexpr auto kJobInitTimeout = std::chrono::seconds(20);
+}  // namespace
 
 SvtHandler::SvtHandler() noexcept
     : job_runner_{nullptr},
@@ -35,36 +43,35 @@ SvtHandler::SvtHandler() noexcept
       gptp_machine_{nullptr},
       verification_machine_{nullptr},
       ipc_publisher_{nullptr},
-      ctrl_flow_divider_{nullptr},
-      handler_status_{TimebaseHandler::Status::kIdle}
+      ctrl_flow_divider_{nullptr}
 {
     msg_broker_ = std::make_shared<MessageBroker<PtpTimeInfo>>();
     gptp_machine_ = CreateGPTPShmMachine("ptp_worker");
     verification_machine_ = CreateSvtVerificationMachine("time_verification_worker");
     ipc_publisher_ = CreateSvtPublisher("svt_ipc_publisher");
-    ctrl_flow_divider_ = CreatePtpControlFlowDivider("ptp_control_flow_divider", std::chrono::milliseconds{250});
+    ctrl_flow_divider_ = CreatePtpControlFlowDivider("ptp_control_flow_divider", kCtrlFlowDividerTimeout);
 
     std::vector<Job> jobs = {
         {[this] {
              return gptp_machine_->Init();
          },
          gptp_machine_->GetName(),
-         std::chrono::seconds(20)},
+         kJobInitTimeout},
         {[this] {
              return verification_machine_->Init();
          },
          verification_machine_->GetName(),
-         std::chrono::seconds(20)},
+         kJobInitTimeout},
         {[this] {
              return ipc_publisher_->Init();
          },
          ipc_publisher_->GetName(),
-         std::chrono::seconds(20)},
+         kJobInitTimeout},
         {[this] {
              return ctrl_flow_divider_->Init();
          },
          ctrl_flow_divider_->GetName(),
-         std::chrono::seconds(20)},
+         kJobInitTimeout},
     };
     job_runner_ = std::make_unique<JobRunner>(std::move(jobs), "svt_init");
 
@@ -145,5 +152,4 @@ void SvtHandler::Stop() noexcept
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

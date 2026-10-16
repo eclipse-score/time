@@ -24,14 +24,11 @@
 #include <optional>
 #include <utility>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 using GPTPStubMachine = PTPMachine<details::StubPTPEngine>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_STUB_GPTP_STUB_MACHINE_H

@@ -12,18 +12,20 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
 #include "score/mw/log/logging.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
+#include <chrono>
+#include <utility>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 TimeoutValidator::TimeoutValidator(PtpTimeInfo::ReferenceClock timeout_clock,
                                    std::chrono::nanoseconds reception_timeout)
-    : threshold_{reception_timeout}, timeout_clock_{std::move(timeout_clock)}
+    : threshold_{reception_timeout},
+      timeout_clock_{std::move(timeout_clock)},
+      reception_time_{timeout_clock_.Now().TimeSinceEpoch()}
 {
-    reception_time_ = timeout_clock_.Now().TimeSinceEpoch();
 }
 
 void TimeoutValidator::DoValidation(PtpTimeInfo& data)
@@ -92,5 +94,4 @@ bool TimeoutValidator::IsNewFrameReceived(const PtpTimeInfo& data)
     return is_new_frame;
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
