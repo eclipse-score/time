@@ -11,7 +11,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"  // IWYU pragma: keep, complete type
+#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
 namespace score::time
 {

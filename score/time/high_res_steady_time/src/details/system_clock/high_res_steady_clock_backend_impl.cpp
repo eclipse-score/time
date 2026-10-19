@@ -12,6 +12,9 @@
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.h"
 
+#include "score/time/clock/src/clock.h"
+#include "score/time/clock/src/clock_snapshot.h"
+#include "score/time/clock/src/no_status.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 

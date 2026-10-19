@@ -11,15 +11,25 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.h"
+#include "score/time/clock/src/clock.h"
+#include "score/time/clock/src/clock_snapshot.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 #include "score/time/vehicle_time/src/details/logging_contexts.h"
 #include "score/time/vehicle_time/src/details/td_impl/svt_converters.h"
 
+#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
 #include "score/time_daemon/src/ipc/svt/receiver/factory.h"
+#include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
 #include "score/mw/log/logging.h"
+#include <score/stop_token.hpp>
 
+#include <atomic>
 #include <chrono>
+#include <memory>
+#include <mutex>
 #include <thread>
 #include <utility>
 

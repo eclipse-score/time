@@ -11,7 +11,9 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/details/stub_impl/high_res_steady_clock_backend_impl.h"
+#include "score/time/clock/src/clock.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
 #include <memory>
 

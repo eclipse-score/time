@@ -11,8 +11,10 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/steady_time/src/details/steady_time_impl/steady_clock_backend_impl.h"
+#include "score/time/clock/src/clock.h"
 #include "score/time/steady_time/src/steady_clock.h"
 
+#include <chrono>
 #include <memory>
 
 namespace score::time

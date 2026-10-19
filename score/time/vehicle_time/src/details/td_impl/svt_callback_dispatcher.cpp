@@ -12,9 +12,15 @@
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/svt_callback_dispatcher.h"
 #include "score/time/vehicle_time/src/details/td_impl/svt_converters.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
+#include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 
+#include <score/stop_token.hpp>
 #include <score/utility.hpp>
 
+#include <chrono>
+#include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 

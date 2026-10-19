@@ -11,7 +11,9 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/system_time/src/system_clock.h"
-#include "score/time/system_time/src/system_clock_backend.h"
+#include "score/time/system_time/src/system_clock_backend.h"  // IWYU pragma: keep, complete type
+
+#include <chrono>
 
 namespace score::time
 {

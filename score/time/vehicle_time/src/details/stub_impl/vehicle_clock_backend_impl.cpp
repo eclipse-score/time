@@ -11,7 +11,9 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/stub_impl/vehicle_clock_backend_impl.h"
+#include "score/time/clock/src/clock.h"
 #include "score/time/vehicle_time/src/vehicle_clock.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
 
 #include <memory>
 

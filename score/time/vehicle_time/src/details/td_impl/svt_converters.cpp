@@ -11,6 +11,12 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/svt_converters.h"
+#include "score/time/clock/src/clock_status.h"
+#include "score/time/ptp/src/pdelay_measurement_data.h"
+#include "score/time/ptp/src/port_identity.h"
+#include "score/time/ptp/src/time_slave_sync_data.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
+#include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
 #include <chrono>
 #include <cstdint>

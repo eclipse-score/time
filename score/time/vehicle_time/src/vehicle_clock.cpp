@@ -11,9 +11,17 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/vehicle_time/src/vehicle_clock.h"
-#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
+#include "score/time/clock/src/clock_status.h"
+#include "score/time/ptp/src/pdelay_measurement_data.h"
+#include "score/time/ptp/src/time_slave_sync_data.h"
+#include "score/time/vehicle_time/src/vehicle_clock_backend.h"  // IWYU pragma: keep, complete type
+#include "score/time/vehicle_time/src/vehicle_time.h"
 
+#include <score/stop_token.hpp>
+
+#include <chrono>
 #include <map>
+#include <sstream>
 #include <string>
 #include <utility>
 
