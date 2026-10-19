@@ -26,9 +26,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 class VehicleClockBackend;
@@ -102,7 +100,6 @@ using VehicleClock = Clock<VehicleTime>;
 using VehicleTimePoint = ClockTraits<VehicleTime>::Timepoint;
 using VehicleSnapshot = ClockTraits<VehicleTime>::Snapshot;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_H

@@ -20,9 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Pure-virtual backend contract for the vehicle time domain.
@@ -119,7 +117,6 @@ class VehicleClockBackend
     virtual void UnsetStatusChangedCallback() noexcept = 0;
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_BACKEND_H

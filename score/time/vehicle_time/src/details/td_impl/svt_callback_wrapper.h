@@ -21,11 +21,7 @@
 #include <optional>
 #include <utility>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Comparison for types that already provide @c operator==.
@@ -132,8 +128,6 @@ class SvtCallbackWrapper final
     std::atomic_bool is_set_{false};
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_SVT_CALLBACK_WRAPPER_H

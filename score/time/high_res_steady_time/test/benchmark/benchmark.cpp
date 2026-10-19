@@ -14,9 +14,7 @@
 
 #include <benchmark/benchmark.h>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 class HighResSteadyClockBenchmarkFixture : public benchmark::Fixture
@@ -44,5 +42,4 @@ BENCHMARK_F(HighResSteadyClockBenchmarkFixture, NowLatency)(benchmark::State& st
 
 BENCHMARK_MAIN();
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

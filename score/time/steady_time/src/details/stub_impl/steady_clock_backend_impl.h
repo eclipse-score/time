@@ -20,11 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Stub backend for the steady-clock domain (host/test-only).
@@ -48,8 +44,6 @@ class SteadyClockBackendImpl final : public SteadyClockBackend
     }
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_STEADY_TIME_SRC_DETAILS_STUB_IMPL_STEADY_CLOCK_BACKEND_IMPL_H

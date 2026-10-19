@@ -20,9 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Abstract backend interface for the steady-clock domain.
@@ -35,7 +33,6 @@ class SteadyClockBackend
     virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept = 0;
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_STEADY_TIME_SRC_STEADY_CLOCK_BACKEND_H

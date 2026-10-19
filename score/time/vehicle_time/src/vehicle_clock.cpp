@@ -17,9 +17,7 @@
 #include <string>
 #include <utility>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 template <>
@@ -101,5 +99,4 @@ void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Unsubscribe(Backend& impl
     impl.UnsetStatusChangedCallback();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

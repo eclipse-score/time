@@ -18,13 +18,10 @@
 #include <chrono>
 #include <memory>
 
-namespace score
+namespace score::time
 {
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace sys_time
+
+namespace high_res_steady_time::sys_time
 {
 
 HighResSteadyClockBackendImpl::HighResSteadyClockBackendImpl() noexcept = default;
@@ -37,8 +34,7 @@ ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> HighResSteadyClockBackendI
     return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{tp, NoStatus{}};
 }
 
-}  // namespace sys_time
-}  // namespace high_res_steady_time
+}  // namespace high_res_steady_time::sys_time
 
 // req-Id: comp_req__time__supported_platforms
 template <>
@@ -47,5 +43,4 @@ std::shared_ptr<HighResSteadyClockBackend> detail::CreateBackend<HighResSteadyTi
     return std::make_shared<high_res_steady_time::sys_time::HighResSteadyClockBackendImpl>();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

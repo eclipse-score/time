@@ -20,9 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 ///
@@ -41,7 +39,6 @@ class SystemClockBackend
     virtual ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept = 0;
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_SYSTEM_TIME_SRC_SYSTEM_CLOCK_BACKEND_H

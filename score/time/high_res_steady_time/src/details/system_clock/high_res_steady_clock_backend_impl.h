@@ -16,13 +16,7 @@
 #include "score/time/clock/src/no_status.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace sys_time
+namespace score::time::high_res_steady_time::sys_time
 {
 
 /// @brief Production HighResSteadyTime backend for non-QNX platforms.
@@ -43,9 +37,6 @@ class HighResSteadyClockBackendImpl final : public HighResSteadyClockBackend
     ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override;
 };
 
-}  // namespace sys_time
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::sys_time
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_SYSTEM_CLOCK_HIGH_RES_STEADY_CLOCK_BACKEND_IMPL_H

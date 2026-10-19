@@ -19,9 +19,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 class SteadyClockBackend;
@@ -43,7 +41,6 @@ using SteadyClock = Clock<std::chrono::steady_clock>;
 using SteadyTimePoint = ClockTraits<std::chrono::steady_clock>::Timepoint;
 using SteadySnapshot = ClockTraits<std::chrono::steady_clock>::Snapshot;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_STEADY_TIME_SRC_STEADY_CLOCK_H

@@ -23,9 +23,7 @@
 #include <cstdint>
 #include <sstream>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 // Forward declaration — VehicleTimeStatus is defined after VehicleTime below.
@@ -151,7 +149,6 @@ inline bool operator!=(const VehicleTimeStatus& first, const VehicleTimeStatus& 
     return !(first == second);
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_TIME_H

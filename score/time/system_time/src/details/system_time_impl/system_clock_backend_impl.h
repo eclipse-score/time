@@ -20,11 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Production backend for the system-clock domain.
@@ -48,8 +44,6 @@ class SystemClockBackendImpl final : public SystemClockBackend
     }
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_SYSTEM_TIME_SRC_DETAILS_SYSTEM_TIME_IMPL_SYSTEM_CLOCK_BACKEND_IMPL_H

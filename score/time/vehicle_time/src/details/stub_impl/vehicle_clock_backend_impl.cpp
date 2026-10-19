@@ -15,9 +15,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 template <>
@@ -26,5 +24,4 @@ std::shared_ptr<VehicleClockBackend> detail::CreateBackend<VehicleTime>()
     return std::make_shared<detail::VehicleClockBackendImpl>();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

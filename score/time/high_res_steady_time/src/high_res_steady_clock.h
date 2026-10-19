@@ -18,9 +18,7 @@
 #include "score/time/clock/src/no_status.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 class HighResSteadyClockBackend;
@@ -44,7 +42,6 @@ using HighResSteadyClock = Clock<HighResSteadyTime>;
 using HighResSteadyTimePoint = ClockTraits<HighResSteadyTime>::Timepoint;
 using HighResSteadySnapshot = ClockTraits<HighResSteadyTime>::Snapshot;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_HIGH_RES_STEADY_CLOCK_H

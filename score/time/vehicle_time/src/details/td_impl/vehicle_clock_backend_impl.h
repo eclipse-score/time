@@ -29,11 +29,7 @@
 #include <memory>
 #include <mutex>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Production backend for the vehicle time domain.
@@ -122,8 +118,6 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     SvtCallbackDispatcher dispatcher_;
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_VEHICLE_CLOCK_BACKEND_IMPL_H

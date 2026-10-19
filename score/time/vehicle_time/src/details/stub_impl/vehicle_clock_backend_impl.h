@@ -21,11 +21,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Stub backend for the vehicle time domain (host/test-only).
@@ -81,8 +77,6 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     void UnsetStatusChangedCallback() noexcept override {}
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_STUB_IMPL_VEHICLE_CLOCK_BACKEND_IMPL_H

@@ -15,9 +15,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 template <>
@@ -26,5 +24,4 @@ std::shared_ptr<SteadyClockBackend> detail::CreateBackend<std::chrono::steady_cl
     return std::make_shared<detail::SteadyClockBackendImpl>();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

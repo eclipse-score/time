@@ -16,11 +16,7 @@
 #include "score/time/vehicle_time/src/vehicle_clock.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Converts PTP status flags from the TimeDaemon IPC representation to
@@ -35,8 +31,6 @@ TimeSlaveSyncData<VehicleTime> ConvertSyncData(const score::td::svt::SyncFupSnap
 /// @brief Converts the IPC pDelay snapshot to the public @c PDelayMeasurementData event type.
 PDelayMeasurementData<VehicleTime> ConvertPDelayData(const score::td::svt::PDelayDataSnapshot& pdelay_data) noexcept;
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_SVT_CONVERTERS_H

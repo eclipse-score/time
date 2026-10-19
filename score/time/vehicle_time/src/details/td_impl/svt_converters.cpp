@@ -15,11 +15,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 namespace
@@ -103,6 +99,4 @@ PDelayMeasurementData<VehicleTime> ConvertPDelayData(const score::td::svt::PDela
     return converted;
 }
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail

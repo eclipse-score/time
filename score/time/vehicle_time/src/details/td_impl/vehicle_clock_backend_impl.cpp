@@ -23,9 +23,7 @@
 #include <thread>
 #include <utility>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 namespace detail
 {
@@ -182,5 +180,4 @@ std::shared_ptr<VehicleClockBackend> detail::CreateBackend<VehicleTime>()
                                                              HighResSteadyClock::GetInstance());
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

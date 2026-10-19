@@ -19,9 +19,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 class SystemClockBackend;
@@ -43,7 +41,6 @@ using SystemClock = Clock<std::chrono::system_clock>;
 using SystemTimePoint = ClockTraits<std::chrono::system_clock>::Timepoint;
 using SystemSnapshot = ClockTraits<std::chrono::system_clock>::Snapshot;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_SYSTEM_TIME_SRC_SYSTEM_CLOCK_H

@@ -25,11 +25,7 @@
 #include <memory>
 #include <mutex>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Owns the worker thread that delivers vehicle-time subscription callbacks.
@@ -130,8 +126,6 @@ class SvtCallbackDispatcher final
     score::cpp::jthread worker_;
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_SVT_CALLBACK_DISPATCHER_H
