@@ -27,7 +27,10 @@ on:
     types: [checks_requested]
   workflow_call:
 jobs:
+  # Advisory feedback on PRs (fork PRs wait for environment approval) and
+  # cache warm-up when called from cache_maintenance.yml.
   qnx-build:
+    if: ${{ github.event_name != 'merge_group' }}
     uses: eclipse-score/cicd-workflows/.github/workflows/qnx-build.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     permissions:
       contents: read
@@ -43,3 +46,47 @@ jobs:
       score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
       score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
       score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
+
+  # Blocking QNX build of the merge-group commit.
+  qnx-merge-queue-build:
+    if: ${{ github.event_name == 'merge_group' }}
+    uses: eclipse-score/cicd-workflows/.github/workflows/qnx-build.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
+    permissions:
+      contents: read
+      pull-requests: read
+    strategy:
+      fail-fast: false
+      matrix:
+        config: ['x86_64-qnx', 'arm64-qnx']
+    with:
+      bazel-target: '//score/... //examples/...'
+      bazel-config: ${{ matrix.config }}
+      bazel-disk-cache: -${{ matrix.config }}
+    secrets:
+      score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
+      score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
+      score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
+
+  # Stable required status check. It must not depend on qnx-build: on fork PRs
+  # that job waits for environment approval and would block queue entry.
+  qnx-merge-queue-result:
+    name: QNX merge queue result
+    needs: qnx-merge-queue-build
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Require a successful QNX build of the merge-group commit
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BUILD_RESULT: ${{ needs.qnx-merge-queue-build.result }}
+        run: |
+          echo "event=${EVENT_NAME} qnx-merge-queue-build=${BUILD_RESULT}"
+          if [ "${EVENT_NAME}" != "merge_group" ]; then
+            echo "QNX is enforced in the merge queue only."
+            exit 0
+          fi
+          if [ "${BUILD_RESULT}" != "success" ]; then
+            echo "::error::QNX build of the merge-group commit did not succeed (${BUILD_RESULT})."
+            exit 1
+          fi
