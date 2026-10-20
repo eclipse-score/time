@@ -53,7 +53,7 @@ The component operates as a continuous loop with the following stages:
    * Timeout detection (no new time sync data within configured span of time)
    * Time jump detection (received master timestamp deviates from its expected value by more than the configured threshold)
 
-3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface at a fixed interval
+3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface
 
 Key Behaviors
 -------------
@@ -69,7 +69,7 @@ Key Behaviors
 Assumptions of Use
 ------------------
 
-The gPTP shared memory must be available and initialized before synchronized time data published by time_daemon is relied upon. Otherwise shared memory access failures or stale data may occur.
+The time_slave component must be running before time_daemon is started, or become available within the time_daemon initialization timeout. Otherwise time_daemon initialization fails.
 
 Footnotes
 =========
