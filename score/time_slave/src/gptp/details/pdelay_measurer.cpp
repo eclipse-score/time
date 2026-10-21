@@ -29,6 +29,7 @@ PeerDelayMeasurer::PeerDelayMeasurer(const ClockIdentity& local_identity, std::u
 {
 }
 
+// req-Id: comp_req__time_slave__pdelay_req, comp_req__time_slave__domain_filtering
 int PeerDelayMeasurer::SendRequest(RawSocket& socket)
 {
     PTPMessage req{};
@@ -90,6 +91,7 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
     return r;
 }
 
+// req-Id: comp_req__time_slave__pdelay_resp_reception
 void PeerDelayMeasurer::OnResponse(const PTPMessage& msg)
 {
     std::lock_guard<std::mutex> lk(mutex_);
@@ -99,6 +101,7 @@ void PeerDelayMeasurer::OnResponse(const PTPMessage& msg)
     resp_ = msg;
 }
 
+// req-Id: comp_req__time_slave__pdelay_resp_fu_rx
 void PeerDelayMeasurer::OnResponseFollowUp(const PTPMessage& msg)
 {
     std::lock_guard<std::mutex> lk(mutex_);
@@ -108,6 +111,7 @@ void PeerDelayMeasurer::OnResponseFollowUp(const PTPMessage& msg)
     ComputeAndStoreUnlocked();
 }
 
+// req-Id: comp_req__time_slave__pdelay_computation
 void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
 {
     if (resp_count_ > 1U)  // multiple responses → non-time-aware bridge detected

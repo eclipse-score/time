@@ -17,7 +17,10 @@ filegroup(
         "qnx_raw_shim.cpp",
         "raw_socket.cpp",
     ],
-    visibility = ["//score:__subpackages__"],
+    visibility = [
+        "//:__pkg__",
+        "//score:__subpackages__",
+    ],
 )
 
 filegroup(
@@ -29,5 +32,8 @@ filegroup(
 filegroup(
     name = "phc_adjuster_src",
     srcs = ["phc_adjuster.cpp"],
-    visibility = ["//score:__subpackages__"],
+    visibility = [
+        "//:__pkg__",
+        "//score:__subpackages__",
+    ],
 )
