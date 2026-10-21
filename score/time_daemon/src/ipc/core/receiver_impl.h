@@ -81,6 +81,7 @@ bool ReceiverImpl<IpcDataType>::Init() noexcept
     return shm_handler_.Init();
 }
 
+// req-Id: comp_req__time_daemon__client_read_access
 template <typename IpcDataType>
 std::optional<IpcDataType> ReceiverImpl<IpcDataType>::Receive() noexcept
 {
