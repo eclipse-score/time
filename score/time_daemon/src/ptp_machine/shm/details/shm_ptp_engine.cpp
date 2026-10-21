@@ -25,6 +25,7 @@ namespace details
 
 ShmPTPEngine::ShmPTPEngine(std::string ipc_name) noexcept : ipc_name_{std::move(ipc_name)} {}
 
+// req-Id: comp_req__time_daemon__error_reporting
 bool ShmPTPEngine::Initialize()
 {
     if (initialized_)
@@ -42,6 +43,7 @@ bool ShmPTPEngine::Initialize()
     return initialized_;
 }
 
+// req-Id: comp_req__time_daemon__shutdown
 bool ShmPTPEngine::Deinitialize()
 {
     if (initialized_)
@@ -52,6 +54,7 @@ bool ShmPTPEngine::Deinitialize()
     return true;
 }
 
+// req-Id: comp_req__time_daemon__time_sync_reception
 bool ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 {
     if (!initialized_)

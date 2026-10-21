@@ -26,6 +26,8 @@ TimeoutValidator::TimeoutValidator(PtpTimeInfo::ReferenceClock timeout_clock,
     reception_time_ = timeout_clock_.Now().TimeSinceEpoch();
 }
 
+// req-Id: comp_req__time_daemon__timeout_detection, comp_req__time_daemon__error_reporting
+// req-Id: comp_req__time_daemon__error_reaction
 void TimeoutValidator::DoValidation(PtpTimeInfo& data)
 {
     if (IsNewFrameReceived(data))
