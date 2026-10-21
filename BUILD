@@ -36,6 +36,14 @@ docs(
             "attach_to": "module/index",
         },
     ],
+    code_targets = [
+        "//score/time_daemon:time_daemon",
+        "//score/time_daemon/src/ipc:svt_receiver",
+        "//score/time_slave:time_slave",
+        "//score/time_slave/src/gptp/platform/qnx:phc_adjuster_src",
+        "//score/time_slave/src/gptp/platform/qnx:raw_socket_src",
+        "//score/time_slave/src/gptp/instrument:probe",
+    ],
     external_needs = [
         "@score_process_description//:needs_json_file",
         "@score_platform//:needs_json_file",
