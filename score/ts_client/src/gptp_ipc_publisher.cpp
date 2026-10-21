@@ -30,6 +30,8 @@ GptpIpcPublisher::~GptpIpcPublisher()
     Close();
 }
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__publisher_creates
+// req-Id: comp_req__ts_client__platform_support
 bool GptpIpcPublisher::Open(const std::string& ipc_name)
 {
     if (shm_resource_ != nullptr)
@@ -51,6 +53,9 @@ bool GptpIpcPublisher::Open(const std::string& ipc_name)
     return (shm_resource_ != nullptr) && (region_ != nullptr);
 }
 
+// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data
+// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data
+// req-Id: comp_req__ts_client__time_correlation_data
 void GptpIpcPublisher::Publish(const score::ts::GptpIpcData& data)
 {
     if (region_ == nullptr)
@@ -69,6 +74,7 @@ void GptpIpcPublisher::Publish(const score::ts::GptpIpcData& data)
     region_->seq.store(next + 1U, std::memory_order_release);
 }
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt
 void GptpIpcPublisher::Close()
 {
     if (!ipc_name_.empty())
