@@ -20,7 +20,10 @@ cc_library(
     hdrs = ["probe.h"],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
-    visibility = ["//score:__subpackages__"],
+    visibility = [
+        "//:__pkg__",
+        "//score:__subpackages__",
+    ],
     deps = [
         "//score/time_slave/src/common:logging_contexts",
         "//score/time_slave/src/gptp/record:recorder",
