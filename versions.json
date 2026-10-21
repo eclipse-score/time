@@ -66,5 +66,9 @@
   {
     "version": "pr-256",
     "url": "https://eclipse-score.github.io/time/pr-256/"
+  },
+  {
+    "version": "pr-259",
+    "url": "https://eclipse-score.github.io/time/pr-259/"
   }
 ]
