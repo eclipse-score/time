@@ -21,6 +21,7 @@ namespace td
 
 SynchronizationValidator::SynchronizationValidator() : is_synchronized_{false} {}
 
+// req-Id: comp_req__time_daemon__sync_validation, comp_req__time_daemon__error_reaction
 void SynchronizationValidator::DoValidation(PtpTimeInfo& data)
 {
     // If we are already synchronized, ensure is_synchronized is always set
