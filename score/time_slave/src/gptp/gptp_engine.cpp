@@ -150,6 +150,7 @@ bool GptpEngine::Deinitialize()
     return true;
 }
 
+// req-Id: comp_req__time_slave__sync_publishing
 void GptpEngine::FinalizeSnapshot() noexcept
 {
     if (!running_.load(std::memory_order_acquire))

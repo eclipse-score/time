@@ -57,6 +57,7 @@ bool RawSocketImpl::EnableHwTimestamping()
     return true;
 }
 
+// req-Id: comp_req__time_slave__shutdown
 void RawSocketImpl::Close()
 {
     if (fd_ >= 0)

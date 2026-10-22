@@ -126,6 +126,7 @@ bool RawSocketImpl::EnableHwTimestamping()
     return true;
 }
 
+// req-Id: comp_req__time_slave__shutdown
 void RawSocketImpl::Close()
 {
     const int fd = fd_.exchange(-1, std::memory_order_acq_rel);
