@@ -21,7 +21,9 @@ namespace score
 namespace td
 {
 
-// req-Id: comp_req__time_daemon__startup
+// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__timeout_detection
+// req-Id: comp_req__time_daemon__time_jump_detection, comp_req__time_daemon__sync_debounce
+// req-Id: comp_req__time_daemon__time_jump_recovery
 std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::string& name)
 {
     auto machine = std::make_shared<SvtVerificationMachine>(

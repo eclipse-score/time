@@ -193,7 +193,7 @@ Data Publishing
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall derive the time point qualifier (quality indicator) of the time data provided to the time component from the synchronization status, time jump status, and timeout status.
+   The time_daemon component shall provide the synchronization status, time jump status, and timeout status in the published time data as input from which the time component derives the time point qualifier (quality indicator).
 
 .. comp_req:: Client Read Access
    :id: comp_req__time_daemon__client_read_access
