@@ -25,6 +25,7 @@ namespace ts
 namespace details
 {
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt
 GptpIpcPublisher::~GptpIpcPublisher()
 {
     Close();
