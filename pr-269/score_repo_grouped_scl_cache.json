@@ -1,39 +1,242 @@
 [
   {
     "repo": {
-      "name": "score_baselibs",
+      "name": "local_repo",
       "hash": "",
       "url": ""
     },
     "needs": [
+      {
+        "need": "comp_req__ts_client__shm_validation",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_channel.h",
+              "line": 32,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shm_validation",
+              "full_line": "// req-Id: comp_req__ts_client__shm_validation"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 34,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shm_validation",
+              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__cache_optimization",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_channel.h",
+              "line": 45,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__cache_optimization",
+              "full_line": "// req-Id: comp_req__ts_client__cache_optimization, comp_req__ts_client__seqlock_protocol"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__seqlock_protocol",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_channel.h",
+              "line": 45,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__cache_optimization, comp_req__ts_client__seqlock_protocol"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 57,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 25,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 68,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__sync_status_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 25,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_status_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_status_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 57,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_status_data",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 68,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_status_data",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__sync_fup_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 36,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_fup_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 58,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_fup_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 69,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_fup_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__pdelay_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 51,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__pdelay_data",
+              "full_line": "// req-Id: comp_req__ts_client__pdelay_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 58,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__pdelay_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 69,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__pdelay_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__time_correlation_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 72,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__time_correlation_data",
+              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 59,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__time_correlation_data",
+              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 70,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__time_correlation_data",
+              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
       {
         "need": "comp_req__ts_client__shared_memory_mgmt",
         "links": {
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 33,
+              "line": 28,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shared_memory_mgmt",
+              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 34,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shared_memory_mgmt",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__publisher_creates"
             },
             {
               "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 77,
+              "line": 78,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shared_memory_mgmt",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 32,
+              "line": 28,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shared_memory_mgmt",
+              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 34,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shared_memory_mgmt",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation"
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 103,
+              "line": 105,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shared_memory_mgmt",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
@@ -48,7 +251,7 @@
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 33,
+              "line": 34,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__publisher_creates",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__publisher_creates"
@@ -63,170 +266,17 @@
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 34,
+              "line": 35,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__platform_support",
               "full_line": "// req-Id: comp_req__ts_client__platform_support"
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 33,
+              "line": 35,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__platform_support",
               "full_line": "// req-Id: comp_req__ts_client__platform_support, comp_req__ts_client__receiver_multi_reader"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__seqlock_protocol",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 56,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__seqlock_protocol",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 66,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__seqlock_protocol",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__sync_status_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 56,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_status_data",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 66,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_status_data",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 25,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_status_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_status_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__sync_fup_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 57,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_fup_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 67,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_fup_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 36,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_fup_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__pdelay_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 57,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__pdelay_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 67,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__pdelay_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 51,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__pdelay_data",
-              "full_line": "// req-Id: comp_req__ts_client__pdelay_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__time_correlation_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 58,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__time_correlation_data",
-              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 68,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__time_correlation_data",
-              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 72,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__time_correlation_data",
-              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__shm_validation",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 32,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__shm_validation",
-              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation"
             }
           ],
           "TestLinks": []
@@ -238,7 +288,7 @@
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 33,
+              "line": 35,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__receiver_multi_reader",
               "full_line": "// req-Id: comp_req__ts_client__platform_support, comp_req__ts_client__receiver_multi_reader"
@@ -253,7 +303,7 @@
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 65,
+              "line": 58,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__data_validity",
               "full_line": "// req-Id: comp_req__ts_client__data_validity"
@@ -262,30 +312,6 @@
           "TestLinks": []
         }
       },
-      {
-        "need": "comp_req__ts_client__cache_optimization",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_channel.h",
-              "line": 44,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__cache_optimization",
-              "full_line": "// req-Id: comp_req__ts_client__cache_optimization"
-            }
-          ],
-          "TestLinks": []
-        }
-      }
-    ]
-  },
-  {
-    "repo": {
-      "name": "local_repo",
-      "hash": "",
-      "url": ""
-    },
-    "needs": [
       {
         "need": "comp_req__time__unified_clock_facade",
         "links": {
