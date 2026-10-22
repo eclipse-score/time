@@ -30,7 +30,6 @@ alias(
     actual = "//score/time_daemon/src/ipc/svt/receiver:factory",
     tags = ["QM"],
     visibility = [
-        "//:__pkg__",
         "//score/time/vehicle_time/src/details/td_impl:__pkg__",
         "//score/time_daemon:__subpackages__",
     ],
