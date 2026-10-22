@@ -21,6 +21,7 @@
 #include "score/mw/log/logging.h"
 
 #include <memory>
+#include <utility>
 
 namespace score
 {
@@ -67,6 +68,7 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
             << "PTPMachine created with update interval: " << updateInterval.count() << "ms";
     }
 
+    /// @brief Stops the worker thread, then shuts down the PTP engine.
     ~PTPMachine() override;
 
     PTPMachine(const PTPMachine&) = delete;
@@ -118,6 +120,8 @@ class PTPMachine final : public PeriodicMachine, public Producer<PtpTimeInfo>
 template <class PTPEngine>
 PTPMachine<PTPEngine>::~PTPMachine()
 {
+    // Wait for ReadPTPSnapshot() to finish before calling Deinitialize().
+    PeriodicMachine::Stop();
     Deinit();
 }
 

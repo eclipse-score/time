@@ -51,7 +51,7 @@ class TimebaseHandler
     enum class Status
     {
         kIdle = 0,    ///< Handler is idle, not initialized
-        kInitialize,  ///< Handle is initializing
+        kInitialize,  ///< Handler is initializing
         kWorking,     ///< Handler is actively running
         kFailed       ///< Handler encountered a failure
     };
@@ -59,7 +59,7 @@ class TimebaseHandler
     /// \brief Initialize the timebase handler
     ///
     /// This function prepares the handler for operation. Must be called before
-    /// Run(). No exception should be thrown.
+    /// RunOnce(). No exception should be thrown.
     virtual void Initialize() noexcept = 0;
 
     /// \brief Runs once the timebase handler main functionality
