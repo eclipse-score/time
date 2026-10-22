@@ -5,7 +5,17 @@
       "CodeLinks": [
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 96,
+          "line": 79,
+          "tag": "// req-Id:",
+          "need": "comp_req__time__unified_clock_facade",
+          "full_line": "// req-Id: comp_req__time__unified_clock_facade",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/clock/src/clock.h",
+          "line": 97,
           "tag": "// req-Id:",
           "need": "comp_req__time__unified_clock_facade",
           "full_line": "// req-Id: comp_req__time__unified_clock_facade",
@@ -23,7 +33,17 @@
       "CodeLinks": [
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 116,
+          "line": 117,
+          "tag": "// req-Id:",
+          "need": "comp_req__time__snapshot_with_status",
+          "full_line": "// req-Id: comp_req__time__snapshot_with_status",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/clock/src/clock_snapshot.h",
+          "line": 34,
           "tag": "// req-Id:",
           "need": "comp_req__time__snapshot_with_status",
           "full_line": "// req-Id: comp_req__time__snapshot_with_status",
@@ -41,7 +61,7 @@
       "CodeLinks": [
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 154,
+          "line": 155,
           "tag": "// req-Id:",
           "need": "comp_req__time__explicit_lifecycle",
           "full_line": "// req-Id: comp_req__time__explicit_lifecycle",
@@ -51,7 +71,7 @@
         },
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 165,
+          "line": 166,
           "tag": "// req-Id:",
           "need": "comp_req__time__explicit_lifecycle",
           "full_line": "// req-Id: comp_req__time__explicit_lifecycle",
@@ -61,7 +81,7 @@
         },
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 181,
+          "line": 182,
           "tag": "// req-Id:",
           "need": "comp_req__time__explicit_lifecycle",
           "full_line": "// req-Id: comp_req__time__explicit_lifecycle",
@@ -191,7 +211,17 @@
         },
         {
           "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
-          "line": 122,
+          "line": 85,
+          "tag": "// req-Id:",
+          "need": "comp_req__vehicle_time__lifecycle",
+          "full_line": "// req-Id: comp_req__vehicle_time__lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+          "line": 123,
           "tag": "// req-Id:",
           "need": "comp_req__vehicle_time__lifecycle",
           "full_line": "// req-Id: comp_req__vehicle_time__lifecycle",
