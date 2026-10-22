@@ -11,6 +11,18 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
+# Source files carrying `// req-Id:` markers, exposed to
+# //score/time_slave:docs_bundle via its code_targets attribute.
+filegroup(
+    name = "requirement_marked_sources",
+    srcs = [
+        "phc_adjuster.cpp",
+        "qnx_raw_shim.cpp",
+        "raw_socket.cpp",
+    ],
+    visibility = ["//score/time_slave:__pkg__"],
+)
+
 filegroup(
     name = "raw_socket_src",
     srcs = [

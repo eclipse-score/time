@@ -16,6 +16,17 @@ load("@score_docs_as_code//:docs.bzl", "docs_bundle")
 
 docs_bundle(
     name = "docs_bundle",
+    code_targets = [
+        "//score/time_slave/src/application/configuration:requirement_marked_sources",
+        "//score/time_slave/src/application:requirement_marked_sources",
+        "//score/time_slave/src/gptp/details:requirement_marked_sources",
+        "//score/time_slave/src/gptp/instrument:requirement_marked_sources",
+        "//score/time_slave/src/gptp/phc:requirement_marked_sources",
+        "//score/time_slave/src/gptp/platform/linux:requirement_marked_sources",
+        "//score/time_slave/src/gptp/platform/qnx:requirement_marked_sources",
+        "//score/time_slave/src/gptp/record:requirement_marked_sources",
+        "//score/time_slave/src/gptp:requirement_marked_sources",
+    ],
     source_dir = "docs",
     visibility = ["//visibility:public"],
 )
