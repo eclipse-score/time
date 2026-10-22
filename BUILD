@@ -36,6 +36,10 @@ docs(
             "attach_to": "module/index",
         },
     ],
+    code_targets = [
+        "//score/time_daemon:time_daemon",
+        "//score/time_daemon/src/ipc:svt_receiver",
+    ],
     external_needs = [
         "@score_process_description//:needs_json_file",
         "@score_platform//:needs_json_file",
