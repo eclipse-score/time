@@ -7,6 +7,158 @@
     },
     "needs": [
       {
+        "need": "comp_req__time_slave__configuration",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/application/configuration/config_parser.cpp",
+              "line": 124,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__configuration",
+              "full_line": "// req-Id: comp_req__time_slave__configuration"
+            },
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 41,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__configuration",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__shutdown",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/application/main.cpp",
+              "line": 17,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__shutdown",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown"
+            },
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 119,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__shutdown",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 129,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__shutdown",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+              "line": 60,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__shutdown",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 136,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__shutdown",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__startup",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 41,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__startup",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 71,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__startup",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__error_reporting",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 41,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 71,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 183,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 248,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__error_reporting"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__sync_publishing",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 119,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_publishing",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 153,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_publishing",
+              "full_line": "// req-Id: comp_req__time_slave__sync_publishing"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 327,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_publishing",
+              "full_line": "// req-Id: comp_req__time_slave__sync_publishing"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
         "need": "comp_req__time_slave__ethernet_address",
         "links": {
           "CodeLinks": [
@@ -41,10 +193,17 @@
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 198,
+              "line": 199,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__pdelay_req",
               "full_line": "// req-Id: comp_req__time_slave__pdelay_req"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.h",
+              "line": 44,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_req",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req, comp_req__time_slave__domain_filtering"
             }
           ],
           "TestLinks": []
@@ -63,31 +222,38 @@
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 265,
+              "line": 266,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__domain_filtering",
               "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 271,
+              "line": 272,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__domain_filtering",
               "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering"
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 281,
+              "line": 282,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__domain_filtering",
               "full_line": "// req-Id: comp_req__time_slave__domain_filtering"
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 369,
+              "line": 370,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__domain_filtering",
               "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.h",
+              "line": 44,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__domain_filtering",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req, comp_req__time_slave__domain_filtering"
             }
           ],
           "TestLinks": []
@@ -106,7 +272,7 @@
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 306,
+              "line": 307,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__pdelay_resp_reception",
               "full_line": "// req-Id: comp_req__time_slave__pdelay_resp_reception"
@@ -128,7 +294,7 @@
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 314,
+              "line": 315,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__pdelay_resp_fu_rx",
               "full_line": "// req-Id: comp_req__time_slave__pdelay_resp_fu_rx"
@@ -153,92 +319,6 @@
         }
       },
       {
-        "need": "comp_req__time_slave__sync_reception",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-              "line": 98,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__sync_reception",
-              "full_line": "// req-Id: comp_req__time_slave__sync_reception"
-            },
-            {
-              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-              "line": 137,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__sync_reception",
-              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support"
-            },
-            {
-              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 271,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__sync_reception",
-              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering"
-            },
-            {
-              "file": "score/time_slave/src/gptp/platform/qnx/qnx_raw_shim.cpp",
-              "line": 313,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__sync_reception",
-              "full_line": "// req-Id: comp_req__time_slave__sync_reception"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__time_slave__platform_support",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-              "line": 137,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__platform_support",
-              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support"
-            },
-            {
-              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-              "line": 179,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__platform_support",
-              "full_line": "// req-Id: comp_req__time_slave__platform_support"
-            },
-            {
-              "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
-              "line": 48,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__platform_support",
-              "full_line": "// req-Id: comp_req__time_slave__platform_support"
-            },
-            {
-              "file": "score/time_slave/src/gptp/platform/qnx/phc_adjuster.cpp",
-              "line": 29,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__platform_support",
-              "full_line": "// req-Id: comp_req__time_slave__platform_support"
-            },
-            {
-              "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
-              "line": 70,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__platform_support",
-              "full_line": "// req-Id: comp_req__time_slave__platform_support"
-            },
-            {
-              "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
-              "line": 83,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__platform_support",
-              "full_line": "// req-Id: comp_req__time_slave__platform_support"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
         "need": "comp_req__time_slave__followup_processing",
         "links": {
           "CodeLinks": [
@@ -251,7 +331,7 @@
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 280,
+              "line": 281,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__followup_processing",
               "full_line": "// req-Id: comp_req__time_slave__followup_processing, comp_req__time_slave__offset_calculation"
@@ -273,7 +353,7 @@
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 280,
+              "line": 281,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__offset_calculation",
               "full_line": "// req-Id: comp_req__time_slave__followup_processing, comp_req__time_slave__offset_calculation"
@@ -312,9 +392,38 @@
         }
       },
       {
+        "need": "comp_req__time_slave__diagnostics",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/instrument/probe.cpp",
+              "line": 33,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__diagnostics",
+              "full_line": "// req-Id: comp_req__time_slave__diagnostics"
+            },
+            {
+              "file": "score/time_slave/src/gptp/record/recorder.cpp",
+              "line": 38,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__diagnostics",
+              "full_line": "// req-Id: comp_req__time_slave__diagnostics"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
         "need": "comp_req__time_slave__phc_offset",
         "links": {
           "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/phc/phc_adjuster.h",
+              "line": 31,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__phc_offset",
+              "full_line": "// req-Id: comp_req__time_slave__phc_offset"
+            },
             {
               "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
               "line": 66,
@@ -334,80 +443,86 @@
         }
       },
       {
-        "need": "comp_req__time_slave__startup",
+        "need": "comp_req__time_slave__platform_support",
         "links": {
           "CodeLinks": [
             {
-              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 71,
+              "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
+              "line": 48,
               "tag": "// req-Id:",
-              "need": "comp_req__time_slave__startup",
-              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting"
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
             },
             {
-              "file": "score/time_slave/src/application/time_slave.cpp",
-              "line": 41,
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 138,
               "tag": "// req-Id:",
-              "need": "comp_req__time_slave__startup",
-              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 180,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/phc_adjuster.cpp",
+              "line": 29,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+              "line": 71,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+              "line": 84,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
             }
           ],
           "TestLinks": []
         }
       },
       {
-        "need": "comp_req__time_slave__error_reporting",
+        "need": "comp_req__time_slave__sync_reception",
         "links": {
           "CodeLinks": [
             {
-              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 71,
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 98,
               "tag": "// req-Id:",
-              "need": "comp_req__time_slave__error_reporting",
-              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting"
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 138,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/qnx_raw_shim.cpp",
+              "line": 313,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception"
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 182,
+              "line": 272,
               "tag": "// req-Id:",
-              "need": "comp_req__time_slave__error_reporting",
-              "full_line": "// req-Id: comp_req__time_slave__error_reporting"
-            },
-            {
-              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 247,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__error_reporting",
-              "full_line": "// req-Id: comp_req__time_slave__error_reporting"
-            },
-            {
-              "file": "score/time_slave/src/application/time_slave.cpp",
-              "line": 41,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__error_reporting",
-              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__time_slave__shutdown",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 136,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__shutdown",
-              "full_line": "// req-Id: comp_req__time_slave__shutdown"
-            },
-            {
-              "file": "score/time_slave/src/application/time_slave.cpp",
-              "line": 119,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__shutdown",
-              "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing"
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering"
             }
           ],
           "TestLinks": []
@@ -419,83 +534,17 @@
           "CodeLinks": [
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 265,
+              "line": 266,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__pdelay_req_response",
               "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
             },
             {
               "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 369,
+              "line": 370,
               "tag": "// req-Id:",
               "need": "comp_req__time_slave__pdelay_req_response",
               "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__time_slave__sync_publishing",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-              "line": 326,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__sync_publishing",
-              "full_line": "// req-Id: comp_req__time_slave__sync_publishing"
-            },
-            {
-              "file": "score/time_slave/src/application/time_slave.cpp",
-              "line": 119,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__sync_publishing",
-              "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__time_slave__configuration",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time_slave/src/application/configuration/config_parser.cpp",
-              "line": 124,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__configuration",
-              "full_line": "// req-Id: comp_req__time_slave__configuration"
-            },
-            {
-              "file": "score/time_slave/src/application/time_slave.cpp",
-              "line": 41,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__configuration",
-              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__time_slave__diagnostics",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time_slave/src/gptp/record/recorder.cpp",
-              "line": 38,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__diagnostics",
-              "full_line": "// req-Id: comp_req__time_slave__diagnostics"
-            },
-            {
-              "file": "score/time_slave/src/gptp/instrument/probe.cpp",
-              "line": 33,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_slave__diagnostics",
-              "full_line": "// req-Id: comp_req__time_slave__diagnostics"
             }
           ],
           "TestLinks": []
