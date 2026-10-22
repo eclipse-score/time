@@ -30,6 +30,7 @@ cc_library(
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = [
+        "//:__pkg__",
         "//score/time_daemon:__subpackages__",
         "//score/time_slave:__subpackages__",
     ],

@@ -36,6 +36,9 @@ docs(
             "attach_to": "module/index",
         },
     ],
+    code_targets = [
+        "//score/ts_client/src:gptp_ipc",
+    ],
     external_needs = [
         "@score_process_description//:needs_json_file",
         "@score_platform//:needs_json_file",
