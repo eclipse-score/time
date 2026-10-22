@@ -26,7 +26,7 @@ namespace details
 {
 
 /// Default shared memory name for the gPTP IPC channel.
-constexpr char kGptpIpcName[] = "/gptp_ptp_info";
+constexpr const char* kGptpIpcName = "/gptp_ptp_info";
 
 /// Magic number to validate the shared memory region ('GPTP').
 inline constexpr std::uint32_t kGptpIpcMagic = 0x47505450U;

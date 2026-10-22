@@ -69,7 +69,7 @@ justifications:
       Default case in switch over TimeJumpState, a private enum with exactly three values (kJumpToFuture, kJumpToPast, kNoTimeJump), all of which are explicitly handled above. Kept as defensive programming against future enum additions.
     locations:
       - file: score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp
-        lines: [172, 173]
+        lines: [177, 178]
 
   - id: time-jumps-validator-processing-state-default
     category: defensive_programming

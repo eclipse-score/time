@@ -12,14 +12,22 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/factory.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time_daemon/src/verification_machine/svt/svt_verification_machine.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 #include "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.h"
+#include <memory>
+#include <string>
 
-namespace score
+namespace score::td
 {
-namespace td
+namespace
 {
+constexpr auto kTimeoutThreshold = std::chrono::nanoseconds{3'300'000'000};
+constexpr auto kTimeJumpThreshold = std::chrono::nanoseconds{500'000};
+constexpr auto kSyncDebounceThreshold = std::chrono::nanoseconds{5'000'000'000};
+constexpr auto kValidFramesThreshold = 2U;
+}  // namespace
 
 std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::string& name)
 {
@@ -30,17 +38,16 @@ std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const std::
         },
         []() {
             return std::make_unique<TimeoutValidator>(score::time::HighResSteadyClock::GetInstance(),
-                                                      std::chrono::nanoseconds{3'300'000'000});
+                                                      kTimeoutThreshold);
         },
         []() {
             return std::make_unique<TimeJumpsValidator>(score::time::HighResSteadyClock::GetInstance(),
-                                                        std::chrono::nanoseconds(500'000),
-                                                        std::chrono::nanoseconds(5'000'000'000),
-                                                        2U);
+                                                        kTimeJumpThreshold,
+                                                        kValidFramesThreshold,
+                                                        kSyncDebounceThreshold);
         });
 
     return machine;
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
