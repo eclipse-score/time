@@ -1,0 +1,654 @@
+[
+  {
+    "repo": {
+      "name": "local_repo",
+      "hash": "",
+      "url": ""
+    },
+    "needs": [
+      {
+        "need": "comp_req__time_slave__ethernet_address",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/frame_codec.cpp",
+              "line": 75,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__ethernet_address",
+              "full_line": "// req-Id: comp_req__time_slave__ethernet_address"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/qnx_raw_shim.cpp",
+              "line": 246,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__ethernet_address",
+              "full_line": "// req-Id: comp_req__time_slave__ethernet_address"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__pdelay_req",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/pdelay_measurer.cpp",
+              "line": 32,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_req",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req, comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 198,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_req",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__domain_filtering",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/pdelay_measurer.cpp",
+              "line": 32,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__domain_filtering",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req, comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 265,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__domain_filtering",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 271,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__domain_filtering",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 281,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__domain_filtering",
+              "full_line": "// req-Id: comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 369,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__domain_filtering",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__pdelay_resp_reception",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/pdelay_measurer.cpp",
+              "line": 94,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_resp_reception",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_resp_reception"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 306,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_resp_reception",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_resp_reception"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__pdelay_resp_fu_rx",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/pdelay_measurer.cpp",
+              "line": 104,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_resp_fu_rx",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_resp_fu_rx"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 314,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_resp_fu_rx",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_resp_fu_rx"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__pdelay_computation",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/pdelay_measurer.cpp",
+              "line": 114,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_computation",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_computation"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__sync_reception",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 98,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 137,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 271,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/qnx_raw_shim.cpp",
+              "line": 313,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_reception",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__platform_support",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 137,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+              "line": 179,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
+              "line": 48,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/phc_adjuster.cpp",
+              "line": 29,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+              "line": 70,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+              "line": 83,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__platform_support",
+              "full_line": "// req-Id: comp_req__time_slave__platform_support"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__followup_processing",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/sync_state_machine.cpp",
+              "line": 50,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__followup_processing",
+              "full_line": "// req-Id: comp_req__time_slave__followup_processing"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 280,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__followup_processing",
+              "full_line": "// req-Id: comp_req__time_slave__followup_processing, comp_req__time_slave__offset_calculation"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__offset_calculation",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/sync_state_machine.cpp",
+              "line": 98,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__offset_calculation",
+              "full_line": "// req-Id: comp_req__time_slave__offset_calculation, comp_req__time_slave__phc_frequency"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 280,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__offset_calculation",
+              "full_line": "// req-Id: comp_req__time_slave__followup_processing, comp_req__time_slave__offset_calculation"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__phc_frequency",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/details/sync_state_machine.cpp",
+              "line": 98,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__phc_frequency",
+              "full_line": "// req-Id: comp_req__time_slave__offset_calculation, comp_req__time_slave__phc_frequency"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
+              "line": 91,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__phc_frequency",
+              "full_line": "// req-Id: comp_req__time_slave__phc_frequency"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/phc_adjuster.cpp",
+              "line": 56,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__phc_frequency",
+              "full_line": "// req-Id: comp_req__time_slave__phc_frequency"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__phc_offset",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
+              "line": 66,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__phc_offset",
+              "full_line": "// req-Id: comp_req__time_slave__phc_offset"
+            },
+            {
+              "file": "score/time_slave/src/gptp/platform/qnx/phc_adjuster.cpp",
+              "line": 43,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__phc_offset",
+              "full_line": "// req-Id: comp_req__time_slave__phc_offset"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__startup",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 71,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__startup",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 41,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__startup",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__error_reporting",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 71,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 182,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 247,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__error_reporting"
+            },
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 41,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__error_reporting",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__shutdown",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 136,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__shutdown",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown"
+            },
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 119,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__shutdown",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__pdelay_req_response",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 265,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_req_response",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
+            },
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 369,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__pdelay_req_response",
+              "full_line": "// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__sync_publishing",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+              "line": 326,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_publishing",
+              "full_line": "// req-Id: comp_req__time_slave__sync_publishing"
+            },
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 119,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__sync_publishing",
+              "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__configuration",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/application/configuration/config_parser.cpp",
+              "line": 124,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__configuration",
+              "full_line": "// req-Id: comp_req__time_slave__configuration"
+            },
+            {
+              "file": "score/time_slave/src/application/time_slave.cpp",
+              "line": 41,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__configuration",
+              "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_slave__diagnostics",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_slave/src/gptp/record/recorder.cpp",
+              "line": 38,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__diagnostics",
+              "full_line": "// req-Id: comp_req__time_slave__diagnostics"
+            },
+            {
+              "file": "score/time_slave/src/gptp/instrument/probe.cpp",
+              "line": 33,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_slave__diagnostics",
+              "full_line": "// req-Id: comp_req__time_slave__diagnostics"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time__unified_clock_facade",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 96,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__unified_clock_facade",
+              "full_line": "// # req-Id: comp_req__time__unified_clock_facade"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time__snapshot_with_status",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 116,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__snapshot_with_status",
+              "full_line": "// # req-Id: comp_req__time__snapshot_with_status"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time__explicit_lifecycle",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 154,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__explicit_lifecycle",
+              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+            },
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 165,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__explicit_lifecycle",
+              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+            },
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 181,
+              "tag": "# req-Id:",
+              "need": "comp_req__time__explicit_lifecycle",
+              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__high_res_steady_time__snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/high_res_steady_time/src/high_res_steady_clock.cpp",
+              "line": 21,
+              "tag": "# req-Id:",
+              "need": "comp_req__high_res_steady_time__snapshot",
+              "full_line": "// # req-Id: comp_req__high_res_steady_time__snapshot"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__steady_time__snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/steady_time/src/steady_clock.cpp",
+              "line": 21,
+              "tag": "# req-Id:",
+              "need": "comp_req__steady_time__snapshot",
+              "full_line": "// # req-Id: comp_req__steady_time__snapshot"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__system_time__snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/system_time/src/system_clock.cpp",
+              "line": 21,
+              "tag": "# req-Id:",
+              "need": "comp_req__system_time__snapshot",
+              "full_line": "// # req-Id: comp_req__system_time__snapshot"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__vehicle_time__snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 44,
+              "tag": "# req-Id:",
+              "need": "comp_req__vehicle_time__snapshot",
+              "full_line": "// # req-Id: comp_req__vehicle_time__snapshot"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__vehicle_time__lifecycle",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 50,
+              "tag": "# req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 56,
+              "tag": "# req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+              "line": 62,
+              "tag": "# req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+            }
+          ],
+          "TestLinks": []
+        }
+      }
+    ]
+  }
+]
