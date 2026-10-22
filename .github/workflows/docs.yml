@@ -14,14 +14,11 @@
 name: Docs / Build & Deploy
 
 permissions:
-  contents: write
-  pages: write
-  pull-requests: write
-  id-token: write
+  contents: read
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize] # Allows forks to trigger the docs build
+    types: [opened, reopened, synchronize]
   push:
     branches:
       - main
@@ -32,7 +29,6 @@ jobs:
   docs-verify:
     uses: eclipse-score/cicd-workflows/.github/workflows/docs-verify.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     permissions:
-      pull-requests: write
       contents: read
     with:
       bazel-docs-verify-target: "//:docs_check"
@@ -41,15 +37,12 @@ jobs:
     needs: docs-verify
     uses: eclipse-score/cicd-workflows/.github/workflows/docs.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     permissions:
-      contents: write
-      pages: write
-      pull-requests: write
-      id-token: write
+      contents: read
     with:
       # the bazel-target depends on your repo specific docs_targets configuration (e.g. "suffix")
       bazel-target: "//:docs -- --github_user=${{ github.repository_owner }} --github_repo=${{ github.event.repository.name }}"
       retention-days: 3
 
   quality_pack:
-    secrets: inherit
+    if: ${{ github.event_name != 'merge_group' }}
     uses: ./.github/workflows/quality_pack.yml
