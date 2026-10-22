@@ -31,6 +31,7 @@ void EventDrivenMachine::Start() noexcept
                                   }};
 }
 
+// req-Id: comp_req__time_daemon__shutdown
 void EventDrivenMachine::Stop() noexcept
 {
     if (worker_.joinable())

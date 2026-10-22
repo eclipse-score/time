@@ -31,6 +31,7 @@ void PeriodicMachine::Start() noexcept
                                   }};
 }
 
+// req-Id: comp_req__time_daemon__shutdown
 void PeriodicMachine::Stop() noexcept
 {
     if (worker_.joinable())

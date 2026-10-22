@@ -49,6 +49,8 @@ void JobRunner::Start(const score::cpp::stop_token& token)
     });
 }
 
+// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__init_retry
+// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting
 bool JobRunner::RunJobs(const score::cpp::stop_token& token)
 {
     bool all_success = true;
