@@ -29,7 +29,7 @@ namespace score
 namespace td
 {
 
-// req-Id: comp_req__time_daemon__startup
+// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__init_timeout
 SvtHandler::SvtHandler() noexcept
     : job_runner_{nullptr},
       msg_broker_{nullptr},

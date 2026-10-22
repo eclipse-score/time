@@ -148,6 +148,7 @@ bool PTPMachine<PTPEngine>::Init()
     return is_initialized_;
 }
 
+// req-Id: comp_req__time_daemon__shutdown
 template <class PTPEngine>
 void PTPMachine<PTPEngine>::Deinit()
 {
