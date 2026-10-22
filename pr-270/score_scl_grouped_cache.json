@@ -1,0 +1,726 @@
+[
+  {
+    "need": "comp_req__time_daemon__startup",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
+          "line": 52,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__startup",
+          "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__init_retry",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/factory.cpp",
+          "line": 24,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__startup",
+          "full_line": "// req-Id: comp_req__time_daemon__startup",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
+          "line": 32,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__startup",
+          "full_line": "// req-Id: comp_req__time_daemon__startup",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/time_daemon.cpp",
+          "line": 30,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__startup",
+          "full_line": "// req-Id: comp_req__time_daemon__startup",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__init_retry",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
+          "line": 52,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__init_retry",
+          "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__init_retry",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__init_timeout",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
+          "line": 53,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__init_timeout",
+          "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
+          "line": 92,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__init_timeout",
+          "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__error_reporting",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
+          "line": 53,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/ipc/core/shared_memory_handler.h",
+          "line": 109,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__platform_support, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/ipc/core/shared_memory_handler.h",
+          "line": 146,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/ptp_machine/core/ptp_machine.h",
+          "line": 130,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/ptp_machine/core/ptp_machine.h",
+          "line": 161,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp",
+          "line": 28,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp",
+          "line": 56,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__time_jump_detection, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp",
+          "line": 29,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__timeout_detection, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
+          "line": 92,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reporting",
+          "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time__unified_clock_facade",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/clock/src/clock.h",
+          "line": 96,
+          "tag": "# req-Id:",
+          "need": "comp_req__time__unified_clock_facade",
+          "full_line": "// # req-Id: comp_req__time__unified_clock_facade",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time__snapshot_with_status",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/clock/src/clock.h",
+          "line": 116,
+          "tag": "# req-Id:",
+          "need": "comp_req__time__snapshot_with_status",
+          "full_line": "// # req-Id: comp_req__time__snapshot_with_status",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time__explicit_lifecycle",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/clock/src/clock.h",
+          "line": 154,
+          "tag": "# req-Id:",
+          "need": "comp_req__time__explicit_lifecycle",
+          "full_line": "// # req-Id: comp_req__time__explicit_lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/clock/src/clock.h",
+          "line": 165,
+          "tag": "# req-Id:",
+          "need": "comp_req__time__explicit_lifecycle",
+          "full_line": "// # req-Id: comp_req__time__explicit_lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/clock/src/clock.h",
+          "line": 181,
+          "tag": "# req-Id:",
+          "need": "comp_req__time__explicit_lifecycle",
+          "full_line": "// # req-Id: comp_req__time__explicit_lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__high_res_steady_time__snapshot",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/high_res_steady_time/src/high_res_steady_clock.cpp",
+          "line": 21,
+          "tag": "# req-Id:",
+          "need": "comp_req__high_res_steady_time__snapshot",
+          "full_line": "// # req-Id: comp_req__high_res_steady_time__snapshot",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__shutdown",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/core/shared_memory_handler.h",
+          "line": 65,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__shutdown",
+          "full_line": "// req-Id: comp_req__time_daemon__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp",
+          "line": 46,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__shutdown",
+          "full_line": "// req-Id: comp_req__time_daemon__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
+          "line": 140,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__shutdown",
+          "full_line": "// req-Id: comp_req__time_daemon__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/time_daemon.cpp",
+          "line": 41,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__shutdown",
+          "full_line": "// req-Id: comp_req__time_daemon__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__platform_support",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/core/shared_memory_handler.h",
+          "line": 109,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__platform_support",
+          "full_line": "// req-Id: comp_req__time_daemon__platform_support, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__multi_client",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/core/shared_memory_handler.h",
+          "line": 145,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__multi_client",
+          "full_line": "// req-Id: comp_req__time_daemon__multi_client, comp_req__time_daemon__non_blocking",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__non_blocking",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/core/shared_memory_handler.h",
+          "line": 145,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__non_blocking",
+          "full_line": "// req-Id: comp_req__time_daemon__multi_client, comp_req__time_daemon__non_blocking",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__time_data_publishing",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/core/publisher_impl.h",
+          "line": 93,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__time_data_publishing",
+          "full_line": "// req-Id: comp_req__time_daemon__time_data_publishing",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__published_data_content",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/svt/svt_time_info.cpp",
+          "line": 119,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__published_data_content",
+          "full_line": "// req-Id: comp_req__time_daemon__published_data_content, comp_req__time_daemon__published_raw_data",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__published_raw_data",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/svt/svt_time_info.cpp",
+          "line": 119,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__published_raw_data",
+          "full_line": "// req-Id: comp_req__time_daemon__published_data_content, comp_req__time_daemon__published_raw_data",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__time_point_qualifier",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/svt/svt_time_info.cpp",
+          "line": 120,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__time_point_qualifier",
+          "full_line": "// req-Id: comp_req__time_daemon__time_point_qualifier",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__time_sync_reception",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp",
+          "line": 57,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__time_sync_reception",
+          "full_line": "// req-Id: comp_req__time_daemon__time_sync_reception",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__error_reaction",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/verification_machine/core/verification_machine.h",
+          "line": 142,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reaction",
+          "full_line": "// req-Id: comp_req__time_daemon__error_reaction",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp",
+          "line": 24,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reaction",
+          "full_line": "// req-Id: comp_req__time_daemon__sync_validation, comp_req__time_daemon__error_reaction",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp",
+          "line": 158,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reaction",
+          "full_line": "// req-Id: comp_req__time_daemon__error_reaction",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp",
+          "line": 30,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__error_reaction",
+          "full_line": "// req-Id: comp_req__time_daemon__error_reaction",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__sync_validation",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp",
+          "line": 24,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__sync_validation",
+          "full_line": "// req-Id: comp_req__time_daemon__sync_validation, comp_req__time_daemon__error_reaction",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__time_jump_detection",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp",
+          "line": 56,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__time_jump_detection",
+          "full_line": "// req-Id: comp_req__time_daemon__time_jump_detection, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__sync_debounce",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp",
+          "line": 124,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__sync_debounce",
+          "full_line": "// req-Id: comp_req__time_daemon__sync_debounce",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__time_jump_recovery",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp",
+          "line": 133,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__time_jump_recovery",
+          "full_line": "// req-Id: comp_req__time_daemon__time_jump_recovery",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__timeout_detection",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp",
+          "line": 29,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__timeout_detection",
+          "full_line": "// req-Id: comp_req__time_daemon__timeout_detection, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_daemon__client_read_access",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_daemon/src/ipc/core/receiver_impl.h",
+          "line": 84,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__client_read_access",
+          "full_line": "// req-Id: comp_req__time_daemon__client_read_access",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__steady_time__snapshot",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/steady_time/src/steady_clock.cpp",
+          "line": 21,
+          "tag": "# req-Id:",
+          "need": "comp_req__steady_time__snapshot",
+          "full_line": "// # req-Id: comp_req__steady_time__snapshot",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__system_time__snapshot",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/system_time/src/system_clock.cpp",
+          "line": 21,
+          "tag": "# req-Id:",
+          "need": "comp_req__system_time__snapshot",
+          "full_line": "// # req-Id: comp_req__system_time__snapshot",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__vehicle_time__snapshot",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+          "line": 44,
+          "tag": "# req-Id:",
+          "need": "comp_req__vehicle_time__snapshot",
+          "full_line": "// # req-Id: comp_req__vehicle_time__snapshot",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__vehicle_time__lifecycle",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+          "line": 50,
+          "tag": "# req-Id:",
+          "need": "comp_req__vehicle_time__lifecycle",
+          "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+          "line": 56,
+          "tag": "# req-Id:",
+          "need": "comp_req__vehicle_time__lifecycle",
+          "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
+          "line": 62,
+          "tag": "# req-Id:",
+          "need": "comp_req__vehicle_time__lifecycle",
+          "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  }
+]
