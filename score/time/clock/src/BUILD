@@ -18,7 +18,10 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
 # //score/time:docs_bundle via its code_targets attribute.
 filegroup(
     name = "requirement_marked_sources",
-    srcs = ["clock.h"],
+    srcs = [
+        "clock.h",
+        "clock_snapshot.h",
+    ],
     visibility = ["//score/time:__pkg__"],
 )
 

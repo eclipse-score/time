@@ -76,6 +76,7 @@ std::shared_ptr<typename ClockTraits<Tag>::Backend> CreateBackend();
 /// after construction; @c Now() delegates to backend (thread safety depends on backend).
 ///
 /// @tparam Tag Clock domain tag struct (e.g. VehicleTime, HighResSteadyTime, std::chrono::steady_clock).
+// req-Id: comp_req__time__unified_clock_facade
 template <typename Tag>
 class Clock
 {

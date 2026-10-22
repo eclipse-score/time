@@ -82,6 +82,7 @@ ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl
     return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, vehicle_status};
 }
 
+// req-Id: comp_req__vehicle_time__lifecycle
 bool VehicleClockBackendImpl::Init() noexcept
 {
     if (is_ready_.load(std::memory_order_acquire))
