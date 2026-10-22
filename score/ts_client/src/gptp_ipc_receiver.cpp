@@ -62,7 +62,7 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     return true;
 }
 
-// req-Id: comp_req__ts_client__receiver_multi_reader, comp_req__ts_client__data_validity
+// req-Id: comp_req__ts_client__data_validity
 // req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data
 // req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data
 // req-Id: comp_req__ts_client__time_correlation_data
