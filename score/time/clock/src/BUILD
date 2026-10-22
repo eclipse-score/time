@@ -14,12 +14,15 @@
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
-# Source files carrying `// # req-Id:` markers, exposed to
+# Source files carrying `// req-Id:` markers, exposed to
 # //score/time:docs_bundle via its code_targets attribute.
 filegroup(
     name = "requirement_marked_sources",
-    srcs = ["clock.h"],
-    visibility = ["//visibility:public"],
+    srcs = [
+        "clock.h",
+        "clock_snapshot.h",
+    ],
+    visibility = ["//score/time:__pkg__"],
 )
 
 cc_library(
