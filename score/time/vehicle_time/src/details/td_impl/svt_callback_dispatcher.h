@@ -24,6 +24,8 @@
 #include <chrono>
 #include <memory>
 #include <mutex>
+#include <tuple>
+#include <utility>
 
 namespace score
 {
@@ -45,12 +47,12 @@ namespace detail
 /// what they last delivered:
 ///  - @c TimeSlaveSyncData — the sync/follow-up part;
 ///  - @c PDelayMeasurementData — the pDelay part;
-///  - @c VehicleTimeStatus — compared without rate deviation (see @c IsSameForDelivery()).
-/// A newly registered callback (first registration, re-registration, or replacement) always receives
-/// the first snapshot polled after its registration, and afterwards only changes.
+///  - @c VehicleTimeStatus — compared without rate deviation (see @c IsSame()).
+/// Each callback receives the first snapshot dispatched after its own registration, and afterwards only changes.
 ///
-/// Set/Unset are safe to call concurrently with an in-flight invocation (see @c SvtCallbackWrapper),
-/// including a callback that unsets or replaces itself from the worker thread.
+/// AddCallback() and UnsetCallback() are safe to call concurrently with an in-flight invocation
+/// (see @c SvtCallbackWrapper), including a callback that unsets itself or adds another callback
+/// from the worker thread.
 class SvtCallbackDispatcher final
 {
   public:
@@ -69,23 +71,29 @@ class SvtCallbackDispatcher final
     /// registered, in whichever order those two happen.
     void Start() noexcept;
 
-    void SetTimeSlaveSyncDataReceivedCallback(VehicleTime::TimeSlaveSyncDataReceivedCallback&& callback) noexcept;
+    /// @brief Adds @p callback to the callbacks of @c Data. An empty callback is ignored.
+    template <typename Data>
+    void AddCallback(SvtCallback<Data>&& callback)
+    {
+        const bool present = !callback.empty();
+        std::get<SvtCallbackWrapper<Data>>(slots_).Add(std::move(callback));
+        if (present)
+        {
+            OnCallbackRegistered();
+        }
+    }
 
-    void UnsetTimeSlaveSyncDataReceivedCallback() noexcept;
-
-    void SetPDelayMeasurementFinishedCallback(VehicleTime::PDelayMeasurementFinishedCallback&& callback) noexcept;
-
-    void UnsetPDelayMeasurementFinishedCallback() noexcept;
-
-    void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept;
-
-    void UnsetStatusChangedCallback() noexcept;
+    /// @brief Removes all callbacks of @p Data. No wake-up: the worker notices on its next cycle.
+    template <typename Data>
+    void UnsetCallback() noexcept
+    {
+        std::get<SvtCallbackWrapper<Data>>(slots_).Unset();
+    }
 
   private:
-    /// @brief Installs @p callback into @p slot. A non-empty callback also starts or wakes the worker;
-    ///        an empty one behaves like the corresponding Unset.
-    template <typename Slot, typename Callback>
-    void SetCallback(Slot& slot, Callback&& callback) noexcept;
+    using SyncDataSlot = SvtCallbackWrapper<TimeSlaveSyncData<VehicleTime>>;
+    using PDelaySlot = SvtCallbackWrapper<PDelayMeasurementData<VehicleTime>>;
+    using StatusSlot = SvtCallbackWrapper<VehicleTimeStatus>;
 
     /// @brief Worker thread body: polls the receiver every @c poll_interval_ while at least one callback is
     ///        registered, otherwise sleeps until the next registration or stop request.
@@ -111,9 +119,7 @@ class SvtCallbackDispatcher final
     std::shared_ptr<score::td::SvtReceiver> svt_receiver_;
     const std::chrono::milliseconds poll_interval_;
 
-    SvtCallbackWrapper<VehicleTime::TimeSlaveSyncDataReceivedCallback, TimeSlaveSyncData<VehicleTime>> sync_data_slot_;
-    SvtCallbackWrapper<VehicleTime::PDelayMeasurementFinishedCallback, PDelayMeasurementData<VehicleTime>> pdelay_slot_;
-    SvtCallbackWrapper<VehicleTime::StatusChangedCallback, VehicleTimeStatus> status_slot_;
+    std::tuple<SyncDataSlot, PDelaySlot, StatusSlot> slots_;
 
     // Guards the worker state below and is the mutex the worker sleeps on. Never held while a slot
     // mutex is taken, so that a callback may (re-)register from the worker thread without risking a
