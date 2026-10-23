@@ -74,8 +74,8 @@ ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl
     }
 
     const auto now_local = local_clock_.Now().TimePoint().time_since_epoch();
-    const auto local_at_capture = std::chrono::nanoseconds{rx_data.value().local_time};
-    const auto ptp_at_capture = std::chrono::nanoseconds{rx_data.value().ptp_assumed_time};
+    const auto local_at_capture = std::chrono::nanoseconds{rx_data->local_time};
+    const auto ptp_at_capture = std::chrono::nanoseconds{rx_data->ptp_assumed_time};
 
     if (now_local < local_at_capture)
     {
@@ -86,7 +86,7 @@ ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl
 
     const VehicleTime::Timepoint adjusted_tp{ptp_at_capture + (now_local - local_at_capture)};
 
-    const VehicleTimeStatus vehicle_status{ConvertPtpStatus(rx_data.value().status), rx_data.value().rate_deviation};
+    const VehicleTimeStatus vehicle_status{ConvertPtpStatus(rx_data->status), rx_data->rate_deviation};
     return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, vehicle_status};
 }
 
@@ -132,6 +132,7 @@ bool VehicleClockBackendImpl::IsAvailable() const noexcept
 bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& token,
                                                  std::chrono::steady_clock::time_point until) const noexcept
 {
+    constexpr std::chrono::milliseconds kAvailabilityPollInterval{10};
     bool should_poll = false;
     do
     {
@@ -141,7 +142,7 @@ bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& t
         }
         // Poll at 10 ms intervals: coarse enough to avoid busy-spinning, fine enough
         // to detect IPC readiness well within any realistic startup deadline.
-        std::this_thread::sleep_for(std::chrono::milliseconds{10});
+        std::this_thread::sleep_for(kAvailabilityPollInterval);
         should_poll = (!token.stop_requested()) && (std::chrono::steady_clock::now() <= until);
     } while (should_poll);
 

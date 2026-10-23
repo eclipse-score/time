@@ -64,7 +64,7 @@ template <typename Slot, typename Callback>
 void SvtCallbackDispatcher::SetCallback(Slot& slot, Callback&& callback) noexcept
 {
     const bool present = !callback.empty();
-    slot.Set(std::move(callback));
+    slot.Set(std::forward<Callback>(callback));
     if (present)
     {
         OnCallbackRegistered();
@@ -122,7 +122,7 @@ void SvtCallbackDispatcher::StartWorkerIfReadyLocked() noexcept
         return;
     }
     worker_ = score::cpp::jthread{score::cpp::jthread::name_hint{std::string{"vt_cb_dispatch"}},
-                                  [this](const score::cpp::stop_token token) noexcept {
+                                  [this](const score::cpp::stop_token& token) noexcept {
                                       WorkerFunction(token);
                                   }};
 }

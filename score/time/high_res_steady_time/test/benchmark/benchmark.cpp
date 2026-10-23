@@ -17,6 +17,8 @@
 namespace score::time
 {
 
+constexpr int kMaxThreads{16};
+
 class HighResSteadyClockBenchmarkFixture : public benchmark::Fixture
 {
   public:
@@ -24,7 +26,7 @@ class HighResSteadyClockBenchmarkFixture : public benchmark::Fixture
     {
         this->Repetitions(1);
         this->ReportAggregatesOnly(true);
-        this->ThreadRange(1, 16);
+        this->ThreadRange(1, kMaxThreads);
         this->UseRealTime();
         this->MeasureProcessCPUTime();
     }
