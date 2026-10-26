@@ -31,6 +31,7 @@ namespace time
 ///                     std::chrono::steady_clock::time_point).
 /// @tparam StatusT     The status type that accompanies the reading (e.g. VehicleTimeStatus
 ///                     or NoStatus for clocks with no quality concept).
+// req-Id: comp_req__time__snapshot_with_status
 template <typename TimepointT, typename StatusT>
 class ClockSnapshot
 {
