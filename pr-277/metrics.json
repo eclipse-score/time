@@ -3,10 +3,10 @@
   "generated_by": "sphinx_build",
   "overall_metrics": {
     "total": 65,
-    "with_code_link": 8,
+    "with_code_link": 9,
     "with_test_link": 0,
     "fully_linked": 0,
-    "with_code_link_pct": 12.307692307692308,
+    "with_code_link_pct": 13.846153846153847,
     "with_test_link_pct": 0.0,
     "fully_linked_pct": 0.0
   },
@@ -22,10 +22,10 @@
     },
     "comp_req": {
       "total": 58,
-      "with_code_link": 8,
+      "with_code_link": 9,
       "with_test_link": 0,
       "fully_linked": 0,
-      "with_code_link_pct": 13.793103448275861,
+      "with_code_link_pct": 15.517241379310345,
       "with_test_link_pct": 0.0,
       "fully_linked_pct": 0.0
     }
