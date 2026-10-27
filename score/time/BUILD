@@ -19,9 +19,12 @@ docs_bundle(
     code_targets = [
         "//score/time/clock/src:requirement_marked_sources",
         "//score/time/high_res_steady_time/src:requirement_marked_sources",
+        "//score/time/high_res_steady_time/src/details/qtime:requirement_marked_sources",
+        "//score/time/high_res_steady_time/src/details/system_clock:requirement_marked_sources",
         "//score/time/steady_time/src:requirement_marked_sources",
         "//score/time/system_time/src:requirement_marked_sources",
         "//score/time/vehicle_time/src:requirement_marked_sources",
+        "//score/time/vehicle_time/src/details/td_impl:requirement_marked_sources",
     ],
     source_dir = "docs",
     visibility = ["//visibility:public"],
