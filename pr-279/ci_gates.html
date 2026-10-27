@@ -483,7 +483,7 @@ gate aggregates jobs within the existing QNX workflow.</p>
 <li><p>Component tests using <code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">--config=x86_64-linux</span> <span class="pre">//score/...</span></code>.</p></li>
 <li><p>LLVM code coverage, including the existing 85% threshold.</p></li>
 <li><p>Documentation verification and build.</p></li>
-<li><p>All-language formatting and the aggregate-gate regression tests.</p></li>
+<li><p>All-language formatting.</p></li>
 <li><p>Copyright validation.</p></li>
 <li><p>Bzlmod lockfile and tidy checks.</p></li>
 </ul>
@@ -540,7 +540,7 @@ has no token permissions. The QNX gate covers builds, not QNX tests.</p>
 <td><p>Documentation verification and build</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ci/general-validation</span></code></p></td>
-<td><p>All-language formatting and aggregate-gate regression tests</p></td>
+<td><p>All-language formatting</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ci/general-validation</span></code></p></td>
 <td><p>Copyright, bzlmod lockfile, and bzlmod tidy checks</p></td>
@@ -566,16 +566,6 @@ workflow cancel its caller or a sibling producer for the same ref.</p>
 entry point is used by cache maintenance, not by a second aggregate workflow.
 This keeps a single queue-build matrix and preserves the existing build/result
 check names and cache settings.</p>
-<p>Focused regression tests exercise the shell scripts used by both aggregates and
-the existing QNX result job. They verify success/failure/cancellation/skip
-handling and check workflow names, events, dependency lists, reusable entry
-points, QNX advisory/cache separation, and concurrency namespaces. These are policy
-regression tests for workflow wiring and gate behavior; they do not replace a
-workflow syntax linter or hosted PR/merge-group validation.</p>
-<p>Run them with the repository formatting check:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>//tools:format.check<span class="w"> </span>//tools/ci:aggregate_gates_test
-</pre></div>
-</div>
 </section>
 </section>
 
