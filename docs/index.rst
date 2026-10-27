@@ -46,6 +46,7 @@ For a detailed concept and architectural design, please refer to the :doc:`time_
    module/index
    verification_report/module_verification_report
    quality_pack
+   ci_gates
 
 
 Project Layout
