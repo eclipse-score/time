@@ -66,16 +66,7 @@ bazel_dep(name = "score_logging", version = "0.2.4")
 
 ### Modules that are used internally within the repository but not exposed as part of the public API
 
-bazel_dep(name = "score_docs_as_code", version = "8.4.0")
-
-# Pin docs during module discovery so transitive requests for older releases
-# do not contribute their dependencies to Minimal Version Selection. In
-# particular, 8.3.0 exposes score_devcontainer as a non-dev dependency, while
-# 8.4.0 correctly limits it to development of the docs module itself.
-single_version_override(
-    module_name = "score_docs_as_code",
-    version = "8.4.0",
-)
+bazel_dep(name = "score_docs_as_code", version = "8.6.0")
 
 bazel_dep(name = "score_cpp_policies", version = "0.0.1", dev_dependency = True)
 
@@ -88,7 +79,7 @@ git_override(
 )
 
 bazel_dep(name = "score_platform", version = "0.7.4", dev_dependency = True)
-bazel_dep(name = "score_process_description", version = "2.1.2", dev_dependency = True)
+bazel_dep(name = "score_process_description", version = "2.2.2", dev_dependency = True)
 bazel_dep(name = "score_tooling", version = "3.0.1", dev_dependency = True)
 
 # LLVM source-based coverage pipeline (C++): the qualified S-CORE coverage
