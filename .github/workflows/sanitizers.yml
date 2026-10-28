@@ -30,8 +30,8 @@ on:
 
 jobs:
   sanitizers:
-    # Pinned to ubuntu-24.04 (not ubuntu-latest) — sanitizers require a stable
-    # glibc/runtime version; avoids breakage when ubuntu-latest rolls forward.
+    # Pinned to ubuntu-24.04 (not ubuntu-24.04) — sanitizers require a stable
+    # glibc/runtime version; avoids breakage when ubuntu-24.04 rolls forward.
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
