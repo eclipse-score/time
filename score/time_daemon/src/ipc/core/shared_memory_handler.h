@@ -25,7 +25,6 @@
 #include <memory>
 #include <optional>
 #include <string>
-#include <tuple>
 #include <type_traits>
 
 namespace score
@@ -36,12 +35,8 @@ namespace td
 ///
 /// \brief The class implements shared memory handling
 ///
-/// \details One writer sends the latest DataType to any number of readers, also in other processes. It uses
-///          read-copy-update (RCU) over a fixed number of slots: https://lwn.net/Articles/262464/
-///          - Send() writes into a slot that is not published and has no readers, then publishes it.
-///          - Receive() adds 1 to the slot's reader count, checks that the slot is still published, copies the data
-///            and removes 1 again.
-///          Only one thread at a time, across all processes, may call Send().
+/// \details Only one thread at a time, across all processes, may call Send(). Slots use per-slot seqlocks.
+///          Payload accesses are not atomic yet; overlapping slot reuse and reads are not C++ data-race-free.
 ///
 template <typename DataType>
 class SharedMemoryHandler
@@ -62,12 +57,12 @@ class SharedMemoryHandler
     bool Init();
 
     ///
-    /// \brief Safely read data from shared memory.
+    /// \brief Read a snapshot from shared memory, retrying if the slot changes.
     ///
     std::optional<DataType> Receive() const;
 
     ///
-    /// \brief Safely write data to shared memory
+    /// \brief Write data to the next shared memory slot without waiting for readers.
     ///
     void Send(const DataType& data);
 
@@ -82,25 +77,19 @@ class SharedMemoryHandler
     SharedMemoryHandler& operator=(SharedMemoryHandler&&) = delete;
 
   private:
-    /// \brief Assumed CPU cache-line size in bytes.
-    /// Used to keep data that different cores write on separate cache lines to reduce false sharing.
-    static constexpr std::size_t kCacheLineSize{64U};
+    static constexpr bool NoWriteInProgress(std::uint64_t seq)
+    {
+        return (seq & 1U) == 0U;
+    }
 
-    /// \brief Number of copies of the data in shared memory. Send() needs a slot that is not published and has no
-    /// readers, so more slots let more readers be stuck in Receive() before Send() has to drop data.
+    static constexpr std::size_t kCacheLineSize{64U};
     static constexpr std::uint32_t kNumberOfSlots{10U};
 
-    /// \brief One copy of the data. Starts on a new cache line.
-    struct alignas(kCacheLineSize) Slot
-    {
-        DataType data_{};
-    };
-
     ///
-    /// \brief Everything in shared memory: the slots and the data that manages them
+    /// \brief Common type to store seqlock and specified data
     /// \tparam DataType shall be trivially copyable data
     ///
-    struct alignas(kCacheLineSize) SharedData
+    struct alignas(kCacheLineSize) Slot
     {
         static_assert(std::is_trivially_copyable_v<DataType>,
                       "DataType must be trivially copyable to be stored in shared memory!");
@@ -111,13 +100,17 @@ class SharedMemoryHandler
         static_assert(std::atomic<std::uint64_t>::is_always_lock_free,
                       "Atomics shared between processes must be lock-free!");
 
-        /// \brief published_slot_ index of the slot that Receive() reads. Only Send() writes it.
+        /// \brief seq_ seqlock counter: odd while a write is in progress, even otherwise.
+        std::atomic<std::uint64_t> seq_{0U};
+
+        /// \brief data_ specific data placed in share dmemory region. Note: It has to be trivially copyable with
+        // trivial simple types that are not allocated on heap!
+        DataType data_{};
+    };
+
+    struct alignas(kCacheLineSize) SharedData
+    {
         std::atomic<std::uint64_t> published_slot_{0U};
-
-        /// \brief readers_per_slot_ readers per slot, on its own cache line. Readers write nothing else.
-        alignas(kCacheLineSize) std::array<std::atomic<std::uint64_t>, kNumberOfSlots> readers_per_slot_{};
-
-        /// \brief slots_ copies of the data.
         std::array<Slot, kNumberOfSlots> slots_{};
     };
 
@@ -178,37 +171,36 @@ bool SharedMemoryHandler<DataType>::Init()
 template <typename DataType>
 std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 {
-    std::optional<DataType> read_data{};
-
     if (shared_memory_data_ != nullptr)
     {
+        DataType read_data{};
+
         for (std::uint8_t retry_cnt = 0U; retry_cnt < max_number_of_read_retries_; ++retry_cnt)
         {
-            // The modulo keeps the index inside the array.
-            const auto slot = shared_memory_data_->published_slot_.load(std::memory_order_relaxed) % kNumberOfSlots;
-            auto& slot_readers = shared_memory_data_->readers_per_slot_[slot];
+            const auto slot_index =
+                shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) % kNumberOfSlots;
+            const auto& slot = shared_memory_data_->slots_[slot_index];
+            const auto seq_before_read = slot.seq_.load(std::memory_order_seq_cst);
 
-            // Add 1 to the reader count, then check that the slot is still published. If it is, Send() does not
-            // write into it until we remove 1 again.
-            std::ignore = slot_readers.fetch_add(1U, std::memory_order_seq_cst);
-            if (shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) == slot)
+            if (NoWriteInProgress(seq_before_read))
             {
-                read_data.emplace(shared_memory_data_->slots_[slot].data_);
+                // Copy the payload
+                read_data = slot.data_;
 
-                // Remove 1 from the reader count. Release makes sure the copy is done before Send() writes here again.
-                std::ignore = slot_readers.fetch_sub(1U, std::memory_order_release);
-                return read_data;
+                // Unchanged counter: no write started or completed during the copy
+                if ((slot.seq_.load(std::memory_order_seq_cst) == seq_before_read) &&
+                    (shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) == slot_index))
+                {
+                    return read_data;
+                }
             }
-
-            // Send() published another slot in the meantime. Remove 1 from the reader count and try the new slot.
-            std::ignore = slot_readers.fetch_sub(1U, std::memory_order_relaxed);
         }
 
         score::mw::log::LogError(kIpcHandlerContext)
             << "Read failed for number of retries: " << max_number_of_read_retries_;
     }
 
-    return read_data;
+    return std::nullopt;
 }
 
 template <typename DataType>
@@ -216,22 +208,18 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
 {
     if (shared_memory_data_ != nullptr)
     {
-        // Only Send() writes published_slot_, so this reads the value we wrote last time
         const auto published_slot = shared_memory_data_->published_slot_.load(std::memory_order_relaxed);
+        const auto next_slot = (published_slot + 1U) % kNumberOfSlots;
+        auto& slot = shared_memory_data_->slots_[next_slot];
 
-        // Start with the slot after the published one, which is usually the oldest. Never use the published slot.
-        for (std::uint32_t offset = 1U; offset < kNumberOfSlots; ++offset)
-        {
-            const auto candidate = (published_slot + offset) % kNumberOfSlots;
-            if (shared_memory_data_->readers_per_slot_[candidate].load(std::memory_order_seq_cst) == 0U)
-            {
-                shared_memory_data_->slots_[candidate].data_ = data;
-                shared_memory_data_->published_slot_.store(candidate, std::memory_order_seq_cst);
-                return;
-            }
-        }
+        // Single writer: counter becomes odd to signal write in progress
+        const auto seq = slot.seq_.fetch_add(1U, std::memory_order_seq_cst);
 
-        score::mw::log::LogError(kIpcHandlerContext) << "All slots are being read, data was not published";
+        slot.data_ = data;
+
+        // Even again: publishes the payload to readers
+        slot.seq_.store(seq + 2U, std::memory_order_seq_cst);
+        shared_memory_data_->published_slot_.store(next_slot, std::memory_order_seq_cst);
     }
 }
 
