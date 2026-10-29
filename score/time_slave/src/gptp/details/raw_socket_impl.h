@@ -92,6 +92,7 @@ class RawSocketImpl : public RawSocket
     OsSyscalls* sys_{nullptr};
     std::atomic<int> fd_{-1};
     std::string iface_{};
+    std::atomic<bool> hw_ts_locked_{false};
 };
 
 }  // namespace details

@@ -25,11 +25,15 @@ namespace ts
 namespace details
 {
 
+/// @brief Sentinel returned when no timestamp from the locked clock source could be
+/// captured; callers must discard the affected message rather than treat it as 0.
+constexpr ::timespec kNoHwTimestamp{-1, 0};
+
 /// @brief Platform-agnostic raw socket interface used by @c GptpEngine and
 /// @c PeerDelayMeasurer for gPTP frame transmission and reception.
 ///
-/// Provides hardware timestamping support with automatic fallback to software
-/// timestamps when the NIC does not support hardware timestamping.
+/// Provides hardware timestamping support with fallback to software timestamps from a
+/// free-running monotonic clock when the NIC does not support hardware timestamping.
 class RawSocket
 {
   public:
@@ -48,20 +52,22 @@ class RawSocket
     /// @brief Close the socket and release the file descriptor.
     virtual void Close() = 0;
 
-    /// @brief Receive one Ethernet frame with its hardware (or software fallback) timestamp.
+    /// @brief Receive one Ethernet frame with its timestamp from the locked source.
     ///
     /// @param buf        Buffer for the received frame.
     /// @param buf_len    Buffer length in bytes.
-    /// @param hwts       Output: hardware timestamp if available, otherwise software timestamp.
+    /// @param hwts       Output: timestamp from the locked source, or @c kNoHwTimestamp if
+    ///                   none could be captured for this frame.
     /// @param timeout_ms Receive timeout in milliseconds (0 = non-blocking).
     /// @return Number of bytes received, 0 on timeout, -1 on error.
     virtual int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) = 0;
 
-    /// @brief Send one Ethernet frame and capture its hardware transmit timestamp.
+    /// @brief Send one Ethernet frame and capture its transmit timestamp from the locked source.
     ///
     /// @param buf  Frame buffer.
     /// @param len  Frame length in bytes.
-    /// @param hwts Output: hardware transmit timestamp if available, otherwise software timestamp.
+    /// @param hwts Output: timestamp from the locked source, or @c kNoHwTimestamp if none
+    ///             could be captured for this frame.
     /// @return Number of bytes sent, or -1 on error.
     virtual int Send(const void* buf, int len, ::timespec& hwts) = 0;
 

@@ -207,16 +207,31 @@ Concurrency Aspects
 - ``PeerDelayMeasurer`` uses internal ``std::mutex`` to synchronize ``SendRequest()`` (PdelayThread) with ``OnResponse()`` / ``OnResponseFollowUp()`` (RxThread)
 - ``SyncStateMachine`` uses ``std::atomic<bool>`` timeout flag written by RxThread and read by main thread
 
-Hardware Timestamping Fallback
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Timestamp Source Selection
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-During ``Initialize()``, ``GptpEngine`` calls ``RawSocket::EnableHwTimestamping()`` to request NIC-level receive timestamps (``SO_TIMESTAMPING`` on Linux). If the NIC does not support hardware timestamping, the call returns ``false`` and a warning is logged:
+Each ``RawSocket`` implementation selects its timestamp source exactly once per interface,
+at ``EnableHwTimestamping()`` (Linux) / ``qnx_raw_open()`` (QNX) time, and never mixes
+sources afterwards -- every timestamp of one Sync/Follow_Up evaluation or one peer delay
+measurement comes from the same clock:
+
+- **Hardware timestamps**, if the NIC supports them: ``SO_TIMESTAMPING`` on Linux, BPF
+  ``BIOCSTSTAMP`` + ``PTP_GET_TIME`` (both read the PHC) on QNX.
+- **Software timestamps** otherwise, from a free-running monotonic clock: ``CLOCK_MONOTONIC``
+  on both platforms. This is deliberately *not* the Linux kernel's
+  ``SOF_TIMESTAMPING_*_SOFTWARE`` option, which is itself ``CLOCK_REALTIME``-based, and *not*
+  ``CLOCK_REALTIME`` directly on QNX -- ``score::time`` keeps ``CLOCK_REALTIME`` aligned to
+  Absolute Time, so it can step/jump and would falsify the offset and peer-delay computation
+  if mixed with a PHC- or wire-derived timestamp from the same evaluation.
+
+If the NIC does not support hardware timestamping, a warning is logged once during
+``Initialize()``:
 
 .. code-block:: none
 
    GptpEngine: HW timestamping not available on <iface>, falling back to SW timestamps
 
-The engine continues to run normally. The difference between the two modes:
+The difference between the two modes:
 
 .. list-table::
    :header-rows: 1
@@ -227,10 +242,10 @@ The engine continues to run normally. The difference between the two modes:
      - SW timestamping fallback
    * - ``recvHardwareTS`` (Sync receive time)
      - NIC hardware timestamp (nanosecond resolution, captured at wire level)
-     - Software timestamp (captured at socket receive, higher jitter)
+     - ``CLOCK_MONOTONIC`` timestamp (captured at socket receive, higher jitter)
    * - ``sync_fup_data.reference_local_timestamp``
      - Derived from NIC hardware timestamp
-     - Derived from software timestamp
+     - Derived from ``CLOCK_MONOTONIC`` timestamp
    * - ``GptpIpcData.local_time``
      - Always ``CLOCK_MONOTONIC`` (unaffected)
      - Always ``CLOCK_MONOTONIC`` (unaffected)
@@ -238,7 +253,32 @@ The engine continues to run normally. The difference between the two modes:
      - High (sub-microsecond typical)
      - Reduced (jitter depends on OS scheduling latency)
 
-The fallback does not affect protocol correctness -- Sync/FollowUp correlation and peer delay measurement continue to work -- but the computed clock offset will be less accurate due to higher receive timestamp jitter.
+Sync/Follow_Up correlation and peer delay measurement continue to work in either mode, with
+reduced accuracy in SW fallback due to higher receive timestamp jitter.
+
+Missing-Timestamp Handling
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If no timestamp from the locked source could be captured for a frame (e.g. a hardware TX
+timestamp that never arrives within the poll window), ``RawSocket::Recv()`` / ``Send()``
+return the sentinel ``kNoHwTimestamp`` (``raw_socket.h``) instead of an all-zero
+``timespec``. A zero timestamp is a valid value (``t = 0``) and must never be confused with
+"no timestamp available".
+
+``GptpEngine::HandlePacket()`` checks ``IsValidTmv()`` (``clock_util.h``) before using a
+received timestamp and discards the affected message rather than passing on a missing
+value as 0:
+
+- A Sync with a missing receive timestamp is dropped before reaching ``SyncStateMachine``.
+- A Pdelay_Req with a missing receive timestamp (t2) is not answered.
+- A Pdelay_Resp with a missing receive timestamp (t4) is not forwarded to
+  ``PeerDelayMeasurer``.
+- If the Pdelay_Resp transmit timestamp (t3) is missing, ``SendPDelayResponseAndFollowUp()``
+  does not send the Pdelay_Resp_Follow_Up; the peer's measurement for that sequence simply
+  times out instead of completing with a corrupted value.
+
+``PeerDelayMeasurer`` already rejects a measurement whose t1 (its own Pdelay_Req transmit
+timestamp) is missing, via the same ``ns < 0`` sentinel check on ``sendHardwareTS``.
 
 PeerDelayMeasurer
 ~~~~~~~~~~~~~~~~~~~~~~~
