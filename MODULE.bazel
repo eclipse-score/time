@@ -17,8 +17,24 @@ module(name = "score_time")
 bazel_dep(name = "score_bazel_cpp_toolchains", version = "1.0.5", dev_dependency = True)
 
 gcc = use_extension("@score_bazel_cpp_toolchains//extensions:gcc.bzl", "gcc", dev_dependency = True)
+
+# Compiler-warning features are owned by score_cpp_policies
+_WARNING_ENABLED_FEATURES = [
+    "@score_cpp_policies//warnings/gcc/features:minimal_warnings",
+]
+
+# warnings_as_errors is enabled for this repository only via REPO.bazel, so that
+# external dependencies are not affected.
+_WARNING_KNOWN_FEATURES = [
+    "@score_cpp_policies//warnings/gcc/features:warnings_as_errors",
+    "@score_cpp_policies//warnings/gcc/features:strict_warnings",
+    "@score_cpp_policies//warnings/gcc/features:all_wall_warnings",
+]
+
 gcc.toolchain(
     name = "score_gcc_x86_64_toolchain",
+    extra_enabled_features = _WARNING_ENABLED_FEATURES,
+    extra_known_features = _WARNING_KNOWN_FEATURES,
     target_cpu = "x86_64",
     target_os = "linux",
     use_default_package = True,
@@ -26,6 +42,8 @@ gcc.toolchain(
 )
 gcc.toolchain(
     name = "score_gcc_aarch64_toolchain",
+    extra_enabled_features = _WARNING_ENABLED_FEATURES,
+    extra_known_features = _WARNING_KNOWN_FEATURES,
     target_cpu = "aarch64",
     target_os = "linux",
     use_default_package = True,
@@ -33,6 +51,8 @@ gcc.toolchain(
 )
 gcc.toolchain(
     name = "score_qcc_x86_64_toolchain",
+    extra_enabled_features = _WARNING_ENABLED_FEATURES,
+    extra_known_features = _WARNING_KNOWN_FEATURES,
     sdp_version = "8.0.4",
     target_cpu = "x86_64",
     target_os = "qnx",
@@ -41,6 +61,8 @@ gcc.toolchain(
 )
 gcc.toolchain(
     name = "score_qcc_aarch64_toolchain",
+    extra_enabled_features = _WARNING_ENABLED_FEATURES,
+    extra_known_features = _WARNING_KNOWN_FEATURES,
     sdp_version = "8.0.4",
     target_cpu = "aarch64",
     target_os = "qnx",
@@ -68,15 +90,7 @@ bazel_dep(name = "score_logging", version = "0.2.5")
 
 bazel_dep(name = "score_docs_as_code", version = "8.6.0")
 
-bazel_dep(name = "score_cpp_policies", version = "0.0.1", dev_dependency = True)
-
-# git_override needed because clang_tidy/ support was added after the 0.0.1 registry release.
-# Remove once score_cpp_policies >= 0.0.2 is available in the Bazel registry.
-git_override(
-    module_name = "score_cpp_policies",
-    commit = "9e3800913a3a7ac791d5e6fb9e7339d1e65980f9",
-    remote = "https://github.com/eclipse-score/score_cpp_policies.git",
-)
+bazel_dep(name = "score_cpp_policies", version = "0.1.2", dev_dependency = True)
 
 bazel_dep(name = "score_platform", version = "0.7.4", dev_dependency = True)
 bazel_dep(name = "score_process_description", version = "2.2.2", dev_dependency = True)
