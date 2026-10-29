@@ -86,8 +86,8 @@ cc_binary(
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
     cc_unit_tests = [
-        ":time_daemon_factory_test",
         ":time_daemon_test",
+        ":timebase_handler_factory_test",
     ],
     test_suites_from_sub_packages = [
         "//score/time_daemon/src/application/generic:unit_test_suite",
@@ -114,8 +114,8 @@ cc_test(
 )
 
 cc_test(
-    name = "time_daemon_factory_test",
-    srcs = ["time_daemon_factory_test.cpp"],
+    name = "timebase_handler_factory_test",
+    srcs = ["timebase_handler_factory_test.cpp"],
     features = COMPILER_WARNING_FEATURES,
     tags = ["unit"],
     deps = [

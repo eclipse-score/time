@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_daemon/src/application/time_daemon.h"
 #include "score/time_daemon/src/application/timebase_handler_factory.h"
+#include "score/time_daemon/src/application/time_daemon.h"
 
 #include <gtest/gtest.h>
 #include <score/stop_token.hpp>
@@ -71,10 +71,10 @@ class FactoryHandler final : public TimebaseHandler
     bool request_stop_;
 };
 
-TEST(TimeDaemonFactoryTest, CreatesTheLinkedCompositionOnceAndRunsEveryHandler)
+TEST(TimebaseHandlerFactoryTest, CreatesTheLinkedCompositionOnceAndRunsEveryHandler)
 {
     factory_state = FactoryState{};
-    const std::array<const char*, 1> arguments{"time_daemon_factory_test"};
+    const std::array<const char*, 1> arguments{"timebase_handler_factory_test"};
     const score::mw::lifecycle::ApplicationContext context{1, arguments.data()};
     const auto token = factory_state.stop_source.get_token();
     TimeDaemon daemon{};

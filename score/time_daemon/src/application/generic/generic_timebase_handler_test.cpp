@@ -37,6 +37,7 @@ namespace
 {
 
 constexpr int kPublishedValue{42};
+constexpr std::chrono::seconds kInitTimeout{5};
 
 // Init() runs on the JobRunner thread and only reads fixed data.
 // Start() and Stop() run on the test thread. Start() publishes kPublishedValue.
@@ -141,10 +142,10 @@ class HandlerWithComponents final : public GenericTimebaseHandler<int>
     void CreateComponents() noexcept override
     {
         const Topic topic{"values"};
-        auto source = Add(std::make_shared<FakeSource>("source", events_, true));
-        sink_ = Add(std::make_shared<FakeSink>("sink"));
+        auto source = Add(std::make_shared<FakeSource>("source", events_, true), kInitTimeout);
+        sink_ = Add(std::make_shared<FakeSink>("sink"), kInitTimeout);
         Publish(source, topic);
-        Subscribe(topic, sink_);
+        Subscribe(sink_, topic);
     }
 
     std::vector<std::string>& events_;
@@ -179,8 +180,8 @@ TEST_F(GenericTimebaseHandlerTest, StartsProactiveMachinesInAddOrderAndStopsInRe
 {
     std::vector<std::string> events;
     TestHandler handler{"start_order"};
-    handler.Add(std::make_shared<FakeSource>("first", events, true));
-    auto second = handler.Add(std::make_shared<FakeSource>("second", events, true));
+    handler.Add(std::make_shared<FakeSource>("first", events, true), kInitTimeout);
+    auto second = handler.Add(std::make_shared<FakeSource>("second", events, true), kInitTimeout);
     handler.Initialize();
 
     ASSERT_TRUE(RunUntil(
@@ -202,12 +203,12 @@ TEST_F(GenericTimebaseHandlerTest, DeliversDataOfPublisherToSubscribersOfTheSame
     std::vector<std::string> events;
     TestHandler handler{"delivery"};
     const Topic topic{"values"};
-    auto first_source = handler.Add(std::make_shared<FakeSource>("first", events, true));
-    auto second_source = handler.Add(std::make_shared<FakeSource>("second", events, true));
-    auto sink = handler.Add(std::make_shared<FakeSink>("sink"));
+    auto first_source = handler.Add(std::make_shared<FakeSource>("first", events, true), kInitTimeout);
+    auto second_source = handler.Add(std::make_shared<FakeSource>("second", events, true), kInitTimeout);
+    auto sink = handler.Add(std::make_shared<FakeSink>("sink"), kInitTimeout);
     handler.Publish(first_source, topic);
     handler.Publish(second_source, topic);
-    handler.Subscribe(topic, sink);
+    handler.Subscribe(sink, topic);
     handler.Initialize();
 
     ASSERT_TRUE(RunUntil(
@@ -224,7 +225,7 @@ TEST_F(GenericTimebaseHandlerTest, RejectsPublishingTheSameProducerTwice)
     std::vector<std::string> events;
     TestHandler handler{"duplicate_producer"};
     const Topic topic{"first"};
-    auto source = handler.Add(std::make_shared<FakeSource>("source", events, true));
+    auto source = handler.Add(std::make_shared<FakeSource>("source", events, true), kInitTimeout);
     handler.Publish(source, topic);
 
     EXPECT_DEATH(handler.Publish(source, topic), "");

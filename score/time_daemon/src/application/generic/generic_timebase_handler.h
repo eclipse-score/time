@@ -48,7 +48,7 @@ namespace td
 /// The JobRunner initializes the machines on a worker thread. Once all machines are ready, proactive machines
 /// start in Add() order and stop in reverse order. Add machines that must run first before their data sources.
 ///
-/// 	param T Type of messages sent through the MessageBroker.
+/// \tparam T Type of messages sent through the MessageBroker.
 template <typename T>
 class GenericTimebaseHandler : public TimebaseHandler
 {
@@ -63,13 +63,13 @@ class GenericTimebaseHandler : public TimebaseHandler
     /// A timeout makes the handler fail.
     /// \return The machine passed to Add().
     template <typename M>
-    std::shared_ptr<M> Add(std::shared_ptr<M> machine, std::chrono::seconds init_timeout = std::chrono::seconds{20});
+    std::shared_ptr<M> Add(std::shared_ptr<M> machine, std::chrono::seconds init_timeout);
 
     /// \brief Sets the producer's topic. Each producer can use only one topic.
     void Publish(std::weak_ptr<Producer<T>> producer, const Topic& topic);
 
-    /// \brief Sends messages from the topic to the consumer.
-    void Subscribe(const Topic& topic, std::weak_ptr<Consumer<T>> consumer);
+    /// \brief Registers the consumer for messages published on the topic.
+    void Subscribe(std::weak_ptr<Consumer<T>> consumer, const Topic& topic);
 
     /// \brief Calls CreateComponents() and sets up initialization. Call once, before RunOnce().
     void Initialize() noexcept override;
@@ -88,26 +88,52 @@ class GenericTimebaseHandler : public TimebaseHandler
   private:
     void PollInitialization(const score::cpp::stop_token& token) noexcept;
     void StartMachines() noexcept;
+    void MoveToIdleState() noexcept;
+    void MoveToInitializeState() noexcept;
+    void MoveToWorkingState() noexcept;
+    void MoveToFailedState() noexcept;
 
     std::shared_ptr<MessageBroker<T>> broker_;
     /// Keeps the machines alive. The MessageBroker holds only weak references.
     std::vector<std::shared_ptr<BaseMachine>> machines_;
     std::vector<std::shared_ptr<ProactiveMachine>> start_order_;  // in Add() order
-    std::string name_;
+    const std::string name_;
     std::vector<Job> init_jobs_;
     /// Tracks producers to reject duplicate Publish() calls.
     std::set<std::weak_ptr<Producer<T>>, std::owner_less<std::weak_ptr<Producer<T>>>> producers_;
-    /// Kept until the handler is destroyed.
-    std::unique_ptr<JobRunner> job_runner_;
+    std::unique_ptr<JobRunner> init_job_runner_;
     TimebaseHandler::Status handler_status_;
-    bool is_initialized_;
+    /// Set by Initialize(). The machines may still be initializing.
+    bool is_configured_;
 };
+
+template <typename T>
+GenericTimebaseHandler<T>::GenericTimebaseHandler(std::string name)
+    : broker_{std::make_shared<MessageBroker<T>>()},
+      machines_{},
+      start_order_{},
+      name_{std::move(name)},
+      init_jobs_{},
+      producers_{},
+      init_job_runner_{nullptr},
+      handler_status_{TimebaseHandler::Status::kIdle},
+      is_configured_{false}
+{
+    score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": handler created";
+}
+
+template <typename T>
+GenericTimebaseHandler<T>::~GenericTimebaseHandler() noexcept
+{
+    Stop();
+    init_job_runner_.reset();
+}
 
 template <typename T>
 template <typename M>
 std::shared_ptr<M> GenericTimebaseHandler<T>::Add(std::shared_ptr<M> machine, std::chrono::seconds init_timeout)
 {
-    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_initialized_, "Machines must be added before Initialize()");
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_configured_, "Machines must be added before Initialize()");
     SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(machine != nullptr, "Machine must not be nullptr");
 
     auto init_fn = [machine]() {
@@ -125,29 +151,29 @@ std::shared_ptr<M> GenericTimebaseHandler<T>::Add(std::shared_ptr<M> machine, st
 template <typename T>
 void GenericTimebaseHandler<T>::Publish(std::weak_ptr<Producer<T>> producer, const Topic& topic)
 {
-    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_initialized_, "Publish() must be called before Initialize()");
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_configured_, "Publish() must be called before Initialize()");
     const auto is_new_producer = producers_.insert(producer).second;
     SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(is_new_producer, "A producer publishes on one topic only");
     broker_->AddProducer(topic, std::move(producer));
 }
 
 template <typename T>
-void GenericTimebaseHandler<T>::Subscribe(const Topic& topic, std::weak_ptr<Consumer<T>> consumer)
+void GenericTimebaseHandler<T>::Subscribe(std::weak_ptr<Consumer<T>> consumer, const Topic& topic)
 {
-    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_initialized_, "Subscribe() must be called before Initialize()");
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_configured_, "Subscribe() must be called before Initialize()");
     broker_->AddSubscriber(topic, std::move(consumer));
 }
 
 template <typename T>
 void GenericTimebaseHandler<T>::Initialize() noexcept
 {
-    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_initialized_, "Initialize() must be called only once");
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(!is_configured_, "Initialize() must be called only once");
 
     CreateComponents();
 
-    job_runner_ = std::make_unique<JobRunner>(std::move(init_jobs_), name_ + "_init");
-    is_initialized_ = true;
-    score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": initialized";
+    init_job_runner_ = std::make_unique<JobRunner>(std::move(init_jobs_), name_ + "_init");
+    is_configured_ = true;
+    score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": configured";
 }
 
 template <typename T>
@@ -159,47 +185,78 @@ void GenericTimebaseHandler<T>::RunOnce(const score::cpp::stop_token& token) noe
         return;
     }
 
+    SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(is_configured_, "RunOnce() called before Initialize()");
     switch (handler_status_)
     {
         case TimebaseHandler::Status::kIdle:
-            SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(is_initialized_, "RunOnce() called before Initialize()");
-            job_runner_->Start(token);
-            handler_status_ = TimebaseHandler::Status::kInitialize;
-            score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": initialization started";
+        {
+            init_job_runner_->Start(token);
+            MoveToInitializeState();
             break;
+        }
         case TimebaseHandler::Status::kInitialize:
+        {
             PollInitialization(token);
             break;
+        }
         case TimebaseHandler::Status::kWorking:
         case TimebaseHandler::Status::kFailed:
+        {
             break;
+        }
     }
+}
+
+template <typename T>
+void GenericTimebaseHandler<T>::Stop() noexcept
+{
+    if (handler_status_ == TimebaseHandler::Status::kIdle)
+    {
+        return;
+    }
+    if (handler_status_ == TimebaseHandler::Status::kWorking)
+    {
+        for (auto it = start_order_.rbegin(); it != start_order_.rend(); ++it)
+        {
+            (*it)->Stop();
+        }
+        score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": proactive machines stopped";
+    }
+    MoveToIdleState();
 }
 
 template <typename T>
 void GenericTimebaseHandler<T>::PollInitialization(const score::cpp::stop_token& token) noexcept
 {
-    const auto result = job_runner_->GetResult();
+    const auto init_result = init_job_runner_->GetResult();
     if (token.stop_requested())
     {
         Stop();
         return;
     }
 
-    switch (result)
+    switch (init_result)
     {
         case JobRunner::Result::kIdle:
+        {
             SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(false, "Initialization worker has not been started");
-            return;
+            break;
+        }
         case JobRunner::Result::kInProgress:
-            return;
+        {
+            break;
+        }
         case JobRunner::Result::kSucceed:
+        {
             StartMachines();
-            return;
+            MoveToWorkingState();
+            break;
+        }
         case JobRunner::Result::kFailed:
-            handler_status_ = TimebaseHandler::Status::kFailed;
-            score::mw::log::LogError(kTimeBaseHandlerGeneric) << name_ << ": initialization failed";
-            return;
+        {
+            MoveToFailedState();
+            break;
+        }
     }
 }
 
@@ -211,44 +268,34 @@ void GenericTimebaseHandler<T>::StartMachines() noexcept
     {
         machine->Start();
     }
+}
+
+template <typename T>
+void GenericTimebaseHandler<T>::MoveToIdleState() noexcept
+{
+    handler_status_ = TimebaseHandler::Status::kIdle;
+    score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": stopped";
+}
+
+template <typename T>
+void GenericTimebaseHandler<T>::MoveToInitializeState() noexcept
+{
+    handler_status_ = TimebaseHandler::Status::kInitialize;
+    score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": initialization started";
+}
+
+template <typename T>
+void GenericTimebaseHandler<T>::MoveToWorkingState() noexcept
+{
     handler_status_ = TimebaseHandler::Status::kWorking;
     score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": working";
 }
 
 template <typename T>
-void GenericTimebaseHandler<T>::Stop() noexcept
+void GenericTimebaseHandler<T>::MoveToFailedState() noexcept
 {
-    if (handler_status_ == TimebaseHandler::Status::kWorking)
-    {
-        for (auto it = start_order_.rbegin(); it != start_order_.rend(); ++it)
-        {
-            (*it)->Stop();
-        }
-        score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": proactive machines stopped";
-    }
-    handler_status_ = TimebaseHandler::Status::kIdle;
-}
-
-template <typename T>
-GenericTimebaseHandler<T>::GenericTimebaseHandler(std::string name)
-    : broker_{std::make_shared<MessageBroker<T>>()},
-      machines_{},
-      start_order_{},
-      name_{std::move(name)},
-      init_jobs_{},
-      producers_{},
-      job_runner_{nullptr},
-      handler_status_{TimebaseHandler::Status::kIdle},
-      is_initialized_{false}
-{
-    score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": handler created";
-}
-
-template <typename T>
-GenericTimebaseHandler<T>::~GenericTimebaseHandler() noexcept
-{
-    Stop();
-    job_runner_.reset();
+    handler_status_ = TimebaseHandler::Status::kFailed;
+    score::mw::log::LogError(kTimeBaseHandlerGeneric) << name_ << ": initialization failed";
 }
 
 }  // namespace td

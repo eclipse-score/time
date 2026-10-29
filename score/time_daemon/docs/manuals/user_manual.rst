@@ -40,10 +40,11 @@ Configuration
 
    config/configuration_guide
 
-Choosing Handlers
-=================
+Composing Timebase Handlers
+===========================
 
-``TimeDaemon`` runs the handlers from ``score::td::CreateTimebaseHandlers()``. The default
+The handlers are composed at link time, not selected at runtime. ``TimeDaemon`` runs every handler returned by
+``score::td::CreateTimebaseHandlers()``, which the linked factory defines. The default
 ``//score/time_daemon:time_daemon`` program uses a factory that creates one SVT handler.
 To use other handlers, link your own factory into a program with the same entry point.
 
@@ -107,7 +108,10 @@ Handlers Built from Machines
 ============================
 
 To build a handler like ``SvtHandler``, derive from ``GenericTimebaseHandler<T>`` and implement ``CreateComponents()``.
-In ``CreateComponents()``, call ``Add()`` for each machine. Connect the machines with ``Publish()`` and ``Subscribe()``.
+In ``CreateComponents()``, call ``Add()`` for each machine and pass its initialization timeout.
+Each timeout counts from the start of initialization. If a machine's ``Init()`` has not succeeded by then,
+the handler fails and does not start its machines.
+Connect the machines with ``Publish()`` and ``Subscribe()``.
 Proactive machines start in ``Add()`` order and stop in reverse order.
 Add machines that must run first before their data sources.
 
@@ -123,12 +127,14 @@ These public targets provide the parts used by ``SvtHandler``:
 * ``svt_publisher``: ``CreateSvtPublisher()``, which writes to ``/svt_shmem_path``.
 
 To read PTP data from another source, write an engine and create its ``PTPMachine`` directly.
-Pass the machine's name, update interval, and engine arguments to the constructor:
+Pass the machine's name, update interval, and engine arguments to the constructor.
+Then add the machine with its initialization timeout:
 
 .. code-block:: cpp
 
-    auto ptp_machine = Add(std::make_shared<PTPMachine<VendorPtpEngine>>(
-        "ptp_worker", std::chrono::milliseconds{50}, vendor_client));
+    auto ptp_machine = std::make_shared<PTPMachine<VendorPtpEngine>>(
+        "ptp_worker", std::chrono::milliseconds{50}, vendor_client);
+    Add(ptp_machine, std::chrono::seconds{20});
 
 The engine must provide ``bool Initialize()``, ``bool Deinitialize()``, and ``bool ReadPTPSnapshot(PtpTimeInfo&)``.
 

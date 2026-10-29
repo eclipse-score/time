@@ -23,6 +23,13 @@ namespace score
 {
 namespace td
 {
+namespace
+{
+
+// comp_req__time_daemon__startup: overall initialization fails if not completed within 20 seconds.
+constexpr std::chrono::seconds kInitTimeout{20};
+
+}  // namespace
 
 SvtHandler::SvtHandler() noexcept : GenericTimebaseHandler<PtpTimeInfo>{"svt"} {}
 
@@ -30,18 +37,18 @@ void SvtHandler::CreateComponents() noexcept
 {
     // Start the control flow divider before the gPTP machine sends data.
     auto ctrl_flow_divider =
-        Add(CreatePtpControlFlowDivider("ptp_control_flow_divider", std::chrono::milliseconds{250}));
-    auto gptp_machine = Add(CreateGPTPShmMachine("ptp_worker"));
-    auto verification_machine = Add(CreateSvtVerificationMachine("time_verification_worker"));
-    auto ipc_publisher = Add(CreateSvtPublisher("svt_ipc_publisher"));
+        Add(CreatePtpControlFlowDivider("ptp_control_flow_divider", std::chrono::milliseconds{250}), kInitTimeout);
+    auto gptp_machine = Add(CreateGPTPShmMachine("ptp_worker"), kInitTimeout);
+    auto verification_machine = Add(CreateSvtVerificationMachine("time_verification_worker"), kInitTimeout);
+    auto ipc_publisher = Add(CreateSvtPublisher("svt_ipc_publisher"), kInitTimeout);
 
     const auto input_ptp_data_topic = Topic("in_ptp_data");
     const auto raw_ptp_data_topic = Topic("raw_ptp_data");
     const auto validated_ptp_data_topic = Topic("validated_ptp_data");
 
-    Subscribe(input_ptp_data_topic, ctrl_flow_divider);
-    Subscribe(raw_ptp_data_topic, verification_machine);
-    Subscribe(validated_ptp_data_topic, ipc_publisher);
+    Subscribe(ctrl_flow_divider, input_ptp_data_topic);
+    Subscribe(verification_machine, raw_ptp_data_topic);
+    Subscribe(ipc_publisher, validated_ptp_data_topic);
 
     Publish(gptp_machine, input_ptp_data_topic);
     Publish(ctrl_flow_divider, raw_ptp_data_topic);
