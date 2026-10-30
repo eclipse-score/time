@@ -19,6 +19,7 @@
 #include <arpa/inet.h>
 #include <chrono>
 #include <condition_variable>
+#include <cstddef>
 #include <cstring>
 #include <deque>
 #include <memory>
@@ -35,6 +36,13 @@ namespace details
 
 namespace
 {
+
+using Frame = std::vector<std::uint8_t>;
+
+constexpr std::size_t kEthHeaderLen = sizeof(ethhdr);
+constexpr std::size_t kTsmtOffset = kEthHeaderLen;
+constexpr std::size_t kDomainOffset = kEthHeaderLen + offsetof(PTPHeader, domainNumber);
+constexpr std::size_t kPdelayReqExtraLen = sizeof(PdelayReqBody) - sizeof(PTPHeader);
 
 // ── FakeSocket ────────────────────────────────────────────────────────────────
 
@@ -100,7 +108,7 @@ class FakeSocket final : public RawSocket
         return len;
     }
 
-    std::vector<std::vector<std::uint8_t>> Sent()
+    std::vector<Frame> Sent()
     {
         std::lock_guard<std::mutex> lk(mtx_);
         return sent_;
@@ -117,7 +125,7 @@ class FakeSocket final : public RawSocket
 
   private:
     std::deque<std::pair<std::vector<std::uint8_t>, ::timespec>> frames_;
-    std::vector<std::vector<std::uint8_t>> sent_;
+    std::vector<Frame> sent_;
     std::mutex mtx_;
     std::condition_variable cv_;
     bool closed_{false};
@@ -247,8 +255,8 @@ std::vector<std::uint8_t> MakeUnknownFrame()
 std::vector<std::uint8_t> MakePdelayReqFrame(std::uint8_t domain)
 {
     std::vector<std::uint8_t> f = MakeUnknownFrame();
-    f[14 + 4] = domain;
-    f.resize(f.size() + 20, 0);
+    f[kDomainOffset] = domain;
+    f.resize(f.size() + kPdelayReqExtraLen, 0);
     return f;
 }
 
@@ -468,10 +476,10 @@ TEST_F(GptpEngineFakeTest, HandlePacket_PdelayReqWithAnyDomain_RespondsWithDomai
 
     const auto sent = raw->Sent();
     ASSERT_EQ(sent.size(), 2U);
-    EXPECT_EQ(sent[0][14] & 0x0FU, kPtpMsgtypePdelayResp);
-    EXPECT_EQ(sent[0][14 + 4], 0U);
-    EXPECT_EQ(sent[1][14] & 0x0FU, kPtpMsgtypePdelayRespFollowUp);
-    EXPECT_EQ(sent[1][14 + 4], 0U);
+    EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayResp);
+    EXPECT_EQ(sent[0][kDomainOffset], 0U);
+    EXPECT_EQ(sent[1][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayRespFollowUp);
+    EXPECT_EQ(sent[1][kDomainOffset], 0U);
     eng.Deinitialize();
 }
 
@@ -489,8 +497,8 @@ TEST_F(GptpEngineFakeTest, PdelayReqSent_WithConfiguredDomain_HasDomainZero)
 
     const auto sent = raw->Sent();
     ASSERT_FALSE(sent.empty());
-    EXPECT_EQ(sent[0][14] & 0x0FU, kPtpMsgtypePdelayReq);
-    EXPECT_EQ(sent[0][14 + 4], 0U);
+    EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayReq);
+    EXPECT_EQ(sent[0][kDomainOffset], 0U);
     eng.Deinitialize();
 }
 
