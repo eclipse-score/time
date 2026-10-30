@@ -200,8 +200,13 @@ void GenericTimebaseHandler<T>::RunOnce(const score::cpp::stop_token& token) noe
             break;
         }
         case TimebaseHandler::Status::kWorking:
+        {
+            // Timebase handler is running normally. Machines are started.
+            break;
+        }
         case TimebaseHandler::Status::kFailed:
         {
+            // Machine initialization failed. No machines will be started.
             break;
         }
     }
@@ -229,31 +234,32 @@ template <typename T>
 void GenericTimebaseHandler<T>::PollInitialization(const score::cpp::stop_token& token) noexcept
 {
     const auto init_result = init_job_runner_->GetResult();
-    if (token.stop_requested())
-    {
-        Stop();
-        return;
-    }
-
     switch (init_result)
     {
         case JobRunner::Result::kIdle:
         {
-            SCORE_LANGUAGE_FUTURECPP_ASSERT_PRD_MESSAGE(false, "Initialization worker has not been started");
+            score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": " << "Initialization worker has not been started yet";
             break;
         }
         case JobRunner::Result::kInProgress:
         {
+            score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": " << "Initialization in progress";
             break;
         }
         case JobRunner::Result::kSucceed:
         {
+            if (token.stop_requested())
+            {
+                Stop();
+                return;
+            }
             StartMachines();
             MoveToWorkingState();
             break;
         }
         case JobRunner::Result::kFailed:
         {
+            score::mw::log::LogError(kTimeBaseHandlerGeneric) << name_ << ": " << "Initialization failed";
             MoveToFailedState();
             break;
         }
