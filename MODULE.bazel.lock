@@ -3964,7 +3964,7 @@
     "@@score_bazel_cpp_toolchains+//extensions:gcc.bzl%gcc": {
       "general": {
         "bzlTransitiveDigest": "zi7lLeZEaUeJHTgRdQnTUZZpl7gerPZznsDSfmh2Z1s=",
-        "usagesDigest": "2G3Ka1SU6MTPS2kknys3/+CL0vlQGvADjsmSzj/ajbM=",
+        "usagesDigest": "JQj2sJRErGHtK0tIx1zxq9KfDgPjXmsGENt8z58ixl8=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
