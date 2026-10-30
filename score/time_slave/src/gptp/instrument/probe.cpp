@@ -30,6 +30,7 @@ ProbeManager& ProbeManager::Instance()
     return instance;
 }
 
+// req-Id: comp_req__time_slave__diagnostics
 void ProbeManager::Trace(ProbePoint point, const ProbeData& data)
 {
     score::mw::log::LogDebug(score::ts::kGPtpMachineContext)

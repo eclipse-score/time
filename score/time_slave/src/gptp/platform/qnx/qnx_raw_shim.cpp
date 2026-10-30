@@ -243,6 +243,7 @@ static int open_tx_loopback_fd(const char* ifname) noexcept
     return fd;
 }
 
+// req-Id: comp_req__time_slave__ethernet_address
 extern "C" int qnx_raw_open(const char* ifname)
 {
     if (ifname == nullptr)
@@ -309,6 +310,7 @@ extern "C" int qnx_raw_open(const char* ifname)
     return fd;
 }
 
+// req-Id: comp_req__time_slave__sync_reception
 extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int nonblock)
 {
     if (fd < 0 || buf == nullptr || buf_len <= 0 || hwts == nullptr)
