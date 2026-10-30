@@ -16,6 +16,7 @@
 #include <score/utility.hpp>
 
 #include <string>
+#include <tuple>
 #include <utility>
 
 namespace score
@@ -29,9 +30,7 @@ SvtCallbackDispatcher::SvtCallbackDispatcher(std::shared_ptr<score::td::SvtRecei
                                              const std::chrono::milliseconds poll_interval) noexcept
     : svt_receiver_{std::move(receiver)},
       poll_interval_{poll_interval},
-      sync_data_slot_{},
-      pdelay_slot_{},
-      status_slot_{},
+      slots_{},
       worker_mutex_{},
       enabled_{false},
       callback_registered_{false},
@@ -56,49 +55,6 @@ void SvtCallbackDispatcher::Start() noexcept
     const std::lock_guard<std::mutex> guard{worker_mutex_};
     enabled_ = true;
     StartWorkerIfReadyLocked();
-}
-
-template <typename Slot, typename Callback>
-void SvtCallbackDispatcher::SetCallback(Slot& slot, Callback&& callback) noexcept
-{
-    const bool present = !callback.empty();
-    slot.Set(std::move(callback));
-    if (present)
-    {
-        OnCallbackRegistered();
-    }
-}
-
-void SvtCallbackDispatcher::SetTimeSlaveSyncDataReceivedCallback(
-    VehicleTime::TimeSlaveSyncDataReceivedCallback&& callback) noexcept
-{
-    SetCallback(sync_data_slot_, std::move(callback));
-}
-
-void SvtCallbackDispatcher::UnsetTimeSlaveSyncDataReceivedCallback() noexcept
-{
-    sync_data_slot_.Unset();
-}
-
-void SvtCallbackDispatcher::SetPDelayMeasurementFinishedCallback(
-    VehicleTime::PDelayMeasurementFinishedCallback&& callback) noexcept
-{
-    SetCallback(pdelay_slot_, std::move(callback));
-}
-
-void SvtCallbackDispatcher::UnsetPDelayMeasurementFinishedCallback() noexcept
-{
-    pdelay_slot_.Unset();
-}
-
-void SvtCallbackDispatcher::SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept
-{
-    SetCallback(status_slot_, std::move(callback));
-}
-
-void SvtCallbackDispatcher::UnsetStatusChangedCallback() noexcept
-{
-    status_slot_.Unset();
 }
 
 void SvtCallbackDispatcher::OnCallbackRegistered() noexcept
@@ -162,7 +118,11 @@ void SvtCallbackDispatcher::WaitForWakeupOrPollInterval(const score::cpp::stop_t
 
 bool SvtCallbackDispatcher::IsAnyCallbackSet() const noexcept
 {
-    return sync_data_slot_.IsSet() || pdelay_slot_.IsSet() || status_slot_.IsSet();
+    return std::apply(
+        [](const auto&... slot) noexcept {
+            return (slot.IsSet() || ...);
+        },
+        slots_);
 }
 
 void SvtCallbackDispatcher::PollAndDispatch() noexcept
@@ -173,9 +133,9 @@ void SvtCallbackDispatcher::PollAndDispatch() noexcept
         return;
     }
 
-    sync_data_slot_.TryToEnvoke(ConvertSyncData(snapshot.value().sync_fup_data));
-    pdelay_slot_.TryToEnvoke(ConvertPDelayData(snapshot.value().pdelay_data));
-    status_slot_.TryToEnvoke(
+    std::get<SyncDataSlot>(slots_).TryToEnvoke(ConvertSyncData(snapshot.value().sync_fup_data));
+    std::get<PDelaySlot>(slots_).TryToEnvoke(ConvertPDelayData(snapshot.value().pdelay_data));
+    std::get<StatusSlot>(slots_).TryToEnvoke(
         VehicleTimeStatus{ConvertPtpStatus(snapshot.value().status), snapshot.value().rate_deviation});
 }
 
