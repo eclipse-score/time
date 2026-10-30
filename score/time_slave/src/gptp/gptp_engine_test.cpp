@@ -19,6 +19,7 @@
 #include <arpa/inet.h>
 #include <chrono>
 #include <condition_variable>
+#include <cstddef>
 #include <cstring>
 #include <deque>
 #include <memory>
@@ -35,6 +36,13 @@ namespace details
 
 namespace
 {
+
+using Frame = std::vector<std::uint8_t>;
+
+constexpr std::size_t kEthHeaderLen = sizeof(ethhdr);
+constexpr std::size_t kTsmtOffset = kEthHeaderLen;
+constexpr std::size_t kDomainOffset = kEthHeaderLen + offsetof(PTPHeader, domainNumber);
+constexpr std::size_t kPdelayReqExtraLen = sizeof(PdelayReqBody) - sizeof(PTPHeader);
 
 // ── FakeSocket ────────────────────────────────────────────────────────────────
 
@@ -92,9 +100,18 @@ class FakeSocket final : public RawSocket
         return static_cast<int>(n);
     }
 
-    int Send(const void*, int len, ::timespec&) override
+    int Send(const void* buf, int len, ::timespec&) override
     {
+        const auto* p = static_cast<const std::uint8_t*>(buf);
+        std::lock_guard<std::mutex> lk(mtx_);
+        sent_.emplace_back(p, p + len);
         return len;
+    }
+
+    std::vector<Frame> Sent()
+    {
+        std::lock_guard<std::mutex> lk(mtx_);
+        return sent_;
     }
     int GetFd() const override
     {
@@ -108,6 +125,7 @@ class FakeSocket final : public RawSocket
 
   private:
     std::deque<std::pair<std::vector<std::uint8_t>, ::timespec>> frames_;
+    std::vector<Frame> sent_;
     std::mutex mtx_;
     std::condition_variable cv_;
     bool closed_{false};
@@ -231,6 +249,14 @@ std::vector<std::uint8_t> MakeUnknownFrame()
     std::vector<std::uint8_t> f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayReq, 0, /*ctl=*/5);
+    return f;
+}
+
+std::vector<std::uint8_t> MakePdelayReqFrame(std::uint8_t domain)
+{
+    std::vector<std::uint8_t> f = MakeUnknownFrame();
+    f[kDomainOffset] = domain;
+    f.resize(f.size() + kPdelayReqExtraLen, 0);
     return f;
 }
 
@@ -431,6 +457,49 @@ TEST_F(GptpEngineFakeTest, HandlePacket_PdelayRespSequence_DoesNotCrash)
 
     // Just verify no crash; sleep briefly to let the RxThread process.
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+}
+
+TEST_F(GptpEngineFakeTest, HandlePacket_PdelayReqWithAnyDomain_RespondsWithDomainZero)
+{
+    GptpEngineOptions opts = FastOptions();
+    opts.domain_number = 5U;
+    opts.pdelay_req_interval_ms = 100000;
+    opts.pdelay_warmup_ms = 100000;
+    auto sock = std::make_unique<FakeSocket>();
+    FakeSocket* raw = sock.get();
+    GptpEngine eng{opts, std::move(sock), std::make_unique<FakeIdentity>()};
+    ASSERT_TRUE(eng.Initialize());
+
+    raw->Push(MakePdelayReqFrame(9U));
+    for (int i = 0; i < 100 && raw->Sent().size() < 2U; ++i)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    const auto sent = raw->Sent();
+    ASSERT_EQ(sent.size(), 2U);
+    EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayResp);
+    EXPECT_EQ(sent[0][kDomainOffset], 0U);
+    EXPECT_EQ(sent[1][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayRespFollowUp);
+    EXPECT_EQ(sent[1][kDomainOffset], 0U);
+    eng.Deinitialize();
+}
+
+TEST_F(GptpEngineFakeTest, PdelayReqSent_WithConfiguredDomain_HasDomainZero)
+{
+    GptpEngineOptions opts = FastOptions();
+    opts.domain_number = 5U;
+    auto sock = std::make_unique<FakeSocket>();
+    FakeSocket* raw = sock.get();
+    GptpEngine eng{opts, std::move(sock), std::make_unique<FakeIdentity>()};
+    ASSERT_TRUE(eng.Initialize());
+
+    for (int i = 0; i < 100 && raw->Sent().empty(); ++i)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    const auto sent = raw->Sent();
+    ASSERT_FALSE(sent.empty());
+    EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayReq);
+    EXPECT_EQ(sent[0][kDomainOffset], 0U);
+    eng.Deinitialize();
 }
 
 // ── GptpEngineFakeTest — unknown msgtype (default branch) ────────────────────
