@@ -27,9 +27,7 @@
 #include <mutex>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Component responsible for decoupling data flow and timing within VehicleTimeDaemon.
@@ -202,7 +200,6 @@ void ControlFlowDivider<DataType, BufferSize>::Publish(const DataType& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_CONTROL_FLOW_DIVIDER_CORE_CONTROL_FLOW_DIVIDER_H

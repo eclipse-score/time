@@ -23,9 +23,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Central publish-subscribe communication hub within the TimeDaemon.
@@ -130,7 +128,6 @@ void MessageBroker<T>::OnNewData(const Topic& topic, const T& data) const
     Publish(topic, data);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_MSG_BROKER_H

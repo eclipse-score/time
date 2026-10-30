@@ -15,9 +15,7 @@
 
 #include "score/time_daemon/src/common/machines/base_machine.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -40,7 +38,6 @@ class ReactiveMachine : public BaseMachine
     using BaseMachine::BaseMachine;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_REACTIVE_MACHINE_H
