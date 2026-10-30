@@ -17,6 +17,7 @@
 #include <score/stop_token.hpp>
 #include <chrono>
 #include <functional>
+#include <mutex>
 #include <string>
 #include <vector>
 

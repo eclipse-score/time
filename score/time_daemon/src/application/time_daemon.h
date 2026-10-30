@@ -14,8 +14,13 @@
 #define SCORE_TIME_DAEMON_SRC_APPLICATION_TIME_DAEMON_H
 
 #include "score/time_daemon/src/application/timebase_handler.h"
+#include "score/time_daemon/src/application/timebase_handler_factory.h"
 
 #include "score/mw/lifecycle/application.h"
+
+#include <cstdint>
+#include <memory>
+#include <vector>
 
 namespace score
 {
@@ -25,17 +30,16 @@ namespace td
 /// @brief Main entry point for the TimeDaemon process. Orchestrates the lifecycle
 /// of all daemon components.
 ///
-/// Retrieves Vehicle Time from the PTP slave daemon, verifies and validates
-/// timepoints, and distributes time to clients via shared memory. Creates
-/// components in @c Initialize() and wires pub/sub relationships via
-/// MessageBroker.
+/// Owns the handlers. The default constructor calls CreateTimebaseHandlers(). It is inline so only programs
+/// that use it need to link a factory that defines this function.
 ///
 /// @see TimebaseHandler
 /// @see score::mw::lifecycle::Application
 class TimeDaemon final : public score::mw::lifecycle::Application
 {
   public:
-    explicit TimeDaemon();
+    explicit TimeDaemon() : TimeDaemon{CreateTimebaseHandlers()} {}
+    explicit TimeDaemon(std::vector<std::unique_ptr<TimebaseHandler>> timebase_handlers);
     ~TimeDaemon() noexcept override = default;
 
     TimeDaemon(TimeDaemon&&) noexcept = delete;
@@ -43,12 +47,7 @@ class TimeDaemon final : public score::mw::lifecycle::Application
     TimeDaemon& operator=(TimeDaemon&&) & noexcept = delete;
     TimeDaemon& operator=(const TimeDaemon&) & noexcept = delete;
 
-    /// @brief Creates the MessageBroker and all machine components, and sets up subscriptions.
-    ///
-    /// Creates components in dependency order:
-    ///   1. MessageBroker
-    ///   2. ProactiveMachines: PtpMachine, ControlFlowDivider
-    ///   3. ReactiveMachines: VerificationMachine, IPCMachine
+    /// @brief Initializes the handlers in list order.
     ///
     /// Wires all pub/sub relationships via MessageBroker topic configuration.
     ///
@@ -66,7 +65,7 @@ class TimeDaemon final : public score::mw::lifecycle::Application
     std::int32_t Run(const score::cpp::stop_token& token) override;
 
   private:
-    std::unique_ptr<TimebaseHandler> svt_timebase_handler_;
+    std::vector<std::unique_ptr<TimebaseHandler>> timebase_handlers_;
 };
 
 }  // namespace td

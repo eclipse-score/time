@@ -186,13 +186,18 @@ The ``Application`` component is the main entry point for TimeDaemon, orchestrat
 
 The ``TimebaseHandler`` component implements timebase-specific logic. Multiple handlers may exist per supported timebase count, allowing different timebase implementations while maintaining consistent application structure.
 
-During initialization, the ``Application`` uses a factory pattern to create components in specific order:
+``TimeDaemon`` owns the handlers. Its default constructor calls ``CreateTimebaseHandlers()``.
+Exactly one linked factory must define this function (see :ref:`time_daemon_user_manual`).
+Tests can pass handlers to the other constructor. ``Initialize()`` initializes them in list order.
+Each handler creates and connects its own components:
 
 - Create ``MessageBroker`` first (other components depend on it)
 - Create ProactiveMachines (``PtpMachine``, ``ControlFlowDivider``) that drive system behavior, then initialize and wire subscriptions
 - Create ReactiveMachines (``VerificationMachine``, ``IPCMachine``) that respond to events, then initialize and wire subscriptions
 
-During execution, ProactiveMachines start in correct order. On termination, they stop in reverse order.
+``TimeDaemon`` calls ``RunOnce()`` on each handler in list order, then waits 100 ms. It repeats until a stop is requested.
+Proactive machines start in the order set by their handler. On shutdown, handlers stop in reverse list order.
+Within each handler, proactive machines stop in reverse start order.
 
 Class diagram:
 
