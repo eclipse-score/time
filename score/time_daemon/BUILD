@@ -16,6 +16,19 @@ load("@score_docs_as_code//:docs.bzl", "docs_bundle")
 
 docs_bundle(
     name = "docs_bundle",
+    code_targets = [
+        "//score/time_daemon/src/application/job_runner:requirement_marked_sources",
+        "//score/time_daemon/src/application/svt:requirement_marked_sources",
+        "//score/time_daemon/src/application:requirement_marked_sources",
+        "//score/time_daemon/src/common/machines:requirement_marked_sources",
+        "//score/time_daemon/src/ipc/core:requirement_marked_sources",
+        "//score/time_daemon/src/ipc/svt:requirement_marked_sources",
+        "//score/time_daemon/src/ptp_machine/core:requirement_marked_sources",
+        "//score/time_daemon/src/ptp_machine/shm/details:requirement_marked_sources",
+        "//score/time_daemon/src/verification_machine/core:requirement_marked_sources",
+        "//score/time_daemon/src/verification_machine/svt/validators:requirement_marked_sources",
+        "//score/time_daemon/src/verification_machine/svt:requirement_marked_sources",
+    ],
     source_dir = "docs",
     visibility = ["//visibility:public"],
 )
