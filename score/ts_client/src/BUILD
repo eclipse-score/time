@@ -14,6 +14,19 @@
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
+# Source files carrying `// req-Id:` markers, exposed to
+# //score/ts_client:docs_bundle via its code_targets attribute.
+filegroup(
+    name = "requirement_marked_sources",
+    srcs = [
+        "gptp_ipc_channel.h",
+        "gptp_ipc_data.h",
+        "gptp_ipc_publisher.cpp",
+        "gptp_ipc_receiver.cpp",
+    ],
+    visibility = ["//score/ts_client:__pkg__"],
+)
+
 cc_library(
     name = "gptp_ipc",
     srcs = [
