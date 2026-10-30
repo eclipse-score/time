@@ -1177,8 +1177,8 @@
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_baselibs/0.2.11/MODULE.bazel": "8b58c55218c3e7139a36d911bdfd1bd4ed6fe104ec177d851bd5e6b5e168a2ea",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_baselibs/0.2.12/MODULE.bazel": "e3396c28702be662c4388578839e51e3a4842ca938f695eea2fe4cecc612a413",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_baselibs/0.2.14/MODULE.bazel": "47f95ff2d0cdc74f7575ba4aee2197db1539dcaa88fcd451dc4c6a8cdeafcb08",
-    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_baselibs/0.2.15/MODULE.bazel": "bfbdf5c252abcfd3d18f115666372e6db5c4fc0d11c4790bb0ea823506c95917",
-    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_baselibs/0.2.15/source.json": "14e4d10025221b58ff0e6ed7256cac2f48fe7cf5e96a35f7b2581b18af0627f3",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_baselibs/0.2.16/MODULE.bazel": "ab876c72e62f4ad29a20da6fe69c7d888c49f12d382dac241ee7ff98341778ff",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_baselibs/0.2.16/source.json": "fce4fdcbb347484e4d7d8b9ecec251e21ec7f462ad02a38dbc5bec9057e7c470",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_bazel_cpp_toolchains/1.0.5/MODULE.bazel": "a86f620eabc8f04d4c63da454ad0c2e68ab409b2e709ce5268197a4020f71535",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_bazel_cpp_toolchains/1.0.5/source.json": "79e3a0677af0b807efe48e4b9e847c14d51ab03ddad5b40b4f9b32b58bac4b49",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_bazel_platforms/0.1.1/MODULE.bazel": "236e5bdff6f2d6de6f96cc4f5f4b1bf2cd6137547ce279668a2dd4c54cd4236c",
@@ -1232,8 +1232,8 @@
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_itf/0.6.0/source.json": "59e6efe70c81dbda18631020035bcedc1d92ee86bcae5965989ee5126aa78c92",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_lifecycle/0.7.0/MODULE.bazel": "c3f40ef7b51e25313a1870d5aeca25f13f7bae88994d24664b10b497930437b3",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_lifecycle/0.7.0/source.json": "d996c00003498cabb229d5b44bb317d1f96e0cbd500fb98d9226ee2c20dc59b3",
-    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_logging/0.2.4/MODULE.bazel": "c7b7652aeea2320f300309355fcb16df7ab24ea5b0e56d5106cdb53778202137",
-    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_logging/0.2.4/source.json": "5ade63e5e2c36f7a422ae64657892d54afe35397e5afdde25fdfdabb00f0f66d",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_logging/0.2.5/MODULE.bazel": "3f41b3904cbf38a4741b6ff0714687ea552817354442d9e040e72ffb71028f03",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_logging/0.2.5/source.json": "654b117bbc6e8424f1179aace0b580b78cc7fa1ebbbf07dcd89091d3128a263b",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_platform/0.1.0/MODULE.bazel": "cc9eae86e76f2a930510ed6e50ec991bb5661687e24881685b39c322087adf6f",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_platform/0.1.1/MODULE.bazel": "eb086ba99f9319371fbbd0a9252dfd27b0817039b88bd4d691602974b1ada005",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_platform/0.7.1/MODULE.bazel": "be2ae8861842689353b92b0cbc111c94e1bea57675692fe3b029ccd211c0b74c",
@@ -1277,8 +1277,8 @@
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tooling/2.2.0/MODULE.bazel": "178ba4862246b6ba2bbcd96b7e9e728299b19fb94bcf23d315dc2299aabf7178",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tooling/2.2.1/MODULE.bazel": "65847454f3555ae56ebfda04dcbdbeb44ece2e5ed9df8f63796309822091d38a",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tooling/2.2.2/MODULE.bazel": "1ef4d02d20ed0d3d47aa9d0711f49bc4b1a44c4a975e71c05d77df41e3ecff77",
-    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tooling/3.0.1/MODULE.bazel": "3d37a2257aff6729ce033a91a4db6885b4b2e2322075d8a6d6b2af1a26e78f91",
-    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tooling/3.0.1/source.json": "a513f4cc6f43ce3c8b53486d491f00790184619afc1878799e2c6c9e6d387fb8",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tooling/3.0.2/MODULE.bazel": "698cf807d940e44b3e936ad1b1dfae0c851e2a4f1445033727cee7bc9617110b",
+    "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tooling/3.0.2/source.json": "30864526d62f3be4fa85bf0d8e0438156312a4414bdb4ca9d1d8bd762947c116",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tools/0.0.3/MODULE.bazel": "69f441bf28d938de2b6aef61ec91e65633f8ea908d2527e6f5a424895c9ac388",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tools/0.0.4/MODULE.bazel": "36cd2ba63acec9de0e0c64d1bfba0eb0c1f3d292c4fd7f3d386e1858bb4a0709",
     "https://raw.githubusercontent.com/eclipse-score/bazel_registry/main/modules/score_tools/0.0.4/source.json": "e7dd4b96a5d2afe481cc76e7dd3e24d13bd71b93370508d2ea39e3ce0fa66c22",
@@ -2076,7 +2076,7 @@
     "@@rules_distroless+//apt:extensions.bzl%apt": {
       "general": {
         "bzlTransitiveDigest": "JeghnHp8g69GVW+YOpl7vD3YRaZmylDr+E+iuARG86I=",
-        "usagesDigest": "Hrg5PJP+0wbCelJ+f8oQyZ9iKJ5YLUyfBZF0VT71cuc=",
+        "usagesDigest": "7ZnmQyqAD1aoVOr9TYIBL2UxJDiwI3PtJ31PvMCRDT4=",
         "recordedFileInputs": {
           "@@score_tooling+//third_party/docs_runtime/manifest.yaml": "f8bd762e0dcaf3150504eca8dfd60819fc3be428d3a8b58d1d9cc52d68e16a45",
           "@@score_tooling+//third_party/tooling_sysroot/manifest.yaml": "ef1e4af34dbf67a9e332c69ccad0b12b2e295849c33e98658c6ccd69e363c4cd"
@@ -4215,6 +4215,28 @@
             "score_rules_imagefs+",
             "score_rules_imagefs",
             "score_rules_imagefs+"
+          ]
+        ]
+      }
+    },
+    "@@score_tooling+//bazel/rules/rules_score/private:lobster_capabilities.bzl%lobster_capabilities": {
+      "general": {
+        "bzlTransitiveDigest": "wyEBxCg5jli01vkqV+H6J7B2wzZ1RFF1sSdM5ZmGYWU=",
+        "usagesDigest": "yjcDPNK0IjkkPf3x4zNBF84IlbBKLZ3Y8Gy9ZetW74c=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "lobster_capabilities": {
+            "repoRuleId": "@@score_tooling+//bazel/rules/rules_score/private:lobster_capabilities.bzl%_lobster_capabilities_repo",
+            "attributes": {}
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "score_tooling+",
+            "lobster",
+            "lobster+"
           ]
         ]
       }

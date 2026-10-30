@@ -62,7 +62,7 @@ use_repo(
 
 bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "score_bazel_platforms", version = "1.1.0")
-bazel_dep(name = "score_logging", version = "0.2.4")
+bazel_dep(name = "score_logging", version = "0.2.5")
 
 ### Modules that are used internally within the repository but not exposed as part of the public API
 
@@ -80,7 +80,7 @@ git_override(
 
 bazel_dep(name = "score_platform", version = "0.7.4", dev_dependency = True)
 bazel_dep(name = "score_process_description", version = "2.2.2", dev_dependency = True)
-bazel_dep(name = "score_tooling", version = "3.0.1", dev_dependency = True)
+bazel_dep(name = "score_tooling", version = "3.0.2", dev_dependency = True)
 
 # LLVM source-based coverage pipeline (C++): the qualified S-CORE coverage
 # tool, successor of @score_tooling//coverage. See tools/coverage/.
@@ -103,7 +103,7 @@ bazel_dep(name = "google_benchmark", version = "1.9.5")
 
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1", dev_dependency = True)
 
-bazel_dep(name = "score_baselibs", version = "0.2.15")
+bazel_dep(name = "score_baselibs", version = "0.2.16")
 bazel_dep(name = "score_communication", version = "0.5.0")
 bazel_dep(name = "score_lifecycle", version = "0.7.0")
 
