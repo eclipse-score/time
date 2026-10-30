@@ -407,6 +407,20 @@ TEST_F(GptpEngineFakeTest, HandlePacket_SyncFollowUp_SnapshotBecomesSync)
     EXPECT_FALSE(data.status.is_timeout);
 }
 
+TEST_F(GptpEngineFakeTest, HandlePacket_SyncWithMissingTimestamp_IsDiscarded)
+{
+    ASSERT_TRUE(engine_->Initialize());
+
+    socket_raw_->Push(MakeSyncFrame(1U), kNoHwTimestamp);
+    socket_raw_->Push(MakeFollowUpFrame(1U, /*sec=*/2, /*ns=*/0));
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_FALSE(data.status.is_synchronized);
+}
+
 TEST_F(GptpEngineFakeTest, HandlePacket_MultipleSyncFup_SnapshotUpdated)
 {
     ASSERT_TRUE(engine_->Initialize());
