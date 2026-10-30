@@ -170,7 +170,7 @@ Platform Abstraction
    :version: 1
    :satisfied_by: comp__ts_client
 
-   The ts_client component shall support POSIX and QNX 8.0 SDP platforms for shared memory operations and inter-process communication.
+   The ts_client component shall support Linux and QNX 8.0 operating systems for shared memory operations and inter-process communication.
 
 Non-Functional Requirements
 ---------------------------
