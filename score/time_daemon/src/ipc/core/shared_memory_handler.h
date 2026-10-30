@@ -18,12 +18,13 @@
 #include "score/memory/shared/shared_memory_resource.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
 
+#include <array>
 #include <atomic>
+#include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <optional>
 #include <string>
-#include <thread>
 #include <type_traits>
 
 namespace score
@@ -33,6 +34,9 @@ namespace td
 
 ///
 /// \brief The class implements shared memory handling
+///
+/// \details Only one thread at a time, across all processes, may call Send(). Slots use per-slot seqlocks.
+///          Payload accesses are not atomic yet; overlapping slot reuse and reads are not C++ data-race-free.
 ///
 template <typename DataType>
 class SharedMemoryHandler
@@ -53,12 +57,12 @@ class SharedMemoryHandler
     bool Init();
 
     ///
-    /// \brief Safely read data from shared memory.
+    /// \brief Read a snapshot from shared memory, retrying if the slot changes.
     ///
     std::optional<DataType> Receive() const;
 
     ///
-    /// \brief Safely write data to shared memory
+    /// \brief Write data to the next shared memory slot without waiting for readers.
     ///
     void Send(const DataType& data);
 
@@ -78,11 +82,14 @@ class SharedMemoryHandler
         return (seq & 1U) == 0U;
     }
 
+    static constexpr std::size_t kCacheLineSize{64U};
+    static constexpr std::uint32_t kNumberOfSlots{10U};
+
     ///
-    /// \brief Common type to store mutex and specified data
+    /// \brief Common type to store seqlock and specified data
     /// \tparam DataType shall be trivially copyable data
     ///
-    struct SharedData
+    struct alignas(kCacheLineSize) Slot
     {
         static_assert(std::is_trivially_copyable_v<DataType>,
                       "DataType must be trivially copyable to be stored in shared memory!");
@@ -90,6 +97,8 @@ class SharedMemoryHandler
                       "DataType must be default constructible (required by DataType{} usage)!");
         static_assert(std::is_standard_layout_v<DataType>,
                       "DataType should be standard-layout for robust shared memory/IPC usage!");
+        static_assert(std::atomic<std::uint64_t>::is_always_lock_free,
+                      "Atomics shared between processes must be lock-free!");
 
         /// \brief seq_ seqlock counter: odd while a write is in progress, even otherwise.
         std::atomic<std::uint64_t> seq_{0U};
@@ -98,6 +107,15 @@ class SharedMemoryHandler
         // trivial simple types that are not allocated on heap!
         DataType data_{};
     };
+
+    struct alignas(kCacheLineSize) SharedData
+    {
+        std::atomic<std::uint64_t> published_slot_{0U};
+        std::array<Slot, kNumberOfSlots> slots_{};
+    };
+
+    /// \brief Bytes to reserve. Aligning SharedData can add up to alignof(SharedData) bytes of padding.
+    static constexpr std::size_t kSharedMemorySize{sizeof(SharedData) + alignof(SharedData)};
 
     const std::string shared_memory_path_;
     std::shared_ptr<score::memory::shared::ManagedMemoryResource> shared_memory_resource_;
@@ -116,7 +134,7 @@ bool SharedMemoryHandler<DataType>::Init()
             [this](std::shared_ptr<score::memory::shared::ISharedMemoryResource> memory_resource) {
                 shared_memory_data_ = memory_resource->construct<SharedData>();
             },
-            sizeof(SharedData),
+            kSharedMemorySize,
             {{permissions}, {}});
 
         if (shared_memory_resource_ == nullptr)
@@ -128,13 +146,23 @@ bool SharedMemoryHandler<DataType>::Init()
 
     if ((shared_memory_data_ == nullptr) && (shared_memory_resource_ != nullptr))
     {
-        // Shared memory was opened (not created) and now we need to map our struct there
-        // cast from void to T* is done by design as long as shared memory is agnostic to the type
-        // but clients only know, what is stored there. Also see the score::memory::shared::ManagedMemoryResource
-        // design for details.
-        shared_memory_data_ = static_cast<SharedData*>(shared_memory_resource_->getUsableBaseAddress());
-        score::mw::log::LogInfo(kIpcHandlerContext)
-            << "Shared memory object was found. Mapped data in it: " << shared_memory_data_;
+        // Shared memory was opened (not created) and now we need to map our struct there.
+        // The creator placed SharedData first, aligned to alignof(SharedData). Use the same alignment to find it.
+        void* address = shared_memory_resource_->getUsableBaseAddress();
+        std::size_t space = shared_memory_resource_->GetUserAllocatedBytes();
+        shared_memory_data_ =
+            static_cast<SharedData*>(std::align(alignof(SharedData), sizeof(SharedData), address, space));
+
+        if (shared_memory_data_ == nullptr)
+        {
+            score::mw::log::LogError(kIpcHandlerContext)
+                << "Shared memory object " << shared_memory_path_ << " is too small for the expected data layout";
+        }
+        else
+        {
+            score::mw::log::LogInfo(kIpcHandlerContext)
+                << "Shared memory object was found. Mapped data in it: " << shared_memory_data_;
+        }
     }
 
     return ((shared_memory_data_ != nullptr) && (shared_memory_resource_ != nullptr));
@@ -149,20 +177,23 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 
         for (std::uint8_t retry_cnt = 0U; retry_cnt < max_number_of_read_retries_; ++retry_cnt)
         {
-            const auto seq_before_read = shared_memory_data_->seq_.load(std::memory_order_acquire);
+            const auto slot_index =
+                shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) % kNumberOfSlots;
+            const auto& slot = shared_memory_data_->slots_[slot_index];
+            const auto seq_before_read = slot.seq_.load(std::memory_order_seq_cst);
 
             if (NoWriteInProgress(seq_before_read))
             {
                 // Copy the payload
-                read_data = shared_memory_data_->data_;
+                read_data = slot.data_;
 
                 // Unchanged counter: no write started or completed during the copy
-                if (shared_memory_data_->seq_.load(std::memory_order_relaxed) == seq_before_read)
+                if ((slot.seq_.load(std::memory_order_seq_cst) == seq_before_read) &&
+                    (shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) == slot_index))
                 {
                     return read_data;
                 }
             }
-            std::this_thread::yield();
         }
 
         score::mw::log::LogError(kIpcHandlerContext)
@@ -177,14 +208,18 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
 {
     if (shared_memory_data_ != nullptr)
     {
-        // Single writer: counter becomes odd to signal write in progress
-        const auto seq = shared_memory_data_->seq_.load(std::memory_order_relaxed);
-        shared_memory_data_->seq_.store(seq + 1U, std::memory_order_relaxed);
+        const auto published_slot = shared_memory_data_->published_slot_.load(std::memory_order_relaxed);
+        const auto next_slot = (published_slot + 1U) % kNumberOfSlots;
+        auto& slot = shared_memory_data_->slots_[next_slot];
 
-        shared_memory_data_->data_ = data;
+        // Single writer: counter becomes odd to signal write in progress
+        const auto seq = slot.seq_.fetch_add(1U, std::memory_order_seq_cst);
+
+        slot.data_ = data;
 
         // Even again: publishes the payload to readers
-        shared_memory_data_->seq_.store(seq + 2U, std::memory_order_release);
+        slot.seq_.store(seq + 2U, std::memory_order_seq_cst);
+        shared_memory_data_->published_slot_.store(next_slot, std::memory_order_seq_cst);
     }
 }
 
