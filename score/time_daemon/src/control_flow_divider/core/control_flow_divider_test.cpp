@@ -70,7 +70,9 @@ class ControlFlowDividerTest : public ::testing::Test
             }
             if (expected_published_data_count_ != 0U && published_data_count >= expected_published_data_count_)
             {
-                promise_data_published_.set_value();
+                std::call_once(publication_notification_once_, [this]() {
+                    promise_data_published_.set_value();
+                });
             }
         });
     }
@@ -91,6 +93,7 @@ class ControlFlowDividerTest : public ::testing::Test
 
     size_t expected_published_data_count_;
     std::promise<void> promise_data_published_;
+    std::once_flag publication_notification_once_;
     std::vector<testing::TestData> published_data_;
     std::mutex publish_data_guard_;
 };
@@ -127,17 +130,20 @@ TEST_F(ControlFlowDividerTest, TestPublishValidData)
 
 TEST_F(ControlFlowDividerTest, TestPublishEmptyDataOnTimeout)
 {
-    EXPECT_TRUE(divider_->Init());
+    StopAfterReceivingAmount(1U);
+
+    ASSERT_TRUE(divider_->Init());
+    auto future = promise_data_published_.get_future();
     divider_->Start();
 
     // Don't send any data, wait for timeout
 
-    auto future = promise_data_published_.get_future();
-    EXPECT_EQ(future.wait_for(500ms), std::future_status::timeout);
+    ASSERT_EQ(future.wait_for(3s), std::future_status::ready);
+    divider_->Stop();
 
     {
         std::lock_guard<std::mutex> lock(publish_data_guard_);
-        EXPECT_GE(published_data_.size(), 1);
+        ASSERT_GE(published_data_.size(), 1U);
 
         // Verify empty data (all zeros)
         testing::TestData empty_data{};
@@ -145,6 +151,34 @@ TEST_F(ControlFlowDividerTest, TestPublishEmptyDataOnTimeout)
         {
             EXPECT_EQ(cur_data, empty_data);
         }
+    }
+}
+
+TEST_F(ControlFlowDividerTest, TestPublicationNotificationIsOneShot)
+{
+    constexpr size_t kMessageCount = 3U;
+    StopAfterReceivingAmount(1U);
+
+    ASSERT_TRUE(divider_->Init());
+    auto future = promise_data_published_.get_future();
+
+    // Queue a batch so one event publishes beyond the notification threshold.
+    for (size_t idx = 0U; idx < kMessageCount; ++idx)
+    {
+        testing::TestData data{};
+        data.value = idx + 1U;
+        divider_->OnMessage(data);
+    }
+
+    divider_->Start();
+    ASSERT_EQ(future.wait_for(3s), std::future_status::ready);
+    divider_->Stop();
+
+    std::lock_guard<std::mutex> lock(publish_data_guard_);
+    ASSERT_GE(published_data_.size(), kMessageCount);
+    for (size_t idx = 0U; idx < kMessageCount; ++idx)
+    {
+        EXPECT_EQ(published_data_[idx].value, idx + 1U);
     }
 }
 
