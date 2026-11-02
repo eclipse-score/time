@@ -60,6 +60,7 @@ std::chrono::nanoseconds HighResSteadyQClock::ClockCyclesToNanoseconds(const std
 }  // namespace qtime
 }  // namespace high_res_steady_time
 
+// req-Id: comp_req__time__supported_platforms
 template <>
 std::shared_ptr<HighResSteadyClockBackend> detail::CreateBackend<HighResSteadyTime>()
 {

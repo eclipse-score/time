@@ -43,6 +43,7 @@ TEST(HighResSteadyQClockFactoryTest, CreateBackendReturnsHighResSteadyQClock)
     RecordProperty("Description",
                    "Verifies that detail::CreateBackend<HighResSteadyTime>() returns an HighResSteadyQClock instance.");
     RecordProperty("ASIL", "QM");
+    RecordProperty("PartiallyVerifies", "comp_req__time__supported_platforms");
 
     auto backend = detail::CreateBackend<HighResSteadyTime>();
     ASSERT_NE(backend, nullptr);

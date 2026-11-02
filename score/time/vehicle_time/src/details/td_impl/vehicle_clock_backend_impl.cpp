@@ -48,6 +48,7 @@ VehicleClockBackendImpl::VehicleClockBackendImpl(std::shared_ptr<score::td::SvtR
 {
 }
 
+// req-Id: comp_req__vehicle_time__snapshot
 ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl::Now() const noexcept
 {
     const ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> kEmptySnapshot{VehicleTime::Timepoint{},
@@ -81,6 +82,7 @@ ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl
     return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, vehicle_status};
 }
 
+// req-Id: comp_req__vehicle_time__lifecycle
 bool VehicleClockBackendImpl::Init() noexcept
 {
     if (is_ready_.load(std::memory_order_acquire))
@@ -118,6 +120,7 @@ bool VehicleClockBackendImpl::IsAvailable() const noexcept
     return is_ready_.load(std::memory_order_acquire);
 }
 
+// req-Id: comp_req__vehicle_time__lifecycle
 bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& token,
                                                  std::chrono::steady_clock::time_point until) const noexcept
 {
