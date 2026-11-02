@@ -62,7 +62,7 @@ class ControlFlowDividerTest : public ::testing::Test
         expected_published_data_count_ = 0U;
         published_data_.clear();
         divider_->SetPublishCallback([this](const testing::TestData& data) {
-            auto published_data_count = 0U;
+            std::size_t published_data_count = 0U;
             {
                 std::lock_guard<std::mutex> lock(publish_data_guard_);
                 published_data_.push_back(data);
