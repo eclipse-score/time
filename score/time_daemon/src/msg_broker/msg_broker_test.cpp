@@ -132,7 +132,7 @@ TEST_F(MessageBrokerTest, MultipleDataProduction)
         producer->Produce(i);
 
     ASSERT_EQ(consumer->received_data.size(), 5);
-    for (int i = 0; i < 5; ++i)
+    for (std::size_t i = 0; i < 5; ++i)
         EXPECT_EQ(consumer->received_data[i], i);
 }
 
