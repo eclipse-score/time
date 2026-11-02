@@ -27,7 +27,12 @@ namespace score::time
 class SteadyClockBackend
 {
   public:
+    SteadyClockBackend() noexcept = default;
     virtual ~SteadyClockBackend() noexcept = default;
+    SteadyClockBackend(const SteadyClockBackend&) = delete;
+    SteadyClockBackend& operator=(const SteadyClockBackend&) = delete;
+    SteadyClockBackend(SteadyClockBackend&&) = delete;
+    SteadyClockBackend& operator=(SteadyClockBackend&&) = delete;
 
     /// @brief Returns the current steady-clock snapshot.
     virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept = 0;

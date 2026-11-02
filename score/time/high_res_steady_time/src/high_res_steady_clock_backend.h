@@ -25,7 +25,12 @@ namespace score::time
 class HighResSteadyClockBackend
 {
   public:
+    HighResSteadyClockBackend() noexcept = default;
     virtual ~HighResSteadyClockBackend() noexcept = default;
+    HighResSteadyClockBackend(const HighResSteadyClockBackend&) = delete;
+    HighResSteadyClockBackend& operator=(const HighResSteadyClockBackend&) = delete;
+    HighResSteadyClockBackend(HighResSteadyClockBackend&&) = delete;
+    HighResSteadyClockBackend& operator=(HighResSteadyClockBackend&&) = delete;
 
     /// @brief Returns the current HIRS snapshot (time-point; status is NoStatus).
     virtual ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept = 0;

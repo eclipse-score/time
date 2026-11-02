@@ -33,7 +33,12 @@ namespace score::time
 class VehicleClockBackend
 {
   public:
+    VehicleClockBackend() noexcept = default;
     virtual ~VehicleClockBackend() noexcept = default;
+    VehicleClockBackend(const VehicleClockBackend&) = delete;
+    VehicleClockBackend& operator=(const VehicleClockBackend&) = delete;
+    VehicleClockBackend(VehicleClockBackend&&) = delete;
+    VehicleClockBackend& operator=(VehicleClockBackend&&) = delete;
 
     /// @brief Returns the current vehicle time snapshot (time-point + quality status).
     virtual ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept = 0;

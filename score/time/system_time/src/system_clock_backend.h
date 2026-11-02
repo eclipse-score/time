@@ -33,7 +33,12 @@ namespace score::time
 class SystemClockBackend
 {
   public:
+    SystemClockBackend() noexcept = default;
     virtual ~SystemClockBackend() noexcept = default;
+    SystemClockBackend(const SystemClockBackend&) = delete;
+    SystemClockBackend& operator=(const SystemClockBackend&) = delete;
+    SystemClockBackend(SystemClockBackend&&) = delete;
+    SystemClockBackend& operator=(SystemClockBackend&&) = delete;
 
     /// @brief Returns the current system-clock snapshot.
     virtual ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept = 0;
