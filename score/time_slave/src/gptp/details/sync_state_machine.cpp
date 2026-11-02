@@ -47,6 +47,7 @@ void SyncStateMachine::OnSync(const PTPMessage& msg)
     }
 }
 
+// req-Id: comp_req__time_slave__followup_processing
 std::optional<SyncResult> SyncStateMachine::OnFollowUp(const PTPMessage& msg)
 {
     switch (state_)
@@ -94,6 +95,7 @@ bool SyncStateMachine::IsTimeout(std::int64_t mono_now_ns, std::int64_t timeout_
     return (mono_now_ns - last) > timeout_ns;
 }
 
+// req-Id: comp_req__time_slave__offset_calculation, comp_req__time_slave__phc_frequency
 SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessage& fup) noexcept
 {
     const TmvT sync_corr = CorrectionToTmv(sync.ptpHdr.correctionField);

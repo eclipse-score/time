@@ -14,6 +14,14 @@
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
+# Source files carrying `// req-Id:` markers, exposed to
+# //score/time_slave:docs_bundle via its code_targets attribute.
+filegroup(
+    name = "requirement_marked_sources",
+    srcs = ["probe.cpp"],
+    visibility = ["//score/time_slave:__pkg__"],
+)
+
 cc_library(
     name = "probe",
     srcs = ["probe.cpp"],

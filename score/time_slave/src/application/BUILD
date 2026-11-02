@@ -13,6 +13,17 @@
 
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
+# Source files carrying `// req-Id:` markers, exposed to
+# //score/time_slave:docs_bundle via its code_targets attribute.
+filegroup(
+    name = "requirement_marked_sources",
+    srcs = [
+        "main.cpp",
+        "time_slave.cpp",
+    ],
+    visibility = ["//score/time_slave:__pkg__"],
+)
+
 cc_binary(
     name = "time_slave",
     srcs = [

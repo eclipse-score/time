@@ -14,6 +14,14 @@
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 load("//tools/lint:json_schema_validator.bzl", "validate_json_schema_test")
 
+# Source files carrying `// req-Id:` markers, exposed to
+# //score/time_slave:docs_bundle via its code_targets attribute.
+filegroup(
+    name = "requirement_marked_sources",
+    srcs = ["config_parser.cpp"],
+    visibility = ["//score/time_slave:__pkg__"],
+)
+
 filegroup(
     name = "time_slave_config_schema",
     srcs = ["time_slave_config_schema.json"],
