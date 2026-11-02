@@ -10,15 +10,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_daemon/src/ipc/core/receiver_impl.h"
-#include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 #include "score/time_daemon/src/ipc/core/test_types.h"
 
+#include "score/memory/shared/shared_memory_factory.h"
+#include "score/time_daemon/src/ipc/core/receiver_impl.h"
+#include "score/time_daemon/src/ipc/core/shared_memory_handler.h"
 #include <gtest/gtest.h>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class ReceiverTest : public ::testing::Test
@@ -72,5 +72,4 @@ TEST_F(ReceiverTest, TestReadWithoutInit)
     EXPECT_FALSE(receiver.Receive().has_value());
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

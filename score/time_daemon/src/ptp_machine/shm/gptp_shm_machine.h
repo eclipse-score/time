@@ -16,9 +16,7 @@
 #include "score/time_daemon/src/ptp_machine/core/ptp_machine.h"
 #include "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief PTPMachine instantiated with the shared-memory gPTP engine.
@@ -32,7 +30,6 @@ namespace td
 /// @endcode
 using GPTPShmMachine = PTPMachine<details::ShmPTPEngine>;
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_GPTP_SHM_MACHINE_H

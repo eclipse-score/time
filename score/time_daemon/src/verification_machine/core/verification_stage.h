@@ -15,9 +15,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -93,7 +91,6 @@ void VerificationStage<DataType>::SetNext(std::unique_ptr<VerificationStage<Data
     next_stage_ = std::move(next);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_VERIFICATION_MACHINE_CORE_VERIFICATION_STAGE_H

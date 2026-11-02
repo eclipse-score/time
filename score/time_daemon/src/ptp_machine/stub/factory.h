@@ -15,9 +15,7 @@
 
 #include "score/time_daemon/src/ptp_machine/stub/gptp_stub_machine.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -29,7 +27,6 @@ namespace td
  */
 std::shared_ptr<GPTPStubMachine> CreateGPTPStubMachine(const std::string& name);
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_STUB_FACTORY_H

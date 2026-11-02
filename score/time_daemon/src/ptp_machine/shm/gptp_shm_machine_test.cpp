@@ -11,19 +11,20 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/ptp_machine/shm/factory.h"
+#include "score/ts_client/src/gptp_ipc_data.h"
 #include "score/ts_client/src/gptp_ipc_publisher.h"
 
 #include <gtest/gtest.h>
 
 #include <atomic>
-#include <chrono>
 #include <future>
+#include <memory>
 #include <mutex>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 namespace
@@ -123,5 +124,4 @@ TEST_F(GPTPShmMachineIntegrationTest, Init_CalledTwice_SecondCallReturnsSameResu
     EXPECT_TRUE(machine_->Init());
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

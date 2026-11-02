@@ -15,9 +15,7 @@
 
 #include <type_traits>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 template <typename>
@@ -45,7 +43,6 @@ inline Dst ConvertToIpcData(const Src& src)
     return DataConverter<Src, Dst>::Convert(src);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_IPC_DATA_CONVERTER_H

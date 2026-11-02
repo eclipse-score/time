@@ -13,10 +13,9 @@
 #include "score/time_daemon/src/common/machines/base_machine.h"
 
 #include <gtest/gtest.h>
+#include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 class FakeMachine : public BaseMachine
@@ -36,5 +35,4 @@ TEST(BaseMachineTest, Construction)
     EXPECT_EQ(machine.GetName(), "TestMachine");
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

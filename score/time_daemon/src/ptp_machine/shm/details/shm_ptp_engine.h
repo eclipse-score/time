@@ -18,11 +18,7 @@
 
 #include <string>
 
-namespace score
-{
-namespace td
-{
-namespace details
+namespace score::td::details
 {
 
 /// @brief PTP engine implementation that reads @c GptpIpcData from the shared
@@ -93,8 +89,6 @@ class ShmPTPEngine final
     bool initialized_{false};
 };
 
-}  // namespace details
-}  // namespace td
-}  // namespace score
+}  // namespace score::td::details
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_DETAILS_SHM_PTP_ENGINE_H

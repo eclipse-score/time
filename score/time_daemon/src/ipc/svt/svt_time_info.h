@@ -20,9 +20,7 @@
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/ipc/data_converter.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace svt
 {
@@ -111,67 +109,69 @@ bool operator!=(const TimeBaseSnapshot& first, const TimeBaseSnapshot& second) n
 /// \brief PrintTo and stream operators:
 
 template <typename OutputStream>
-inline auto& PrintTo(const TimeBaseStatus& status, OutputStream& os)
+inline auto& PrintTo(const TimeBaseStatus& status, OutputStream& out_stream)
 {
-    return os << "Status: [" << status.is_synchronized << "|" << status.is_timeout << "|" << status.is_time_jump_future
-              << "|" << status.is_time_jump_past << "|" << status.is_correct << "]";
+    return out_stream << "Status: [" << status.is_synchronized << "|" << status.is_timeout << "|"
+                      << status.is_time_jump_future << "|" << status.is_time_jump_past << "|" << status.is_correct
+                      << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const TimeBaseStatus& status)
+inline auto& operator<<(OutputStream& out_stream, const TimeBaseStatus& status)
 {
-    return PrintTo(status, os);
+    return PrintTo(status, out_stream);
 }
 
 template <typename OutputStream>
-inline auto& PrintTo(const SyncFupSnapshot& data, OutputStream& os)
+inline auto& PrintTo(const SyncFupSnapshot& data, OutputStream& out_stream)
 {
-    return os << "SyncFupSnapshot:" << "[" << data.precise_origin_timestamp << "|" << data.reference_global_timestamp
-              << "|" << data.reference_local_timestamp << "|" << data.sync_ingress_timestamp << "|"
-              << data.correction_field << "|" << data.sequence_id << "|" << data.pdelay << "|" << data.port_number
-              << "|" << data.clock_identity << "]";
+    return out_stream << "SyncFupSnapshot:" << "[" << data.precise_origin_timestamp << "|"
+                      << data.reference_global_timestamp << "|" << data.reference_local_timestamp << "|"
+                      << data.sync_ingress_timestamp << "|" << data.correction_field << "|" << data.sequence_id << "|"
+                      << data.pdelay << "|" << data.port_number << "|" << data.clock_identity << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const SyncFupSnapshot& data)
+inline auto& operator<<(OutputStream& out_stream, const SyncFupSnapshot& data)
 {
-    return PrintTo(data, os);
+    return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto& PrintTo(const PDelayDataSnapshot& data, OutputStream& os)
+inline auto& PrintTo(const PDelayDataSnapshot& data, OutputStream& out_stream)
 {
-    return os << "PDelayDataSnapshot:" << "[" << data.request_origin_timestamp << "|" << data.request_receipt_timestamp
-              << "|" << data.response_origin_timestamp << "|" << data.response_receipt_timestamp << "|"
-              << data.reference_global_timestamp << "|" << data.reference_local_timestamp << "|" << data.sequence_id
-              << "|" << data.pdelay << "|" << data.req_port_number << "|" << data.req_clock_identity << "|"
-              << data.resp_port_number << "|" << data.resp_clock_identity << "]";
+    return out_stream << "PDelayDataSnapshot:" << "[" << data.request_origin_timestamp << "|"
+                      << data.request_receipt_timestamp << "|" << data.response_origin_timestamp << "|"
+                      << data.response_receipt_timestamp << "|" << data.reference_global_timestamp << "|"
+                      << data.reference_local_timestamp << "|" << data.sequence_id << "|" << data.pdelay << "|"
+                      << data.req_port_number << "|" << data.req_clock_identity << "|" << data.resp_port_number << "|"
+                      << data.resp_clock_identity << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const PDelayDataSnapshot& data)
+inline auto& operator<<(OutputStream& out_stream, const PDelayDataSnapshot& data)
 {
-    return PrintTo(data, os);
+    return PrintTo(data, out_stream);
 }
 
 template <typename OutputStream>
-inline auto& PrintTo(const TimeBaseSnapshot& info, OutputStream& os)
+inline auto& PrintTo(const TimeBaseSnapshot& info, OutputStream& out_stream)
 {
-    return os << "[" << info.ptp_assumed_time << "|" << info.local_time << "|" << info.status << "|"
-              << info.sync_fup_data << "|" << info.pdelay_data << "]";
+    return out_stream << "[" << info.ptp_assumed_time << "|" << info.local_time << "|" << info.status << "|"
+                      << info.sync_fup_data << "|" << info.pdelay_data << "]";
 }
 
 template <typename OutputStream>
-inline auto& operator<<(OutputStream& os, const TimeBaseSnapshot& info)
+inline auto& operator<<(OutputStream& out_stream, const TimeBaseSnapshot& info)
 {
-    return PrintTo(info, os);
+    return PrintTo(info, out_stream);
 }
 
 /// \brief  gtest compatibility:
-void PrintTo(const TimeBaseStatus& status, std::ostream* os);
-void PrintTo(const SyncFupSnapshot& data, std::ostream* os);
-void PrintTo(const PDelayDataSnapshot& data, std::ostream* os);
-void PrintTo(const TimeBaseSnapshot& info, std::ostream* os);
+void PrintTo(const TimeBaseStatus& status, std::ostream* out_stream);
+void PrintTo(const SyncFupSnapshot& data, std::ostream* out_stream);
+void PrintTo(const PDelayDataSnapshot& data, std::ostream* out_stream);
+void PrintTo(const TimeBaseSnapshot& info, std::ostream* out_stream);
 
 }  // namespace svt
 
@@ -189,7 +189,6 @@ struct DataConverter<PtpTimeInfo, svt::TimeBaseSnapshot>
     }
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_IPC_SVT_SVT_TIME_INFO_H
