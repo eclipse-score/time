@@ -29,6 +29,7 @@ namespace details
 constexpr char kGptpIpcName[] = "/gptp_ptp_info";
 
 /// Magic number to validate the shared memory region ('GPTP').
+// req-Id: comp_req__ts_client__shm_validation
 inline constexpr std::uint32_t kGptpIpcMagic = 0x47505450U;
 
 /**
@@ -41,6 +42,7 @@ inline constexpr std::uint32_t kGptpIpcMagic = 0x47505450U;
  *  - Writer: seq++ (odd = writing), write data, seq_confirm = seq (even = readable)
  *  - Reader: read seq, read data, read seq_confirm; retry if seq != seq_confirm or odd
  */
+// req-Id: comp_req__ts_client__cache_optimization, comp_req__ts_client__seqlock_protocol
 struct alignas(64) GptpIpcRegion
 {
     std::atomic<std::uint32_t> magic{kGptpIpcMagic};
