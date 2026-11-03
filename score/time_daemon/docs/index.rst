@@ -60,16 +60,13 @@ Key Behaviors
 
 **Startup Stabilization**: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.
 
-**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
+**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
 
-**Multi-Client Support**: Multiple client applications can concurrently read published time data.
+**Start Order Independence**: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon waits for it up to the startup timeout.
+
+**Multi-Client Support**: Multiple client applications can concurrently read the provided time data.
 
 **Platform Support**: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.
-
-Assumptions of Use
-------------------
-
-The time_slave component must be running before time_daemon is started, or become available within the time_daemon initialization timeout. Otherwise time_daemon initialization fails.
 
 Footnotes
 =========
