@@ -90,6 +90,7 @@ bool PublisherImpl<DataType, IpcDataType>::Init()
     return shm_handler_.Init();
 }
 
+// req-Id: comp_req__time_daemon__time_data_publishing
 template <typename DataType, typename IpcDataType>
 void PublisherImpl<DataType, IpcDataType>::OnMessage(DataType data)
 {

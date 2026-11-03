@@ -62,6 +62,7 @@ class SharedMemoryHandler
     ///
     void Send(const DataType& data);
 
+    // req-Id: comp_req__time_daemon__shutdown
     ~SharedMemoryHandler()
     {
         shared_memory_resource_.reset();
@@ -105,6 +106,7 @@ class SharedMemoryHandler
     const std::size_t max_number_of_read_retries_;
 };
 
+// req-Id: comp_req__time_daemon__platform_support, comp_req__time_daemon__error_reporting
 template <typename DataType>
 bool SharedMemoryHandler<DataType>::Init()
 {
@@ -140,6 +142,8 @@ bool SharedMemoryHandler<DataType>::Init()
     return ((shared_memory_data_ != nullptr) && (shared_memory_resource_ != nullptr));
 }
 
+// req-Id: comp_req__time_daemon__multi_client, comp_req__time_daemon__non_blocking
+// req-Id: comp_req__time_daemon__error_reporting
 template <typename DataType>
 std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 {

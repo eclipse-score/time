@@ -29,6 +29,7 @@ namespace score
 namespace td
 {
 
+// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__init_timeout
 SvtHandler::SvtHandler() noexcept
     : job_runner_{nullptr},
       msg_broker_{nullptr},
@@ -88,6 +89,7 @@ void SvtHandler::Initialize() noexcept
     score::mw::log::LogInfo(kTimeBaseHandlerSvt) << "Msg broker initialized!";
 }
 
+// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting
 void SvtHandler::RunOnce(const score::cpp::stop_token& token) noexcept
 {
     switch (handler_status_)
@@ -135,6 +137,7 @@ void SvtHandler::RunOnce(const score::cpp::stop_token& token) noexcept
     }
 }
 
+// req-Id: comp_req__time_daemon__shutdown
 void SvtHandler::Stop() noexcept
 {
     if (handler_status_ == TimebaseHandler::Status::kWorking)

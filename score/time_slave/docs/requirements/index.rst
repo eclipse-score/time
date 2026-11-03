@@ -209,7 +209,7 @@ Clock Synchronization
    :version: 1
    :satisfied_by: comp__time_slave
 
-   The time_slave component shall step-adjust the PTP hardware clock (PHC - the network interface hardware clock used for timestamping per IEEE 1588/802.1AS) offset when the absolute value of the computed offset exceeds the configured step threshold (configurable, default 1 second).
+   The time_slave component shall step-adjust the PTP hardware clock (PHC - the network interface hardware clock used for timestamping per IEEE 1588/802.1AS) offset when the absolute value of the computed offset exceeds the configured step threshold (configurable, default 100 milliseconds).
 
 .. comp_req:: PHC Frequency Adjustment
    :id: comp_req__time_slave__phc_frequency
@@ -252,7 +252,7 @@ Platform Abstraction
    :version: 1
    :satisfied_by: comp__time_slave
 
-   The time_slave component shall support POSIX and QNX 8.0 SDP platforms for Ethernet frame transmission/reception with hardware timestamping and PTP hardware clock control.
+   The time_slave component shall support Linux and QNX 8.0 operating systems for Ethernet frame transmission/reception with hardware timestamping and PTP hardware clock control.
 
 Error Handling
 ^^^^^^^^^^^^^^
