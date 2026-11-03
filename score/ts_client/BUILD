@@ -16,7 +16,7 @@ load("@score_docs_as_code//:docs.bzl", "docs_bundle")
 docs_bundle(
     name = "docs_bundle",
     code_targets = [
-        "//score/ts_client/src:requirement_marked_sources",
+        "//score/ts_client/src:gptp_ipc",
     ],
     source_dir = "docs",
     visibility = ["//visibility:public"],
