@@ -15,7 +15,14 @@
               "line": 52,
               "tag": "// req-Id:",
               "need": "comp_req__time_daemon__startup",
-              "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__init_retry"
+              "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__start_order_indep"
+            },
+            {
+              "file": "score/time_daemon/src/verification_machine/svt/factory.cpp",
+              "line": 24,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_daemon__startup",
+              "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__timeout_detection"
             },
             {
               "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
@@ -30,28 +37,21 @@
               "tag": "// req-Id:",
               "need": "comp_req__time_daemon__startup",
               "full_line": "// req-Id: comp_req__time_daemon__startup"
-            },
-            {
-              "file": "score/time_daemon/src/verification_machine/svt/factory.cpp",
-              "line": 24,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__startup",
-              "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__timeout_detection"
             }
           ],
           "TestLinks": []
         }
       },
       {
-        "need": "comp_req__time_daemon__init_retry",
+        "need": "comp_req__time_daemon__start_order_indep",
         "links": {
           "CodeLinks": [
             {
               "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
               "line": 52,
               "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__init_retry",
-              "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__init_retry"
+              "need": "comp_req__time_daemon__start_order_indep",
+              "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__start_order_indep"
             }
           ],
           "TestLinks": []
@@ -93,13 +93,6 @@
             {
               "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
               "line": 53,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__error_reporting",
-              "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting"
-            },
-            {
-              "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
-              "line": 92,
               "tag": "// req-Id:",
               "need": "comp_req__time_daemon__error_reporting",
               "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting"
@@ -152,6 +145,13 @@
               "tag": "// req-Id:",
               "need": "comp_req__time_daemon__error_reporting",
               "full_line": "// req-Id: comp_req__time_daemon__timeout_detection, comp_req__time_daemon__error_reporting"
+            },
+            {
+              "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
+              "line": 92,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_daemon__error_reporting",
+              "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting"
             }
           ],
           "TestLinks": []
@@ -161,27 +161,6 @@
         "need": "comp_req__time_daemon__shutdown",
         "links": {
           "CodeLinks": [
-            {
-              "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
-              "line": 140,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__shutdown",
-              "full_line": "// req-Id: comp_req__time_daemon__shutdown"
-            },
-            {
-              "file": "score/time_daemon/src/application/main.cpp",
-              "line": 17,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__shutdown",
-              "full_line": "// req-Id: comp_req__time_daemon__shutdown"
-            },
-            {
-              "file": "score/time_daemon/src/application/time_daemon.cpp",
-              "line": 41,
-              "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__shutdown",
-              "full_line": "// req-Id: comp_req__time_daemon__shutdown"
-            },
             {
               "file": "score/time_daemon/src/common/machines/event_driven_machine.cpp",
               "line": 34,
@@ -216,36 +195,27 @@
               "tag": "// req-Id:",
               "need": "comp_req__time_daemon__shutdown",
               "full_line": "// req-Id: comp_req__time_daemon__shutdown"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__time_daemon__time_data_publishing",
-        "links": {
-          "CodeLinks": [
+            },
             {
-              "file": "score/time_daemon/src/ipc/core/publisher_impl.h",
-              "line": 93,
+              "file": "score/time_daemon/src/application/svt/svt_handler.cpp",
+              "line": 140,
               "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__time_data_publishing",
-              "full_line": "// req-Id: comp_req__time_daemon__time_data_publishing"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__time_daemon__client_read_access",
-        "links": {
-          "CodeLinks": [
+              "need": "comp_req__time_daemon__shutdown",
+              "full_line": "// req-Id: comp_req__time_daemon__shutdown"
+            },
             {
-              "file": "score/time_daemon/src/ipc/core/receiver_impl.h",
-              "line": 84,
+              "file": "score/time_daemon/src/application/main.cpp",
+              "line": 17,
               "tag": "// req-Id:",
-              "need": "comp_req__time_daemon__client_read_access",
-              "full_line": "// req-Id: comp_req__time_daemon__client_read_access"
+              "need": "comp_req__time_daemon__shutdown",
+              "full_line": "// req-Id: comp_req__time_daemon__shutdown"
+            },
+            {
+              "file": "score/time_daemon/src/application/time_daemon.cpp",
+              "line": 41,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_daemon__shutdown",
+              "full_line": "// req-Id: comp_req__time_daemon__shutdown"
             }
           ],
           "TestLinks": []
@@ -291,6 +261,21 @@
               "tag": "// req-Id:",
               "need": "comp_req__time_daemon__non_blocking",
               "full_line": "// req-Id: comp_req__time_daemon__multi_client, comp_req__time_daemon__non_blocking"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time_daemon__time_data_publishing",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_daemon/src/ipc/core/publisher_impl.h",
+              "line": 93,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_daemon__time_data_publishing",
+              "full_line": "// req-Id: comp_req__time_daemon__time_data_publishing"
             }
           ],
           "TestLinks": []
@@ -496,15 +481,37 @@
         }
       },
       {
+        "need": "comp_req__time_daemon__client_read_access",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time_daemon/src/ipc/core/receiver_impl.h",
+              "line": 84,
+              "tag": "// req-Id:",
+              "need": "comp_req__time_daemon__client_read_access",
+              "full_line": "// req-Id: comp_req__time_daemon__client_read_access"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
         "need": "comp_req__time__unified_clock_facade",
         "links": {
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 96,
-              "tag": "# req-Id:",
+              "line": 79,
+              "tag": "// req-Id:",
               "need": "comp_req__time__unified_clock_facade",
-              "full_line": "// # req-Id: comp_req__time__unified_clock_facade"
+              "full_line": "// req-Id: comp_req__time__unified_clock_facade"
+            },
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 97,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__unified_clock_facade",
+              "full_line": "// req-Id: comp_req__time__unified_clock_facade"
             }
           ],
           "TestLinks": []
@@ -516,10 +523,17 @@
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 116,
-              "tag": "# req-Id:",
+              "line": 117,
+              "tag": "// req-Id:",
               "need": "comp_req__time__snapshot_with_status",
-              "full_line": "// # req-Id: comp_req__time__snapshot_with_status"
+              "full_line": "// req-Id: comp_req__time__snapshot_with_status"
+            },
+            {
+              "file": "score/time/clock/src/clock_snapshot.h",
+              "line": 34,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__snapshot_with_status",
+              "full_line": "// req-Id: comp_req__time__snapshot_with_status"
             }
           ],
           "TestLinks": []
@@ -531,24 +545,24 @@
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 154,
-              "tag": "# req-Id:",
+              "line": 155,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             },
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 165,
-              "tag": "# req-Id:",
+              "line": 166,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             },
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 181,
-              "tag": "# req-Id:",
+              "line": 182,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             }
           ],
           "TestLinks": []
@@ -561,9 +575,31 @@
             {
               "file": "score/time/high_res_steady_time/src/high_res_steady_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__high_res_steady_time__snapshot",
-              "full_line": "// # req-Id: comp_req__high_res_steady_time__snapshot"
+              "full_line": "// req-Id: comp_req__high_res_steady_time__snapshot"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time__supported_platforms",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/high_res_steady_time/src/details/qtime/high_res_steady_qclock.cpp",
+              "line": 63,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__supported_platforms",
+              "full_line": "// req-Id: comp_req__time__supported_platforms"
+            },
+            {
+              "file": "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.cpp",
+              "line": 43,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__supported_platforms",
+              "full_line": "// req-Id: comp_req__time__supported_platforms"
             }
           ],
           "TestLinks": []
@@ -576,9 +612,9 @@
             {
               "file": "score/time/steady_time/src/steady_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__steady_time__snapshot",
-              "full_line": "// # req-Id: comp_req__steady_time__snapshot"
+              "full_line": "// req-Id: comp_req__steady_time__snapshot"
             }
           ],
           "TestLinks": []
@@ -591,24 +627,9 @@
             {
               "file": "score/time/system_time/src/system_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__system_time__snapshot",
-              "full_line": "// # req-Id: comp_req__system_time__snapshot"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__vehicle_time__snapshot",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 44,
-              "tag": "# req-Id:",
-              "need": "comp_req__vehicle_time__snapshot",
-              "full_line": "// # req-Id: comp_req__vehicle_time__snapshot"
+              "full_line": "// req-Id: comp_req__system_time__snapshot"
             }
           ],
           "TestLinks": []
@@ -620,24 +641,53 @@
           "CodeLinks": [
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 50,
-              "tag": "# req-Id:",
+              "line": 49,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 56,
-              "tag": "# req-Id:",
+              "line": 55,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 62,
-              "tag": "# req-Id:",
+              "line": 61,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 85,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 123,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__vehicle_time__snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 51,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__snapshot",
+              "full_line": "// req-Id: comp_req__vehicle_time__snapshot"
             }
           ],
           "TestLinks": []
