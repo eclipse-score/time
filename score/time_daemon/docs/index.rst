@@ -53,23 +53,20 @@ The component operates as a continuous loop with the following stages:
    * Timeout detection (no new time sync data within configured span of time)
    * Time jump detection (received master timestamp deviates from its expected value by more than the configured threshold)
 
-3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface at a fixed interval
+3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface
 
 Key Behaviors
 -------------
 
 **Startup Stabilization**: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.
 
-**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
+**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
 
-**Multi-Client Support**: Multiple client applications can concurrently read published time data.
+**Start Order Independence**: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon waits for it up to the startup timeout.
+
+**Multi-Client Support**: Multiple client applications can concurrently read the provided time data.
 
 **Platform Support**: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.
-
-Assumptions of Use
-------------------
-
-The gPTP shared memory must be available and initialized before synchronized time data published by time_daemon is relied upon. Otherwise shared memory access failures or stale data may occur.
 
 Footnotes
 =========
