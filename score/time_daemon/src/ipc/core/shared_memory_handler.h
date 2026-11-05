@@ -23,6 +23,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <new>
 #include <optional>
 #include <string>
 #include <type_traits>
@@ -82,14 +83,18 @@ class SharedMemoryHandler
         return (seq & 1U) == 0U;
     }
 
-    static constexpr std::size_t kCacheLineSize{64U};
-    static constexpr std::uint32_t kNumberOfSlots{10U};
+#if defined(__cpp_lib_hardware_interference_size)
+    static constexpr std::size_t kDestructiveInterferenceSize{std::hardware_destructive_interference_size};
+#else
+    static constexpr std::size_t kDestructiveInterferenceSize{64U};
+#endif
+    static constexpr std::uint32_t kNumberOfSlots{4U};
 
     ///
     /// \brief Common type to store seqlock and specified data
     /// \tparam DataType shall be trivially copyable data
     ///
-    struct alignas(kCacheLineSize) Slot
+    struct alignas(kDestructiveInterferenceSize) Slot
     {
         static_assert(std::is_trivially_copyable_v<DataType>,
                       "DataType must be trivially copyable to be stored in shared memory!");
@@ -108,7 +113,7 @@ class SharedMemoryHandler
         DataType data_{};
     };
 
-    struct alignas(kCacheLineSize) SharedData
+    struct alignas(kDestructiveInterferenceSize) SharedData
     {
         std::atomic<std::uint64_t> published_slot_{0U};
         std::array<Slot, kNumberOfSlots> slots_{};
@@ -188,8 +193,7 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
                 read_data = slot.data_;
 
                 // Unchanged counter: no write started or completed during the copy
-                if ((slot.seq_.load(std::memory_order_seq_cst) == seq_before_read) &&
-                    (shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) == slot_index))
+                if (slot.seq_.load(std::memory_order_seq_cst) == seq_before_read)
                 {
                     return read_data;
                 }
