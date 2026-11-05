@@ -461,9 +461,53 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="verification-report">
+  
+<style>
+.score-testcase-result {
+  font-weight: bold;
+}
+.score-testcase-result--passed {
+  color: #146c2e;
+}
+.score-testcase-result--failed {
+  color: #b42318;
+}
+.score-testcase-result--skipped {
+  color: #8a5300;
+}
+.score-testcase-result--disabled {
+  color: #5f6368;
+}
+html[data-theme="dark"] .score-testcase-result--passed {
+  color: #7ee787;
+}
+html[data-theme="dark"] .score-testcase-result--failed {
+  color: #ff7b72;
+}
+html[data-theme="dark"] .score-testcase-result--skipped {
+  color: #d29922;
+}
+html[data-theme="dark"] .score-testcase-result--disabled {
+  color: #c4cad2;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) .score-testcase-result--passed {
+    color: #7ee787;
+  }
+  html:not([data-theme="light"]) .score-testcase-result--failed {
+    color: #ff7b72;
+  }
+  html:not([data-theme="light"]) .score-testcase-result--skipped {
+    color: #d29922;
+  }
+  html:not([data-theme="light"]) .score-testcase-result--disabled {
+    color: #c4cad2;
+  }
+}
+</style>
+<section id="verification-report">
 <h1>Verification Report<a class="headerlink" href="#verification-report" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-33797485">
+<div class="need_container docutils container" id="SNCB-3c557164">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_mod_ver_report table" id="mod_vrep__time__report">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -646,7 +690,7 @@ p.rubric.safety-class-heading.safety-qm { background: #6c757d; }
 <img alt="Time Requirements Status (ASIL B): valid_inspected 0, valid 8, invalid 0" class="score-report-pie" src="../_images/score_report_pie_7c5558cb85.svg" />
 </div>
 <div class="sd-col sd-d-flex-column docutils">
-<img alt="Time Requirements Test Coverage (ASIL B): fully covered 0, partially covered 0, not covered 8" class="score-report-pie" src="../_images/score_report_pie_1f79271cad.svg" />
+<img alt="Time Requirements Test Coverage (ASIL B): fully covered 0, partially covered 5, not covered 3" class="score-report-pie" src="../_images/score_report_pie_1f79271cad.svg" />
 </div>
 </div>
 </div>
@@ -704,31 +748,31 @@ verification status and the tests that (fully or partially) verify them:</p>
 <td class="needs_title"><p>HighResSteadyClock always-ready snapshot</p></td>
 <td class="needs_safety"><p>ASIL_B</p></td>
 <td class="needs_status"><p>valid</p></td>
-<td class="needs_testlink"><p></p></td>
+<td class="needs_testlink"><p><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/high_res_steady_time/src/high_res_steady_clock_adapter_test.cpp#L29">HighResSteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a></p></td>
 </tr>
 <tr class="need row-even"><td class="needs_id"><p><a class="reference internal" href="../time/requirements/index.html#comp_req__steady_time__snapshot">comp_req__steady_time__snapshot</a></p></td>
 <td class="needs_title"><p>SteadyClock always-ready snapshot</p></td>
 <td class="needs_safety"><p>ASIL_B</p></td>
 <td class="needs_status"><p>valid</p></td>
-<td class="needs_testlink"><p></p></td>
+<td class="needs_testlink"><p><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/steady_time/src/steady_clock_adapter_test.cpp#L45">SteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a></p></td>
 </tr>
 <tr class="need row-odd"><td class="needs_id"><p><a class="reference internal" href="../time/requirements/index.html#comp_req__system_time__snapshot">comp_req__system_time__snapshot</a></p></td>
 <td class="needs_title"><p>SystemClock always-ready snapshot</p></td>
 <td class="needs_safety"><p>ASIL_B</p></td>
 <td class="needs_status"><p>valid</p></td>
-<td class="needs_testlink"><p></p></td>
+<td class="needs_testlink"><p><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/system_time/src/system_clock_adapter_test.cpp#L45">SystemClockTest__NowReturnsTimepointSuitableForDurationArithmetic<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a></p></td>
 </tr>
 <tr class="need row-even"><td class="needs_id"><p><a class="reference internal" href="../time/requirements/index.html#comp_req__vehicle_time__lifecycle">comp_req__vehicle_time__lifecycle</a></p></td>
 <td class="needs_title"><p>VehicleClock lifecycle operations</p></td>
 <td class="needs_safety"><p>ASIL_B</p></td>
 <td class="needs_status"><p>valid</p></td>
-<td class="needs_testlink"><p></p></td>
+<td class="needs_testlink"><p><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/vehicle_time/src/vehicle_clock_test.cpp#L104">VehicleClockTest__InitForwardsToBackend<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/vehicle_time/src/vehicle_clock_test.cpp#L119">VehicleClockTest__IsAvailableReturnsTrueWhenBackendReports<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/vehicle_time/src/vehicle_clock_test.cpp#L135">VehicleClockTest__IsAvailableReturnsFalseWhenBackendUnavailable<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/vehicle_time/src/vehicle_clock_test.cpp#L151">VehicleClockTest__WaitUntilAvailableForwardsTokenAndDeadlineToBackend<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a></p></td>
 </tr>
 <tr class="need row-odd"><td class="needs_id"><p><a class="reference internal" href="../time/requirements/index.html#comp_req__vehicle_time__snapshot">comp_req__vehicle_time__snapshot</a></p></td>
 <td class="needs_title"><p>VehicleClock returns snapshot with status</p></td>
 <td class="needs_safety"><p>ASIL_B</p></td>
 <td class="needs_status"><p>valid</p></td>
-<td class="needs_testlink"><p></p></td>
+<td class="needs_testlink"><p><a class="reference external" href="https://github.com/eclipse-score/time/blob/9ae2d459215e7b7f2d0e8b5c3bd99adabe7c351c/score/time/vehicle_time/src/vehicle_clock_test.cpp#L53">VehicleClockTest__NowReturnsSynchronizedStatusAndTimepoint<span class="score-testcase-result score-testcase-result--passed"> (passed)</span></a></p></td>
 </tr>
 </tbody>
 </table>
