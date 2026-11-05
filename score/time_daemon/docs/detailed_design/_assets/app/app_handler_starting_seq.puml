@@ -1,0 +1,68 @@
+' *******************************************************************************
+' Copyright (c) 2026 Contributors to the Eclipse Foundation
+'
+' See the NOTICE file(s) distributed with this work for additional
+' information regarding copyright ownership.
+'
+' This program and the accompanying materials are made available under the
+' terms of the Apache License Version 2.0 which is available at
+' https://www.apache.org/licenses/LICENSE-2.0
+'
+' SPDX-License-Identifier: Apache-2.0
+' *******************************************************************************
+
+@startuml app_handler_starting_seq_diagram
+
+title Application: Handler Starting Phase
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color        |= Description            |
+    |<#LightCyan>   | Application objects     |
+    |<#Wheat>       | Handler machines        |
+endlegend
+
+participant "TimeDaemon" as vtd_app #LightCyan
+participant "TimebaseHandler" as tb_handler #LightCyan
+participant "JobRunner thread" as runner #LightCyan
+participant "Machines" as machines #Wheat
+
+activate vtd_app
+
+par Initialization workers (asynchronous, one per handler)
+    loop pending machines (retry until initialized, timed out, or stop requested)
+        runner -> machines : Init()
+        activate machines
+        machines --> runner : initialized / retry
+        deactivate machines
+    end
+else Application polling
+    loop while no stop is requested (checked between passes)
+        loop handlers in list order
+            vtd_app -> tb_handler : RunOnce()
+            activate tb_handler
+            opt handler state == kStarting
+                tb_handler -> runner : GetResult()
+                runner --> tb_handler : current result (non-blocking)
+                opt Initialization JobRunner result == kSucceed
+                    loop proactive machines in registration order
+                        tb_handler -> machines : Start()
+                        activate machines
+                        machines --> tb_handler
+                        deactivate machines
+                    end
+                end
+            end
+            tb_handler --> vtd_app
+            deactivate tb_handler
+        end
+        vtd_app -> vtd_app : interruptible wait (up to 100 ms)
+    end
+end
+
+note over vtd_app : Stop requested: Run() proceeds to shutdown
+
+@enduml
