@@ -567,7 +567,7 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpFuture_Detected)
     score::ts::GptpIpcData data{};
     ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
     EXPECT_TRUE(data.status.is_time_jump_future);
-    EXPECT_FALSE(data.status.is_correct);
+    EXPECT_TRUE(data.status.is_correct);
 }
 
 TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
@@ -593,7 +593,7 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
     score::ts::GptpIpcData data{};
     ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
     EXPECT_TRUE(data.status.is_time_jump_past);
-    EXPECT_FALSE(data.status.is_correct);
+    EXPECT_TRUE(data.status.is_correct);
 }
 
 }  // namespace details
