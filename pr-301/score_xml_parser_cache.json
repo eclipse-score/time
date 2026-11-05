@@ -1,9 +1,21 @@
 [
   {
-    "name": "HighResSteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
-    "file": "score/time/high_res_steady_time/src/high_res_steady_clock_adapter_test.cpp",
-    "line": 29,
-    "need": "comp_req__high_res_steady_time__snapshot",
+    "name": "SteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+    "file": "score/time/steady_time/src/steady_clock_adapter_test.cpp",
+    "line": 45,
+    "need": "comp_req__steady_time__snapshot",
+    "verify_type": "partially",
+    "result": "passed",
+    "result_text": "",
+    "repo_name": "local_repo",
+    "hash": "",
+    "url": ""
+  },
+  {
+    "name": "SystemClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+    "file": "score/time/system_time/src/system_clock_adapter_test.cpp",
+    "line": 45,
+    "need": "comp_req__system_time__snapshot",
     "verify_type": "partially",
     "result": "passed",
     "result_text": "",
@@ -72,22 +84,10 @@
     "url": ""
   },
   {
-    "name": "SteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
-    "file": "score/time/steady_time/src/steady_clock_adapter_test.cpp",
-    "line": 45,
-    "need": "comp_req__steady_time__snapshot",
-    "verify_type": "partially",
-    "result": "passed",
-    "result_text": "",
-    "repo_name": "local_repo",
-    "hash": "",
-    "url": ""
-  },
-  {
-    "name": "SystemClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
-    "file": "score/time/system_time/src/system_clock_adapter_test.cpp",
-    "line": 45,
-    "need": "comp_req__system_time__snapshot",
+    "name": "HighResSteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+    "file": "score/time/high_res_steady_time/src/high_res_steady_clock_adapter_test.cpp",
+    "line": 29,
+    "need": "comp_req__high_res_steady_time__snapshot",
     "verify_type": "partially",
     "result": "passed",
     "result_text": "",
