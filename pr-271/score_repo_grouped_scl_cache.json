@@ -12,10 +12,17 @@
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 96,
-              "tag": "# req-Id:",
+              "line": 79,
+              "tag": "// req-Id:",
               "need": "comp_req__time__unified_clock_facade",
-              "full_line": "// # req-Id: comp_req__time__unified_clock_facade"
+              "full_line": "// req-Id: comp_req__time__unified_clock_facade"
+            },
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 97,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__unified_clock_facade",
+              "full_line": "// req-Id: comp_req__time__unified_clock_facade"
             }
           ],
           "TestLinks": []
@@ -27,10 +34,17 @@
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 116,
-              "tag": "# req-Id:",
+              "line": 117,
+              "tag": "// req-Id:",
               "need": "comp_req__time__snapshot_with_status",
-              "full_line": "// # req-Id: comp_req__time__snapshot_with_status"
+              "full_line": "// req-Id: comp_req__time__snapshot_with_status"
+            },
+            {
+              "file": "score/time/clock/src/clock_snapshot.h",
+              "line": 34,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__snapshot_with_status",
+              "full_line": "// req-Id: comp_req__time__snapshot_with_status"
             }
           ],
           "TestLinks": []
@@ -42,24 +56,24 @@
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 154,
-              "tag": "# req-Id:",
+              "line": 155,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             },
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 165,
-              "tag": "# req-Id:",
+              "line": 166,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             },
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 181,
-              "tag": "# req-Id:",
+              "line": 182,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             }
           ],
           "TestLinks": []
@@ -72,9 +86,31 @@
             {
               "file": "score/time/high_res_steady_time/src/high_res_steady_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__high_res_steady_time__snapshot",
-              "full_line": "// # req-Id: comp_req__high_res_steady_time__snapshot"
+              "full_line": "// req-Id: comp_req__high_res_steady_time__snapshot"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__time__supported_platforms",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/high_res_steady_time/src/details/qtime/high_res_steady_qclock.cpp",
+              "line": 63,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__supported_platforms",
+              "full_line": "// req-Id: comp_req__time__supported_platforms"
+            },
+            {
+              "file": "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.cpp",
+              "line": 43,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__supported_platforms",
+              "full_line": "// req-Id: comp_req__time__supported_platforms"
             }
           ],
           "TestLinks": []
@@ -87,9 +123,9 @@
             {
               "file": "score/time/steady_time/src/steady_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__steady_time__snapshot",
-              "full_line": "// # req-Id: comp_req__steady_time__snapshot"
+              "full_line": "// req-Id: comp_req__steady_time__snapshot"
             }
           ],
           "TestLinks": []
@@ -102,24 +138,9 @@
             {
               "file": "score/time/system_time/src/system_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__system_time__snapshot",
-              "full_line": "// # req-Id: comp_req__system_time__snapshot"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__vehicle_time__snapshot",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 44,
-              "tag": "# req-Id:",
-              "need": "comp_req__vehicle_time__snapshot",
-              "full_line": "// # req-Id: comp_req__vehicle_time__snapshot"
+              "full_line": "// req-Id: comp_req__system_time__snapshot"
             }
           ],
           "TestLinks": []
@@ -131,24 +152,53 @@
           "CodeLinks": [
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 50,
-              "tag": "# req-Id:",
+              "line": 49,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 56,
-              "tag": "# req-Id:",
+              "line": 55,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 62,
-              "tag": "# req-Id:",
+              "line": 61,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 85,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 123,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__vehicle_time__snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 51,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__snapshot",
+              "full_line": "// req-Id: comp_req__vehicle_time__snapshot"
             }
           ],
           "TestLinks": []
