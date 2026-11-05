@@ -163,7 +163,9 @@ void GptpEngine::FinalizeSnapshot() noexcept
     {
         current_snapshot_.status.is_synchronized = false;
         current_snapshot_.status.is_timeout = true;
-        current_snapshot_.status.is_correct = false;
+        // The record is valid and carries a legitimate timeout; is_correct == false would make consumers
+        // discard all flags (see ConvertPtpStatus), also for a timeout before the first Sync/FollowUp.
+        current_snapshot_.status.is_correct = true;
     }
 }
 
@@ -328,7 +330,9 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
         pending_snapshot_.status.is_timeout = false;
         pending_snapshot_.status.is_time_jump_future = sync.is_time_jump_future;
         pending_snapshot_.status.is_time_jump_past = sync.is_time_jump_past;
-        pending_snapshot_.status.is_correct = !sync.is_time_jump_future && !sync.is_time_jump_past;
+        // Timeout and time jumps are reported by their own flags; clearing is_correct would make consumers
+        // drop all flags (see ConvertPtpStatus), hiding exactly these conditions.
+        pending_snapshot_.status.is_correct = true;
 
         pending_snapshot_.sync_fup_data = sync.sync_fup_data;
         pending_snapshot_.pdelay_data = pdelay.pdelay_data;
