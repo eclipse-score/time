@@ -33,7 +33,8 @@ jobs:
     with:
       bazel-docs-verify-target: "//:docs_check"
 
-  tests:
+  # Job name keeps the required status check "run-comp-tests / Test Execution".
+  run-comp-tests:
     uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     permissions:
       contents: read
@@ -44,7 +45,7 @@ jobs:
       packages: 'fakechroot'
 
   docs-build:
-    needs: [docs-verify, tests] # Test reports are needed for the verification report
+    needs: [docs-verify, run-comp-tests] # Test reports are needed for the verification report
     uses: eclipse-score/cicd-workflows/.github/workflows/docs.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     permissions:
       contents: read
