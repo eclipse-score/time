@@ -22,35 +22,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    # Yields the required check "run-comp-tests / Test Execution" when called from docs.yml.
-    name: Test Execution
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: eclipse-score/more-disk-space@6a3b48901846bf7f8cc985925157d71a8973e61f # v1
-
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fakechroot
-
-      - name: Setup Bazel
-        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
-        with:
-          unique-cache-name: comp-tests
-
-      - name: Run tests
-        run: bazel test --config=x86_64-linux //score/...
-
-      - name: Upload test reports
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: tests-report
-          path: |
-            bazel-testlogs/**/*.xml
-            bazel-testlogs/**/test.log
-          if-no-files-found: warn
+  run-comp-tests:
+    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
+    permissions:
+      contents: read
+      pull-requests: read
+    with:
+      bazel-target: 'test --config=x86_64-linux //score/...'
+      upload-name: 'tests-report'
+      packages: 'fakechroot'

@@ -37,6 +37,7 @@ jobs:
     uses: ./.github/workflows/comp-tests.yml
     permissions:
       contents: read
+      pull-requests: read
 
   docs-build:
     needs: [docs-verify, run-comp-tests] # Test reports are needed for the verification report
