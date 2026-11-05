@@ -18,7 +18,7 @@ Time Sync Client
 ################
 
 .. document:: Time Sync Client
-   :id: doc__ts_client
+   :id: doc__time_sync_client
    :status: draft
    :version: 1
    :safety: ASIL_B

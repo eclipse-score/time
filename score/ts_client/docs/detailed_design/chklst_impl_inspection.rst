@@ -13,7 +13,7 @@
    # *******************************************************************************
 
 .. document:: Time Sync Client Implementation Inspection Checklist
-  :id: doc__ts_client_impl_inspection
+  :id: doc__time_sync_client_impl_inspection
   :status: draft
   :version: 1
   :safety: ASIL_B
