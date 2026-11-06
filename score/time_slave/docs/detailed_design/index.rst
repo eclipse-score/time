@@ -241,7 +241,7 @@ The engine continues to run normally. The difference between the two modes:
 The fallback does not affect protocol correctness -- Sync/FollowUp correlation and peer delay measurement continue to work -- but the computed clock offset will be less accurate due to higher receive timestamp jitter.
 
 PeerDelayMeasurer
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 The ``PeerDelayMeasurer`` unit implements the IEEE 802.1AS two-step peer delay measurement protocol. It manages the four timestamps (``t1``, ``t2``, ``t3c``, ``t4``) across two threads.
 

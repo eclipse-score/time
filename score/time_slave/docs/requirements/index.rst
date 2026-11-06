@@ -28,7 +28,7 @@ Functional Requirements
 -----------------------
 
 Initialization and Lifecycle
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Component Startup
    :id: comp_req__time_slave__startup
@@ -270,7 +270,7 @@ Error Handling
    The time_slave component shall log messages via the score::mw::log interface when initialization fails (error level), network operations fail (error level), protocol errors occur (error level), or hardware timestamping is unavailable (warning level).
 
 Diagnostics and Debugging
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Synchronization Diagnostics
    :id: comp_req__time_slave__diagnostics
