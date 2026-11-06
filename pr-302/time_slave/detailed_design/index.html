@@ -470,7 +470,7 @@
                   
   <section id="time-slave-detailed-design">
 <span id="time-slave-detailed-design-index"></span><h1>Time Slave Detailed Design<a class="headerlink" href="#time-slave-detailed-design" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-6e0de29d">
+<div class="need_container docutils container" id="SNCB-925395c0">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_slave_detailed_design">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -581,7 +581,7 @@ consumer (<code class="docutils literal notranslate"><span class="pre">ShmPTPEng
 <ul class="simple">
 <li><p><strong>RxThread scope</strong></p>
 <ol class="arabic simple">
-<li><p>receive raw gPTP Ethernet frames with hardware timestamps from NIC via raw sockets</p></li>
+<li><p>receive raw gPTP Ethernet frames with ingress timestamps (hardware, or kernel software fallback) via raw sockets</p></li>
 <li><p>decode and parse PTP messages (Sync, FollowUp, PdelayResp, PdelayRespFollowUp, PdelayReq)</p></li>
 <li><p>depending on message type:</p>
 <ol class="arabic simple">
@@ -644,13 +644,13 @@ consumer (<code class="docutils literal notranslate"><span class="pre">ShmPTPEng
 <li><p><code class="docutils literal notranslate"><span class="pre">SyncStateMachine</span></code> uses <code class="docutils literal notranslate"><span class="pre">std::atomic&lt;bool&gt;</span></code> timeout flag written by RxThread and read by main thread</p></li>
 </ul>
 </section>
-<section id="hardware-timestamping-fallback">
-<h4>Hardware Timestamping Fallback<a class="headerlink" href="#hardware-timestamping-fallback" title="Link to this heading">#</a></h4>
-<p>During <code class="docutils literal notranslate"><span class="pre">Initialize()</span></code>, <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> calls <code class="docutils literal notranslate"><span class="pre">RawSocket::EnableTimestamping()</span></code> to request NIC-level (and kernel software fallback) receive timestamps (<code class="docutils literal notranslate"><span class="pre">SO_TIMESTAMPING</span></code> on Linux). If the NIC does not support hardware timestamping, the call returns <code class="docutils literal notranslate"><span class="pre">false</span></code> and a warning is logged:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GptpEngine: HW timestamping not available on &lt;iface&gt;, falling back to SW timestamps
+<section id="timestamping-fallback">
+<h4>Timestamping Fallback<a class="headerlink" href="#timestamping-fallback" title="Link to this heading">#</a></h4>
+<p>During <code class="docutils literal notranslate"><span class="pre">Initialize()</span></code>, <code class="docutils literal notranslate"><span class="pre">GptpEngine</span></code> calls <code class="docutils literal notranslate"><span class="pre">RawSocket::EnableTimestamping()</span></code> to request NIC-level (and kernel software fallback) timestamps (<code class="docutils literal notranslate"><span class="pre">SO_TIMESTAMPING</span></code> on Linux). A NIC without hardware timestamping still yields kernel software timestamps (converted to <code class="docutils literal notranslate"><span class="pre">CLOCK_MONOTONIC</span></code>) for received and transmitted frames. Only if the call returns <code class="docutils literal notranslate"><span class="pre">false</span></code> (timestamping cannot be enabled at all) a warning is logged:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GptpEngine: timestamping could not be enabled on &lt;iface&gt;, ingress timestamps will be taken in software when packets are handled (higher jitter)
 </pre></div>
 </div>
-<p>The engine continues to run normally. The difference between the two modes:</p>
+<p>The engine continues to run normally. The difference between the modes:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
 <col style="width: 30.0%" />
@@ -666,7 +666,7 @@ consumer (<code class="docutils literal notranslate"><span class="pre">ShmPTPEng
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">recvTS</span></code> (Sync receive time)</p></td>
 <td><p>NIC hardware timestamp (nanosecond resolution, captured at wire level)</p></td>
-<td><p>Kernel software timestamp converted to CLOCK_MONOTONIC (higher jitter), or a CLOCK_MONOTONIC read at packet handling</p></td>
+<td><p>Kernel software timestamp converted to CLOCK_MONOTONIC (higher jitter); a CLOCK_MONOTONIC read at packet handling only if the platform never delivers a kernel timestamp</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sync_fup_data.reference_local_timestamp</span></code></p></td>
 <td><p>Derived from NIC hardware timestamp</p></td>
@@ -684,6 +684,7 @@ consumer (<code class="docutils literal notranslate"><span class="pre">ShmPTPEng
 </table>
 </div>
 <p>The fallback does not affect protocol correctness – Sync/FollowUp correlation and peer delay measurement continue to work – but the computed clock offset will be less accurate due to higher receive timestamp jitter.</p>
+<p>All timestamps combined in one computation (offset, rate ratio, peer delay, time jump detection) must share one clock domain. The engine therefore never mixes sources within a session: once the socket has delivered a kernel timestamp, a packet without one is not stamped from another clock. Sync, PdelayReq and PdelayResp messages without a timestamp are dropped (a warning is logged for the first and then every 100th drop). If no TX timestamp is available for a PdelayReq or PdelayResp, the corresponding exchange is discarded instead of being computed with an invalid <code class="docutils literal notranslate"><span class="pre">t1</span></code>/<code class="docutils literal notranslate"><span class="pre">t3</span></code>.</p>
 </section>
 </section>
 <section id="peerdelaymeasurer">
@@ -1037,7 +1038,7 @@ consuming side, are documented in the <a class="reference internal" href="../../
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Class View</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#threading-model">Threading Model</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#concurrency-aspects">Concurrency Aspects</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-timestamping-fallback">Hardware Timestamping Fallback</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#timestamping-fallback">Timestamping Fallback</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#peerdelaymeasurer">PeerDelayMeasurer</a><ul class="nav section-nav flex-column">

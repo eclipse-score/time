@@ -464,7 +464,7 @@
                   
   <section id="time-slave">
 <span id="id1"></span><h1>Time Slave<a class="headerlink" href="#time-slave" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-ed79ace2">
+<div class="need_container docutils container" id="SNCB-d6280dd4">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_slave">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -508,7 +508,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-27835126">
+<div class="need_container docutils container" id="SNCB-b665b2c2">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp table" id="comp__time_slave">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -561,7 +561,7 @@
 <p>The time_slave component provides IEEE 802.1AS synchronization handling, i.e. it receives gPTP network messages from time master, does path delay measurement, computes local clock correction values, and publishes synchronized time snapshots via ts_client shared memory IPC.</p>
 <p>Runtime flow follows continuous loop:</p>
 <ol class="arabic simple">
-<li><p><strong>Initialization and setup</strong>: Bind configured network interface, initialize gPTP engine and IPC publisher, enable hardware timestamping when platform supports it.</p></li>
+<li><p><strong>Initialization and setup</strong>: Bind configured network interface, initialize gPTP engine and IPC publisher, enable timestamping (hardware when the platform supports it, otherwise software).</p></li>
 <li><p><strong>Protocol processing</strong>: Filter by configured gPTP domain, process Sync and Follow_Up pairs, compute offset and peer delay from protocol timestamps and correction fields.</p></li>
 <li><p><strong>Clock adjustment and status tracking</strong>: Apply PHC step or frequency adjustment based on offset behavior, detect synchronization timeout and forward/backward time leaps.</p></li>
 <li><p><strong>Publishing</strong>: Publish synchronized time snapshot, peer delay, rate deviation, and status flags to IPC at fixed 50 millisecond interval.</p></li>
