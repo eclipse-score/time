@@ -28,7 +28,7 @@ Functional Requirements
 -----------------------
 
 Initialization and Lifecycle
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Component Initialization
    :id: comp_req__time_daemon__startup
@@ -55,7 +55,7 @@ Initialization and Lifecycle
    The time_daemon component shall stop the publishing loop and close plus release any IPC resources (e.g. shared memory mappings) when a stop signal is received.
 
 Data Reception and Validation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Time Synchronization Data Reception
    :id: comp_req__time_daemon__gptp_shm_reception
@@ -198,7 +198,7 @@ Data Publishing
    The time_daemon component shall support concurrent non-blocking read access from multiple client applications to the published time data.
 
 Error Handling and Recovery
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Error Reporting
    :id: comp_req__time_daemon__error_reporting
@@ -264,7 +264,7 @@ Platform Abstraction
    The time_daemon component shall support POSIX and QNX 8.0 SDPplatforms for shared memory access and IPC communication.
 
 Assumption of Use Requirements
--------------------------------
+------------------------------
 
 .. aou_req:: gPTP Shared Memory Availability
    :id: aou_req__time_daemon__gptp_shm_available

@@ -148,7 +148,7 @@ VehicleTime
 -----------
 
 VT1 — Time Polling with Status Check
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Obtain a snapshot and inspect the synchronization quality before using the time
 value. ``Now()`` returns a single immutable ``ClockSnapshot`` — the timepoint and its
@@ -220,7 +220,7 @@ The full working implementation of this pattern is in
 ``examples/time/vehicle_time/src/main.cpp``.
 
 VT2 — Initialization and Readiness Check
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``VehicleTime`` requires an explicit ``Init()`` call to open the IPC channel to the
 time daemon before any time data becomes available.  Until ``Init()`` returns ``true``,
@@ -292,7 +292,7 @@ The full working implementation of this pattern is in
 ``examples/time/vehicle_time/src/main.cpp``.
 
 VT3 — Async PTP Protocol Data Subscription
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``VehicleTime`` exposes two PTP protocol data callbacks, intended primarily for
 diagnostics and PTP data sanity checks:
@@ -347,7 +347,7 @@ receives the next available data once; afterwards it is invoked only when that d
    thread-safe.
 
 VT4 — Synchronization Status Subscription
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Subscribe to ``VehicleTimeStatus`` changes to react when the clock synchronization state
 changes — for example, when the timebase becomes synchronized and is ready to use, when a
@@ -409,7 +409,7 @@ The full working implementation of this pattern is in
 (``RegisterStatusCallback()`` / ``UnregisterStatusCallback()``).
 
 VT5 — Status Flag Inspection
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When mapping ``VehicleTime`` status to diagnostic outputs such as DTC bitmasks, use
 ``IsFlagActive(flag)`` with the ``VehicleTime::StatusFlag`` enum to access individual
