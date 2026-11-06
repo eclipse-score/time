@@ -10,6 +10,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
+#include "score/time_slave/src/gptp/details/ptp_types.h"
 #include "score/time_slave/src/gptp/details/raw_socket_impl.h"
 
 #include <arpa/inet.h>
@@ -23,7 +24,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <cerrno>
+#include <cstdint>
 #include <cstring>
+#include <ctime>
 
 namespace score
 {
@@ -95,6 +98,45 @@ bool RawSocketImpl::Open(const std::string& iface)
     return true;
 }
 
+namespace
+{
+
+/// Largest packet age (REALTIME now - kernel timestamp) still considered plausible for a timestamp that is
+/// converted right after reception or transmission. Anything outside [0, kMaxPlausibleAgeNs] means that
+/// CLOCK_REALTIME was stepped in between (or the packet sat unread for an unusually long time).
+constexpr std::int64_t kMaxPlausibleAgeNs = 1'000'000'000LL;
+
+/// The kernel's software timestamp is CLOCK_REALTIME, which can step. Jump detection and the peer delay
+/// computation compare local timestamps with each other, so a local step must not show up in them: re-express the
+/// timestamp on CLOCK_MONOTONIC by subtracting the packet's age (REALTIME now - timestamp) from MONOTONIC now.
+/// If the age is implausible (a REALTIME step happened in between), the packet is assumed to have just arrived
+/// (age 0), which is off only by the short time the packet waited in the socket queue.
+///
+/// @return A non-zero CLOCK_MONOTONIC timestamp, or a zeroed timespec ("no timestamp") if a clock cannot be read.
+::timespec SoftwareToMonotonic(const ::timespec& real_ts) noexcept
+{
+    ::timespec real_now{};
+    ::timespec mono_now{};
+    if (::clock_gettime(CLOCK_REALTIME, &real_now) != 0 || ::clock_gettime(CLOCK_MONOTONIC, &mono_now) != 0)
+        return ::timespec{};
+
+    std::int64_t age_ns = (static_cast<std::int64_t>(real_now.tv_sec) - real_ts.tv_sec) * kNsPerSec +
+                          (static_cast<std::int64_t>(real_now.tv_nsec) - real_ts.tv_nsec);
+    if (age_ns < 0 || age_ns > kMaxPlausibleAgeNs)
+        age_ns = 0;
+
+    std::int64_t mono_ns = static_cast<std::int64_t>(mono_now.tv_sec) * kNsPerSec + mono_now.tv_nsec - age_ns;
+    if (mono_ns <= 0)
+        mono_ns = 1;  // an all-zero timespec means "no timestamp" to the caller
+    return ::timespec{static_cast<::time_t>(mono_ns / kNsPerSec), static_cast<long>(mono_ns % kNsPerSec)};
+}
+
+bool IsSet(const ::timespec& ts) noexcept
+{
+    return ts.tv_sec != 0 || ts.tv_nsec != 0;
+}
+}  // namespace
+
 bool RawSocketImpl::EnableHwTimestamping()
 {
     const int fd = fd_.load(std::memory_order_relaxed);
@@ -117,7 +159,10 @@ bool RawSocketImpl::EnableHwTimestamping()
         (void)sys_->ioctl_call(fd, SIOCSHWTSTAMP, &ifr);
     }
 
-    const int ts_opts = SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE;
+    // Hardware timestamps are preferred. The software RX/TX timestamps are only used by Recv()/Send() when the NIC
+    // delivers no hardware timestamp (e.g. virtio).
+    const int ts_opts = SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE |
+                        SOF_TIMESTAMPING_TX_SOFTWARE | SOF_TIMESTAMPING_RX_SOFTWARE | SOF_TIMESTAMPING_SOFTWARE;
     if (sys_->setsockopt_call(fd, SOL_SOCKET, SO_TIMESTAMPING, &ts_opts, sizeof(ts_opts)) < 0)
     {
         return false;
@@ -167,8 +212,10 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
             if (cm->cmsg_len < CMSG_LEN(3 * sizeof(::timespec)))
                 continue;
             const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
-            if (ts[2].tv_sec != 0 || ts[2].tv_nsec != 0)
+            if (IsSet(ts[2]))
                 hwts = ts[2];
+            else if (IsSet(ts[0]))
+                hwts = SoftwareToMonotonic(ts[0]);
         }
     }
     return len;
@@ -186,11 +233,20 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
     if (sent < 0)
         return -1;
 
+    // TX timestamps arrive via the error queue: software first, then hardware (if the NIC supports it) as a separate
+    // message. Once a software one is in, only wait briefly for the hardware one, since e.g. virtio never sends it.
     constexpr int kTxTsTimeoutMs = 50;
-    ::pollfd pfd{fd, POLLERR, 0};
+    constexpr int kTxTsHwAfterSwTimeoutMs = 2;
+    constexpr int kMaxTxTsMessages = 4;
     std::memset(&hwts, 0, sizeof(hwts));
-    if (sys_->poll_call(&pfd, 1, kTxTsTimeoutMs) > 0 && (pfd.revents & POLLERR) != 0)
+    ::timespec sw_ts{};
+    for (int i = 0; i < kMaxTxTsMessages && !IsSet(hwts); ++i)
     {
+        ::pollfd pfd{fd, POLLERR, 0};
+        const int timeout_ms = IsSet(sw_ts) ? kTxTsHwAfterSwTimeoutMs : kTxTsTimeoutMs;
+        if (sys_->poll_call(&pfd, 1, timeout_ms) <= 0 || (pfd.revents & POLLERR) == 0)
+            break;
+
         std::uint8_t tmp[2048];
         ::iovec iov{tmp, sizeof(tmp)};
         char ctrl[512];
@@ -200,23 +256,27 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
         msg.msg_control = ctrl;
         msg.msg_controllen = sizeof(ctrl);
 
-        if (sys_->recvmsg_call(fd, &msg, MSG_ERRQUEUE) >= 0)
+        if (sys_->recvmsg_call(fd, &msg, MSG_ERRQUEUE) < 0)
+            break;
+        for (::cmsghdr* cm = CMSG_FIRSTHDR(&msg); cm != nullptr; cm = CMSG_NXTHDR(&msg, cm))
         {
-            for (::cmsghdr* cm = CMSG_FIRSTHDR(&msg); cm != nullptr; cm = CMSG_NXTHDR(&msg, cm))
+            if (cm->cmsg_level == SOL_SOCKET && cm->cmsg_type == SO_TIMESTAMPING)
             {
-                if (cm->cmsg_level == SOL_SOCKET && cm->cmsg_type == SO_TIMESTAMPING)
-                {
-                    // SO_TIMESTAMPING delivers three timespec values: [0]=SW, [1]=HW-transformed,
-                    // [2]=HW-raw.  Verify the cmsg payload is large enough before indexing ts[2].
-                    if (cm->cmsg_len < CMSG_LEN(3 * sizeof(::timespec)))
-                        continue;
-                    const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
-                    if (ts[2].tv_sec != 0 || ts[2].tv_nsec != 0)
-                        hwts = ts[2];
-                }
+                // SO_TIMESTAMPING delivers three timespec values: [0]=SW, [1]=HW-transformed,
+                // [2]=HW-raw.  Verify the cmsg payload is large enough before indexing.
+                if (cm->cmsg_len < CMSG_LEN(3 * sizeof(::timespec)))
+                    continue;
+                const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
+                if (IsSet(ts[2]))
+                    hwts = ts[2];
+                else if (IsSet(ts[0]))
+                    sw_ts = ts[0];
             }
         }
     }
+    // No hardware TX timestamp: fall back to the software one, expressed on CLOCK_MONOTONIC like the RX fallback.
+    if (!IsSet(hwts) && IsSet(sw_ts))
+        hwts = SoftwareToMonotonic(sw_ts);
     return sent;
 }
 

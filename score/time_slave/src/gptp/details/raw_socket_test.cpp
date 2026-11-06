@@ -22,6 +22,7 @@
 #include <time.h>
 #include <cerrno>
 #include <cstring>
+#include <ctime>
 
 namespace score
 {
@@ -122,6 +123,8 @@ class FakeOsSyscalls final : public OsSyscalls
     // Regular (non-errqueue) recvmsg — used by Recv().
     ::ssize_t recvmsg_result{-1};   // bytes returned; -1 = error
     bool recvmsg_fill_hwts{false};  // fill SO_TIMESTAMPING cmsg with ts[2]={1,500000000}
+    bool recvmsg_fill_swts{false};  // fill SO_TIMESTAMPING cmsg with ts[0]=recvmsg_swts (software, CLOCK_REALTIME)
+    ::timespec recvmsg_swts{};
 
     // MSG_ERRQUEUE recvmsg — used by DrainErrQueue (before send) and TX timestamp (after send).
     // Sequence per Send() call:
@@ -130,7 +133,9 @@ class FakeOsSyscalls final : public OsSyscalls
     //   call  errqueue_drain_count+1       → TX timestamp: fill hwts if tx_fill_hwts, return tx_result
     int errqueue_drain_count{0};  // how many drain entries to simulate
     bool tx_fill_hwts{false};     // fill SO_TIMESTAMPING cmsg in TX-timestamp recvmsg
-    ::ssize_t tx_result{14};      // TX-timestamp recvmsg return value
+    bool tx_fill_swts{false};     // same, but only ts[0]=tx_swts (software, CLOCK_REALTIME)
+    ::timespec tx_swts{};
+    ::ssize_t tx_result{14};  // TX-timestamp recvmsg return value
 
     int recvmsg_call_count{0};
 
@@ -146,7 +151,7 @@ class FakeOsSyscalls final : public OsSyscalls
             if (idx == errqueue_drain_count)
                 return -1;  // end of drain queue → loop exits
             // idx > errqueue_drain_count: this is the TX-timestamp recvmsg
-            if (tx_fill_hwts && msg != nullptr && msg->msg_control != nullptr &&
+            if ((tx_fill_hwts || tx_fill_swts) && msg != nullptr && msg->msg_control != nullptr &&
                 msg->msg_controllen >= CMSG_SPACE(3 * sizeof(::timespec)))
             {
                 auto* cm = reinterpret_cast<::cmsghdr*>(msg->msg_control);
@@ -154,9 +159,9 @@ class FakeOsSyscalls final : public OsSyscalls
                 cm->cmsg_type = SO_TIMESTAMPING;
                 cm->cmsg_len = CMSG_LEN(3 * sizeof(::timespec));
                 auto* ts = reinterpret_cast<::timespec*>(CMSG_DATA(cm));
-                ts[0] = {0, 0};
+                ts[0] = tx_fill_hwts ? ::timespec{0, 0} : tx_swts;
                 ts[1] = {0, 0};
-                ts[2] = {1, 500'000'000L};
+                ts[2] = tx_fill_hwts ? ::timespec{1, 500'000'000L} : ::timespec{0, 0};
                 msg->msg_controllen = CMSG_SPACE(3 * sizeof(::timespec));
             }
             return tx_result;
@@ -167,7 +172,7 @@ class FakeOsSyscalls final : public OsSyscalls
             return -1;
 
         // Optionally inject SO_TIMESTAMPING cmsg for Recv() hwts extraction.
-        if (recvmsg_fill_hwts && msg != nullptr && msg->msg_control != nullptr &&
+        if ((recvmsg_fill_hwts || recvmsg_fill_swts) && msg != nullptr && msg->msg_control != nullptr &&
             msg->msg_controllen >= CMSG_SPACE(3 * sizeof(::timespec)))
         {
             auto* cm = reinterpret_cast<::cmsghdr*>(msg->msg_control);
@@ -175,9 +180,9 @@ class FakeOsSyscalls final : public OsSyscalls
             cm->cmsg_type = SO_TIMESTAMPING;
             cm->cmsg_len = CMSG_LEN(3 * sizeof(::timespec));
             auto* ts = reinterpret_cast<::timespec*>(CMSG_DATA(cm));
-            ts[0] = {0, 0};
+            ts[0] = recvmsg_fill_hwts ? ::timespec{0, 0} : recvmsg_swts;
             ts[1] = {0, 0};
-            ts[2] = {1, 500'000'000L};
+            ts[2] = recvmsg_fill_hwts ? ::timespec{1, 500'000'000L} : ::timespec{0, 0};
             msg->msg_controllen = CMSG_SPACE(3 * sizeof(::timespec));
         }
 
@@ -208,6 +213,26 @@ class FakeOsSyscalls final : public OsSyscalls
 void OpenSocket(RawSocketImpl& sock, FakeOsSyscalls& /*fake*/)
 {
     (void)sock.Open("eth0");
+}
+
+// ── Software-timestamp fallback helpers ──────────────────────────────────────
+
+std::int64_t ToNs(const ::timespec& ts)
+{
+    return static_cast<std::int64_t>(ts.tv_sec) * 1'000'000'000LL + ts.tv_nsec;
+}
+
+::timespec NowOn(clockid_t clk)
+{
+    ::timespec ts{};
+    ::clock_gettime(clk, &ts);
+    return ts;
+}
+
+::timespec RealtimeMinus(std::int64_t age_ns)
+{
+    const std::int64_t ns = ToNs(NowOn(CLOCK_REALTIME)) - age_ns;
+    return ::timespec{static_cast<::time_t>(ns / 1'000'000'000LL), static_cast<long>(ns % 1'000'000'000LL)};
 }
 
 }  // namespace
@@ -489,6 +514,66 @@ TEST(RawSocketTest, Recv_WithSoTimestampingCmsg_ExtractsHwts)
     EXPECT_EQ(hwts.tv_nsec, 500'000'000L);
 }
 
+TEST(RawSocketTest, Recv_HardwareTimestampPreferredOverSoftware)
+{
+    FakeOsSyscalls fake;
+    fake.poll_result = 1;
+    fake.recvmsg_result = 14;
+    fake.recvmsg_fill_hwts = true;
+    fake.recvmsg_fill_swts = true;
+    fake.recvmsg_swts = RealtimeMinus(0);
+    RawSocketImpl sock{&fake};
+    OpenSocket(sock, fake);
+    std::uint8_t buf[256] = {};
+    ::timespec hwts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
+    EXPECT_EQ(hwts.tv_sec, 1);
+    EXPECT_EQ(hwts.tv_nsec, 500'000'000L);
+}
+
+TEST(RawSocketTest, Recv_SoftwareTimestamp_ConvertedToMonotonicWithPacketAge)
+{
+    constexpr std::int64_t kAgeNs = 5'000'000LL;  // packet was stamped 5 ms before Recv() reads it
+    FakeOsSyscalls fake;
+    fake.poll_result = 1;
+    fake.recvmsg_result = 14;
+    fake.recvmsg_fill_swts = true;
+    fake.recvmsg_swts = RealtimeMinus(kAgeNs);
+    RawSocketImpl sock{&fake};
+    OpenSocket(sock, fake);
+    std::uint8_t buf[256] = {};
+    ::timespec hwts{};
+    const std::int64_t before = ToNs(NowOn(CLOCK_MONOTONIC));
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
+    const std::int64_t after = ToNs(NowOn(CLOCK_MONOTONIC));
+    // Result lies on CLOCK_MONOTONIC, about kAgeNs before the Recv() call.
+    EXPECT_GE(ToNs(hwts), before - kAgeNs - 1'000'000LL);
+    EXPECT_LE(ToNs(hwts), after - kAgeNs + 1'000'000LL);
+}
+
+TEST(RawSocketTest, Recv_SoftwareTimestamp_ImplausibleAge_FallsBackToReceptionTime)
+{
+    // A REALTIME step between stamping and reading makes the age negative or huge; the result must stay on
+    // CLOCK_MONOTONIC and non-zero instead of carrying the step.
+    for (const std::int64_t age_ns : {-3'600'000'000'000LL, 3'600'000'000'000LL})
+    {
+        FakeOsSyscalls fake;
+        fake.poll_result = 1;
+        fake.recvmsg_result = 14;
+        fake.recvmsg_fill_swts = true;
+        fake.recvmsg_swts = RealtimeMinus(age_ns);
+        RawSocketImpl sock{&fake};
+        OpenSocket(sock, fake);
+        std::uint8_t buf[256] = {};
+        ::timespec hwts{};
+        const std::int64_t before = ToNs(NowOn(CLOCK_MONOTONIC));
+        EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
+        const std::int64_t after = ToNs(NowOn(CLOCK_MONOTONIC));
+        EXPECT_GE(ToNs(hwts), before);
+        EXPECT_LE(ToNs(hwts), after);
+    }
+}
+
 // ── RawSocket — Send() ────────────────────────────────────────────────────────
 
 TEST(RawSocketTest, Send_SendFails_ReturnsNegativeOne)
@@ -532,6 +617,27 @@ TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
     EXPECT_EQ(sock.Send(data, 14, hwts), 14);
     EXPECT_EQ(hwts.tv_sec, 1);
     EXPECT_EQ(hwts.tv_nsec, 500'000'000L);
+}
+
+TEST(RawSocketTest, Send_Success_OnlySoftwareTxTimestamp_FallsBackToMonotonic)
+{
+    FakeOsSyscalls fake;
+    fake.send_result = 14;
+    fake.poll_result = 1;
+    fake.poll_revents = POLLERR;
+    fake.tx_result = 14;
+    fake.tx_fill_swts = true;  // NIC without HW TX timestamping (e.g. virtio)
+    fake.tx_swts = RealtimeMinus(0);
+    RawSocketImpl sock{&fake};
+    OpenSocket(sock, fake);
+    const std::uint8_t data[14] = {};
+    ::timespec hwts{};
+    const std::int64_t before = ToNs(NowOn(CLOCK_MONOTONIC));
+    EXPECT_EQ(sock.Send(data, 14, hwts), 14);
+    const std::int64_t after = ToNs(NowOn(CLOCK_MONOTONIC));
+    EXPECT_NE(ToNs(hwts), 0);
+    EXPECT_GE(ToNs(hwts), before - 1'000'000LL);
+    EXPECT_LE(ToNs(hwts), after);
 }
 
 TEST(RawSocketTest, Send_DrainErrQueue_WhileBodyExecuted)

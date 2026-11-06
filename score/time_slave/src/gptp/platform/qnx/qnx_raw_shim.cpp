@@ -457,7 +457,8 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
         }
         if (!t4_set)
         {
-            (void)::clock_gettime(CLOCK_REALTIME, hwts);
+            // Last resort: CLOCK_MONOTONIC, never CLOCK_REALTIME (a wall-clock step would look like a time jump).
+            (void)::clock_gettime(CLOCK_MONOTONIC, hwts);
         }
 
         const int frame_len = std::min(caplen, buf_len);
@@ -523,9 +524,10 @@ extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
         }
     }
 
-    (void)::clock_gettime(CLOCK_REALTIME, hwts);
+    // Last resort: CLOCK_MONOTONIC, never CLOCK_REALTIME (consistent with the receive fallback).
+    (void)::clock_gettime(CLOCK_MONOTONIC, hwts);
     std::fprintf(stderr,
-                 "[t1] CLOCK_RT ts=%lld.%09ld (fallback)\n",
+                 "[t1] CLOCK_MONO ts=%lld.%09ld (fallback)\n",
                  static_cast<long long>(hwts->tv_sec),
                  static_cast<long>(hwts->tv_nsec));
     return len;
