@@ -23,6 +23,7 @@ namespace td
 // Application context
 constexpr auto kAppContext = "TDAP";
 constexpr auto kTimeBaseHandlerSvt = "TSVT";
+constexpr auto kTimeBaseHandlerGeneric = "TGEN";
 constexpr auto kMessageBrokerContext = "MSGB";
 
 // PTP Machine contexts

@@ -281,7 +281,7 @@ value as 0:
 timestamp) is missing, via the same ``ns < 0`` sentinel check on ``sendHardwareTS``.
 
 PeerDelayMeasurer
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 The ``PeerDelayMeasurer`` unit implements the IEEE 802.1AS two-step peer delay measurement protocol. It manages the four timestamps (``t1``, ``t2``, ``t3c``, ``t4``) across two threads.
 
