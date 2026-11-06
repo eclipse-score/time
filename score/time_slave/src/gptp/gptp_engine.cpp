@@ -271,7 +271,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     // Once kernel timestamps have been seen, a packet without one is not stamped from another clock; messages that
     // need the stamp are dropped (the peer sees a missing response, a Sync is simply skipped).
     std::optional<TmvT> rx_ts;
-    if ((kernel_ts.tv_sec != 0) || (kernel_ts.tv_nsec != 0))
+    if (HasTimestamp(kernel_ts))
     {
         kernel_ts_seen_ = true;
         rx_ts = TmvT{static_cast<std::int64_t>(kernel_ts.tv_sec) * kNsPerSec + kernel_ts.tv_nsec};
@@ -440,7 +440,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
         return;
     // Without a TX timestamp t3 is unknown; a follow-up carrying a made-up t3 would corrupt the peer's delay
     // measurement, so omit it (the peer discards the incomplete exchange).
-    if (tx_ts.tv_sec == 0 && tx_ts.tv_nsec == 0)
+    if (!HasTimestamp(tx_ts))
         return;
     const TmvT t3{static_cast<std::int64_t>(tx_ts.tv_sec) * kNsPerSec + tx_ts.tv_nsec};
 

@@ -132,10 +132,6 @@ constexpr std::int64_t kMaxPlausibleAgeNs = 1'000'000'000LL;
     return ::timespec{static_cast<::time_t>(mono_ns / kNsPerSec), static_cast<long>(mono_ns % kNsPerSec)};
 }
 
-bool IsSet(const ::timespec& ts) noexcept
-{
-    return ts.tv_sec != 0 || ts.tv_nsec != 0;
-}
 }  // namespace
 
 bool RawSocketImpl::EnableTimestamping()
@@ -213,9 +209,9 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& rx_t
             if (cm->cmsg_len < CMSG_LEN(3 * sizeof(::timespec)))
                 continue;
             const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
-            if (IsSet(ts[2]))
+            if (HasTimestamp(ts[2]))
                 rx_ts = ts[2];
-            else if (IsSet(ts[0]))
+            else if (HasTimestamp(ts[0]))
                 rx_ts = SoftwareToMonotonic(ts[0]);
         }
     }
@@ -243,10 +239,10 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& tx_ts)
     std::memset(&tx_ts, 0, sizeof(tx_ts));
     ::timespec hw_ts{};
     ::timespec sw_ts{};
-    for (int i = 0; i < kMaxTxTsMessages && !IsSet(hw_ts); ++i)
+    for (int i = 0; i < kMaxTxTsMessages && !HasTimestamp(hw_ts); ++i)
     {
         ::pollfd pfd{fd, POLLERR, 0};
-        const int timeout_ms = IsSet(sw_ts) ? kTxTsHwAfterSwTimeoutMs : kTxTsTimeoutMs;
+        const int timeout_ms = HasTimestamp(sw_ts) ? kTxTsHwAfterSwTimeoutMs : kTxTsTimeoutMs;
         if (sys_->poll_call(&pfd, 1, timeout_ms) <= 0 || (pfd.revents & POLLERR) == 0)
             break;
 
@@ -270,17 +266,17 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& tx_ts)
                 if (cm->cmsg_len < CMSG_LEN(3 * sizeof(::timespec)))
                     continue;
                 const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
-                if (IsSet(ts[2]))
+                if (HasTimestamp(ts[2]))
                     hw_ts = ts[2];
-                else if (IsSet(ts[0]))
+                else if (HasTimestamp(ts[0]))
                     sw_ts = ts[0];
             }
         }
     }
     // No hardware TX timestamp: fall back to the software one, expressed on CLOCK_MONOTONIC like the RX fallback.
-    if (IsSet(hw_ts))
+    if (HasTimestamp(hw_ts))
         tx_ts = hw_ts;
-    else if (IsSet(sw_ts))
+    else if (HasTimestamp(sw_ts))
         tx_ts = SoftwareToMonotonic(sw_ts);
     return sent;
 }
