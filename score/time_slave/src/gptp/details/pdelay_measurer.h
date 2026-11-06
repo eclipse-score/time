@@ -58,7 +58,7 @@ class PeerDelayMeasurer final
     /// @brief Build and transmit a Pdelay_Req frame. @p socket must be open.
     ///
     /// Increments the sequence number, encodes the frame, transmits it via @c socket, and records @c t1 (transmit
-    /// hardware timestamp; used in path_delay formula when FollowUp arrives).
+    /// transmit timestamp; used in path_delay formula when FollowUp arrives).
     ///
     /// @return 0 on success, negative on error.
     int SendRequest(RawSocket& socket);
@@ -66,7 +66,7 @@ class PeerDelayMeasurer final
     /// @brief Process an incoming Pdelay_Resp message.
     ///
     /// Called from the RxThread. Records @c t2 (the responder's receive
-    /// hardware timestamp) and the responder's identity for the current sequence.
+    /// receive timestamp) and the responder's identity for the current sequence.
     void OnResponse(const PTPMessage& msg);
 
     /// @brief Process an incoming Pdelay_Resp_Follow_Up message; triggers path delay computation.

@@ -36,7 +36,7 @@ PTPMessage MakeResp(std::uint16_t seqId,
     msg.ptpHdr.sequenceId = seqId;
     msg.ptpHdr.correctionField = corr_ns << 16;  // CorrectionToTmv does >> 16
     msg.parseMessageTs.ns = parse_ts_ns;
-    msg.recvHardwareTS.ns = recv_hw_ns;
+    msg.recvTS.ns = recv_hw_ns;
     return msg;
 }
 
@@ -77,12 +77,12 @@ TEST_F(PeerDelayMeasurerTest, SeqIdMismatch_BetweenRespAndFup_NoResult)
 
 // ── Delay computation (symmetric link) ───────────────────────────────────────
 //
-// Default req_ gives:  t1 = 0 ns (sendHardwareTS == 0)
+// Default req_ gives:  t1 = 0 ns (sendTS == 0)
 //
 // Chosen timestamps:
 //   t2 (resp.parseMessageTs)    = 100 ns  (remote receipt time)
 //   t3 (resp_fup.parseMessageTs) = 80 ns  (remote send time)
-//   t4 (resp.recvHardwareTS)    = 180 ns  (local receive time)
+//   t4 (resp.recvTS)    = 180 ns  (local receive time)
 //
 // delay = ((t2 − t1) + (t4 − t3)) / 2
 //       = ((100 − 0) + (180 − 80)) / 2

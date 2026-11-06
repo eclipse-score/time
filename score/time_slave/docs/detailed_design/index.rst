@@ -131,7 +131,7 @@ Each control flow has dedicated thread and runs independently.
 
 - **RxThread scope**
 
-  #. receive raw gPTP Ethernet frames with hardware timestamps from NIC via raw sockets
+  #. receive raw gPTP Ethernet frames with ingress timestamps (hardware, or kernel software fallback) via raw sockets
   #. decode and parse PTP messages (Sync, FollowUp, PdelayResp, PdelayRespFollowUp, PdelayReq)
   #. depending on message type:
 
@@ -210,7 +210,7 @@ Concurrency Aspects
 Timestamping Fallback
 ^^^^^^^^^^^^^^^^^^^^^
 
-During ``Initialize()``, ``GptpEngine`` calls ``RawSocket::EnableHwTimestamping()`` to request NIC-level (and kernel software fallback) timestamps (``SO_TIMESTAMPING`` on Linux). A NIC without hardware timestamping still yields kernel software timestamps (converted to ``CLOCK_MONOTONIC``) for received and transmitted frames. Only if the call returns ``false`` (timestamping cannot be enabled at all) a warning is logged:
+During ``Initialize()``, ``GptpEngine`` calls ``RawSocket::EnableTimestamping()`` to request NIC-level (and kernel software fallback) timestamps (``SO_TIMESTAMPING`` on Linux). A NIC without hardware timestamping still yields kernel software timestamps (converted to ``CLOCK_MONOTONIC``) for received and transmitted frames. Only if the call returns ``false`` (timestamping cannot be enabled at all) a warning is logged:
 
 .. code-block:: none
 
@@ -225,7 +225,7 @@ The engine continues to run normally. The difference between the modes:
    * - Field
      - HW timestamping available
      - SW timestamping fallback
-   * - ``recvHardwareTS`` (Sync receive time)
+   * - ``recvTS`` (Sync receive time)
      - NIC hardware timestamp (nanosecond resolution, captured at wire level)
      - Kernel software timestamp converted to CLOCK_MONOTONIC (higher jitter); a CLOCK_MONOTONIC read at packet handling only if the platform never delivers a kernel timestamp
    * - ``sync_fup_data.reference_local_timestamp``

@@ -55,7 +55,7 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
         req_ = req;
         req_.ptpHdr.sequenceId = seqnum_;
         req_.ptpHdr.sourcePortIdentity.portNumber = 0x0001U;  // host byte order
-        req_.sendHardwareTS = TmvT{-1};                       // sentinel: TX timestamp pending
+        req_.sendTS = TmvT{-1};                               // sentinel: TX timestamp pending
         resp_count_ = 0U;
         ++seqnum_;  // uint16_t: wraps naturally at 0xFFFF
     }
@@ -80,14 +80,14 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
     if (!codec.AddEthernetHeader(buf, len, src_mac, sizeof(buf)))
         return -1;
 
-    ::timespec hwts{};
-    const int r = socket.Send(buf, static_cast<int>(len), hwts);
+    ::timespec tx_ts{};
+    const int r = socket.Send(buf, static_cast<int>(len), tx_ts);
     // A zero timestamp means the platform delivered no TX timestamp: keep the "pending" sentinel so that this
     // exchange is rejected rather than computed with a made-up t1.
-    if (r > 0 && (hwts.tv_sec != 0 || hwts.tv_nsec != 0))
+    if (r > 0 && (tx_ts.tv_sec != 0 || tx_ts.tv_nsec != 0))
     {
         std::lock_guard<std::mutex> lk(mutex_);
-        req_.sendHardwareTS = TmvT{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
+        req_.sendTS = TmvT{static_cast<std::int64_t>(tx_ts.tv_sec) * kNsPerSec + tx_ts.tv_nsec};
     }
     return r;
 }
@@ -121,9 +121,9 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
 
     // Reject if t1 has not been recorded yet (TX timestamp still pending after Send()).
     // Without this guard, a response arriving in the race window between the first
-    // lock release and the sendHardwareTS assignment would produce a garbage delay.
+    // lock release and the sendTS assignment would produce a garbage delay.
     // Sentinel value -1 means "TX timestamp pending"; 0 is a valid timestamp (t=0).
-    if (req_.sendHardwareTS.ns < 0)
+    if (req_.sendTS.ns < 0)
         return;
 
     if (std::memcmp(&resp_.pdelay_resp.requestingPortIdentity, &req_.ptpHdr.sourcePortIdentity, sizeof(PortIdentity)) !=
@@ -135,7 +135,7 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
         return;
 
     // t1 = BPF_T_BINTIME (PHC) send timestamp of our Pdelay_Req (TX loopback fd)
-    const TmvT t1 = req_.sendHardwareTS;
+    const TmvT t1 = req_.sendTS;
     // t2 = remote receipt time (from Pdelay_Resp body: requestReceiptTimestamp)
     const TmvT t2 = resp_.parseMessageTs;
     // t3 = remote send time (from Pdelay_Resp_FUP body) + corrections
@@ -144,7 +144,7 @@ void PeerDelayMeasurer::ComputeAndStoreUnlocked() noexcept
     const TmvT c2 = CorrectionToTmv(resp_fup_.ptpHdr.correctionField);
     const TmvT t3c = TmvT{t3.ns + c1.ns + c2.ns};
     // t4 = BPF_T_BINTIME (PHC) receive timestamp of Pdelay_Resp (main BPF fd)
-    const TmvT t4 = resp_.recvHardwareTS;
+    const TmvT t4 = resp_.recvTS;
 
     const std::int64_t delay = ((t2.ns - t1.ns) + (t4.ns - t3c.ns)) / 2LL;
 

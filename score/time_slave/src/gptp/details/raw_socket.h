@@ -44,30 +44,31 @@ class RawSocket
     /// receive timestamps as a fallback for NICs that deliver no hardware timestamp.
     ///
     /// @return false on failure or if hardware timestamping is unsupported.
-    virtual bool EnableHwTimestamping() = 0;
+    virtual bool EnableTimestamping() = 0;
 
     /// @brief Close the socket and release the file descriptor.
     virtual void Close() = 0;
 
-    /// @brief Receive one Ethernet frame with its hardware (or software fallback) timestamp.
+    /// @brief Receive one Ethernet frame with its ingress timestamp (hardware, or kernel software fallback).
     ///
     /// @param buf        Buffer for the received frame.
     /// @param buf_len    Buffer length in bytes.
-    /// @param hwts       Output: hardware timestamp if available, otherwise software timestamp.
+    /// @param rx_ts      Output: hardware timestamp if available, otherwise kernel software timestamp
+    ///                   (CLOCK_MONOTONIC); zeroed if neither is available.
     /// @param timeout_ms Receive timeout in milliseconds (0 = non-blocking).
     /// @return Number of bytes received, 0 on timeout, -1 on error.
-    virtual int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) = 0;
+    virtual int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& rx_ts, int timeout_ms) = 0;
 
-    /// @brief Send one Ethernet frame and capture its hardware transmit timestamp.
+    /// @brief Send one Ethernet frame and capture its transmit timestamp (hardware, or kernel software fallback).
     ///
     /// @param buf  Frame buffer.
     /// @param len  Frame length in bytes.
-    /// @param hwts Output: hardware transmit timestamp if available, otherwise a software timestamp on
+    /// @param tx_ts Output: hardware transmit timestamp if available, otherwise a software timestamp on
     ///              CLOCK_MONOTONIC; zeroed if neither is available (callers must then not use it).
     ///              Note: the peer delay computation needs the TX and RX timestamps of one device on the
     ///              same clock; this holds for NICs with full hardware stamping and for NICs with none.
     /// @return Number of bytes sent, or -1 on error.
-    virtual int Send(const void* buf, int len, ::timespec& hwts) = 0;
+    virtual int Send(const void* buf, int len, ::timespec& tx_ts) = 0;
 
     /// @brief Return the underlying file descriptor (for use with @c select / @c poll).
     virtual int GetFd() const = 0;

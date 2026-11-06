@@ -58,7 +58,7 @@ struct GptpEngineOptions
 /// exposing thread-safe @c ReadPTPSnapshot() for the main thread.
 ///
 /// @b RxThread responsibilities:
-///   1. Receive raw gPTP Ethernet frames with hardware timestamps from the NIC via raw sockets.
+///   1. Receive raw gPTP Ethernet frames with hardware or software timestamps via raw sockets.
 ///   2. Decode and parse PTP messages (Sync, FollowUp, PdelayResp, PdelayRespFollowUp, PdelayReq).
 ///   3a. Correlate Sync/FollowUp pairs and compute the clock offset and neighborRateRatio. Update @c pending_snapshot_
 ///   under @c snapshot_mutex_ protection.
@@ -99,10 +99,10 @@ class GptpEngine final
     GptpEngine(GptpEngine&&) = delete;
     GptpEngine& operator=(GptpEngine&&) = delete;
 
-    /// @brief Opens the raw socket, enables hardware timestamping, resolves the
+    /// @brief Opens the raw socket, enables timestamping, resolves the
     /// @c ClockIdentity, and starts the Rx and PDelay background threads.
     ///
-    /// Calls @c RawSocket::EnableHwTimestamping() to request NIC-level (and kernel
+    /// Calls @c RawSocket::EnableTimestamping() to request NIC-level (and kernel
     /// software fallback) timestamps (@c SO_TIMESTAMPING on Linux). If timestamping
     /// cannot be enabled at all, a warning is logged; the engine continues with
     /// ingress timestamps read at packet-handling time (higher jitter).

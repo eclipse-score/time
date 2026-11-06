@@ -137,7 +137,7 @@ bool IsSet(const ::timespec& ts) noexcept
 }
 }  // namespace
 
-bool RawSocketImpl::EnableHwTimestamping()
+bool RawSocketImpl::EnableTimestamping()
 {
     const int fd = fd_.load(std::memory_order_relaxed);
     if (fd < 0)
@@ -178,7 +178,7 @@ void RawSocketImpl::Close()
     iface_.clear();
 }
 
-int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms)
+int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& rx_ts, int timeout_ms)
 {
     const int fd = fd_.load(std::memory_order_acquire);
     if (fd < 0 || buf == nullptr || buf_len == 0)
@@ -204,7 +204,7 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
     if (len < 0)
         return -1;
 
-    std::memset(&hwts, 0, sizeof(hwts));
+    std::memset(&rx_ts, 0, sizeof(rx_ts));
     for (::cmsghdr* cm = CMSG_FIRSTHDR(&msg); cm != nullptr; cm = CMSG_NXTHDR(&msg, cm))
     {
         if (cm->cmsg_level == SOL_SOCKET && cm->cmsg_type == SO_TIMESTAMPING)
@@ -213,15 +213,15 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
                 continue;
             const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
             if (IsSet(ts[2]))
-                hwts = ts[2];
+                rx_ts = ts[2];
             else if (IsSet(ts[0]))
-                hwts = SoftwareToMonotonic(ts[0]);
+                rx_ts = SoftwareToMonotonic(ts[0]);
         }
     }
     return len;
 }
 
-int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
+int RawSocketImpl::Send(const void* buf, int len, ::timespec& tx_ts)
 {
     const int fd = fd_.load(std::memory_order_acquire);
     if (fd < 0 || buf == nullptr || len <= 0)
@@ -238,9 +238,10 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
     constexpr int kTxTsTimeoutMs = 50;
     constexpr int kTxTsHwAfterSwTimeoutMs = 2;
     constexpr int kMaxTxTsMessages = 4;
-    std::memset(&hwts, 0, sizeof(hwts));
+    std::memset(&tx_ts, 0, sizeof(tx_ts));
+    ::timespec hw_ts{};
     ::timespec sw_ts{};
-    for (int i = 0; i < kMaxTxTsMessages && !IsSet(hwts); ++i)
+    for (int i = 0; i < kMaxTxTsMessages && !IsSet(hw_ts); ++i)
     {
         ::pollfd pfd{fd, POLLERR, 0};
         const int timeout_ms = IsSet(sw_ts) ? kTxTsHwAfterSwTimeoutMs : kTxTsTimeoutMs;
@@ -268,15 +269,17 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
                     continue;
                 const auto* ts = reinterpret_cast<const ::timespec*>(CMSG_DATA(cm));
                 if (IsSet(ts[2]))
-                    hwts = ts[2];
+                    hw_ts = ts[2];
                 else if (IsSet(ts[0]))
                     sw_ts = ts[0];
             }
         }
     }
     // No hardware TX timestamp: fall back to the software one, expressed on CLOCK_MONOTONIC like the RX fallback.
-    if (!IsSet(hwts) && IsSet(sw_ts))
-        hwts = SoftwareToMonotonic(sw_ts);
+    if (IsSet(hw_ts))
+        tx_ts = hw_ts;
+    else if (IsSet(sw_ts))
+        tx_ts = SoftwareToMonotonic(sw_ts);
     return sent;
 }
 

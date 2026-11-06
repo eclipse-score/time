@@ -91,7 +91,7 @@ bool GptpEngine::Initialize()
         return false;
     }
 
-    if (!socket_->EnableHwTimestamping())
+    if (!socket_->EnableTimestamping())
     {
         score::mw::log::LogWarn(kTimeSlaveAppContext)
             << "GptpEngine: timestamping could not be enabled on " << opts_.iface_name
@@ -310,7 +310,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
                 drop_unstamped(msg);
                 break;
             }
-            msg.recvHardwareTS = *rx_ts;
+            msg.recvTS = *rx_ts;
             msg.recvMonoNs = mono_now;
             sync_sm_.OnSync(msg);
             break;
@@ -345,7 +345,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
                 drop_unstamped(msg);
                 break;
             }
-            msg.recvHardwareTS = *rx_ts;
+            msg.recvTS = *rx_ts;
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp.requestReceiptTimestamp);
             if (pdelay_)
                 pdelay_->OnResponse(msg);
@@ -435,14 +435,14 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     if (!codec_.AddEthernetHeader(buf, len, src_mac, sizeof(buf)))
         return;
 
-    ::timespec hwts{};
-    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0)
+    ::timespec tx_ts{};
+    if (socket_->Send(buf, static_cast<int>(len), tx_ts) <= 0)
         return;
     // Without a TX timestamp t3 is unknown; a follow-up carrying a made-up t3 would corrupt the peer's delay
     // measurement, so omit it (the peer discards the incomplete exchange).
-    if (hwts.tv_sec == 0 && hwts.tv_nsec == 0)
+    if (tx_ts.tv_sec == 0 && tx_ts.tv_nsec == 0)
         return;
-    const TmvT t3{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
+    const TmvT t3{static_cast<std::int64_t>(tx_ts.tv_sec) * kNsPerSec + tx_ts.tv_nsec};
 
     // --- PDelayRespFollowUp ---
     PTPMessage fup{};
@@ -467,8 +467,8 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     if (!codec_.AddEthernetHeader(buf2, len2, src_mac, sizeof(buf2)))
         return;
 
-    ::timespec hwts2{};
-    (void)socket_->Send(buf2, static_cast<int>(len2), hwts2);
+    ::timespec tx_ts2{};
+    (void)socket_->Send(buf2, static_cast<int>(len2), tx_ts2);
 }
 
 }  // namespace details
