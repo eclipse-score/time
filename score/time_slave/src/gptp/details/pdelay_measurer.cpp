@@ -82,7 +82,7 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
 
     ::timespec hwts{};
     const int r = socket.Send(buf, static_cast<int>(len), hwts);
-    if (r > 0)
+    if (r > 0 && HasTimestamp(hwts))
     {
         std::lock_guard<std::mutex> lk(mutex_);
         req_.sendHardwareTS = TmvT{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};

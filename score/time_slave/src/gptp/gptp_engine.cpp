@@ -388,7 +388,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
         return;
 
     ::timespec hwts{};
-    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0)
+    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0 || !HasTimestamp(hwts))
         return;
     const TmvT t3{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
 
