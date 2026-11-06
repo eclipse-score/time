@@ -27,6 +27,7 @@
 #include <cstdint>
 #include <cstring>
 #include <ctime>
+#include <mutex>
 
 namespace score
 {
@@ -227,6 +228,7 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& tx_ts)
     if (fd < 0 || buf == nullptr || len <= 0)
         return -1;
 
+    std::lock_guard<std::mutex> lk(send_mutex_);
     DrainErrQueue(fd, *sys_);
 
     const int sent = static_cast<int>(sys_->send_call(fd, buf, static_cast<std::size_t>(len), 0));

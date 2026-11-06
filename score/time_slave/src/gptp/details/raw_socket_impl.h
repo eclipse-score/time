@@ -21,6 +21,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace score
@@ -95,6 +96,8 @@ class RawSocketImpl : public RawSocket
     OsSyscalls* sys_{nullptr};
     std::atomic<int> fd_{-1};
     std::string iface_{};
+    // Send() is called from the Rx and Pdelay threads; the TX timestamp error queue must not be shared between them.
+    std::mutex send_mutex_{};
 };
 
 }  // namespace details
