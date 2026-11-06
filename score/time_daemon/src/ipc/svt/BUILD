@@ -13,6 +13,7 @@
 
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
+load("//score/time_daemon/src/ipc/core:shared_memory_handler_copts.bzl", "SHARED_MEMORY_HANDLER_COPTS")
 
 cc_library(
     name = "config",
@@ -45,6 +46,7 @@ cc_test(
     srcs = [
         "common_factory_test.cpp",
     ],
+    copts = SHARED_MEMORY_HANDLER_COPTS,
     tags = ["unit"],
     deps = [
         "//score/time_daemon/src/common/data_types:ptp_time_info",

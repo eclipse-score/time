@@ -13,6 +13,7 @@
 
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
+load(":shared_memory_handler_copts.bzl", "SHARED_MEMORY_HANDLER_COPTS")
 
 cc_library(
     name = "shared_memory_handler",
@@ -76,6 +77,7 @@ cc_test(
         "publisher_impl_test.cpp",
         "test_types.h",
     ],
+    copts = SHARED_MEMORY_HANDLER_COPTS,
     tags = ["unit"],
     deps = [
         ":publisher_impl",
@@ -92,6 +94,7 @@ cc_test(
         "receiver_impl_test.cpp",
         "test_types.h",
     ],
+    copts = SHARED_MEMORY_HANDLER_COPTS,
     tags = ["unit"],
     deps = [
         ":receiver_impl",
@@ -108,6 +111,7 @@ cc_test(
         "shared_memory_handler_test.cpp",
         "test_types.h",
     ],
+    copts = SHARED_MEMORY_HANDLER_COPTS,
     tags = ["unit"],
     deps = [
         ":shared_memory_handler",

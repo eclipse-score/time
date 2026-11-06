@@ -654,6 +654,26 @@ Client-side receive from TimeDaemon shared memory channel:
 
    </div>
 
+.. _time_daemon_ipc_layout:
+
+Shared-memory layout
+''''''''''''''''''''
+
+``SharedMemoryHandler`` aligns its slots and shared control data using
+``std::hardware_destructive_interference_size``, or 64 bytes when unavailable, to
+reduce false sharing. This value also determines slot stride and allocation size.
+
+**Assumption of use:** All IPC peers are built and deployed together in one system
+image. They must use the same shared-memory types, compiler version,
+standard-library configuration, architecture and layout-affecting flags (including
+``-mtune``, ``-mcpu`` and hardware-interference-size overrides).
+
+Under this assumption, GCC's `interference-size warning
+<https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Winterference-size>`_
+is suppressed with ``-Wno-interference-size`` via ``SHARED_MEMORY_HANDLER_COPTS``
+in ``score/time_daemon/src/ipc/core/shared_memory_handler_copts.bzl``. The constant
+selects the option only for GCC using ``@rules_cc//cc/compiler:gcc``.
+
 Logging configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
