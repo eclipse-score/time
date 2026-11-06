@@ -82,7 +82,9 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
 
     ::timespec hwts{};
     const int r = socket.Send(buf, static_cast<int>(len), hwts);
-    if (r > 0)
+    // A zero timestamp means the platform delivered no TX timestamp: keep the "pending" sentinel so that this
+    // exchange is rejected rather than computed with a made-up t1.
+    if (r > 0 && (hwts.tv_sec != 0 || hwts.tv_nsec != 0))
     {
         std::lock_guard<std::mutex> lk(mutex_);
         req_.sendHardwareTS = TmvT{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};

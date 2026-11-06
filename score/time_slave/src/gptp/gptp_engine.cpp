@@ -20,6 +20,7 @@
 
 #include <arpa/inet.h>
 #include <cstring>
+#include <optional>
 #include <string_view>
 
 namespace score
@@ -34,6 +35,7 @@ namespace
 
 constexpr int kRxTimeoutMs = 100;  // poll timeout; keeps RxLoop responsive to shutdown
 constexpr int kRxBufferSize = 2048;
+constexpr std::uint32_t kMissingTsLogEvery = 100U;  // log the first and then every 100th dropped message
 
 }  // namespace
 
@@ -92,7 +94,8 @@ bool GptpEngine::Initialize()
     if (!socket_->EnableHwTimestamping())
     {
         score::mw::log::LogWarn(kTimeSlaveAppContext)
-            << "GptpEngine: HW timestamping not available on " << opts_.iface_name << ", falling back to SW timestamps";
+            << "GptpEngine: timestamping could not be enabled on " << opts_.iface_name
+            << ", ingress timestamps will be taken in software when packets are handled (higher jitter)";
     }
 
     running_.store(true, std::memory_order_release);
@@ -182,15 +185,15 @@ bool GptpEngine::ReadPTPSnapshot(score::ts::GptpIpcData& data) const noexcept
 void GptpEngine::RxLoop() noexcept
 {
     std::uint8_t buf[kRxBufferSize];
-    ::timespec hwts{};
+    ::timespec rx_ts{};
 
     while (running_.load(std::memory_order_acquire))
     {
-        std::memset(&hwts, 0, sizeof(hwts));
-        const int n = socket_->Recv(buf, sizeof(buf), hwts, kRxTimeoutMs);
+        std::memset(&rx_ts, 0, sizeof(rx_ts));
+        const int n = socket_->Recv(buf, sizeof(buf), rx_ts, kRxTimeoutMs);
         if (n <= 0)
             continue;
-        HandlePacket(buf, n, hwts);
+        HandlePacket(buf, n, rx_ts);
     }
 }
 
@@ -242,7 +245,7 @@ void GptpEngine::PdelayLoop() noexcept
     }
 }
 
-void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timespec& hwts) noexcept
+void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timespec& kernel_ts) noexcept
 {
     int ptp_offset = 0;
     if (!codec_.ParseEthernetHeader(frame, len, ptp_offset))
@@ -255,20 +258,60 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     if (!parser_.Parse(payload, payload_len, msg))
         return;
 
-    const TmvT hw_ts{static_cast<std::int64_t>(hwts.tv_sec) * 1'000'000'000LL + hwts.tv_nsec};
+    // One CLOCK_MONOTONIC read per packet, shared by the timestamp fallback and Sync's recvMonoNs.
+    const std::int64_t mono_now = MonoNs();
+
+    // Ingress timestamp (needed by Sync, PdelayReq and PdelayResp only). All timestamps used together in offset,
+    // rate-ratio, peer-delay and jump computations must come from ONE clock domain, so the source is chosen
+    // per session, not per packet:
+    //  - the socket's kernel timestamp (NIC hardware clock, or kernel software time already converted to
+    //    CLOCK_MONOTONIC), whenever the platform delivers one;
+    //  - only if the platform has never delivered one, a CLOCK_MONOTONIC read here (consistent for the whole
+    //    session, higher jitter).
+    // Once kernel timestamps have been seen, a packet without one is not stamped from another clock; messages that
+    // need the stamp are dropped (the peer sees a missing response, a Sync is simply skipped).
+    std::optional<TmvT> rx_ts;
+    if ((kernel_ts.tv_sec != 0) || (kernel_ts.tv_nsec != 0))
+    {
+        kernel_ts_seen_ = true;
+        rx_ts = TmvT{static_cast<std::int64_t>(kernel_ts.tv_sec) * kNsPerSec + kernel_ts.tv_nsec};
+    }
+    else if (!kernel_ts_seen_)
+    {
+        rx_ts = TmvT{mono_now};
+    }
+    const auto drop_unstamped = [this](const PTPMessage& m) noexcept {
+        if (missing_ts_drops_++ % kMissingTsLogEvery == 0U)
+        {
+            score::mw::log::LogWarn(kTimeSlaveAppContext)
+                << "GptpEngine: no kernel ingress timestamp for message type " << static_cast<int>(m.msgtype)
+                << ", dropped to avoid mixing clock domains (drops so far: " << missing_ts_drops_ << ")";
+        }
+    };
 
     switch (msg.msgtype)
     {
         case kPtpMsgtypePdelayReq:
-            if (msg.ptpHdr.domainNumber == opts_.domain_number)
-                SendPDelayResponseAndFollowUp(msg, hw_ts);
+            if (msg.ptpHdr.domainNumber != opts_.domain_number)
+                break;
+            if (!rx_ts)
+            {
+                drop_unstamped(msg);
+                break;
+            }
+            SendPDelayResponseAndFollowUp(msg, *rx_ts);
             break;
 
         case kPtpMsgtypeSync:
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
                 break;
-            msg.recvHardwareTS = hw_ts;
-            msg.recvMonoNs = MonoNs();
+            if (!rx_ts)
+            {
+                drop_unstamped(msg);
+                break;
+            }
+            msg.recvHardwareTS = *rx_ts;
+            msg.recvMonoNs = mono_now;
             sync_sm_.OnSync(msg);
             break;
 
@@ -297,7 +340,12 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             break;
 
         case kPtpMsgtypePdelayResp:
-            msg.recvHardwareTS = hw_ts;
+            if (!rx_ts)
+            {
+                drop_unstamped(msg);
+                break;
+            }
+            msg.recvHardwareTS = *rx_ts;
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp.requestReceiptTimestamp);
             if (pdelay_)
                 pdelay_->OnResponse(msg);
@@ -389,6 +437,10 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
 
     ::timespec hwts{};
     if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0)
+        return;
+    // Without a TX timestamp t3 is unknown; a follow-up carrying a made-up t3 would corrupt the peer's delay
+    // measurement, so omit it (the peer discards the incomplete exchange).
+    if (hwts.tv_sec == 0 && hwts.tv_nsec == 0)
         return;
     const TmvT t3{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
 

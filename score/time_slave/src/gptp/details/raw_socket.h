@@ -40,7 +40,8 @@ class RawSocket
     /// @return false on failure.
     virtual bool Open(const std::string& iface) = 0;
 
-    /// @brief Configures hardware TX/RX timestamping on the NIC if supported.
+    /// @brief Configures hardware TX/RX timestamping on the NIC if supported, and also requests kernel software
+    /// receive timestamps as a fallback for NICs that deliver no hardware timestamp.
     ///
     /// @return false on failure or if hardware timestamping is unsupported.
     virtual bool EnableHwTimestamping() = 0;
@@ -61,7 +62,10 @@ class RawSocket
     ///
     /// @param buf  Frame buffer.
     /// @param len  Frame length in bytes.
-    /// @param hwts Output: hardware transmit timestamp if available, otherwise software timestamp.
+    /// @param hwts Output: hardware transmit timestamp if available, otherwise a software timestamp on
+    ///              CLOCK_MONOTONIC; zeroed if neither is available (callers must then not use it).
+    ///              Note: the peer delay computation needs the TX and RX timestamps of one device on the
+    ///              same clock; this holds for NICs with full hardware stamping and for NICs with none.
     /// @return Number of bytes sent, or -1 on error.
     virtual int Send(const void* buf, int len, ::timespec& hwts) = 0;
 

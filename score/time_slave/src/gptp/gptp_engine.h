@@ -102,10 +102,10 @@ class GptpEngine final
     /// @brief Opens the raw socket, enables hardware timestamping, resolves the
     /// @c ClockIdentity, and starts the Rx and PDelay background threads.
     ///
-    /// Calls @c RawSocket::EnableHwTimestamping() to request NIC-level receive
-    /// timestamps (@c SO_TIMESTAMPING on Linux). If the NIC does not support
-    /// hardware timestamping, a warning is logged; the engine continues normally
-    /// with software timestamps (higher jitter but protocol correctness is unaffected).
+    /// Calls @c RawSocket::EnableHwTimestamping() to request NIC-level (and kernel
+    /// software fallback) timestamps (@c SO_TIMESTAMPING on Linux). If timestamping
+    /// cannot be enabled at all, a warning is logged; the engine continues with
+    /// ingress timestamps read at packet-handling time (higher jitter).
     ///
     /// @return true on success.
     bool Initialize();
@@ -132,7 +132,7 @@ class GptpEngine final
     void RxLoop() noexcept;
     void PdelayLoop() noexcept;
 
-    void HandlePacket(const std::uint8_t* frame, int len, const ::timespec& hwts) noexcept;
+    void HandlePacket(const std::uint8_t* frame, int len, const ::timespec& kernel_ts) noexcept;
     void UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdelay) noexcept;
     void SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) noexcept;
 
@@ -149,6 +149,10 @@ class GptpEngine final
     mutable std::mutex snapshot_mutex_;
     score::ts::GptpIpcData pending_snapshot_{};  ///< Filled by RxThread on Sync+FollowUp
     score::ts::GptpIpcData current_snapshot_{};  ///< Committed by FinalizeSnapshot()
+
+    // RxThread only: set once the socket has delivered a kernel ingress timestamp (see HandlePacket()).
+    bool kernel_ts_seen_{false};
+    std::uint32_t missing_ts_drops_{0U};
 
     std::atomic<bool> running_{false};
     std::thread rx_thread_;

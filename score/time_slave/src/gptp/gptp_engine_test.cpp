@@ -11,6 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_slave/src/gptp/gptp_engine.h"
+#include "score/time_slave/src/gptp/details/clock_util.h"
 #include "score/time_slave/src/gptp/details/network_identity.h"
 #include "score/time_slave/src/gptp/details/raw_socket.h"
 
@@ -594,6 +595,66 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
     ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
     EXPECT_TRUE(data.status.is_time_jump_past);
     EXPECT_TRUE(data.status.is_correct);
+}
+
+// ── Timestamp source handling ─────────────────────────────────────────────────
+
+TEST_F(GptpEngineFakeTest, HandlePacket_SyncWithoutKernelTs_UsesMonotonicFallbackConsistently)
+{
+    ASSERT_TRUE(engine_->Initialize());
+
+    const std::int64_t before = MonoNs();
+    socket_raw_->Push(MakeSyncFrame(1U));  // platform delivers no kernel timestamp at all
+    socket_raw_->Push(MakeFollowUpFrame(1U, 2U, 0U));
+    ASSERT_TRUE(WaitForSync(*engine_));
+    const std::int64_t after = MonoNs();
+
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_GE(static_cast<std::int64_t>(data.sync_fup_data.sync_ingress_timestamp), before);
+    EXPECT_LE(static_cast<std::int64_t>(data.sync_fup_data.sync_ingress_timestamp), after);
+    // Ingress stamp and local_time come from the same single read of CLOCK_MONOTONIC.
+    EXPECT_EQ(static_cast<std::int64_t>(data.sync_fup_data.sync_ingress_timestamp), data.local_time.count());
+}
+
+TEST_F(GptpEngineFakeTest, HandlePacket_SyncWithoutKernelTsAfterStampedOne_IsDroppedNotMixed)
+{
+    ASSERT_TRUE(engine_->Initialize());
+
+    socket_raw_->Push(MakeSyncFrame(1U), ::timespec{1, 500'000'000L});
+    socket_raw_->Push(MakeFollowUpFrame(1U, 2U, 0U));
+    ASSERT_TRUE(WaitForSync(*engine_));
+
+    // Same session, but this Sync carries no kernel timestamp: it must not be stamped from CLOCK_MONOTONIC.
+    socket_raw_->Push(MakeSyncFrame(2U));
+    socket_raw_->Push(MakeFollowUpFrame(2U, 3U, 0U));
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_EQ(data.sync_fup_data.sequence_id, 1U);
+    EXPECT_EQ(data.sync_fup_data.sync_ingress_timestamp, 1'500'000'000ULL);
+    EXPECT_FALSE(data.status.is_time_jump_future);
+    EXPECT_FALSE(data.status.is_time_jump_past);
+}
+
+TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutBeforeFirstSync_FlagIsReported)
+{
+    GptpEngineOptions opts = FastOptions();
+    opts.sync_timeout_ms = 50;
+
+    GptpEngine eng{opts, std::make_unique<FakeSocket>(), std::make_unique<FakeIdentity>()};
+    ASSERT_TRUE(eng.Initialize());
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
+    score::ts::GptpIpcData info{};
+    eng.FinalizeSnapshot();
+    ASSERT_TRUE(eng.ReadPTPSnapshot(info));
+    EXPECT_TRUE(info.status.is_timeout);
+    // is_correct == false would make consumers discard the timeout flag.
+    EXPECT_TRUE(info.status.is_correct);
+    EXPECT_TRUE(eng.Deinitialize());
 }
 
 }  // namespace details
