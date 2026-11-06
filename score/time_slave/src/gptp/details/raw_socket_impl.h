@@ -21,6 +21,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace score
@@ -31,7 +32,7 @@ namespace details
 {
 
 /**
- * @brief Platform raw socket for Ethernet I/O with hardware timestamping.
+ * @brief Platform raw socket for Ethernet I/O with hardware or software timestamping.
  *
  * Implements platform-specific raw socket operations:
  * - Linux: AF_PACKET with SO_TIMESTAMPING for NIC-level timestamps
@@ -52,15 +53,16 @@ class RawSocketImpl : public RawSocket
     /// Open the socket bound to @p iface. Returns false on failure.
     bool Open(const std::string& iface) override;
 
-    /// Configure hardware TX/RX timestamping on the already-opened socket.
+    /// Configure hardware TX/RX timestamping on the already-opened socket and request kernel software
+    /// receive timestamps as a fallback.
     ///
-    /// On Linux, requests SO_TIMESTAMPING (NIC-level timestamps). If the NIC
-    /// does not support hardware timestamping, returns false and logs a warning.
-    /// The socket continues to work, populating hwts with software timestamps
+    /// On Linux, requests SO_TIMESTAMPING (NIC-level and kernel software timestamps). Returns false and
+    /// logs a warning only if timestamping cannot be enabled at all.
+    /// The socket continues to work, populating rx_ts with software timestamps
     /// (higher jitter but protocol correctness is unaffected).
     ///
     /// Returns false on failure. A no-op on platforms that don't support it.
-    bool EnableHwTimestamping() override;
+    bool EnableTimestamping() override;
 
     /// Close the socket and release the file descriptor.
     void Close() override;
@@ -69,18 +71,20 @@ class RawSocketImpl : public RawSocket
     ///
     /// @param buf       Output buffer.
     /// @param buf_len   Capacity of @p buf.
-    /// @param hwts      Output: hardware receive timestamp (zeroed if unavailable).
+    /// @param rx_ts     Output: hardware, else kernel software (CLOCK_MONOTONIC) receive timestamp
+    ///                  (zeroed if unavailable).
     /// @param timeout_ms  <0 block indefinitely, 0 non-blocking, >0 timeout in ms.
     /// @return Number of bytes received, 0 on timeout, -1 on error.
-    int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) override;
+    int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& rx_ts, int timeout_ms) override;
 
     /// Send one frame.
     ///
     /// @param buf       Frame data including Ethernet header.
     /// @param len       Number of bytes to send.
-    /// @param hwts      Output: hardware transmit timestamp (zeroed if unavailable).
+    /// @param tx_ts      Output: hardware, else kernel software (CLOCK_MONOTONIC) transmit timestamp
+    ///                   (zeroed if unavailable).
     /// @return Number of bytes sent, or -1 on error.
-    int Send(const void* buf, int len, ::timespec& hwts) override;
+    int Send(const void* buf, int len, ::timespec& tx_ts) override;
 
     /// Return the underlying file descriptor (for advanced use / polling).
     int GetFd() const override
@@ -92,6 +96,8 @@ class RawSocketImpl : public RawSocket
     OsSyscalls* sys_{nullptr};
     std::atomic<int> fd_{-1};
     std::string iface_{};
+    // Send() is called from the Rx and Pdelay threads; the TX timestamp error queue must not be shared between them.
+    std::mutex send_mutex_{};
 };
 
 }  // namespace details

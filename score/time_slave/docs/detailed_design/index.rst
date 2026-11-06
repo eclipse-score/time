@@ -131,7 +131,7 @@ Each control flow has dedicated thread and runs independently.
 
 - **RxThread scope**
 
-  #. receive raw gPTP Ethernet frames with hardware timestamps from NIC via raw sockets
+  #. receive raw gPTP Ethernet frames with ingress timestamps (hardware, or kernel software fallback) via raw sockets
   #. decode and parse PTP messages (Sync, FollowUp, PdelayResp, PdelayRespFollowUp, PdelayReq)
   #. depending on message type:
 
@@ -207,16 +207,16 @@ Concurrency Aspects
 - ``PeerDelayMeasurer`` uses internal ``std::mutex`` to synchronize ``SendRequest()`` (PdelayThread) with ``OnResponse()`` / ``OnResponseFollowUp()`` (RxThread)
 - ``SyncStateMachine`` uses ``std::atomic<bool>`` timeout flag written by RxThread and read by main thread
 
-Hardware Timestamping Fallback
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Timestamping Fallback
+^^^^^^^^^^^^^^^^^^^^^
 
-During ``Initialize()``, ``GptpEngine`` calls ``RawSocket::EnableHwTimestamping()`` to request NIC-level receive timestamps (``SO_TIMESTAMPING`` on Linux). If the NIC does not support hardware timestamping, the call returns ``false`` and a warning is logged:
+During ``Initialize()``, ``GptpEngine`` calls ``RawSocket::EnableTimestamping()`` to request NIC-level (and kernel software fallback) timestamps (``SO_TIMESTAMPING`` on Linux). A NIC without hardware timestamping still yields kernel software timestamps (converted to ``CLOCK_MONOTONIC``) for received and transmitted frames. Only if the call returns ``false`` (timestamping cannot be enabled at all) a warning is logged:
 
 .. code-block:: none
 
-   GptpEngine: HW timestamping not available on <iface>, falling back to SW timestamps
+   GptpEngine: timestamping could not be enabled on <iface>, ingress timestamps will be taken in software when packets are handled (higher jitter)
 
-The engine continues to run normally. The difference between the two modes:
+The engine continues to run normally. The difference between the modes:
 
 .. list-table::
    :header-rows: 1
@@ -225,9 +225,9 @@ The engine continues to run normally. The difference between the two modes:
    * - Field
      - HW timestamping available
      - SW timestamping fallback
-   * - ``recvHardwareTS`` (Sync receive time)
+   * - ``recvTS`` (Sync receive time)
      - NIC hardware timestamp (nanosecond resolution, captured at wire level)
-     - Software timestamp (captured at socket receive, higher jitter)
+     - Kernel software timestamp converted to CLOCK_MONOTONIC (higher jitter); a CLOCK_MONOTONIC read at packet handling only if the platform never delivers a kernel timestamp
    * - ``sync_fup_data.reference_local_timestamp``
      - Derived from NIC hardware timestamp
      - Derived from software timestamp
@@ -239,6 +239,8 @@ The engine continues to run normally. The difference between the two modes:
      - Reduced (jitter depends on OS scheduling latency)
 
 The fallback does not affect protocol correctness -- Sync/FollowUp correlation and peer delay measurement continue to work -- but the computed clock offset will be less accurate due to higher receive timestamp jitter.
+
+All timestamps combined in one computation (offset, rate ratio, peer delay, time jump detection) must share one clock domain. The engine therefore never mixes sources within a session: once the socket has delivered a kernel timestamp, a packet without one is not stamped from another clock. Sync, PdelayReq and PdelayResp messages without a timestamp are dropped (a warning is logged for the first and then every 100th drop). If no TX timestamp is available for a PdelayReq or PdelayResp, the corresponding exchange is discarded instead of being computed with an invalid ``t1``/``t3``.
 
 PeerDelayMeasurer
 ~~~~~~~~~~~~~~~~~

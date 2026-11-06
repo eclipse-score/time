@@ -309,9 +309,9 @@ extern "C" int qnx_raw_open(const char* ifname)
     return fd;
 }
 
-extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int nonblock)
+extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* rx_ts, int nonblock)
 {
-    if (fd < 0 || buf == nullptr || buf_len <= 0 || hwts == nullptr)
+    if (fd < 0 || buf == nullptr || buf_len <= 0 || rx_ts == nullptr)
     {
         errno = EINVAL;
         return -1;
@@ -420,12 +420,12 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
         bool t4_set = false;
         if (bh->bh_tstamp.bt_sec != 0 || bh->bh_tstamp.bt_frac != 0)
         {
-            bpf_ts_to_timespec(bh, hwts);
+            bpf_ts_to_timespec(bh, rx_ts);
             t4_set = true;
             if (msgtype == 0x03u)
             {
                 std::fprintf(
-                    stderr, "[t4] bpf_phc ts=%lld.%09ld\n", static_cast<long long>(hwts->tv_sec), hwts->tv_nsec);
+                    stderr, "[t4] bpf_phc ts=%lld.%09ld\n", static_cast<long long>(rx_ts->tv_sec), rx_ts->tv_nsec);
             }
         }
         // PTP_GET_TIME fallback: use PHC hardware time when no BPF timestamp
@@ -443,8 +443,8 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
             cmd.ifd.ifd_cmd = PTP_GET_TIME;
             if (::ioctl(g_qnx_ctx.promisc_sock, SIOCGDRVSPEC, &cmd) == 0)
             {
-                hwts->tv_sec = static_cast<time_t>(cmd.tm.sec);
-                hwts->tv_nsec = static_cast<long>(cmd.tm.nsec);
+                rx_ts->tv_sec = static_cast<time_t>(cmd.tm.sec);
+                rx_ts->tv_nsec = static_cast<long>(cmd.tm.nsec);
                 t4_set = true;
                 if (msgtype == 0x03u)
                 {
@@ -457,7 +457,8 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
         }
         if (!t4_set)
         {
-            (void)::clock_gettime(CLOCK_REALTIME, hwts);
+            // Last resort: CLOCK_MONOTONIC, never CLOCK_REALTIME (a wall-clock step would look like a time jump).
+            (void)::clock_gettime(CLOCK_MONOTONIC, rx_ts);
         }
 
         const int frame_len = std::min(caplen, buf_len);
@@ -467,9 +468,9 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
     }
 }
 
-extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
+extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* tx_ts)
 {
-    if (fd < 0 || buf == nullptr || len <= 0 || hwts == nullptr)
+    if (fd < 0 || buf == nullptr || len <= 0 || tx_ts == nullptr)
     {
         errno = EINVAL;
         return -1;
@@ -492,9 +493,10 @@ extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
         const std::int64_t t1 = g_qnx_ctx.inject_t1_ns.load(std::memory_order_acquire);
         if (t1 > 0)
         {
-            hwts->tv_sec = static_cast<time_t>(t1 / kNsPerSec);
-            hwts->tv_nsec = static_cast<long>(t1 % kNsPerSec);
-            std::fprintf(stderr, "[t1] inject   ts=%lld.%09ld\n", static_cast<long long>(hwts->tv_sec), hwts->tv_nsec);
+            tx_ts->tv_sec = static_cast<time_t>(t1 / kNsPerSec);
+            tx_ts->tv_nsec = static_cast<long>(t1 % kNsPerSec);
+            std::fprintf(
+                stderr, "[t1] inject   ts=%lld.%09ld\n", static_cast<long long>(tx_ts->tv_sec), tx_ts->tv_nsec);
             return len;
         }
         ::usleep(100U);  // 100 µs
@@ -513,21 +515,22 @@ extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
         cmd.ifd.ifd_cmd = PTP_GET_TIME;
         if (::ioctl(g_qnx_ctx.promisc_sock, SIOCGDRVSPEC, &cmd) == 0)
         {
-            hwts->tv_sec = static_cast<time_t>(cmd.tm.sec);
-            hwts->tv_nsec = static_cast<long>(cmd.tm.nsec);
+            tx_ts->tv_sec = static_cast<time_t>(cmd.tm.sec);
+            tx_ts->tv_nsec = static_cast<long>(cmd.tm.nsec);
             std::fprintf(stderr,
                          "[t1] PTP_GET  ts=%lld.%09ld (inject timeout)\n",
-                         static_cast<long long>(hwts->tv_sec),
-                         hwts->tv_nsec);
+                         static_cast<long long>(tx_ts->tv_sec),
+                         tx_ts->tv_nsec);
             return len;
         }
     }
 
-    (void)::clock_gettime(CLOCK_REALTIME, hwts);
+    // Last resort: CLOCK_MONOTONIC, never CLOCK_REALTIME (consistent with the receive fallback).
+    (void)::clock_gettime(CLOCK_MONOTONIC, tx_ts);
     std::fprintf(stderr,
-                 "[t1] CLOCK_RT ts=%lld.%09ld (fallback)\n",
-                 static_cast<long long>(hwts->tv_sec),
-                 static_cast<long>(hwts->tv_nsec));
+                 "[t1] CLOCK_MONO ts=%lld.%09ld (fallback)\n",
+                 static_cast<long long>(tx_ts->tv_sec),
+                 static_cast<long>(tx_ts->tv_nsec));
     return len;
 }
 

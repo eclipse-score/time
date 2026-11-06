@@ -28,6 +28,8 @@ struct GptpIpcStatus
     bool is_timeout;
     bool is_time_jump_future;
     bool is_time_jump_past;
+    /// True if the status is valid and its flags can be trusted. Timeouts and time jumps are reported via
+    /// their own flags and do not clear this field; consumers ignore all flags when it is false.
     bool is_correct;
 };
 

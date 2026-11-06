@@ -23,8 +23,8 @@
 // QNX raw shim C linkage (provided by existing qnx_raw_shim target)
 extern "C" {
 int qnx_raw_open(const char* ifname);
-int qnx_raw_recv(int fd, void* buf, int len, ::timespec* hwts, int nonblock);
-int qnx_raw_send(int fd, void* buf, int len, ::timespec* hwts);
+int qnx_raw_recv(int fd, void* buf, int len, ::timespec* rx_ts, int nonblock);
+int qnx_raw_send(int fd, void* buf, int len, ::timespec* tx_ts);
 }  // extern "C"
 
 namespace score
@@ -51,7 +51,7 @@ bool RawSocketImpl::Open(const std::string& iface)
     return true;
 }
 
-bool RawSocketImpl::EnableHwTimestamping()
+bool RawSocketImpl::EnableTimestamping()
 {
     // HW timestamping configured inside qnx_raw_open; nothing more needed.
     return true;
@@ -67,7 +67,7 @@ void RawSocketImpl::Close()
     iface_.clear();
 }
 
-int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms)
+int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& rx_ts, int timeout_ms)
 {
     if (fd_ < 0 || buf == nullptr || buf_len == 0)
         return -1;
@@ -76,14 +76,14 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
     // QNX shim: nonblock==0 means blocking; only full non-blocking is supported.
     // For timeout > 0 we fall back to a blocking call (best effort).
     (void)timeout_ms;
-    return qnx_raw_recv(fd_, buf, static_cast<int>(buf_len), &hwts, nonblock);
+    return qnx_raw_recv(fd_, buf, static_cast<int>(buf_len), &rx_ts, nonblock);
 }
 
-int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
+int RawSocketImpl::Send(const void* buf, int len, ::timespec& tx_ts)
 {
     if (fd_ < 0 || buf == nullptr || len <= 0)
         return -1;
-    return qnx_raw_send(fd_, const_cast<void*>(buf), len, &hwts);
+    return qnx_raw_send(fd_, const_cast<void*>(buf), len, &tx_ts);
 }
 
 }  // namespace details
