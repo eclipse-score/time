@@ -11,6 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_slave/src/gptp/details/pdelay_measurer.h"
+#include "score/time_slave/src/gptp/details/raw_socket.h"
 
 #include <gtest/gtest.h>
 
@@ -23,6 +24,32 @@ namespace details
 
 namespace
 {
+
+class FailingSendSocket final : public RawSocket
+{
+  public:
+    bool Open(const std::string&) override
+    {
+        return true;
+    }
+    bool EnableHwTimestamping() override
+    {
+        return true;
+    }
+    void Close() override {}
+    int Recv(std::uint8_t*, std::size_t, ::timespec&, int) override
+    {
+        return -1;
+    }
+    int Send(const void*, int, ::timespec&) override
+    {
+        return -1;
+    }
+    int GetFd() const override
+    {
+        return -1;
+    }
+};
 
 // Build a PTPMessage suitable for OnResponse / OnResponseFollowUp.
 // seqId must be 0 to match the default-constructed req_ inside PeerDelayMeasurer
@@ -72,6 +99,17 @@ TEST_F(PeerDelayMeasurerTest, SeqIdMismatch_BetweenRespAndFup_NoResult)
     // resp seqId == 0 (matches default req_), resp_fup seqId == 1 → mismatch.
     measurer_.OnResponse(MakeResp(0U, 100LL, 180LL));
     measurer_.OnResponseFollowUp(MakeResp(1U, 80LL));
+    EXPECT_FALSE(measurer_.GetResult().valid);
+}
+
+// ── Missing-timestamp guard ───────────────────────────────────────────────────
+
+TEST_F(PeerDelayMeasurerTest, T1Missing_SendHardwareTsSentinel_NoResult)
+{
+    FailingSendSocket socket;
+    ASSERT_LT(measurer_.SendRequest(socket), 0);
+    measurer_.OnResponse(MakeResp(0U, 100LL, 180LL));
+    measurer_.OnResponseFollowUp(MakeResp(0U, 80LL));
     EXPECT_FALSE(measurer_.GetResult().valid);
 }
 

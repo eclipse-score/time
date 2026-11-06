@@ -110,9 +110,11 @@ class FakeOsSyscalls final : public OsSyscalls
     // ── poll ─────────────────────────────────────────────────────────────────
     int poll_result{0};  // 0=timeout, -1=error, >0=ready
     int poll_revents{POLLIN};
+    int poll_call_count{0};
 
     int poll_call(::pollfd* fds, ::nfds_t /*nfds*/, int /*timeout*/) noexcept override
     {
+        ++poll_call_count;
         if (fds != nullptr)
             fds[0].revents = (poll_result > 0) ? static_cast<short>(poll_revents) : 0;
         return poll_result;
@@ -460,18 +462,19 @@ TEST(RawSocketTest, Recv_RecvmsgFails_ReturnsNegativeOne)
     EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), -1);
 }
 
-TEST(RawSocketTest, Recv_Success_NoTimestamp_ReturnsLen)
+TEST(RawSocketTest, Recv_HwLocked_NoCmsgTimestamp_ReturnsSentinel)
 {
     FakeOsSyscalls fake;
     fake.poll_result = 1;
     fake.recvmsg_result = 14;  // 14 bytes received
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
+    ASSERT_TRUE(sock.EnableHwTimestamping());
     std::uint8_t buf[256] = {};
     ::timespec hwts{};
     EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
-    EXPECT_EQ(hwts.tv_sec, 0);
-    EXPECT_EQ(hwts.tv_nsec, 0);
+    EXPECT_EQ(hwts.tv_sec, kNoHwTimestamp.tv_sec);
+    EXPECT_EQ(hwts.tv_nsec, kNoHwTimestamp.tv_nsec);
 }
 
 TEST(RawSocketTest, Recv_WithSoTimestampingCmsg_ExtractsHwts)
@@ -482,11 +485,36 @@ TEST(RawSocketTest, Recv_WithSoTimestampingCmsg_ExtractsHwts)
     fake.recvmsg_fill_hwts = true;  // inject ts[2]={1, 500_000_000}
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
+    ASSERT_TRUE(sock.EnableHwTimestamping());
     std::uint8_t buf[256] = {};
     ::timespec hwts{};
     EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
     EXPECT_EQ(hwts.tv_sec, 1);
     EXPECT_EQ(hwts.tv_nsec, 500'000'000L);
+}
+
+TEST(RawSocketTest, Recv_HwTimestampingUnavailable_UsesMonotonicFreeRunningClock)
+{
+    FakeOsSyscalls fake;
+    fake.poll_result = 1;
+    fake.recvmsg_result = 14;
+    fake.recvmsg_fill_hwts = true;
+    RawSocketImpl sock{&fake};
+    OpenSocket(sock, fake);
+
+    ::timespec before{};
+    ASSERT_EQ(::clock_gettime(CLOCK_MONOTONIC, &before), 0);
+    std::uint8_t buf[256] = {};
+    ::timespec hwts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
+    ::timespec after{};
+    ASSERT_EQ(::clock_gettime(CLOCK_MONOTONIC, &after), 0);
+
+    const auto ts_ns = [](const ::timespec& t) {
+        return t.tv_sec * 1'000'000'000LL + t.tv_nsec;
+    };
+    EXPECT_GE(ts_ns(hwts), ts_ns(before));
+    EXPECT_LE(ts_ns(hwts), ts_ns(after));
 }
 
 // ── RawSocket — Send() ────────────────────────────────────────────────────────
@@ -502,18 +530,19 @@ TEST(RawSocketTest, Send_SendFails_ReturnsNegativeOne)
     EXPECT_EQ(sock.Send(data, 14, hwts), -1);
 }
 
-TEST(RawSocketTest, Send_Success_PollNoTxTs_ReturnsSentBytes)
+TEST(RawSocketTest, Send_HwLocked_NoTxTimestampCmsg_ReturnsSentinel)
 {
     FakeOsSyscalls fake;
     fake.send_result = 14;
     fake.poll_result = 0;  // no TX-timestamp event
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
+    ASSERT_TRUE(sock.EnableHwTimestamping());
     const std::uint8_t data[14] = {};
     ::timespec hwts{};
     EXPECT_EQ(sock.Send(data, 14, hwts), 14);
-    EXPECT_EQ(hwts.tv_sec, 0);
-    EXPECT_EQ(hwts.tv_nsec, 0);
+    EXPECT_EQ(hwts.tv_sec, kNoHwTimestamp.tv_sec);
+    EXPECT_EQ(hwts.tv_nsec, kNoHwTimestamp.tv_nsec);
 }
 
 TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
@@ -527,6 +556,7 @@ TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
     fake.tx_fill_hwts = true;  // inject ts[2]={1,500_000_000}
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
+    ASSERT_TRUE(sock.EnableHwTimestamping());
     const std::uint8_t data[14] = {};
     ::timespec hwts{};
     EXPECT_EQ(sock.Send(data, 14, hwts), 14);
@@ -544,11 +574,39 @@ TEST(RawSocketTest, Send_DrainErrQueue_WhileBodyExecuted)
     fake.errqueue_drain_count = 1;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
+    ASSERT_TRUE(sock.EnableHwTimestamping());
     const std::uint8_t data[14] = {};
     ::timespec hwts{};
     EXPECT_EQ(sock.Send(data, 14, hwts), 14);
     // recvmsg was called: 1 DrainErrQueue call (returns 1) + 1 call (returns -1)
     EXPECT_GE(fake.recvmsg_call_count, 2);
+}
+
+TEST(RawSocketTest, Send_HwTimestampingUnavailable_UsesMonotonicFreeRunningClock)
+{
+    FakeOsSyscalls fake;
+    fake.send_result = 14;
+    fake.poll_result = 1;
+    fake.poll_revents = POLLERR;
+    fake.tx_result = 14;
+    fake.tx_fill_hwts = true;
+    RawSocketImpl sock{&fake};
+    OpenSocket(sock, fake);
+
+    ::timespec before{};
+    ASSERT_EQ(::clock_gettime(CLOCK_MONOTONIC, &before), 0);
+    const std::uint8_t data[14] = {};
+    ::timespec hwts{};
+    EXPECT_EQ(sock.Send(data, 14, hwts), 14);
+    ::timespec after{};
+    ASSERT_EQ(::clock_gettime(CLOCK_MONOTONIC, &after), 0);
+
+    const auto ts_ns = [](const ::timespec& t) {
+        return t.tv_sec * 1'000'000'000LL + t.tv_nsec;
+    };
+    EXPECT_GE(ts_ns(hwts), ts_ns(before));
+    EXPECT_LE(ts_ns(hwts), ts_ns(after));
+    EXPECT_EQ(fake.poll_call_count, 0);
 }
 
 // ── NetworkIdentity ───────────────────────────────────────────────────────────

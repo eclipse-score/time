@@ -46,6 +46,13 @@ inline std::int64_t MonoNs() noexcept
     return static_cast<std::int64_t>(ts.tv_sec) * kNsPerSec + ts.tv_nsec;
 }
 
+/// @brief Returns @c true if @p t is a real timestamp rather than a missing-timestamp
+/// sentinel (see @c kNoHwTimestamp in @c raw_socket.h).
+inline bool IsValidTmv(TmvT t) noexcept
+{
+    return t.ns >= 0;
+}
+
 }  // namespace details
 }  // namespace ts
 }  // namespace score
