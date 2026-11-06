@@ -199,9 +199,10 @@ struct PTPMessage
     };
 
     std::uint8_t msgtype{0};
-    TmvT sendHardwareTS{};
+    TmvT sendTS{};
     TmvT parseMessageTs{};
-    TmvT recvHardwareTS{};
+    /// Ingress timestamp: NIC hardware (PHC), kernel software (CLOCK_MONOTONIC), or CLOCK_MONOTONIC fallback.
+    TmvT recvTS{};
     std::int64_t recvMonoNs{0};  // CLOCK_MONOTONIC at packet reception; set for Sync only
 };
 

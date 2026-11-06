@@ -130,7 +130,7 @@ class FakeOsSyscalls final : public OsSyscalls
     // Sequence per Send() call:
     //   calls 0 .. errqueue_drain_count-1  → return 1 (drain loop body runs)
     //   call  errqueue_drain_count         → return -1 (terminates DrainErrQueue loop)
-    //   call  errqueue_drain_count+1       → TX timestamp: fill hwts if tx_fill_hwts, return tx_result
+    //   call  errqueue_drain_count+1       → TX timestamp: fill tx_ts if tx_fill_hwts, return tx_result
     int errqueue_drain_count{0};  // how many drain entries to simulate
     bool tx_fill_hwts{false};     // fill SO_TIMESTAMPING cmsg in TX-timestamp recvmsg
     bool tx_fill_swts{false};     // same, but only ts[0]=tx_swts (software, CLOCK_REALTIME)
@@ -171,7 +171,7 @@ class FakeOsSyscalls final : public OsSyscalls
         if (recvmsg_result < 0)
             return -1;
 
-        // Optionally inject SO_TIMESTAMPING cmsg for Recv() hwts extraction.
+        // Optionally inject SO_TIMESTAMPING cmsg for Recv() rx_ts extraction.
         if ((recvmsg_fill_hwts || recvmsg_fill_swts) && msg != nullptr && msg->msg_control != nullptr &&
             msg->msg_controllen >= CMSG_SPACE(3 * sizeof(::timespec)))
         {
@@ -256,11 +256,11 @@ TEST(RawSocketTest, Close_WhenNotOpen_IsNoOp)
     EXPECT_EQ(fake.close_count, 0);  // no real fd was open
 }
 
-TEST(RawSocketTest, EnableHwTimestamping_WhenNotOpen_ReturnsFalse)
+TEST(RawSocketTest, EnableTimestamping_WhenNotOpen_ReturnsFalse)
 {
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
-    EXPECT_FALSE(sock.EnableHwTimestamping());
+    EXPECT_FALSE(sock.EnableTimestamping());
 }
 
 TEST(RawSocketTest, Recv_WhenNotOpen_ReturnsNegativeOne)
@@ -268,8 +268,8 @@ TEST(RawSocketTest, Recv_WhenNotOpen_ReturnsNegativeOne)
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     std::uint8_t buf[64] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 0), -1);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 0), -1);
 }
 
 TEST(RawSocketTest, Recv_NullBuf_ReturnsNegativeOne)
@@ -277,8 +277,8 @@ TEST(RawSocketTest, Recv_NullBuf_ReturnsNegativeOne)
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(nullptr, 64U, hwts, 0), -1);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(nullptr, 64U, rx_ts, 0), -1);
 }
 
 TEST(RawSocketTest, Recv_ZeroBufLen_ReturnsNegativeOne)
@@ -287,8 +287,8 @@ TEST(RawSocketTest, Recv_ZeroBufLen_ReturnsNegativeOne)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[1] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, 0U, hwts, 0), -1);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, 0U, rx_ts, 0), -1);
 }
 
 TEST(RawSocketTest, Send_WhenNotOpen_ReturnsNegativeOne)
@@ -296,8 +296,8 @@ TEST(RawSocketTest, Send_WhenNotOpen_ReturnsNegativeOne)
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     const std::uint8_t data[14] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(data, 14, hwts), -1);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(data, 14, tx_ts), -1);
 }
 
 TEST(RawSocketTest, Send_NullBuf_ReturnsNegativeOne)
@@ -305,8 +305,8 @@ TEST(RawSocketTest, Send_NullBuf_ReturnsNegativeOne)
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(nullptr, 14, hwts), -1);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(nullptr, 14, tx_ts), -1);
 }
 
 TEST(RawSocketTest, Send_ZeroLen_ReturnsNegativeOne)
@@ -315,8 +315,8 @@ TEST(RawSocketTest, Send_ZeroLen_ReturnsNegativeOne)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     const std::uint8_t data[1] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(data, 0, hwts), -1);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(data, 0, tx_ts), -1);
 }
 
 TEST(RawSocketTest, Send_NegativeLen_ReturnsNegativeOne)
@@ -325,8 +325,8 @@ TEST(RawSocketTest, Send_NegativeLen_ReturnsNegativeOne)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     const std::uint8_t data[1] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(data, -1, hwts), -1);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(data, -1, tx_ts), -1);
 }
 
 // ── RawSocket — Open() failure paths ─────────────────────────────────────────
@@ -420,33 +420,33 @@ TEST(RawSocketTest, Destructor_AfterOpen_ClosesSocket)
     EXPECT_EQ(fake.close_count, 1);
 }
 
-// ── RawSocket — EnableHwTimestamping() ───────────────────────────────────────
+// ── RawSocket — EnableTimestamping() ───────────────────────────────────────────────────────────────────────────────
 
-TEST(RawSocketTest, EnableHwTimestamping_Success_ReturnsTrue)
+TEST(RawSocketTest, EnableTimestamping_Success_ReturnsTrue)
 {
     FakeOsSyscalls fake;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
-    EXPECT_TRUE(sock.EnableHwTimestamping());
+    EXPECT_TRUE(sock.EnableTimestamping());
 }
 
-TEST(RawSocketTest, EnableHwTimestamping_SiocshwtstampFallback_StillReturnsTrue)
+TEST(RawSocketTest, EnableTimestamping_SiocshwtstampFallback_StillReturnsTrue)
 {
     // First SIOCSHWTSTAMP ioctl fails → fallback (second call) is attempted.
     FakeOsSyscalls fake;
     fake.ioctl_siocshwtstamp_fail = true;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
-    EXPECT_TRUE(sock.EnableHwTimestamping());
+    EXPECT_TRUE(sock.EnableTimestamping());
 }
 
-TEST(RawSocketTest, EnableHwTimestamping_SetsockoptFails_ReturnsFalse)
+TEST(RawSocketTest, EnableTimestamping_SetsockoptFails_ReturnsFalse)
 {
     FakeOsSyscalls fake;
     fake.setsockopt_fail = true;
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
-    EXPECT_FALSE(sock.EnableHwTimestamping());
+    EXPECT_FALSE(sock.EnableTimestamping());
 }
 
 // ── RawSocket — Recv() ────────────────────────────────────────────────────────
@@ -458,8 +458,8 @@ TEST(RawSocketTest, Recv_PollTimeout_ReturnsZero)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[64] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 0);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), 0);
 }
 
 TEST(RawSocketTest, Recv_PollError_ReturnsNegativeOne)
@@ -469,8 +469,8 @@ TEST(RawSocketTest, Recv_PollError_ReturnsNegativeOne)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[64] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), -1);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), -1);
 }
 
 TEST(RawSocketTest, Recv_RecvmsgFails_ReturnsNegativeOne)
@@ -481,8 +481,8 @@ TEST(RawSocketTest, Recv_RecvmsgFails_ReturnsNegativeOne)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[64] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), -1);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), -1);
 }
 
 TEST(RawSocketTest, Recv_Success_NoTimestamp_ReturnsLen)
@@ -493,10 +493,10 @@ TEST(RawSocketTest, Recv_Success_NoTimestamp_ReturnsLen)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[256] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
-    EXPECT_EQ(hwts.tv_sec, 0);
-    EXPECT_EQ(hwts.tv_nsec, 0);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), 14);
+    EXPECT_EQ(rx_ts.tv_sec, 0);
+    EXPECT_EQ(rx_ts.tv_nsec, 0);
 }
 
 TEST(RawSocketTest, Recv_WithSoTimestampingCmsg_ExtractsHwts)
@@ -508,10 +508,10 @@ TEST(RawSocketTest, Recv_WithSoTimestampingCmsg_ExtractsHwts)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[256] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
-    EXPECT_EQ(hwts.tv_sec, 1);
-    EXPECT_EQ(hwts.tv_nsec, 500'000'000L);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), 14);
+    EXPECT_EQ(rx_ts.tv_sec, 1);
+    EXPECT_EQ(rx_ts.tv_nsec, 500'000'000L);
 }
 
 TEST(RawSocketTest, Recv_HardwareTimestampPreferredOverSoftware)
@@ -525,10 +525,10 @@ TEST(RawSocketTest, Recv_HardwareTimestampPreferredOverSoftware)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[256] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
-    EXPECT_EQ(hwts.tv_sec, 1);
-    EXPECT_EQ(hwts.tv_nsec, 500'000'000L);
+    ::timespec rx_ts{};
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), 14);
+    EXPECT_EQ(rx_ts.tv_sec, 1);
+    EXPECT_EQ(rx_ts.tv_nsec, 500'000'000L);
 }
 
 TEST(RawSocketTest, Recv_SoftwareTimestamp_ConvertedToMonotonicWithPacketAge)
@@ -542,13 +542,13 @@ TEST(RawSocketTest, Recv_SoftwareTimestamp_ConvertedToMonotonicWithPacketAge)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     std::uint8_t buf[256] = {};
-    ::timespec hwts{};
+    ::timespec rx_ts{};
     const std::int64_t before = ToNs(NowOn(CLOCK_MONOTONIC));
-    EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
+    EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), 14);
     const std::int64_t after = ToNs(NowOn(CLOCK_MONOTONIC));
     // Result lies on CLOCK_MONOTONIC, about kAgeNs before the Recv() call.
-    EXPECT_GE(ToNs(hwts), before - kAgeNs - 1'000'000LL);
-    EXPECT_LE(ToNs(hwts), after - kAgeNs + 1'000'000LL);
+    EXPECT_GE(ToNs(rx_ts), before - kAgeNs - 1'000'000LL);
+    EXPECT_LE(ToNs(rx_ts), after - kAgeNs + 1'000'000LL);
 }
 
 TEST(RawSocketTest, Recv_SoftwareTimestamp_ImplausibleAge_FallsBackToReceptionTime)
@@ -565,12 +565,12 @@ TEST(RawSocketTest, Recv_SoftwareTimestamp_ImplausibleAge_FallsBackToReceptionTi
         RawSocketImpl sock{&fake};
         OpenSocket(sock, fake);
         std::uint8_t buf[256] = {};
-        ::timespec hwts{};
+        ::timespec rx_ts{};
         const std::int64_t before = ToNs(NowOn(CLOCK_MONOTONIC));
-        EXPECT_EQ(sock.Recv(buf, sizeof(buf), hwts, 10), 14);
+        EXPECT_EQ(sock.Recv(buf, sizeof(buf), rx_ts, 10), 14);
         const std::int64_t after = ToNs(NowOn(CLOCK_MONOTONIC));
-        EXPECT_GE(ToNs(hwts), before);
-        EXPECT_LE(ToNs(hwts), after);
+        EXPECT_GE(ToNs(rx_ts), before);
+        EXPECT_LE(ToNs(rx_ts), after);
     }
 }
 
@@ -583,8 +583,8 @@ TEST(RawSocketTest, Send_SendFails_ReturnsNegativeOne)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     const std::uint8_t data[14] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(data, 14, hwts), -1);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(data, 14, tx_ts), -1);
 }
 
 TEST(RawSocketTest, Send_Success_PollNoTxTs_ReturnsSentBytes)
@@ -595,10 +595,10 @@ TEST(RawSocketTest, Send_Success_PollNoTxTs_ReturnsSentBytes)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     const std::uint8_t data[14] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(data, 14, hwts), 14);
-    EXPECT_EQ(hwts.tv_sec, 0);
-    EXPECT_EQ(hwts.tv_nsec, 0);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(data, 14, tx_ts), 14);
+    EXPECT_EQ(tx_ts.tv_sec, 0);
+    EXPECT_EQ(tx_ts.tv_nsec, 0);
 }
 
 TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
@@ -613,10 +613,10 @@ TEST(RawSocketTest, Send_Success_TxTimestampCmsg_ExtractsHwts)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     const std::uint8_t data[14] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(data, 14, hwts), 14);
-    EXPECT_EQ(hwts.tv_sec, 1);
-    EXPECT_EQ(hwts.tv_nsec, 500'000'000L);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(data, 14, tx_ts), 14);
+    EXPECT_EQ(tx_ts.tv_sec, 1);
+    EXPECT_EQ(tx_ts.tv_nsec, 500'000'000L);
 }
 
 TEST(RawSocketTest, Send_Success_OnlySoftwareTxTimestamp_FallsBackToMonotonic)
@@ -631,13 +631,13 @@ TEST(RawSocketTest, Send_Success_OnlySoftwareTxTimestamp_FallsBackToMonotonic)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     const std::uint8_t data[14] = {};
-    ::timespec hwts{};
+    ::timespec tx_ts{};
     const std::int64_t before = ToNs(NowOn(CLOCK_MONOTONIC));
-    EXPECT_EQ(sock.Send(data, 14, hwts), 14);
+    EXPECT_EQ(sock.Send(data, 14, tx_ts), 14);
     const std::int64_t after = ToNs(NowOn(CLOCK_MONOTONIC));
-    EXPECT_NE(ToNs(hwts), 0);
-    EXPECT_GE(ToNs(hwts), before - 1'000'000LL);
-    EXPECT_LE(ToNs(hwts), after);
+    EXPECT_NE(ToNs(tx_ts), 0);
+    EXPECT_GE(ToNs(tx_ts), before - 1'000'000LL);
+    EXPECT_LE(ToNs(tx_ts), after);
 }
 
 TEST(RawSocketTest, Send_DrainErrQueue_WhileBodyExecuted)
@@ -651,8 +651,8 @@ TEST(RawSocketTest, Send_DrainErrQueue_WhileBodyExecuted)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     const std::uint8_t data[14] = {};
-    ::timespec hwts{};
-    EXPECT_EQ(sock.Send(data, 14, hwts), 14);
+    ::timespec tx_ts{};
+    EXPECT_EQ(sock.Send(data, 14, tx_ts), 14);
     // recvmsg was called: 1 DrainErrQueue call (returns 1) + 1 call (returns -1)
     EXPECT_GE(fake.recvmsg_call_count, 2);
 }

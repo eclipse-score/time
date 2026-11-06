@@ -42,11 +42,11 @@ namespace
 class FakeSocket final : public RawSocket
 {
   public:
-    void Push(std::vector<std::uint8_t> data, ::timespec hwts = {})
+    void Push(std::vector<std::uint8_t> data, ::timespec rx_ts = {})
     {
         {
             std::lock_guard<std::mutex> lk(mtx_);
-            frames_.push_back({std::move(data), hwts});
+            frames_.push_back({std::move(data), rx_ts});
         }
         cv_.notify_one();
     }
@@ -60,7 +60,7 @@ class FakeSocket final : public RawSocket
     {
         return open_ok_;
     }
-    bool EnableHwTimestamping() override
+    bool EnableTimestamping() override
     {
         return hw_ts_ok_;
     }
@@ -74,7 +74,7 @@ class FakeSocket final : public RawSocket
         cv_.notify_all();
     }
 
-    int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) override
+    int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& rx_ts, int timeout_ms) override
     {
         std::unique_lock<std::mutex> lk(mtx_);
         const auto timeout = std::chrono::milliseconds(timeout_ms > 0 ? timeout_ms : 100);
@@ -88,7 +88,7 @@ class FakeSocket final : public RawSocket
         auto& [data, ts] = frames_.front();
         const std::size_t n = std::min(data.size(), buf_len);
         std::memcpy(buf, data.data(), n);
-        hwts = ts;
+        rx_ts = ts;
         frames_.pop_front();
         return static_cast<int>(n);
     }
@@ -394,10 +394,10 @@ TEST_F(GptpEngineFakeTest, HandlePacket_SyncFollowUp_SnapshotBecomesSync)
     ASSERT_TRUE(engine_->Initialize());
 
     // Send Sync then FollowUp with the same seqId.
-    ::timespec hwts{};
-    hwts.tv_sec = 1;
-    hwts.tv_nsec = 500'000'000L;
-    socket_raw_->Push(MakeSyncFrame(1U), hwts);
+    ::timespec rx_ts{};
+    rx_ts.tv_sec = 1;
+    rx_ts.tv_nsec = 500'000'000L;
+    socket_raw_->Push(MakeSyncFrame(1U), rx_ts);
     socket_raw_->Push(MakeFollowUpFrame(1U, /*sec=*/2, /*ns=*/0));
 
     EXPECT_TRUE(WaitForSync(*engine_));
@@ -468,9 +468,9 @@ TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutPath_IsTimeoutSet)
     ASSERT_TRUE(eng.Initialize());
 
     // First receive a Sync+FUP so the state machine records a timestamp.
-    ::timespec hwts{};
-    hwts.tv_sec = 1;
-    raw_sock->Push(MakeSyncFrame(1U), hwts);
+    ::timespec rx_ts{};
+    rx_ts.tv_sec = 1;
+    raw_sock->Push(MakeSyncFrame(1U), rx_ts);
     raw_sock->Push(MakeFollowUpFrame(1U, 2U, 0U));
 
     // Wait for it to be processed and become synchronized.
@@ -550,13 +550,13 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpFuture_Detected)
     ASSERT_TRUE(engine_->Initialize());
 
     // Pair 1: master_ns ≈ 2 s
-    ::timespec hwts1{1, 0};
-    socket_raw_->Push(MakeSyncFrame(1U), hwts1);
+    ::timespec rx_ts1{1, 0};
+    socket_raw_->Push(MakeSyncFrame(1U), rx_ts1);
     socket_raw_->Push(MakeFollowUpFrame(1U, /*sec=*/2U, /*ns=*/0U));
 
     // Pair 2: master_ns ≈ 3 s (delta = 1 s > 500 ms threshold → is_time_jump_future)
-    ::timespec hwts2{2, 0};
-    socket_raw_->Push(MakeSyncFrame(2U), hwts2);
+    ::timespec rx_ts2{2, 0};
+    socket_raw_->Push(MakeSyncFrame(2U), rx_ts2);
     socket_raw_->Push(MakeFollowUpFrame(2U, /*sec=*/3U, /*ns=*/0U));
 
     const bool got = WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) {
@@ -576,13 +576,13 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
     ASSERT_TRUE(engine_->Initialize());
 
     // Pair 1: master_ns ≈ 3 s
-    ::timespec hwts1{1, 0};
-    socket_raw_->Push(MakeSyncFrame(1U), hwts1);
+    ::timespec rx_ts1{1, 0};
+    socket_raw_->Push(MakeSyncFrame(1U), rx_ts1);
     socket_raw_->Push(MakeFollowUpFrame(1U, /*sec=*/3U, /*ns=*/0U));
 
     // Pair 2: master_ns ≈ 2 s (delta < 0 → is_time_jump_past)
-    ::timespec hwts2{2, 0};
-    socket_raw_->Push(MakeSyncFrame(2U), hwts2);
+    ::timespec rx_ts2{2, 0};
+    socket_raw_->Push(MakeSyncFrame(2U), rx_ts2);
     socket_raw_->Push(MakeFollowUpFrame(2U, /*sec=*/2U, /*ns=*/0U));
 
     const bool got = WaitForFlag(*engine_, [](const score::ts::GptpIpcData& d) {

@@ -47,7 +47,7 @@ The time_slave component provides IEEE 802.1AS synchronization handling, i.e. it
 
 Runtime flow follows continuous loop:
 
-1. **Initialization and setup**: Bind configured network interface, initialize gPTP engine and IPC publisher, enable hardware timestamping when platform supports it.
+1. **Initialization and setup**: Bind configured network interface, initialize gPTP engine and IPC publisher, enable timestamping (hardware when the platform supports it, otherwise software).
 2. **Protocol processing**: Filter by configured gPTP domain, process Sync and Follow_Up pairs, compute offset and peer delay from protocol timestamps and correction fields.
 3. **Clock adjustment and status tracking**: Apply PHC step or frequency adjustment based on offset behavior, detect synchronization timeout and forward/backward time leaps.
 4. **Publishing**: Publish synchronized time snapshot, peer delay, rate deviation, and status flags to IPC at fixed 50 millisecond interval.

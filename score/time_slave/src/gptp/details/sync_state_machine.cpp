@@ -101,7 +101,7 @@ SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessag
     const TmvT fup_ts = TimestampToTmv(fup.follow_up.preciseOriginTimestamp);
 
     const std::int64_t master_ns = fup_ts.ns + sync_corr.ns + fup_corr.ns;
-    const std::int64_t offset_ns = sync.recvHardwareTS.ns - master_ns;
+    const std::int64_t offset_ns = sync.recvTS.ns - master_ns;
 
     SyncResult r{};
     r.master_ns = master_ns;
@@ -124,8 +124,8 @@ SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessag
     score::ts::GptpIpcSyncFupData& d = r.sync_fup_data;
     d.precise_origin_timestamp = to_u64(fup_ts.ns);
     d.reference_global_timestamp = to_u64(master_ns);
-    d.reference_local_timestamp = to_u64(sync.recvHardwareTS.ns);
-    d.sync_ingress_timestamp = to_u64(sync.recvHardwareTS.ns);
+    d.reference_local_timestamp = to_u64(sync.recvTS.ns);
+    d.sync_ingress_timestamp = to_u64(sync.recvTS.ns);
     d.correction_field = to_u64(sync.ptpHdr.correctionField);
     d.sequence_id = fup.ptpHdr.sequenceId;
     d.pdelay = 0U;  // filled by GptpEngine from IPeerDelayMeasurer
@@ -135,7 +135,7 @@ SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessag
     // IEEE 802.1AS Clause 11.4.1
     if (prev_slave_rx_ns_ != 0 && prev_master_origin_ns_ != 0)
     {
-        const std::int64_t slave_interval = sync.recvHardwareTS.ns - prev_slave_rx_ns_;
+        const std::int64_t slave_interval = sync.recvTS.ns - prev_slave_rx_ns_;
         const std::int64_t master_interval = master_ns - prev_master_origin_ns_;
         // Both intervals must be strictly positive: a non-positive slave_interval
         // indicates a HW timestamp rollback or clock step, which would produce a
@@ -145,7 +145,7 @@ SyncResult SyncStateMachine::BuildResult(const PTPMessage& sync, const PTPMessag
             neighbor_rate_ratio_ = static_cast<double>(slave_interval) / static_cast<double>(master_interval);
         }
     }
-    prev_slave_rx_ns_ = sync.recvHardwareTS.ns;
+    prev_slave_rx_ns_ = sync.recvTS.ns;
     prev_master_origin_ns_ = master_ns;
 
     last_master_ns_ = master_ns;

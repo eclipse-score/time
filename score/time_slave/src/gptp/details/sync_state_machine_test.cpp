@@ -35,7 +35,7 @@ PTPMessage MakeSync(std::uint16_t seqId, std::int64_t recv_hw_ns, std::int64_t c
     msg.msgtype = kPtpMsgtypeSync;
     msg.ptpHdr.sequenceId = seqId;
     msg.ptpHdr.correctionField = corr_ns << 16;  // CorrectionToTmv does >> 16
-    msg.recvHardwareTS.ns = recv_hw_ns;
+    msg.recvTS.ns = recv_hw_ns;
     return msg;
 }
 
