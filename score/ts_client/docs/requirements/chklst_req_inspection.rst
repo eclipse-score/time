@@ -14,7 +14,7 @@
 
 
 .. document:: Time Sync Client Requirements Inspection Checklist
-  :id: doc__ts_client_req_inspection
+  :id: doc__time_sync_client_req_inspection
   :status: draft
   :version: 2
   :safety: ASIL_B

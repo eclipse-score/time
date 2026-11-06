@@ -18,7 +18,7 @@ Time Sync Client Detailed Design
 ================================
 
 .. document:: Time Sync Client Detailed Design
-   :id: doc__ts_client_detailed_design
+   :id: doc__time_sync_client_detailed_design
    :status: draft
    :version: 1
    :safety: ASIL_B
