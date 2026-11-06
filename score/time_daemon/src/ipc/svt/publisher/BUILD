@@ -12,6 +12,7 @@
 # *******************************************************************************
 
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
+load("//score/time_daemon/src/ipc/core:shared_memory_handler_copts.bzl", "SHARED_MEMORY_HANDLER_COPTS")
 
 cc_library(
     name = "factory",
@@ -20,6 +21,7 @@ cc_library(
         "factory.h",
         "svt_publisher.h",
     ],
+    copts = SHARED_MEMORY_HANDLER_COPTS,
     features = COMPILER_WARNING_FEATURES,
     visibility = ["//score/time_daemon:__subpackages__"],
     deps = [
