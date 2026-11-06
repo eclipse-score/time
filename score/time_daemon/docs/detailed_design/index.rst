@@ -659,40 +659,20 @@ Client-side receive from TimeDaemon shared memory channel:
 Shared-memory layout
 ''''''''''''''''''''
 
-``SharedMemoryHandler`` uses ``std::hardware_destructive_interference_size`` to
-align its slots and shared control data, with a 64-byte fallback when the standard
-library does not provide it. This preserves the toolchain's target-tuned spacing
-intended to reduce false sharing. The value also affects the shared-memory layout,
-including slot stride and allocation size; it is not only a performance setting.
+``SharedMemoryHandler`` aligns its slots and shared control data using
+``std::hardware_destructive_interference_size``, or 64 bytes when unavailable, to
+reduce false sharing. This value also determines slot stride and allocation size.
 
-The supported deployment is a single system image whose IPC peers are built and
-deployed together. All peers accessing a segment must use the same shared-memory
-type definitions, compiler version, standard-library configuration and target
-architecture, with identical layout-affecting flags, including ``-mtune``,
-``-mcpu`` and any hardware-interference-size parameter overrides. Shared-memory
-objects must be recreated after a layout-changing update. This layout is not a
-stable binary interface for independently built or versioned applications.
+**Assumption of use:** All IPC peers are built and deployed together in one system
+image. They must use the same shared-memory types, compiler version,
+standard-library configuration, architecture and layout-affecting flags (including
+``-mtune``, ``-mcpu`` and hardware-interference-size overrides).
 
-GCC's `interference-size warning documentation
+Under this assumption, GCC's `interference-size warning
 <https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Winterference-size>`_
-permits disabling the warning when the value does not affect ABI outside a single
-build. Under the deployment contract above, varying the target-tuned value between
-complete builds is intentional. The affected Bazel targets therefore select
-``-Wno-interference-size`` only for GCC, using
-``@rules_cc//cc/compiler:gcc``. Other compilers and unrelated targets retain their
-existing warning settings. The option changes neither the alignment value nor the
-publication algorithm.
-
-The ``shared_memory_handler`` target is header-only. Bazel does not propagate its
-``copts`` to dependents, so the option must also be set on each target whose source
-files include this template, directly or transitively. This includes the IPC core
-tests, SVT publisher and receiver factories, common factory test and both SVT
-handler variants. The shared ``SHARED_MEMORY_HANDLER_COPTS`` constant in
-``score/time_daemon/src/ipc/core/shared_memory_handler_copts.bzl`` defines the
-GCC-selective option once. New consumers of these implementation headers must load
-this constant and set ``copts = SHARED_MEMORY_HANDLER_COPTS``. A fixed, versioned
-layout is required instead if peers need independent build or deployment
-compatibility; warning suppression does not make incompatible layouts safe.
+is suppressed with ``-Wno-interference-size`` via ``SHARED_MEMORY_HANDLER_COPTS``
+in ``score/time_daemon/src/ipc/core/shared_memory_handler_copts.bzl``. The constant
+selects the option only for GCC using ``@rules_cc//cc/compiler:gcc``.
 
 Logging configuration
 ~~~~~~~~~~~~~~~~~~~~~
