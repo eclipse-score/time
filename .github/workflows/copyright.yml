@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-copyright-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 on:
@@ -25,6 +25,7 @@ on:
     types: [opened, reopened, synchronize]
   merge_group:
     types: [checks_requested]
+  workflow_call:
 jobs:
   copyright-check:
     uses: eclipse-score/cicd-workflows/.github/workflows/copyright.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3

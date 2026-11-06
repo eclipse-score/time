@@ -1,0 +1,86 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
+name: Gate / General checks
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  build-linux:
+    uses: ./.github/workflows/build-linux.yml
+
+  component-tests:
+    uses: ./.github/workflows/comp-tests.yml
+    permissions:
+      contents: read
+      pull-requests: read
+
+  coverage:
+    uses: ./.github/workflows/code-coverage.yml
+
+  docs-verify:
+    uses: eclipse-score/cicd-workflows/.github/workflows/docs-verify.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
+    with:
+      bazel-docs-verify-target: "//:docs_check"
+
+  docs-build:
+    needs: docs-verify
+    uses: eclipse-score/cicd-workflows/.github/workflows/docs.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
+    with:
+      bazel-target: "//:docs -- --github_user=${{ github.repository_owner }} --github_repo=${{ github.event.repository.name }}"
+      retention-days: 3
+
+  format:
+    uses: ./.github/workflows/format.yml
+
+  copyright:
+    uses: ./.github/workflows/copyright.yml
+
+  bzlmod:
+    uses: ./.github/workflows/bzlmod-lock.yml
+
+  can_merge:
+    name: ci/general-validation
+    needs:
+      - build-linux
+      - component-tests
+      - coverage
+      - docs-verify
+      - docs-build
+      - format
+      - copyright
+      - bzlmod
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Require every blocking CI job to succeed
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "${NEEDS}" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          if ! echo "${NEEDS}" | jq -e 'length > 0 and all(.[]; .result == "success")' > /dev/null; then
+            echo "::error::A required CI job failed, was cancelled, or did not run."
+            exit 1
+          fi

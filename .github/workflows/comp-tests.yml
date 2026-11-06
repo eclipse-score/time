@@ -17,7 +17,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-comp-tests-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 on:
@@ -28,6 +28,7 @@ on:
       - main
   merge_group:
     types: [checks_requested]
+  workflow_call:
 
 jobs:
   run-comp-tests:
