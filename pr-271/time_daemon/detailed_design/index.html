@@ -470,7 +470,7 @@
                   
   <section id="time-daemon-detailed-design">
 <span id="id1"></span><h1>Time Daemon Detailed Design<a class="headerlink" href="#time-daemon-detailed-design" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-7564a2a9">
+<div class="need_container docutils container" id="SNCB-0f76eb05">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_daemon_detailed_design">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -802,21 +802,7 @@ handling are covered by <a class="reference internal" href="#time-daemon-handler
 </div><p>Client-side receive from TimeDaemon shared memory channel:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../_images/plantuml-68f3cafb04b9547ac34311cd73191ec5d7911628.svg" type="image/svg+xml" style="width:470px;height:341px;background:#FFFFFF;"></object></p>
-</div><section id="shared-memory-layout">
-<span id="time-daemon-ipc-layout"></span><h5>Shared-memory layout<a class="headerlink" href="#shared-memory-layout" title="Link to this heading">#</a></h5>
-<p><code class="docutils literal notranslate"><span class="pre">SharedMemoryHandler</span></code> aligns its slots and shared control data using
-<code class="docutils literal notranslate"><span class="pre">std::hardware_destructive_interference_size</span></code>, or 64 bytes when unavailable, to
-reduce false sharing. This value also determines slot stride and allocation size.</p>
-<p><strong>Assumption of use:</strong> All IPC peers are built and deployed together in one system
-image. They must use the same shared-memory types, compiler version,
-standard-library configuration, architecture and layout-affecting flags (including
-<code class="docutils literal notranslate"><span class="pre">-mtune</span></code>, <code class="docutils literal notranslate"><span class="pre">-mcpu</span></code> and hardware-interference-size overrides).</p>
-<p>Under this assumption, GCC’s <a class="reference external" href="https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Winterference-size">interference-size warning</a>
-is suppressed with <code class="docutils literal notranslate"><span class="pre">-Wno-interference-size</span></code> via <code class="docutils literal notranslate"><span class="pre">SHARED_MEMORY_HANDLER_COPTS</span></code>
-in <code class="docutils literal notranslate"><span class="pre">score/time_daemon/src/ipc/core/shared_memory_handler_copts.bzl</span></code>. The constant
-selects the option only for GCC using <code class="docutils literal notranslate"><span class="pre">&#64;rules_cc//cc/compiler:gcc</span></code>.</p>
-</section>
-</section>
+</div></section>
 </section>
 <section id="logging-configuration">
 <h3>Logging configuration<a class="headerlink" href="#logging-configuration" title="Link to this heading">#</a></h3>
@@ -1149,10 +1135,7 @@ This component shall:</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ptpmachine">PTPMachine</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#shmptpengine">ShmPTPEngine</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#verificationmachine">VerificationMachine</a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc-machine">IPC Machine</a><ul class="nav section-nav flex-column">
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-memory-layout">Shared-memory layout</a></li>
-</ul>
-</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ipc-machine">IPC Machine</a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-configuration">Logging configuration</a></li>
