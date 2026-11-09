@@ -247,25 +247,25 @@ table), `compilers.json` and `pins.json`. Open the SARIF files with the
 
 **CI:** [`static-analysis-codeql.yml`](.github/workflows/static-analysis-codeql.yml)
 runs Linux/QM on pull requests and on every push to `main`, and Linux/ASIL in the
-nightly run (02:00 UTC). Manual runs pick the platform and the preset:
+nightly run (02:00 UTC). Manual runs pick the platform(s) and preset(s):
 
 ```bash
 gh workflow run "QA / Static Analysis CodeQL" -f platform=linux -f preset=QM   # defaults
 gh workflow run "QA / Static Analysis CodeQL" -f platform=qnx   -f preset=ASIL
+gh workflow run "QA / Static Analysis CodeQL" -f platform=all   -f preset=ASIL  # Linux + QNX
 ```
 
-`platform` is `linux`, `qnx` or `all`; `preset` is `QM`, `ASIL` or `all`. QNX is only
-reachable that way — it never runs automatically, because it needs the QNX SDP
-license/secrets, which are not set up yet. Every (preset, platform) pair is a separate
-job with its own Code Scanning category
-(`static-analysis-codeql/{linux,qnx}/{qm,asil}`), so QM and ASIL alert sets are kept
-apart. All four publish to Code Scanning — the nightly ASIL run publishes to `main`
-under its own category — and because QM also runs on every `main` push, PR (QM) alerts
-are diffed against a QM baseline, while the ASIL results have no PR counterpart (PRs
-from forks cannot upload at all, they only keep the artifact). The reusable workflow is
-pinned by commit SHA. On a pull request the ASIL and QNX jobs still show up as
-*Skipped* (a job that is skipped reports success, so it never blocks a merge), and
-`schedule`/`workflow_dispatch` only take effect once the file is on the default branch.
+`platform` is `linux`, `qnx` or `all`, `preset` is `QM`, `ASIL` or `all`; a `plan` job
+expands `all` into every value of that axis, so a single manual run can cover several
+combinations. QNX never runs automatically — it is much slower and only needed on demand
+(its secrets are configured). Each combination is published under its own Code Scanning
+category (`static-analysis-codeql/{linux,qnx}/{QM,ASIL}`), so QM and ASIL alert sets are
+kept apart. All of them publish to Code Scanning — the nightly ASIL run publishes to
+`main` under its own category — and because QM also runs on every `main` push, PR (QM)
+alerts are diffed against a QM baseline, while the ASIL results have no PR counterpart.
+PRs from forks cannot upload at all, they only keep the artifact. The reusable workflow
+is pinned by commit SHA, and `schedule`/`workflow_dispatch` only take effect once the
+file is on the default branch.
 
 See the `codeql/README.md` in `score_tools` for all options.
 
