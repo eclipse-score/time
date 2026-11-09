@@ -263,7 +263,9 @@ apart. All four publish to Code Scanning — the nightly ASIL run publishes to `
 under its own category — and because QM also runs on every `main` push, PR (QM) alerts
 are diffed against a QM baseline, while the ASIL results have no PR counterpart (PRs
 from forks cannot upload at all, they only keep the artifact). The reusable workflow is
-pinned by commit SHA.
+pinned by commit SHA. On a pull request the ASIL and QNX jobs still show up as
+*Skipped* (a job that is skipped reports success, so it never blocks a merge), and
+`schedule`/`workflow_dispatch` only take effect once the file is on the default branch.
 
 See the `codeql/README.md` in `score_tools` for all options.
 
