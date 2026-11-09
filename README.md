@@ -259,8 +259,11 @@ reachable that way — it never runs automatically, because it needs the QNX SDP
 license/secrets, which are not set up yet. Every (preset, platform) pair is a separate
 job with its own Code Scanning category
 (`static-analysis-codeql/{linux,qnx}/{qm,asil}`), so QM and ASIL alert sets are kept
-apart; `main` publishes QM analyses too, so PR (QM) alerts are diffed against a QM
-baseline. The reusable workflow is pinned by commit SHA.
+apart. All four publish to Code Scanning — the nightly ASIL run publishes to `main`
+under its own category — and because QM also runs on every `main` push, PR (QM) alerts
+are diffed against a QM baseline, while the ASIL results have no PR counterpart (PRs
+from forks cannot upload at all, they only keep the artifact). The reusable workflow is
+pinned by commit SHA.
 
 See the `codeql/README.md` in `score_tools` for all options.
 
