@@ -29,23 +29,39 @@ on:
     branches:
       - main
   # Nightly ASIL analysis of `main`, Linux only: the QNX analysis needs the QNX SDP
-  # license and is not ready yet (see the `qnx-asil` job below).
+  # license and is not ready yet (see the QNX jobs below).
   schedule:
     - cron: "0 2 * * *"
+  # Manual runs choose platform and preset. QNX is never analysed automatically (it
+  # needs the QNX SDP license and is not ready yet), so it is only reachable here.
   workflow_dispatch:
     inputs:
-      run-qnx:
-        description: Also run the QNX analysis (needs the SCORE_QNX_* secrets, QNX is not ready yet)
-        type: boolean
-        default: false
+      platform:
+        description: Platform(s) to analyse
+        type: choice
+        default: linux
+        options:
+          - linux
+          - qnx
+          - all
+      preset:
+        description: Safety preset(s) to run
+        type: choice
+        default: QM
+        options:
+          - QM
+          - ASIL
+          - all
 
 jobs:
-  # Pull requests, `main` (push) and manual runs: fast QM preset. One job per
-  # (preset, platform) pair, because `uses:` cannot be computed and the Code Scanning
-  # category has to match the preset: static-analysis-codeql/<platform>/<preset>.
-  # QM also runs on `main`, so PR results are diffed against a QM baseline.
-  linux-qm:
-    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+  # One job per (preset, platform) pair: `uses:` cannot be computed and the Code
+  # Scanning category has to be literal, static-analysis-codeql/<platform>/<preset>.
+  # Every trigger except `workflow_dispatch` has a fixed pair (PR/push -> linux/QM,
+  # schedule -> linux/ASIL); manual runs select them via the `platform`/`preset`
+  # inputs (`all` = both values of that axis). QM also runs on `main`, so PR results
+  # are diffed against a QM baseline.
+  linux-qm: # PRs, `main` (push), manual runs with platform=linux|all and preset=QM|all
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && contains(fromJSON('["linux","all"]'), inputs.platform) && contains(fromJSON('["QM","all"]'), inputs.preset))
     # Pinned by commit SHA (branch `feat/static-analysis-codeql` of the
     # etas-contrib fork, not merged upstream yet). Once the workflow is released
     # switch to `eclipse-score/cicd-workflows@<sha> # <tag>` like build-qnx.yml.
@@ -59,9 +75,8 @@ jobs:
       safety-level: QM
       category: static-analysis-codeql/linux/qm
 
-  # Nightly run only: full ASIL preset incl. MISRA C++.
-  linux-asil:
-    if: github.event_name == 'schedule'
+  linux-asil: # nightly run, manual runs with platform=linux|all and preset=ASIL|all
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && contains(fromJSON('["linux","all"]'), inputs.platform) && contains(fromJSON('["ASIL","all"]'), inputs.preset))
     uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
     permissions:
       contents: read
@@ -72,11 +87,28 @@ jobs:
       safety-level: ASIL
       category: static-analysis-codeql/linux/asil
 
-  # QNX analysis needs the QNX SDP license and is not ready yet: it never runs
-  # automatically, only when `run-qnx` is set on a manual run (and the SCORE_QNX_*
-  # repository secrets exist).
-  qnx-asil:
-    if: github.event_name == 'workflow_dispatch' && inputs.run-qnx
+  # QNX: manual runs only, because the analysis needs the QNX SDP license and is not
+  # ready yet.
+  qnx-qm: # manual runs with platform=qnx|all and preset=QM|all
+    if: github.event_name == 'workflow_dispatch' && contains(fromJSON('["qnx","all"]'), inputs.platform) && contains(fromJSON('["QM","all"]'), inputs.preset)
+    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+      security-events: write
+    with:
+      sca-target: //tools/codeql:sca_qnx
+      platform: qnx
+      safety-level: QM
+      category: static-analysis-codeql/qnx/qm
+    secrets:
+      score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
+      score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
+      score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
+
+  qnx-asil: # manual runs with platform=qnx|all and preset=ASIL|all
+    if: github.event_name == 'workflow_dispatch' && contains(fromJSON('["qnx","all"]'), inputs.platform) && contains(fromJSON('["ASIL","all"]'), inputs.preset)
     uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
     permissions:
       contents: read
