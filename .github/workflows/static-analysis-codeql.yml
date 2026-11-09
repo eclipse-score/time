@@ -15,8 +15,9 @@ name: QA / Static Analysis CodeQL
 permissions:
   contents: read
 
-# The event name is part of the group, so that the nightly ASIL run of `main` and a
-# `push` to `main` (both `linux-asil`, same category) do not cancel each other.
+# The event name is part of the group, so that the nightly ASIL run of `main` and the
+# QM run of a `push` to `main` (same ref, but different jobs and categories) do not
+# cancel each other.
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -58,9 +59,9 @@ jobs:
       safety-level: QM
       category: static-analysis-codeql/linux/qm
 
-  # `main` (push) and the nightly run: full ASIL preset incl. MISRA C++.
+  # Nightly run only: full ASIL preset incl. MISRA C++.
   linux-asil:
-    if: github.event_name == 'push' || github.event_name == 'schedule'
+    if: github.event_name == 'schedule'
     uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
     permissions:
       contents: read
