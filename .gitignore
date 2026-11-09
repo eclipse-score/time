@@ -62,7 +62,7 @@ __pycache__/
 compile_commands.json
 rust-project.json
 
-# CodeQL local analysis output (any --output-dir placed inside the repo)
-codeql-*/
+# CodeQL static analysis output (bazel run //tools/codeql:sca_linux)
+_codeql_sca/
 coverage_*/
 summary.md

@@ -10,12 +10,22 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
-compile_pip_requirements(
-    name = "pip_requirements",
-    src = ":requirements.in",
-    exec_compatible_with = ["@platforms//os:linux"],
-    requirements_txt = "requirements_lock.txt",
-    target_compatible_with = ["@platforms//os:linux"],
+load("@score_tools//codeql:defs.bzl", "codeql_sca")
+
+# Linux analysis. Test/mock packages are excluded automatically.
+codeql_sca(
+    name = "sca_linux",
+    configs = ["x86_64-linux"],  # production GCC 12.2 toolchain; no LLVM
+    safety_level = "ASIL",
+    targets = ["//score/..."],
+)
+
+# QNX analysis (run in CI only; needs the QNX SDP + license).
+codeql_sca(
+    name = "sca_qnx",
+    configs = ["x86_64-qnx"],
+    platform = "qnx",
+    safety_level = "ASIL",
+    targets = ["//score/..."],
 )

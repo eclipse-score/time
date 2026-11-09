@@ -1,0 +1,65 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+name: QA / Static Analysis CodeQL
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  linux:
+    # Pinned by commit SHA (branch `feat/static-analysis-codeql` of the
+    # etas-contrib fork, not merged upstream yet). Once the workflow is released
+    # switch to `eclipse-score/cicd-workflows@<sha> # <tag>` like build-qnx.yml.
+    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@e4d3e1349ab32ff398855a6607097280adc4085f # feat/static-analysis-codeql
+    permissions:
+      contents: read
+      actions: read
+      security-events: write
+    with:
+      sca-target: //tools/codeql:sca_linux
+      # PRs: fast QM preset; main/nightly: full ASIL preset incl. MISRA C++.
+      # The category is constant per job so PR and main alerts share a baseline.
+      safety-level: ${{ github.event_name == 'pull_request' && 'QM' || 'ASIL' }}
+      category: static-analysis-codeql/linux
+
+  # QNX analysis needs the QNX SDP license; it only runs nightly / on demand.
+  qnx:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@e4d3e1349ab32ff398855a6607097280adc4085f # feat/static-analysis-codeql
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+      security-events: write
+    with:
+      sca-target: //tools/codeql:sca_qnx
+      platform: qnx
+      category: static-analysis-codeql/qnx
+    secrets:
+      score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
+      score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
+      score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
