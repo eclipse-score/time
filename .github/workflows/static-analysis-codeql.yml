@@ -25,8 +25,10 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: "0 2 * * *"
+  # The nightly run (`schedule: - cron: "0 2 * * *"`) is disabled until the QNX
+  # analysis is ready: the QNX SDP license and secrets are not set up yet, so the
+  # nightly run (ASIL preset incl. QNX) would fail. Re-enable the `schedule`
+  # trigger together with the `qnx` job below once QNX is verified.
   workflow_dispatch:
 
 jobs:
@@ -34,22 +36,24 @@ jobs:
     # Pinned by commit SHA (branch `feat/static-analysis-codeql` of the
     # etas-contrib fork, not merged upstream yet). Once the workflow is released
     # switch to `eclipse-score/cicd-workflows@<sha> # <tag>` like build-qnx.yml.
-    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@e4d3e1349ab32ff398855a6607097280adc4085f # feat/static-analysis-codeql
+    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
     permissions:
       contents: read
       actions: read
       security-events: write
     with:
       sca-target: //tools/codeql:sca_linux
-      # PRs: fast QM preset; main/nightly: full ASIL preset incl. MISRA C++.
+      # PRs: fast QM preset; main / manual run: full ASIL preset incl. MISRA C++.
       # The category is constant per job so PR and main alerts share a baseline.
       safety-level: ${{ github.event_name == 'pull_request' && 'QM' || 'ASIL' }}
       category: static-analysis-codeql/linux
 
-  # QNX analysis needs the QNX SDP license; it only runs nightly / on demand.
+  # QNX analysis needs the QNX SDP license; it only runs on demand for now (the
+  # nightly trigger is disabled, see the `on:` block above) and requires the
+  # SCORE_QNX_* repository secrets.
   qnx:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@e4d3e1349ab32ff398855a6607097280adc4085f # feat/static-analysis-codeql
+    if: github.event_name == 'workflow_dispatch'
+    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
     permissions:
       contents: read
       actions: read
