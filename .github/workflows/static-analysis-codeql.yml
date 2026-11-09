@@ -39,11 +39,12 @@ on:
         default: false
 
 jobs:
-  # Pull requests and manual runs: fast QM preset. One job per (preset, platform)
-  # pair, because `uses:` cannot be computed and the Code Scanning category has to
-  # match the preset: static-analysis-codeql/<platform>/<preset>.
+  # Pull requests, `main` (push) and manual runs: fast QM preset. One job per
+  # (preset, platform) pair, because `uses:` cannot be computed and the Code Scanning
+  # category has to match the preset: static-analysis-codeql/<platform>/<preset>.
+  # QM also runs on `main`, so PR results are diffed against a QM baseline.
   linux-qm:
-    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     # Pinned by commit SHA (branch `feat/static-analysis-codeql` of the
     # etas-contrib fork, not merged upstream yet). Once the workflow is released
     # switch to `eclipse-score/cicd-workflows@<sha> # <tag>` like build-qnx.yml.
