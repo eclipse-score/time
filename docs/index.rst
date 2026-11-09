@@ -115,6 +115,12 @@ Run clang-tidy (powered by ``score_cpp_policies``):
 
    bazel test --config=clang-tidy //score/...
 
+Run CodeQL (CERT C++, MISRA C++:2023, complexity; powered by ``score_tools``):
+
+.. code-block:: bash
+
+   bazel run //tools/codeql:sca_linux
+
 **Sanitizers**
 
 Run address, undefined-behaviour and leak sanitizers (powered by ``score_cpp_policies``):
