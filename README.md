@@ -207,32 +207,51 @@ bazel test --config=x86_64-linux --config=asan_ubsan_lsan --build_tests_only //s
 bazel test --config=clang-tidy //score/...
 ```
 
-### CodeQL — MISRA C++:2023 static analysis
+### Static analysis — CodeQL
 
-Runs a full build-traced MISRA C++:2023 scan using the vendored CodeQL CLI and
-pre-compiled query pack. The first run downloads ~1 GB of tooling (CodeQL CLI +
-MISRA pack) into the Bazel repository cache; subsequent runs reuse the cache.
+CodeQL (CERT C++, MISRA C++:2023, code complexity) is provided by the
+`//codeql` package of [`score_tools`](https://github.com/eclipse-score/tools);
+this repository only configures it in [`tools/codeql/BUILD`](tools/codeql/BUILD).
+The package is not released yet, so `MODULE.bazel` pins the fork commit that
+contains it — for local development against a checkout of `score_tools` use
+`bazel run --override_module=score_tools=../score_tools //tools/codeql:sca_linux`.
+The analysis replays the build with the production toolchain (static GCC 12.2 on
+Linux, `qcc`/`q++` on QNX) — there is no Clang fallback. A compiler identity
+gate fails the run if the database was not built by the expected compiler, and
+the compiler actually used is reported in `compilers.json` and `summary.md`.
 
 ```sh
-bazel run //tools/static_analysis:codeql_lint -- \
-    --output-dir /tmp/codeql-results \
-    --output-prefix codeql-time \
-    --target //score/...
+# Full analysis of //score/... (ASIL preset incl. MISRA C++)
+bazel run //tools/codeql:sca_linux
+
+# Only the complexity report of the ASIL profile
+bazel run //tools/codeql:sca_linux -- --report codeql-report-complexity-asil
+
+# Restrict to one package tree (replaces the configured targets)
+bazel run //tools/codeql:sca_linux -- //score/time/...
 ```
 
-**Results** are written to `--output-dir` on completion:
+`//tools/codeql:sca_qnx` is the QNX counterpart and needs the QNX SDP and license
+(it runs in CI only).
 
-| File | Contents |
-| ---- | -------- |
-| `codeql-time.sarif` | SARIF v2.1 — import into VS Code ([SARIF Viewer extension](https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer)) or any SARIF-aware tool |
-| `codeql-time.csv` | Flat findings table: rule, file, line, message |
-| `analysis_reports/database_integrity_report.md` | Extraction errors (external deps are expected) |
-| `analysis_reports/deviations_report.md` | Active MISRA C++:2023 deviations |
-| `analysis_reports/guideline_compliance_summary.md` | Per-rule compliance summary |
-| `analysis_reports/guideline_recategorizations_report.md` | Rule recategorization log |
+**Results** are written to `_codeql_sca/results/` (git-ignored): per-report
+`*.sarif` / `*.csv`, `code-scanning.sarif`, `summary.md` (incl. the compiler
+table), `compilers.json` and `pins.json`. Open the SARIF files with the
+[SARIF Viewer extension](https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer).
 
-To open SARIF results in VS Code: install the **SARIF Viewer** extension, then
-`Ctrl+Shift+P` → *SARIF: Open SARIF file* → select `codeql-time.sarif`.
+**Suppressions** are written in the source next to the finding, with a justification:
+
+```cpp
+// codeql[<rule-id>] <justification>
+```
+
+**CI:** [`static-analysis-codeql.yml`](.github/workflows/static-analysis-codeql.yml)
+runs the QM preset on pull requests and the ASIL preset on `main` and nightly
+(plus QNX nightly / on demand). The reusable workflow is pinned by commit SHA.
+The Code Scanning category is constant per job, so PR (QM) and `main` (ASIL)
+alerts share one baseline.
+
+See the `codeql/README.md` in `score_tools` for all options.
 
 ---
 
