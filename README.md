@@ -246,11 +246,13 @@ table), `compilers.json` and `pins.json`. Open the SARIF files with the
 ```
 
 **CI:** [`static-analysis-codeql.yml`](.github/workflows/static-analysis-codeql.yml)
-runs the QM preset on pull requests and the ASIL preset on `main`. QNX runs on
-demand only — the nightly run is disabled until the QNX analysis is ready (QNX SDP
-license and secrets are not set up yet). The reusable workflow is pinned by commit SHA.
-The Code Scanning category is constant per job, so PR (QM) and `main` (ASIL)
-alerts share one baseline.
+runs the QM preset on pull requests and manual runs, and the ASIL preset on `main`
+and in the nightly run (02:00 UTC). QNX never runs automatically — it is opt-in via
+the `run-qnx` input of a manual run and needs the QNX SDP license/secrets, which are
+not set up yet. Every (preset, platform) pair has its own Code Scanning category
+(`static-analysis-codeql/{linux,qnx}/{qm,asil}`), so QM and ASIL alert sets are kept
+apart — consequently PR (QM) alerts are not diffed against the `main` (ASIL) baseline.
+The reusable workflow is pinned by commit SHA.
 
 See the `codeql/README.md` in `score_tools` for all options.
 
