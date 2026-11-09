@@ -16,9 +16,8 @@ name: Test / Component Tests
 permissions:
   contents: read
 
-# Called by docs.yml so the docs build can consume the test reports of the same run.
+# Regular CI runs the component tests in docs.yml; this workflow is for manual runs only.
 on:
-  workflow_call:
   workflow_dispatch:
 
 jobs:
