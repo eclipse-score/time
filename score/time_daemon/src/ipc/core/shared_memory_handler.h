@@ -23,7 +23,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
-#include <new>
 #include <optional>
 #include <string>
 #include <type_traits>
@@ -83,18 +82,14 @@ class SharedMemoryHandler
         return (seq & 1U) == 0U;
     }
 
-#if defined(__cpp_lib_hardware_interference_size)
-    static constexpr std::size_t kDestructiveInterferenceSize{std::hardware_destructive_interference_size};
-#else
-    static constexpr std::size_t kDestructiveInterferenceSize{64U};
-#endif
+    static constexpr std::size_t kCacheLineSize{64U};
     static constexpr std::uint32_t kNumberOfSlots{4U};
 
     ///
     /// \brief Common type to store seqlock and specified data
     /// \tparam DataType shall be trivially copyable data
     ///
-    struct alignas(kDestructiveInterferenceSize) Slot
+    struct alignas(kCacheLineSize) Slot
     {
         static_assert(std::is_trivially_copyable_v<DataType>,
                       "DataType must be trivially copyable to be stored in shared memory!");
@@ -113,7 +108,7 @@ class SharedMemoryHandler
         DataType data_{};
     };
 
-    struct alignas(kDestructiveInterferenceSize) SharedData
+    struct alignas(kCacheLineSize) SharedData
     {
         std::atomic<std::uint64_t> published_slot_{0U};
         std::array<Slot, kNumberOfSlots> slots_{};
