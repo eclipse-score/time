@@ -28,12 +28,14 @@ on:
   push:
     branches:
       - main
-  # Nightly ASIL analysis of `main`, Linux only: the QNX analysis needs the QNX SDP
-  # license and is not ready yet (see the QNX jobs below).
+  # Nightly ASIL analysis of `main`, Linux only (see the `plan` job).
   schedule:
     - cron: "0 2 * * *"
-  # Manual runs choose platform and preset. QNX is never analysed automatically (it
-  # needs the QNX SDP license and is not ready yet), so it is only reachable here.
+  # Manual runs choose the platform(s) and preset(s). The `plan` job expands `all` into
+  # both values of that axis, so `-f platform=all -f preset=ASIL` analyses Linux and QNX
+  # with the ASIL preset in one run. QNX is never analysed automatically: it is much
+  # slower than the Linux analysis, and it is only needed on demand (the QNX secrets are
+  # configured, `Build / QNX8` uses them already).
   workflow_dispatch:
     inputs:
       platform:
@@ -54,14 +56,63 @@ on:
           - all
 
 jobs:
-  # One job per (preset, platform) pair: `uses:` cannot be computed and the Code
-  # Scanning category has to be literal, static-analysis-codeql/<platform>/<preset>.
-  # Every trigger except `workflow_dispatch` has a fixed pair (PR/push -> linux/QM,
-  # schedule -> linux/ASIL); manual runs select them via the `platform`/`preset`
-  # inputs (`all` = both values of that axis). QM also runs on `main`, so PR results
-  # are diffed against a QM baseline.
-  linux-qm: # PRs, `main` (push), manual runs with platform=linux|all and preset=QM|all
-    if: github.event_name == 'pull_request' || github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && contains(fromJSON('["linux","all"]'), inputs.platform) && contains(fromJSON('["QM","all"]'), inputs.preset))
+  # Turns the trigger into the list of analyses to run: `uses:` cannot be computed, but
+  # `strategy.matrix` can, and `with:` accepts expressions. Hence one analysis job for
+  # all four (platform, preset) pairs instead of one job per pair.
+  # PR/push -> linux/QM (`main` needs a QM baseline for the PR diffs), schedule ->
+  # linux/ASIL, manual runs -> whatever the inputs select.
+  plan:
+    name: Plan analyses
+    runs-on: ubuntu-24.04
+    permissions: {}
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+    steps:
+      - name: Select the analyses to run
+        id: select
+        env:
+          EVENT: ${{ github.event_name }}
+          PLATFORM: ${{ inputs.platform }}
+          PRESET: ${{ inputs.preset }}
+        run: |
+          set -euo pipefail
+
+          case "${EVENT}" in
+            schedule) platform=linux; preset=ASIL ;;
+            workflow_dispatch) platform="${PLATFORM:-linux}"; preset="${PRESET:-QM}" ;;
+            *) platform=linux; preset=QM ;;
+          esac
+
+          case "${platform}" in
+            linux | qnx) platforms=("${platform}") ;;
+            all) platforms=(linux qnx) ;;
+            *) echo "::error::Unsupported platform '${platform}'."; exit 1 ;;
+          esac
+
+          case "${preset}" in
+            QM | ASIL) presets=("${preset}") ;;
+            all) presets=(QM ASIL) ;;
+            *) echo "::error::Unsupported preset '${preset}'."; exit 1 ;;
+          esac
+
+          include=""
+          for platform in "${platforms[@]}"; do
+            for preset in "${presets[@]}"; do
+              include="${include:+${include},}{\"platform\":\"${platform}\",\"preset\":\"${preset}\"}"
+            done
+          done
+          echo "matrix={\"include\":[${include}]}" >> "${GITHUB_OUTPUT}"
+          echo "Analyses to run: ${include}"
+
+  # One matrix instance per selected pair, named `static-analysis (<platform>, <preset>)`.
+  # The Code Scanning category is derived from the matrix values,
+  # static-analysis-codeql/<platform>/<preset>, so QM/ASIL and Linux/QNX keep separate
+  # alert sets.
+  static-analysis:
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     # Pinned by commit SHA (branch `feat/static-analysis-codeql` of the
     # etas-contrib fork, not merged upstream yet). Once the workflow is released
     # switch to `eclipse-score/cicd-workflows@<sha> # <tag>` like build-qnx.yml.
@@ -69,57 +120,15 @@ jobs:
     permissions:
       contents: read
       actions: read
-      security-events: write
-    with:
-      sca-target: //tools/codeql:sca_linux
-      safety-level: QM
-      category: static-analysis-codeql/linux/qm
-
-  linux-asil: # nightly run, manual runs with platform=linux|all and preset=ASIL|all
-    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && contains(fromJSON('["linux","all"]'), inputs.platform) && contains(fromJSON('["ASIL","all"]'), inputs.preset))
-    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
-    permissions:
-      contents: read
-      actions: read
-      security-events: write
-    with:
-      sca-target: //tools/codeql:sca_linux
-      safety-level: ASIL
-      category: static-analysis-codeql/linux/asil
-
-  # QNX: manual runs only, because the analysis needs the QNX SDP license and is not
-  # ready yet.
-  qnx-qm: # manual runs with platform=qnx|all and preset=QM|all
-    if: github.event_name == 'workflow_dispatch' && contains(fromJSON('["qnx","all"]'), inputs.platform) && contains(fromJSON('["QM","all"]'), inputs.preset)
-    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
-    permissions:
-      contents: read
-      actions: read
       pull-requests: read
       security-events: write
     with:
-      sca-target: //tools/codeql:sca_qnx
-      platform: qnx
-      safety-level: QM
-      category: static-analysis-codeql/qnx/qm
-    secrets:
-      score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
-      score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
-      score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
-
-  qnx-asil: # manual runs with platform=qnx|all and preset=ASIL|all
-    if: github.event_name == 'workflow_dispatch' && contains(fromJSON('["qnx","all"]'), inputs.platform) && contains(fromJSON('["ASIL","all"]'), inputs.preset)
-    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
-    permissions:
-      contents: read
-      actions: read
-      pull-requests: read
-      security-events: write
-    with:
-      sca-target: //tools/codeql:sca_qnx
-      platform: qnx
-      safety-level: ASIL
-      category: static-analysis-codeql/qnx/asil
+      sca-target: //tools/codeql:sca_${{ matrix.platform }}
+      platform: ${{ matrix.platform }}
+      safety-level: ${{ matrix.preset }}
+      category: static-analysis-codeql/${{ matrix.platform }}/${{ matrix.preset }}
+    # The QNX secrets are configured and are only required for the `qnx` platform, so
+    # they are passed for every instance and ignored by the Linux analysis.
     secrets:
       score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
       score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
