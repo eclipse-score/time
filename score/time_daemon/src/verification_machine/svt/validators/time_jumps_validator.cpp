@@ -130,19 +130,11 @@ void TimeJumpsValidator::HandleInitialSyncDebouncingState()
 
 void TimeJumpsValidator::SyncFramesHandler(PtpTimeInfo& data)
 {
-    if (last_sync_frame_.has_value())
-    {
-        // When the same sync frame is delivered repeatedly, the repetition is neither a valid
-        // frame (which would otherwise clear a time jump too early) nor a jump.
-        const auto& last = last_sync_frame_.value().sync_fup_data;
-        if (data.sync_fup_data.sequence_id == last.sequence_id &&
-            data.sync_fup_data.sync_ingress_timestamp == last.sync_ingress_timestamp &&
-            data.sync_fup_data.precise_origin_timestamp == last.precise_origin_timestamp)
-        {
-            UpdateStatus(data);
-            return;
-        }
-
+if (last_sync_frame_.has_value() && 
+    // When the same sync frame is delivered repeatedly, the repetition is neither a valid
+    // frame (which would otherwise clear a time jump too early) nor a jump.
+    (last_sync_frame_.value().sync_fup_data.sequence_id != data.sync_fup_data.sequence_id))
+{
         if (not(IsTimeJumpDetected(data)))
         {
             valid_frames_cnt_++;
