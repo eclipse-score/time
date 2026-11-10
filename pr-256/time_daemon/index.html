@@ -464,7 +464,7 @@
                   
   <section id="time-daemon">
 <span id="id1"></span><h1>Time Daemon<a class="headerlink" href="#time-daemon" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-d1d3a455">
+<div class="need_container docutils container" id="SNCB-3c837d53">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_daemon">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -508,7 +508,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-ec310f1e">
+<div class="need_container docutils container" id="SNCB-617aea9f">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp table" id="comp__time_daemon">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -558,7 +558,7 @@
 </section>
 <section id="specification">
 <h2>Specification<a class="headerlink" href="#specification" title="Link to this heading">#</a></h2>
-<p>The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.</p>
+<p>The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications, most notably the time component (<a class="reference internal" href="../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>), which reads the provided time data via the <code class="docutils literal notranslate"><span class="pre">svt_receiver</span></code> interface. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.</p>
 <p>The component operates as a continuous loop with the following stages:</p>
 <ol class="arabic simple">
 <li><p><strong>Data Reception</strong>: Reads gPTP time synchronization data from shared memory written by time_slave</p></li>
@@ -575,7 +575,7 @@
 <h3>Key Behaviors<a class="headerlink" href="#key-behaviors" title="Link to this heading">#</a></h3>
 <p><strong>Startup Stabilization</strong>: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.</p>
 <p><strong>Error Recovery</strong>: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.</p>
-<p><strong>Start Order Independence</strong>: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon waits for it up to the startup timeout.</p>
+<p><strong>Start Order Independence</strong>: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon continues its own startup and retries establishing the synchronization channel until it succeeds or the startup timeout expires.</p>
 <p><strong>Multi-Client Support</strong>: Multiple client applications can concurrently read the provided time data.</p>
 <p><strong>Platform Support</strong>: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.</p>
 </section>
