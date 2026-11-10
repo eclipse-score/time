@@ -24,6 +24,7 @@ Time Daemon
    :safety: ASIL_B
    :security: NO
    :realizes: wp__cmpt_request
+   :belongs_to: comp__time_daemon
    :tags: time_daemon
 
 .. comp:: Time Daemon

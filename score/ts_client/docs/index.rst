@@ -24,6 +24,7 @@ Time Sync Client
    :safety: ASIL_B
    :security: NO
    :realizes: wp__cmpt_request
+   :belongs_to: comp__ts_client
    :tags: ts_client
 
 .. comp:: Time Sync Client

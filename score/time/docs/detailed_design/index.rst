@@ -24,6 +24,7 @@ Detailed Design
    :safety: ASIL_B
    :security: NO
    :realizes: wp__sw_implementation
+   :belongs_to: comp__time
    :tags: time, detailed_design
 
 Description

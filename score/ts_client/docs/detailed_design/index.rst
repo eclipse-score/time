@@ -24,6 +24,7 @@ Time Sync Client Detailed Design
    :safety: ASIL_B
    :security: NO
    :realizes: wp__sw_implementation
+   :belongs_to: comp__ts_client
    :tags: ts_client
 
 Description

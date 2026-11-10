@@ -20,6 +20,7 @@
   :safety: ASIL_B
   :security: NO
   :realizes: wp__requirements_inspect
+  :belongs_to: comp__ts_client
   :tags: ts_client
 
 .. note::
