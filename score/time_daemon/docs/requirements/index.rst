@@ -28,7 +28,7 @@ Functional Requirements
 -----------------------
 
 Initialization and Lifecycle
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Component Initialization
    :id: comp_req__time_daemon__startup
@@ -79,7 +79,7 @@ Initialization and Lifecycle
    The time_daemon component shall not require the time_slave component to be started before it. If the time_slave component is not yet available on startup, the time_daemon component shall continue its own startup and retry establishing the time synchronization channel with the time_slave component until it succeeds or the startup timeout expires.
 
 Data Reception and Validation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Time Synchronization Data Reception
    :id: comp_req__time_daemon__time_sync_reception
@@ -232,7 +232,7 @@ Data Provision
    The time_daemon component shall allow parallel reads of the provided time data from multiple client applications on different CPU cores.
 
 Error Handling and Recovery
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. comp_req:: Error Reporting
    :id: comp_req__time_daemon__error_reporting

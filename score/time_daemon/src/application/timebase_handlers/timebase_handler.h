@@ -10,8 +10,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H
-#define SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H
+#ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLERS_TIMEBASE_HANDLER_H
+#define SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLERS_TIMEBASE_HANDLER_H
 
 #include <score/stop_token.hpp>
 #include <future>
@@ -50,24 +50,28 @@ class TimebaseHandler
     /// \brief Status of the timebase handler
     enum class Status
     {
-        kIdle = 0,    ///< Handler is idle, not initialized
-        kInitialize,  ///< Handle is initializing
-        kWorking,     ///< Handler is actively running
-        kFailed       ///< Handler encountered a failure
+        kIdle = 0,  ///< Handler is idle, not initialized
+        kStarting,  ///< Handler is starting
+        kWorking,   ///< Handler is actively running
+        kStopped    ///< Handler is stopped
     };
 
     /// \brief Initialize the timebase handler
     ///
     /// This function prepares the handler for operation. Must be called before
-    /// Run(). No exception should be thrown.
+    /// RunOnce(). No exception should be thrown.
     virtual void Initialize() noexcept = 0;
+
+    /// \brief Start the timebase handler
+    ///
+    /// Signals the handler to start its operation. Must be called after
+    /// Initialize() and before RunOnce().
+    virtual void Start(const score::cpp::stop_token& token) noexcept = 0;
 
     /// \brief Runs once the timebase handler main functionality
     ///
     /// Should be called periodically to invoke all poll based actions
-    ///
-    /// \param token Stop token used to request termination
-    virtual void RunOnce(const score::cpp::stop_token& token) noexcept = 0;
+    virtual void RunOnce() noexcept = 0;
 
     /// \brief Stop the timebase handler
     ///
@@ -79,4 +83,4 @@ class TimebaseHandler
 }  // namespace td
 }  // namespace score
 
-#endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLER_H
+#endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLERS_TIMEBASE_HANDLER_H

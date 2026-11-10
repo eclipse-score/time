@@ -55,7 +55,7 @@ The raw architectural diagram is represented below.
    </div>
 
 Rationale Behind Decomposition into Units
-------------------------------------------
+-----------------------------------------
 
 TimeDaemon is decomposed into six implementation units following SOLID principles
 (Single Responsibility, Open/Closed) and design patterns (Publish-Subscribe, State Machines):
@@ -71,7 +71,7 @@ This separation enables independent testing, reusable implementations (e.g., dif
 and clear responsibility boundaries critical for ASIL_B safety qualification.
 
 Static Diagrams for Unit Interactions
---------------------------------------
+-------------------------------------
 
 Class View
 ~~~~~~~~~~
@@ -108,7 +108,7 @@ The design deployment and process architecture is represented on this diagram:
    </div>
 
 Dynamic Diagrams for Unit Interactions
----------------------------------------
+--------------------------------------
 
 Data and Control Flow
 ~~~~~~~~~~~~~~~~~~~~~
@@ -136,7 +136,7 @@ On this view you can see several execution scopes:
 Each control flow is implemented with a dedicated thread and is independent from the others.
 
 Data Types or Events
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
 
 Main data exchanged between units via MessageBroker topics:
 
@@ -163,7 +163,7 @@ Same data as :ref:`input_ptp_data` but republished at consistent rate by ``Contr
 Validated and qualified time snapshot from ``VerificationMachine``; includes sync status, timeout flags, time jump detection; published to ``PublisherImpl``.
 
 Units within the Component
----------------------------
+--------------------------
 
 The following units comprise TimeDaemon's internal implementation:
 
@@ -184,15 +184,128 @@ Application
 
 The ``Application`` component is the main entry point for TimeDaemon, orchestrating lifecycle and initialization of all daemon components.
 
-The ``TimebaseHandler`` component implements timebase-specific logic. Multiple handlers may exist per supported timebase count, allowing different timebase implementations while maintaining consistent application structure.
+``GenericTimebaseHandler<T>`` is the standard implementation base for custom timebase handlers. It manages
+machine initialization, startup, shutdown, and message routing. Concrete handlers override ``CreateComponents()``
+to select and connect machines for a particular timebase, following ``ScoreVehicleTimebaseHandler`` as the reference.
+``TimebaseHandler`` remains the polymorphic lifecycle contract used by the daemon and handler factory.
+Multiple handlers may exist, allowing different timebase implementations while maintaining consistent application structure.
 
-During initialization, the ``Application`` uses a factory pattern to create components in specific order:
+These objects are grouped under ``src/application/timebase_handlers/``. The interface and factory declaration
+live at that package's root, and ``generic/`` contains the reusable implementation. The ``score/`` subtree is
+project-specific: ``score_timebase_handler_factory.cpp`` defines the default S-CORE composition, and
+``ScoreVehicleTimebaseHandler`` in ``score/vehicle_time/`` selects the supplied Vehicle Time pipeline's machines, timings, topics, and wiring.
+The generic contracts and daemon core do not depend on this S-CORE composition.
 
-- Create ``MessageBroker`` first (other components depend on it)
-- Create ProactiveMachines (``PtpMachine``, ``ControlFlowDivider``) that drive system behavior, then initialize and wire subscriptions
-- Create ReactiveMachines (``VerificationMachine``, ``IPCMachine``) that respond to events, then initialize and wire subscriptions
+.. _time_daemon_factory_composition:
 
-During execution, ProactiveMachines start in correct order. On termination, they stop in reverse order.
+Factory Selection and Ownership
+'''''''''''''''''''''''''''''''
+
+The factory header declares ``score::td::CreateTimebaseHandlers()``; it does not select or implement a provider.
+The default constructor of ``TimeDaemon`` calls this function and takes ownership of the returned
+``std::vector<std::unique_ptr<TimebaseHandler>>``. Composition is selected at link time, not at runtime.
+The alternative constructor accepts that vector directly, allowing tests or other callers to inject handlers.
+
+
+A program linking ``time_daemon_core`` must link exactly one strong definition of ``CreateTimebaseHandlers()``,
+including when it uses only the injected-handler constructor. Tests may supply a test-only factory implementation.
+The default binary links the ``score_timebase_handler_factory`` library; its
+``score_timebase_handler_factory.cpp`` provider returns one ``ScoreVehicleTimebaseHandler`` through
+``CreateVehicleTimebase()``. The reusable ``time_daemon_core`` and
+``time_daemon_main`` targets do not supply a provider. Custom binaries link their own provider with
+``time_daemon_main`` instead of the default executable.
+
+A missing definition causes an undefined-reference link error. Multiple definitions in directly linked objects
+or force-included provider libraries cause a multiple-definition link error. Ordinary static archives can hide
+duplicates because the linker need not extract both provider objects. Provider libraries must therefore use
+``alwayslink = True`` to make duplicate definitions visible. Weak symbols and archive order are not factory
+selection mechanisms. For integration and build examples, see :ref:`time_daemon_user_manual`.
+
+At runtime, ``TimeDaemon::Initialize()`` rejects an empty handler list or any null entry before calling any
+handler. These are configuration errors, distinct from missing or duplicate factory definitions at link time.
+For a valid list, it calls each handler's ``Initialize()`` in list order.
+
+Each generic handler retains shared ownership of its machines and ``MessageBroker``. Initialization jobs also
+retain their machines while needed. The broker holds weak producer and consumer references, so routing does
+not keep machines alive. The generic base creates the broker; in ``CreateComponents()``, each concrete handler:
+
+- Creates and registers machines with ``Add()``, passing an explicit initialization timeout for each machine
+- Adds proactive machines in their required startup order, before their data sources
+- Connects producers and consumers through ``Publish()`` and ``Subscribe()``
+
+.. _time_daemon_handler_lifecycle:
+
+Generic Handler Lifecycle
+'''''''''''''''''''''''''
+
+The following lifecycle describes ``GenericTimebaseHandler<T>``. Its owner serializes ``Initialize()``,
+``Start()``, ``RunOnce()``, and ``Stop()`` calls. ``Initialize()`` is called once, before ``Start(token)``:
+it invokes ``CreateComponents()``, constructs the initialization ``JobRunner``, and sets ``is_configured_``.
+The status remains ``kIdle``. Successful daemon initialization therefore means that setup is complete, not that
+machine initialization or startup is complete.
+
+.. raw:: html
+
+    <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/app/app_handler_lifecycle.puml
+   :alt: Generic handler setup, initialization, startup, and terminal stop transitions
+
+.. raw:: html
+
+    </div>
+
+The four status values have the following actions:
+
+``kIdle``
+   The handler has not been started. ``RunOnce()`` does nothing in this state. After setup, ``Start()``
+   starts the initialization worker with the parent's stop token and enters ``kStarting``.
+
+``kStarting``
+   ``RunOnce()`` calls poll the worker started by ``Start()``. Idle or in-progress worker results leave the
+   handler in this state. On success, proactive machines start in ``Add()`` order; only after all machine
+   ``Start()`` calls return does the handler enter ``kWorking``. A failed worker result calls ``Stop()``, stopping
+   all registered proactive machines in reverse ``Add()`` order and entering ``kStopped`` without starting them.
+
+``kWorking``
+   Subsequent polls leave the machines running. This state means initialization and startup completed, not that
+   the supplied time is synchronized or qualified.
+
+``kStopped``
+   Subsequent polls do nothing: they do not poll the worker, retry initialization, or start machines. This is a
+   terminal handler state, reached through an explicit ``Stop()`` call or a failed initialization result. It does
+   not itself terminate the daemon.
+
+Each handler has one initialization worker. It calls unfinished machines' ``Init()`` methods sequentially,
+retrying false results and removing successful jobs. Each machine's timeout counts from the common worker
+start time. A timeout marks the overall result as failed; the worker continues processing the remaining jobs
+before publishing its result. Timeouts and cancellation are cooperative: neither interrupts an in-flight
+``Init()`` call.
+
+The initialization worker observes the parent's stop token and reports cancellation as a failed worker result,
+not a separate handler status.
+
+``Stop()`` always calls ``Stop()`` on every registered proactive machine in reverse ``Add()`` order, then enters
+``kStopped``. This applies in every handler state, including before startup and after an earlier stop. Each
+invocation forwards the stop calls again, so machines must tolerate stopping before startup and repeated stops.
+The configuration flag and runner are retained. Polling a stopped handler is inert; reinitialization and restart
+are not supported.
+
+``Stop()`` does not cancel or join the initialization worker. Before stopping or destroying a handler with
+pending initialization, the owner must request cancellation through the parent stop source. The generic
+handler's destructor calls ``Stop()`` again and destroys the runner, joining its worker before releasing the
+handler's machine and broker members. Entering ``kStopped`` therefore does not imply that pending initialization
+has finished. Reverse machine stopping does not specify object destruction order.
+
+``TimeDaemon::Run()`` first calls ``Start()`` on every handler in list order. Until a stop is requested,
+each polling pass calls ``RunOnce()`` on each handler in list order, then waits interruptibly for up to 100 ms.
+A stop request does not skip the remaining handler calls during startup or the current polling pass.
+After these calls complete, ``Run()`` calls ``Stop()`` in reverse handler-list order before returning.
+If a stop is requested before or during startup, all handlers still receive ``Start()`` before any handler
+receives ``Stop()``, and no polling pass runs.
+
+Application Interaction Views
+'''''''''''''''''''''''''''''
 
 Class diagram:
 
@@ -220,14 +333,57 @@ Initialization sequence showing component creation order and MessageBroker subsc
 
    </div>
 
-Runtime workflow showing ProactiveMachine startup and shutdown coordination:
+Application orchestration is split into four views. Startup, handler starting, and shutdown belong to the same
+``TimeDaemon::Run()`` call, which returns only after shutdown. Handler state transitions and initialization-result
+handling are covered by :ref:`time_daemon_handler_lifecycle`.
+
+Setup: creation and topic wiring of each handler's machines.
 
 .. raw:: html
 
    <div style="overflow-x: auto; max-width: 100%;">
 
-.. uml:: _assets/app/app_workflow_seq.puml
-   :alt: Application workflow sequence
+.. uml:: _assets/app/app_setup_seq.puml
+   :alt: Application setup sequence
+
+.. raw:: html
+
+   </div>
+
+Startup: launch of each handler's initialization worker.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/app/app_startup_seq.puml
+   :alt: Application startup sequence
+
+.. raw:: html
+
+   </div>
+
+Handler starting: asynchronous machine initialization, non-blocking result handling, and machine startup.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/app/app_handler_starting_seq.puml
+   :alt: Application handler starting sequence
+
+.. raw:: html
+
+   </div>
+
+Shutdown: reverse-order stopping of handlers and proactive machines.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/app/app_shutdown_seq.puml
+   :alt: Application shutdown sequence
 
 .. raw:: html
 
@@ -701,7 +857,7 @@ The control and data flow with Absolute Time integration is shown below.
    </div>
 
 Using in test environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Using in ITF
 ^^^^^^^^^^^^
@@ -709,7 +865,7 @@ Using in ITF
 Normal behavior is expected.
 
 Using in Component Tests on the host
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Overview
 ''''''''
@@ -725,7 +881,7 @@ This component shall:
 2. have the communication channel to the test case and react on the manipulations
 
 Next steps: plugin system
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``TimeDaemon`` could be extended with a flexible plugin system that enables dynamic component loading, configuration, subscription and extension without requiring code changes or recompilation.
 
@@ -740,7 +896,7 @@ The plugin system is structured around the following key elements:
 4. ``Configuration-Driven Assembly``: Components and their relationships defined in configuration files
 
 Component Creation Process
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 During ``TimeDaemon`` initialization:
 
@@ -754,12 +910,12 @@ During ``TimeDaemon`` initialization:
    c. Components are connected based on the ``MessageBroker`` topic configuration
 
 ASIL-B qualification
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 Clean separation of concerns allows the ``VehicleClock`` ``td_impl`` backend as well as ``TimeDaemon`` to be qualified according to ASIL-B requirements following ISO 26262 standard.
 
 Inspection Checklist
----------------------
+--------------------
 
 The checklist for verification of the detailed design and code can be found here:
 

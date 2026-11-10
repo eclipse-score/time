@@ -10,10 +10,9 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#ifndef SCORE_TIME_DAEMON_SRC_APPLICATION_FACTORY_H
-#define SCORE_TIME_DAEMON_SRC_APPLICATION_FACTORY_H
+#include "score/time_daemon/src/application/timebase_handlers/timebase_handler_factory.h"
 
-#include "score/time_daemon/src/application/timebase_handler.h"
+#include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/factory.h"
 
 #include <memory>
 
@@ -22,12 +21,12 @@ namespace score
 namespace td
 {
 
-/// \brief Creates a new SVT timebase handler
-///
-/// \return std::unique_ptr<TimebaseHandler> New SVT timebase handler
-std::unique_ptr<TimebaseHandler> CreateSvtTimebase();
+std::vector<std::unique_ptr<TimebaseHandler>> CreateTimebaseHandlers()
+{
+    std::vector<std::unique_ptr<TimebaseHandler>> handlers;
+    handlers.push_back(CreateVehicleTimebase());
+    return handlers;
+}
 
 }  // namespace td
 }  // namespace score
-
-#endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_FACTORY_H
