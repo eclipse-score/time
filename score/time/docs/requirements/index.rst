@@ -22,6 +22,7 @@ Time Component Requirements
    :safety: ASIL_B
    :security: NO
    :realizes: wp__requirements_comp[version==1]
+   :belongs_to: comp__time
    :tags: requirements, time
 
 Functional Requirements

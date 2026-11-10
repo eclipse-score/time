@@ -20,6 +20,7 @@
   :safety: ASIL_B
   :security: NO
   :realizes: wp__requirements_inspect
+  :belongs_to: comp__time
   :tags: time
 
 .. note::

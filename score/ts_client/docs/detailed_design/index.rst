@@ -18,12 +18,13 @@ Time Sync Client Detailed Design
 ================================
 
 .. document:: Time Sync Client Detailed Design
-   :id: doc__ts_client_detailed_design
+   :id: doc__time_sync_client_detailed_design
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__sw_implementation
+   :belongs_to: comp__ts_client
    :tags: ts_client
 
 Description
