@@ -24,6 +24,7 @@ User Manual
    :safety: ASIL_B
    :security: NO
    :realizes: wp__training_path[version==1]
+   :belongs_to: mod__time
 
 Overview
 ========
