@@ -82,5 +82,9 @@
   {
     "version": "pr-300",
     "url": "https://eclipse-score.github.io/time/pr-300/"
+  },
+  {
+    "version": "pr-307",
+    "url": "https://eclipse-score.github.io/time/pr-307/"
   }
 ]
