@@ -53,7 +53,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   If the time_daemon component does not complete its startup within 20 seconds, it shall end its process with a non-zero exit code.
+   If the time_daemon component does not complete its startup within 20 seconds, it shall not provide time data to the time component (:need:`comp__time`) and shall not retry the startup.
 
 .. comp_req:: Component Shutdown
    :id: comp_req__time_daemon__shutdown
