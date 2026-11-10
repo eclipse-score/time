@@ -42,7 +42,7 @@ This component implements a time synchronization daemon that receives time data 
 Specification
 =============
 
-The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.
+The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications, most notably the time component (:need:`comp__time`), which reads the provided time data via the ``svt_receiver`` interface. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.
 
 The component operates as a continuous loop with the following stages:
 
@@ -62,7 +62,7 @@ Key Behaviors
 
 **Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
 
-**Start Order Independence**: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon waits for it up to the startup timeout.
+**Start Order Independence**: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon continues its own startup and retries establishing the synchronization channel until it succeeds or the startup timeout expires.
 
 **Multi-Client Support**: Multiple client applications can concurrently read the provided time data.
 

@@ -40,7 +40,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   On startup the time_daemon component shall apply its configuration and become ready to receive time synchronization data from the time_slave component and to provide time data to the time component.
+   On startup the time_daemon component shall apply its configuration and become ready to receive time synchronization data from the time_slave component and to provide time data to the time component (:need:`comp__time`).
 
 .. comp_req:: Startup Timeout
    :id: comp_req__time_daemon__init_timeout
@@ -52,7 +52,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   If the time_daemon component does not complete its startup within 20 seconds, it shall end its process.
+   If the time_daemon component does not complete its startup within 20 seconds, it shall end its process with a non-zero exit code.
 
 .. comp_req:: Component Shutdown
    :id: comp_req__time_daemon__shutdown
@@ -76,7 +76,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall not require the time_slave component to be started before it. If the time_slave component is not yet available on startup, the time_daemon component shall wait for it until the startup timeout expires.
+   The time_daemon component shall not require the time_slave component to be started before it. If the time_slave component is not yet available on startup, the time_daemon component shall continue its own startup and retry establishing the time synchronization channel with the time_slave component until it succeeds or the startup timeout expires.
 
 Data Reception and Validation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -157,7 +157,7 @@ Data Provision
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall provide the verified time data to the time component.
+   The time_daemon component shall provide the verified time data to the time component (:need:`comp__time`).
 
 .. comp_req:: Provided Time Data Content
    :id: comp_req__time_daemon__published_data_content
@@ -169,7 +169,7 @@ Data Provision
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall include in the time data provided to the time component: the timestamp of the master clock, the corresponding timestamp of the local reference clock, the rate deviation between those two clocks, synchronization status, time jump status, and timeout status.
+   The time_daemon component shall include in the time data provided to the time component (:need:`comp__time`, see :need:`comp_req__time_daemon__time_data_publishing`): the timestamp of the master clock, the corresponding timestamp of the local reference clock, the rate deviation between those two clocks, synchronization status, time jump status, and timeout status.
 
 .. comp_req:: Provided Raw gPTP Data
    :id: comp_req__time_daemon__published_raw_data
@@ -181,7 +181,7 @@ Data Provision
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall include in the time data provided to the time component condensed raw data of the last received Sync/FollowUp pair and the last finished Pdelay measurement.
+   The time_daemon component shall include in the time data provided to the time component (:need:`comp__time`, see :need:`comp_req__time_daemon__time_data_publishing`) condensed raw data of the last received Sync/FollowUp pair and the last finished Pdelay measurement.
 
 .. comp_req:: Time Point Qualifier Production
    :id: comp_req__time_daemon__time_point_qualifier
@@ -193,7 +193,7 @@ Data Provision
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall provide the synchronization status, time jump status, and timeout status in the time data provided to the time component, such that the time component can derive the time point qualifier (quality indicator) from them.
+   The time_daemon component shall provide the synchronization status, time jump status, and timeout status in the time data provided to the time component (:need:`comp__time`), such that the time component can derive the time point qualifier (quality indicator) from them.
 
 .. comp_req:: Client Read Access
    :id: comp_req__time_daemon__client_read_access
@@ -205,7 +205,7 @@ Data Provision
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   The time_daemon component shall provide the time component with functionality to read the time data.
+   The time_daemon component shall provide functionality for client applications to read the time data.
 
 .. comp_req:: Non-Blocking Read Access
    :id: comp_req__time_daemon__non_blocking
