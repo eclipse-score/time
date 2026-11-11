@@ -31,7 +31,7 @@ namespace details
 struct SyncResult
 {
     std::int64_t master_ns{0};                      ///< Grandmaster time (ns since epoch)
-    std::int64_t offset_ns{0};                      ///< local hw_ts − master_ns
+    std::int64_t offset_ns{0};                      ///< local recvTS − master_ns
     std::int64_t sync_mono_ns{0};                   ///< CLOCK_MONOTONIC when the Sync frame was received
     score::ts::GptpIpcSyncFupData sync_fup_data{};  ///< Ready to copy into GptpIpcData (pdelay field filled by engine)
     bool is_time_jump_future{false};
@@ -67,13 +67,13 @@ class SyncStateMachine final
     /// @brief Called when a Sync message is received.
     ///
     /// Stores the Sync message (with its HW receive timestamp already in
-    /// @c msg.recvHardwareTS) and transitions state @c kEmpty \u2192 @c kSyncReceived.
+    /// @c msg.recvTS) and transitions state @c kEmpty \u2192 @c kSyncReceived.
     void OnSync(const PTPMessage& msg);
 
     /// @brief Called when a FollowUp message is received.
     ///
     /// If the sequence ID matches the pending Sync, computes the clock offset
-    /// (local hw_ts minus master_ns), detects time jumps (forward:
+    /// (local recvTS minus master_ns), detects time jumps (forward:
     /// abs(offset_ns minus prev_offset_ns) greater than threshold; backward: master_ns less than prev_master_ns),
     /// updates @c neighborRateRatio, and transitions to @c kPaired.
     ///

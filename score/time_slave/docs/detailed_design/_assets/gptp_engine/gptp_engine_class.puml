@@ -49,7 +49,7 @@ package "score::ts::details" {
 
     interface RawSocket #LightSkyBlue {
         + Open(iface) : bool
-        + EnableHwTimestamping() : bool
+        + EnableTimestamping() : bool
         + Recv(buf, timeout_ms) : RecvResult
         + Send(buf, len) : bool
         + GetFd() : int

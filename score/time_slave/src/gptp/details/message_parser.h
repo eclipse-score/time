@@ -40,7 +40,7 @@ class GptpMessageParser final
      *
      * Populates the PTPHeader union fields and the message-type-specific body
      * fields (Timestamps, PortIdentity, correctionField).  Does NOT touch the
-     * hardware-timestamp fields (recvHardwareTS, sendHardwareTS) — those are
+     * timestamp fields (recvTS, sendTS) — those are
      * filled by the caller after the socket recv.
      *
      * @return true if the payload contains a valid IEEE 1588 / 802.1AS header.
