@@ -16,6 +16,10 @@ name: Docs / Build & Deploy
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   pull_request:
     types: [opened, reopened, synchronize]
@@ -33,8 +37,19 @@ jobs:
     with:
       bazel-docs-verify-target: "//:docs_check"
 
+  # Name and direct call keep the required check name "run-comp-tests / Test Execution".
+  run-comp-tests:
+    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
+    permissions:
+      contents: read
+      pull-requests: read
+    with:
+      bazel-target: 'test --config=x86_64-linux //score/...'
+      upload-name: 'tests-report'
+      packages: 'fakechroot'
+
   docs-build:
-    needs: docs-verify
+    needs: [docs-verify, run-comp-tests] # Test reports are needed for the verification report
     uses: eclipse-score/cicd-workflows/.github/workflows/docs.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     permissions:
       contents: read
@@ -42,6 +57,7 @@ jobs:
       # the bazel-target depends on your repo specific docs_targets configuration (e.g. "suffix")
       bazel-target: "//:docs -- --github_user=${{ github.repository_owner }} --github_repo=${{ github.event.repository.name }}"
       retention-days: 3
+      tests-report-artifact: tests-report
 
   quality_pack:
     if: ${{ github.event_name != 'merge_group' }}

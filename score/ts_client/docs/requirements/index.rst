@@ -16,12 +16,13 @@ Component Time Sync Client Requirements
 #######################################
 
 .. document:: Time Sync Client Requirements
-   :id: doc__ts_client_requirements
+   :id: doc__time_sync_client_requirements
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__requirements_comp[version==1]
+   :belongs_to: comp__ts_client
    :tags: requirements, ts_client
 
 

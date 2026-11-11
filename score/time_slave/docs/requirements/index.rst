@@ -22,6 +22,7 @@ Time Slave Component Requirements
    :safety: QM
    :security: NO
    :realizes: wp__requirements_comp[version==1]
+   :belongs_to: comp__time_slave
    :tags: requirements, time_slave
 
 Functional Requirements
