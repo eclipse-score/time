@@ -53,7 +53,7 @@ jobs:
       contents: read
       pull-requests: read
     secrets: inherit
-    uses: ./.github/workflows/build-qnx.yml
+    uses: ./.github/workflows/gate_qnx_builds.yml
 
   delete_old_caches:
     runs-on: ubuntu-24.04
