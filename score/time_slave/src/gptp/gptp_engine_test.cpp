@@ -92,9 +92,26 @@ class FakeSocket final : public RawSocket
         return static_cast<int>(n);
     }
 
-    int Send(const void*, int len, ::timespec&) override
+    int Send(const void* buf, int len, ::timespec& hwts) override
     {
+        {
+            std::lock_guard<std::mutex> lk(sent_mtx_);
+            const auto* p = static_cast<const std::uint8_t*>(buf);
+            sent_.emplace_back(p, p + len);
+        }
+        hwts = send_hwts_;
         return len;
+    }
+
+    void SetSendHwts(::timespec ts)
+    {
+        send_hwts_ = ts;
+    }
+
+    std::vector<std::vector<std::uint8_t>> SentFrames()
+    {
+        std::lock_guard<std::mutex> lk(sent_mtx_);
+        return sent_;
     }
     int GetFd() const override
     {
@@ -113,6 +130,9 @@ class FakeSocket final : public RawSocket
     bool closed_{false};
     bool hw_ts_ok_{true};
     bool open_ok_{true};
+    std::mutex sent_mtx_;
+    std::vector<std::vector<std::uint8_t>> sent_;
+    ::timespec send_hwts_{};
 };
 
 // ── FakeIdentity ──────────────────────────────────────────────────────────────
@@ -223,6 +243,15 @@ std::vector<std::uint8_t> MakePdelayRespFupFrame(std::uint16_t seqId)
     AppendPtpHeader(f, kPtpMsgtypePdelayRespFollowUp, seqId, /*ctl=*/5);
     AppendTimestamp(f, 2, 0);    // responseOriginReceiptTimestamp
     f.resize(f.size() + 10, 0);  // requesting port identity
+    return f;
+}
+
+std::vector<std::uint8_t> MakePdelayReqFrame(std::uint16_t seqId)
+{
+    std::vector<std::uint8_t> f;
+    AppendEthHeader(f);
+    AppendPtpHeader(f, kPtpMsgtypePdelayReq, seqId, /*ctl=*/5);
+    f.resize(f.size() + 20, 0);  // reserved body
     return f;
 }
 
@@ -431,6 +460,64 @@ TEST_F(GptpEngineFakeTest, HandlePacket_PdelayRespSequence_DoesNotCrash)
 
     // Just verify no crash; sleep briefly to let the RxThread process.
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
+}
+
+// ── GptpEngineFakeTest — PdelayReq → PdelayResp/FollowUp wire byte order ─────
+
+namespace
+{
+constexpr std::size_t kEthHdrLen = 14U;
+constexpr std::size_t kPtpBodyOffset = 34U;
+
+// Find the first sent frame with the given PTP message type; empty if none.
+std::vector<std::uint8_t> FindSent(FakeSocket& sock, std::uint8_t msgtype)
+{
+    for (auto& f : sock.SentFrames())
+    {
+        if (f.size() > kEthHdrLen + kPtpBodyOffset + 10U && (f[kEthHdrLen] & 0x0FU) == msgtype)
+            return f;
+    }
+    return {};
+}
+
+std::vector<std::uint8_t> WaitForSent(FakeSocket& sock, std::uint8_t msgtype)
+{
+    for (int i = 0; i < 100; ++i)
+    {
+        auto f = FindSent(sock, msgtype);
+        if (!f.empty())
+            return f;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    return {};
+}
+
+// Expected big-endian encoding of sec=0x0001'2345'6789 (48 bit), ns=987654321.
+const std::uint8_t kExpectedTs[10] = {0x00, 0x01, 0x23, 0x45, 0x67, 0x89, 0x3A, 0xDE, 0x68, 0xB1};
+constexpr std::int64_t kSec = 0x123456789LL;
+constexpr long kNs = 987654321L;
+}  // namespace
+
+TEST_F(GptpEngineFakeTest, PdelayReq_Response_TimestampsInNetworkByteOrder)
+{
+    ::timespec tx{};
+    tx.tv_sec = static_cast<time_t>(kSec);
+    tx.tv_nsec = kNs;
+    socket_raw_->SetSendHwts(tx);
+    ASSERT_TRUE(engine_->Initialize());
+
+    ::timespec rx{};
+    rx.tv_sec = static_cast<time_t>(kSec);
+    rx.tv_nsec = kNs;
+    socket_raw_->Push(MakePdelayReqFrame(7U), rx);
+
+    const auto resp = WaitForSent(*socket_raw_, kPtpMsgtypePdelayResp);
+    ASSERT_FALSE(resp.empty());
+    EXPECT_EQ(0, std::memcmp(resp.data() + kEthHdrLen + kPtpBodyOffset, kExpectedTs, sizeof(kExpectedTs)));
+
+    const auto fup = WaitForSent(*socket_raw_, kPtpMsgtypePdelayRespFollowUp);
+    ASSERT_FALSE(fup.empty());
+    EXPECT_EQ(0, std::memcmp(fup.data() + kEthHdrLen + kPtpBodyOffset, kExpectedTs, sizeof(kExpectedTs)));
 }
 
 // ── GptpEngineFakeTest — unknown msgtype (default branch) ────────────────────
