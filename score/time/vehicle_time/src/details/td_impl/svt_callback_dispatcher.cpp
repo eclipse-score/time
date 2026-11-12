@@ -176,10 +176,9 @@ void SvtCallbackDispatcher::PollAndDispatch() noexcept
         return;
     }
 
-    sync_data_slot_.TryToEnvoke(ConvertSyncData(snapshot.value().sync_fup_data));
-    pdelay_slot_.TryToEnvoke(ConvertPDelayData(snapshot.value().pdelay_data));
-    status_slot_.TryToEnvoke(
-        VehicleTimeStatus{ConvertPtpStatus(snapshot.value().status), snapshot.value().rate_deviation});
+    sync_data_slot_.TryToEnvoke(ConvertSyncData(snapshot->sync_fup_data));
+    pdelay_slot_.TryToEnvoke(ConvertPDelayData(snapshot->pdelay_data));
+    status_slot_.TryToEnvoke(VehicleTimeStatus{ConvertPtpStatus(snapshot->status), snapshot->rate_deviation});
 }
 
 }  // namespace score::time::detail

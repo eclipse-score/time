@@ -110,7 +110,7 @@ class SvtCallbackWrapper final
     void TryToEnvoke(const Data& data) noexcept
     {
         const std::lock_guard<std::recursive_mutex> lock{mutex_};
-        if ((callback_ == nullptr) || (last_data_.has_value() && IsSame(last_data_.value(), data)))
+        if ((callback_ == nullptr) || (last_data_.has_value() && IsSame(*last_data_, data)))
         {
             return;
         }
