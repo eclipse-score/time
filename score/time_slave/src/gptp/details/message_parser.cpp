@@ -69,6 +69,14 @@ Timestamp LoadTimestamp(const std::uint8_t* p) noexcept
     return ts;
 }
 
+PortIdentity LoadPortIdentity(const std::uint8_t* p) noexcept
+{
+    PortIdentity pid{};
+    std::memcpy(pid.clockIdentity.id, p, 8);
+    pid.portNumber = LoadU16(p + 8);
+    return pid;
+}
+
 }  // namespace
 
 bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_len, PTPMessage& msg) const
@@ -104,40 +112,46 @@ bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_l
     msg.msgtype = msg.ptpHdr.tsmt & 0x0FU;
 
     constexpr std::size_t kBodyOffset = 34U;
+    constexpr std::size_t kPidSize = 10U;  // ClockIdentity (8) + portNumber (2)
+    // Pdelay_Req body: originTimestamp (10 bytes, sent as zero, ignored by receivers)
+    // followed by 10 reserved bytes. Neither field is parsed; only its presence is validated.
+    constexpr std::size_t kPdelayReqBodySize = 20U;
+    constexpr std::size_t kTimestampPlusPidSize = sizeof(Timestamp) + kPidSize;
 
+    // Each case first rejects a declared length shorter than the body it is about to read
+    // (IEEE 802.1AS), so truncated messages are never delivered with zero-initialised fields.
+    const std::size_t declared = static_cast<std::size_t>(declared_len);
     switch (msg.msgtype)
     {
+        case kPtpMsgtypeSync:
+            if (declared < kBodyOffset + sizeof(Timestamp))
+                return false;
+            break;
+
         case kPtpMsgtypeFollowUp:
-            if (payload_len >= kBodyOffset + sizeof(Timestamp))
-                msg.follow_up.preciseOriginTimestamp = LoadTimestamp(payload + kBodyOffset);
+            if (declared < kBodyOffset + sizeof(Timestamp))
+                return false;
+            msg.follow_up.preciseOriginTimestamp = LoadTimestamp(payload + kBodyOffset);
+            break;
+
+        case kPtpMsgtypePdelayReq:
+            if (declared < kBodyOffset + kPdelayReqBodySize)
+                return false;
             break;
 
         case kPtpMsgtypePdelayResp:
-            if (payload_len >= kBodyOffset + sizeof(Timestamp))
-            {
-                msg.pdelay_resp.requestReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
-                // Also parse requestingPortIdentity (8-byte ClockIdentity + 2-byte portNumber)
-                // so that ComputeAndStoreUnlocked() can verify the response is addressed to us.
-                constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);  // = 44
-                if (payload_len >= kPidOffset + 10U)
-                {
-                    std::memcpy(msg.pdelay_resp.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
-                    msg.pdelay_resp.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
-                }
-            }
+            if (declared < kBodyOffset + kTimestampPlusPidSize)
+                return false;
+            msg.pdelay_resp.requestReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
+            // requestingPortIdentity lets ComputeAndStoreUnlocked() verify the response is addressed to us.
+            msg.pdelay_resp.requestingPortIdentity = LoadPortIdentity(payload + kBodyOffset + sizeof(Timestamp));
             break;
 
         case kPtpMsgtypePdelayRespFollowUp:
-            if (payload_len >= kBodyOffset + sizeof(Timestamp))
-            {
-                msg.pdelay_resp_fup.responseOriginReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
-                constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);  // = 44
-                if (payload_len >= kPidOffset + 10U)
-                {
-                    std::memcpy(msg.pdelay_resp_fup.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
-                    msg.pdelay_resp_fup.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
-                }
-            }
+            if (declared < kBodyOffset + kTimestampPlusPidSize)
+                return false;
+            msg.pdelay_resp_fup.responseOriginReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
+            msg.pdelay_resp_fup.requestingPortIdentity = LoadPortIdentity(payload + kBodyOffset + sizeof(Timestamp));
             break;
 
         default:

@@ -187,12 +187,20 @@ void AppendTimestamp(std::vector<std::uint8_t>& buf, std::uint32_t sec_lsb, std:
     buf.insert(buf.end(), p, p + 4);
 }
 
+// Patch messageLength (PTP header bytes 2..3) to cover header + body, excluding the Ethernet header.
+void FinalizeLength(std::vector<std::uint8_t>& buf)
+{
+    const std::uint16_t len = htons(static_cast<std::uint16_t>(buf.size() - 14));
+    std::memcpy(buf.data() + 14 + 2, &len, 2);
+}
+
 std::vector<std::uint8_t> MakeSyncFrame(std::uint16_t seqId)
 {
     std::vector<std::uint8_t> f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypeSync, seqId, /*ctl=*/0);
     AppendTimestamp(f, 0, 0);  // Sync body (origin timestamp, unused)
+    FinalizeLength(f);
     return f;
 }
 
@@ -202,6 +210,7 @@ std::vector<std::uint8_t> MakeFollowUpFrame(std::uint16_t seqId, std::uint32_t s
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypeFollowUp, seqId, /*ctl=*/2);
     AppendTimestamp(f, sec_lsb, ns);
+    FinalizeLength(f);
     return f;
 }
 
@@ -213,6 +222,7 @@ std::vector<std::uint8_t> MakePdelayRespFrame(std::uint16_t seqId)
     AppendTimestamp(f, 1, 0);  // responseOriginTimestamp
     // requesting port identity (10 bytes)
     f.resize(f.size() + 10, 0);
+    FinalizeLength(f);
     return f;
 }
 
@@ -223,6 +233,7 @@ std::vector<std::uint8_t> MakePdelayRespFupFrame(std::uint16_t seqId)
     AppendPtpHeader(f, kPtpMsgtypePdelayRespFollowUp, seqId, /*ctl=*/5);
     AppendTimestamp(f, 2, 0);    // responseOriginReceiptTimestamp
     f.resize(f.size() + 10, 0);  // requesting port identity
+    FinalizeLength(f);
     return f;
 }
 
@@ -231,6 +242,8 @@ std::vector<std::uint8_t> MakeUnknownFrame()
     std::vector<std::uint8_t> f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayReq, 0, /*ctl=*/5);
+    f.resize(f.size() + 20, 0);  // Pdelay_Req body: reserved (10) + reserved (10)
+    FinalizeLength(f);
     return f;
 }
 

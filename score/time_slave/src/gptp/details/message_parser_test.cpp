@@ -32,6 +32,8 @@ namespace
 constexpr std::size_t kHdrSize = 34U;
 // Timestamp body = 10 bytes (u16 + u32 + u32).
 constexpr std::size_t kTsSize = 10U;
+// Pdelay responses carry a timestamp plus a requestingPortIdentity (10 bytes).
+constexpr std::size_t kPdelayBodySize = kTsSize + 10U;
 
 // Store a 16-bit big-endian value at buf[off].
 void PutU16Be(std::uint8_t* buf, std::size_t off, std::uint16_t val)
@@ -64,9 +66,10 @@ std::vector<std::uint8_t> BuildPayload(std::uint8_t msgtype,
                                        std::uint16_t port_number = 0,
                                        std::uint64_t clock_id = 0,
                                        std::uint32_t ts_sec_lsb = 0,
-                                       std::uint32_t ts_ns = 0)
+                                       std::uint32_t ts_ns = 0,
+                                       std::size_t body_size = kTsSize)
 {
-    const std::size_t total = kHdrSize + kTsSize;
+    const std::size_t total = kHdrSize + body_size;
     std::vector<std::uint8_t> buf(total, 0);
 
     buf[0] = static_cast<std::uint8_t>((kPtpTransportSpecific) | (msgtype & 0x0FU));
@@ -81,9 +84,12 @@ std::vector<std::uint8_t> BuildPayload(std::uint8_t msgtype,
     buf[32] = static_cast<std::uint8_t>(ControlField::kFollowUp);
 
     // Timestamp body at offset 34: seconds_msb(u16) + seconds_lsb(u32) + nanoseconds(u32)
-    PutU16Be(buf.data(), kHdrSize, 0U);  // seconds_msb = 0
-    PutU32Be(buf.data(), kHdrSize + 2, ts_sec_lsb);
-    PutU32Be(buf.data(), kHdrSize + 6, ts_ns);
+    if (body_size >= kTsSize)
+    {
+        PutU16Be(buf.data(), kHdrSize, 0U);  // seconds_msb = 0
+        PutU32Be(buf.data(), kHdrSize + 2, ts_sec_lsb);
+        PutU32Be(buf.data(), kHdrSize + 6, ts_ns);
+    }
 
     return buf;
 }
@@ -172,7 +178,7 @@ TEST_F(MessageParserTest, PdelayResp_Body_TimestampDecodedCorrectly)
 {
     const std::uint32_t kSecLsb = 3U;
     const std::uint32_t kNs = 123'456'789U;
-    auto buf = BuildPayload(kPtpMsgtypePdelayResp, 5U, 0, 0, 0, kSecLsb, kNs);
+    auto buf = BuildPayload(kPtpMsgtypePdelayResp, 5U, 0, 0, 0, kSecLsb, kNs, kPdelayBodySize);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
     EXPECT_EQ(msg.msgtype, kPtpMsgtypePdelayResp);
@@ -186,7 +192,7 @@ TEST_F(MessageParserTest, PdelayRespFollowUp_Body_TimestampDecodedCorrectly)
 {
     const std::uint32_t kSecLsb = 7U;
     const std::uint32_t kNs = 999'000'000U;
-    auto buf = BuildPayload(kPtpMsgtypePdelayRespFollowUp, 11U, 0, 0, 0, kSecLsb, kNs);
+    auto buf = BuildPayload(kPtpMsgtypePdelayRespFollowUp, 11U, 0, 0, 0, kSecLsb, kNs, kPdelayBodySize);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
     EXPECT_EQ(msg.msgtype, kPtpMsgtypePdelayRespFollowUp);
@@ -194,12 +200,121 @@ TEST_F(MessageParserTest, PdelayRespFollowUp_Body_TimestampDecodedCorrectly)
     EXPECT_EQ(msg.pdelay_resp_fup.responseOriginReceiptTimestamp.nanoseconds, kNs);
 }
 
+// ── Truncated bodies (issue #311) ─────────────────────────────────────────────
+
+TEST_F(MessageParserTest, Sync_HeaderOnly_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypeSync, 1U, 0, 0, 0, 0, 0, 0U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, Sync_BodyOneByteShort_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypeSync, 1U, 0, 0, 0, 0, 0, kTsSize - 1U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, FollowUp_HeaderOnly_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypeFollowUp, 1U, 0, 0, 0, 0, 0, 0U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, FollowUp_BodyOneByteShort_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypeFollowUp, 1U, 0, 0, 0, 0, 0, kTsSize - 1U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, FollowUp_ExactMinimumLength_ReturnsTrue)
+{
+    auto buf = BuildPayload(kPtpMsgtypeFollowUp, 1U, 0, 0, 0, 5U, 6U, kTsSize);
+    PTPMessage msg{};
+    EXPECT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, FollowUp_DeclaredLengthShorterThanBody_ReturnsFalse)
+{
+    // Buffer is long enough, but the declared messageLength excludes the body.
+    auto buf = BuildPayload(kPtpMsgtypeFollowUp, 1U);
+    PutU16Be(buf.data(), 2, static_cast<std::uint16_t>(kHdrSize));
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayResp_HeaderOnly_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayResp, 1U, 0, 0, 0, 0, 0, 0U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayResp_TimestampOnly_TruncatedPortIdentity_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayResp, 1U, 0, 0, 0, 0, 0, kPdelayBodySize - 1U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayResp_ExactMinimumLength_ReturnsTrue)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayResp, 1U, 0, 0, 0, 0, 0, kPdelayBodySize);
+    PTPMessage msg{};
+    EXPECT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayRespFollowUp_HeaderOnly_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayRespFollowUp, 1U, 0, 0, 0, 0, 0, 0U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayRespFollowUp_TimestampOnly_TruncatedPortIdentity_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayRespFollowUp, 1U, 0, 0, 0, 0, 0, kPdelayBodySize - 1U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayRespFollowUp_ExactMinimumLength_ReturnsTrue)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayRespFollowUp, 1U, 0, 0, 0, 0, 0, kPdelayBodySize);
+    PTPMessage msg{};
+    EXPECT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayReq_HeaderOnly_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayReq, 1U, 0, 0, 0, 0, 0, 0U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayReq_TruncatedBody_ReturnsFalse)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayReq, 1U, 0, 0, 0, 0, 0, kPdelayBodySize - 1U);
+    PTPMessage msg{};
+    EXPECT_FALSE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
+TEST_F(MessageParserTest, PdelayReq_FullBody_ReturnsTrue)
+{
+    auto buf = BuildPayload(kPtpMsgtypePdelayReq, 1U, 0, 0, 0, 0, 0, kPdelayBodySize);
+    PTPMessage msg{};
+    EXPECT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
+}
+
 // ── Unknown type: header parsed, no body crash ────────────────────────────────
 
 TEST_F(MessageParserTest, UnknownMsgtype_ReturnsTrue_HeaderParsed)
 {
     // Use PdelayReq (type 0x2) which has no special body decoding branch.
-    auto buf = BuildPayload(kPtpMsgtypePdelayReq, 20U);
+    auto buf = BuildPayload(kPtpMsgtypePdelayReq, 20U, 0, 0, 0, 0, 0, kPdelayBodySize);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
     EXPECT_EQ(msg.msgtype, kPtpMsgtypePdelayReq);
