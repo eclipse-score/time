@@ -17,9 +17,11 @@
 #include "score/time_slave/src/common/logging_contexts.h"
 
 #include <cstdint>
+#include <filesystem>
 #include <functional>
 #include <string>
 #include <string_view>
+#include <system_error>
 
 namespace score
 {
@@ -123,6 +125,14 @@ void ParseQnxConfig(const Object& obj, TimeSlaveConfig::QnxSettings& qnx)
 
 TimeSlaveConfig ParseConfig(const std::string& path)
 {
+    std::error_code ec;
+    if (!std::filesystem::is_regular_file(path, ec))
+    {
+        score::mw::log::LogError(kTimeSlaveAppContext)
+            << "Config path '" << path << "' is not a regular file, using built-in defaults";
+        return {};
+    }
+
     const score::json::JsonParser parser;
     auto root_result = parser.FromFile(path);
     if (!root_result.has_value())
