@@ -24,6 +24,7 @@ User Manual
    :safety: ASIL_B
    :security: NO
    :realizes: wp__training_path[version==1]
+   :belongs_to: mod__time
 
 Overview
 ========
@@ -59,7 +60,7 @@ The primary interface for applications to access synchronized time is the ``scor
    please refer to the generated Doxygen documentation (to be added in future releases).
 
 Choosing the Right Clock
-=========================
+========================
 
 The S-CORE ``time`` module provides several clock types, each designed for a specific use case. Understanding their differences is crucial for writing robust and correct applications.
 
@@ -140,7 +141,7 @@ Integration Guidelines
 ======================
 
 Integrating with Your Project
-------------------------------
+-----------------------------
 
 1. Add the module to your Bazel workspace:
 
@@ -204,7 +205,7 @@ For service deployment and configuration details, refer to:
 * :ref:`time_daemon_user_manual`
 
 System Services Deployment
----------------------------
+--------------------------
 
 The ``time`` module requires two system daemons to be running. These processes must be managed by the system's service manager (e.g., `systemd` on Linux, or a launch script on QNX).
 

@@ -20,6 +20,7 @@
   :safety: QM
   :security: NO
   :realizes: wp__requirements_inspect
+  :belongs_to: comp__time_slave
   :tags: time_slave
 
 Requirement Inspection Checklist

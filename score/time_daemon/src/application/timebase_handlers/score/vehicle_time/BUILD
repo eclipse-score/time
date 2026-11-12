@@ -20,17 +20,18 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
         testonly = testonly,
         srcs = [
             "factory.cpp",
-            "svt_handler.cpp",
+            "score_vehicle_timebase_handler.cpp",
         ],
         hdrs = [
             "factory.h",
-            "svt_handler.h",
+            "score_vehicle_timebase_handler.h",
         ],
         features = COMPILER_WARNING_FEATURES,
-        visibility = ["//score/time_daemon/src/application:__pkg__"],
+        visibility = ["//score/time_daemon:__subpackages__"],
         deps = [
-            "//score/time_daemon/src/application:timebase_handler",
-            "//score/time_daemon/src/application/job_runner",
+            "//score/time_daemon/src/application/timebase_handlers:timebase_handler",
+            "//score/time_daemon/src/application/timebase_handlers/generic:generic_timebase_handler",
+            "//score/time_daemon/src/common/data_types:ptp_time_info",
             "//score/time_daemon/src/control_flow_divider/ptp:ptp_control_flow_divider",
             "//score/time_daemon/src/ipc/svt/publisher:factory",
             "//score/time_daemon/src/msg_broker",
@@ -38,7 +39,7 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
     )
     for name, testonly, deps in [
         (
-            "svt_handler",
+            "score_vehicle_timebase_handler",
             False,
             [
                 "//score/time_daemon/src/ptp_machine/shm:gptp_shm_machine",
@@ -46,7 +47,7 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
             ],
         ),
         (
-            "svt_handler_for_utests",
+            "score_vehicle_timebase_handler_for_utests",
             True,
             [
                 "//score/time_daemon/src/ptp_machine/shm:gptp_shm_machine",
@@ -59,25 +60,25 @@ load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
     cc_unit_tests = [
-        # ":svt_handler_integration_test",
+        ":score_vehicle_timebase_handler_integration_test",
     ],
     visibility = ["//score/time_daemon/src/application:__pkg__"],
 )
 
-# TODO: fixme
-# cc_test(
-#     name = "svt_handler_integration_test",
-#     srcs = [
-#         "svt_handler_integration_test.cpp",
-#     ],
-#     tags = [
-#         "manual",
-#         "unit",
-#     ],
-#     deps = [
-#         ":svt_handler_for_utests",
-#         "//score/time_daemon/src/ipc:svt_receiver",
-#         "@googletest//:gtest",
-#         "@googletest//:gtest_main",
-#     ],
-# )
+cc_test(
+    name = "score_vehicle_timebase_handler_integration_test",
+    srcs = [
+        "score_vehicle_timebase_handler_integration_test.cpp",
+    ],
+    tags = [
+        "exclusive",
+        "unit",
+    ],
+    deps = [
+        ":score_vehicle_timebase_handler",
+        "//score/time_daemon/src/ipc:svt_receiver",
+        "//score/ts_client/src:gptp_ipc",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+    ],
+)

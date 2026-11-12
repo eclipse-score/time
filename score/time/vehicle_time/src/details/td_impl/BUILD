@@ -14,6 +14,14 @@
 load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and_qnx")
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
+# Source files carrying `// req-Id:` markers, exposed to
+# //score/time:docs_bundle via its code_targets attribute.
+filegroup(
+    name = "requirement_marked_sources",
+    srcs = ["vehicle_clock_backend_impl.cpp"],
+    visibility = ["//score/time:__pkg__"],
+)
+
 # Production backend: reads live PTP data from the TimeDaemon via SvtReceiver and
 # delivers subscription callbacks from a dedicated worker thread.
 # Link this target (or the forwarding alias //score/time/vehicle_time/src/details:td_impl)

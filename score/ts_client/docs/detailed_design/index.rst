@@ -15,15 +15,16 @@
 .. _ts_client_detailed_design:
 
 Time Sync Client Detailed Design
-=================================
+================================
 
 .. document:: Time Sync Client Detailed Design
-   :id: doc__ts_client_detailed_design
+   :id: doc__time_sync_client_detailed_design
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__sw_implementation
+   :belongs_to: comp__ts_client
    :tags: ts_client
 
 Description
@@ -39,7 +40,7 @@ Use Cases
 3. Lock-free concurrent access with bounded retry on torn reads
 
 Rationale Behind Decomposition into Units
-------------------------------------------
+-----------------------------------------
 
 The ``ts_client`` component is decomposed into two implementation units:
 
@@ -49,7 +50,7 @@ The ``ts_client`` component is decomposed into two implementation units:
 This separation enables independent deployment in different processes while maintaining a consistent IPC protocol.
 
 Static Diagrams for Unit Interactions
---------------------------------------
+-------------------------------------
 
 Class View
 ~~~~~~~~~~
@@ -79,7 +80,7 @@ in the source code itself.
 - **GptpIpcReceiver**: Reads from shared memory with bounded retry on torn reads (see ``src/gptp_ipc_receiver.h``)
 
 Seqlock Protocol Workflow
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The seqlock protocol ensures lock-free communication between publisher and receiver:
 
@@ -115,7 +116,7 @@ The ``GptpIpcRegion`` structure defines the shared memory layout:
 - ``data`` contains the ``GptpIpcData`` payload
 
 Using in Test Environment
---------------------------
+-------------------------
 
 The ``GptpIpcPublisher`` and ``GptpIpcReceiver`` rely on POSIX shared memory (``shm_open``), which works on any Linux host. Component tests can run end-to-end using real IPC without platform-specific mocks.
 
