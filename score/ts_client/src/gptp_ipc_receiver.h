@@ -68,11 +68,33 @@ class GptpIpcReceiver final
     ///         budget, @c std::nullopt if all retries detected a torn read.
     std::optional<score::ts::GptpIpcData> Receive();
 
+    /// @brief True if the last successful @c Receive() returned the same sequence
+    /// number as the one before it, i.e. the publisher has not written since.
+    ///
+    /// Lets callers run the (syscall-based) @c IsReplaced() check only when the
+    /// data stopped advancing instead of on every cycle.
+    bool LastReceiveStale() const;
+
+    /// @brief Checks whether the segment named at @c Open() time has been replaced.
+    ///
+    /// The publisher unlinks and re-creates the segment on every start, so a reader
+    /// that stays mapped to the old segment never sees data from a restarted publisher.
+    /// Compares the identity (device/inode) of the mapped segment with the segment
+    /// currently registered under the name.
+    ///
+    /// @return true only if a different segment now exists under the name. false if
+    ///         not opened, the name is currently absent, or the segment is unchanged.
+    bool IsReplaced() const;
+
     /// @brief Unmaps the shared memory region.
     void Close();
 
   private:
+    std::string ipc_name_;
     const GptpIpcRegion* region_{nullptr};
+    std::uint32_t last_seq_{0};
+    bool has_last_seq_{false};
+    bool last_receive_stale_{false};
     std::shared_ptr<score::memory::shared::ISharedMemoryResource> shm_resource_;
 };
 
