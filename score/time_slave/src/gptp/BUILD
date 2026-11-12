@@ -57,6 +57,7 @@ cc_unit_test_suites_for_host_and_qnx(
     test_suites_from_sub_packages = [
         "//score/time_slave/src/gptp/details:unit_test_suite",
         "//score/time_slave/src/gptp/instrument:unit_test_suite",
+        "//score/time_slave/src/gptp/platform/qnx:unit_test_suite",
         "//score/time_slave/src/gptp/record:unit_test_suite",
     ],
     visibility = ["//score:__subpackages__"],

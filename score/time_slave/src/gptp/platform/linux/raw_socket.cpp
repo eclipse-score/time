@@ -122,6 +122,7 @@ bool RawSocketImpl::EnableHwTimestamping()
     {
         return false;
     }
+    hw_ts_locked_.store(true, std::memory_order_release);
     return true;
 }
 
@@ -131,6 +132,7 @@ void RawSocketImpl::Close()
     if (fd >= 0)
         sys_->close_call(fd);
     iface_.clear();
+    hw_ts_locked_.store(false, std::memory_order_release);
 }
 
 int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms)
@@ -159,7 +161,15 @@ int RawSocketImpl::Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts
     if (len < 0)
         return -1;
 
-    std::memset(&hwts, 0, sizeof(hwts));
+    const bool hw_locked = hw_ts_locked_.load(std::memory_order_acquire);
+    if (!hw_locked)
+    {
+        if (::clock_gettime(CLOCK_MONOTONIC, &hwts) != 0)
+            hwts = kNoHwTimestamp;
+        return len;
+    }
+
+    hwts = kNoHwTimestamp;
     for (::cmsghdr* cm = CMSG_FIRSTHDR(&msg); cm != nullptr; cm = CMSG_NXTHDR(&msg, cm))
     {
         if (cm->cmsg_level == SOL_SOCKET && cm->cmsg_type == SO_TIMESTAMPING)
@@ -186,9 +196,17 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
     if (sent < 0)
         return -1;
 
+    const bool hw_locked = hw_ts_locked_.load(std::memory_order_acquire);
+    if (!hw_locked)
+    {
+        if (::clock_gettime(CLOCK_MONOTONIC, &hwts) != 0)
+            hwts = kNoHwTimestamp;
+        return sent;
+    }
+
     constexpr int kTxTsTimeoutMs = 50;
     ::pollfd pfd{fd, POLLERR, 0};
-    std::memset(&hwts, 0, sizeof(hwts));
+    hwts = kNoHwTimestamp;
     if (sys_->poll_call(&pfd, 1, kTxTsTimeoutMs) > 0 && (pfd.revents & POLLERR) != 0)
     {
         std::uint8_t tmp[2048];
