@@ -24,10 +24,7 @@ namespace ts
 namespace details
 {
 
-PeerDelayMeasurer::PeerDelayMeasurer(const ClockIdentity& local_identity) noexcept
-    : local_identity_{local_identity}
-{
-}
+PeerDelayMeasurer::PeerDelayMeasurer(const ClockIdentity& local_identity) noexcept : local_identity_{local_identity} {}
 
 int PeerDelayMeasurer::SendRequest(RawSocket& socket)
 {
