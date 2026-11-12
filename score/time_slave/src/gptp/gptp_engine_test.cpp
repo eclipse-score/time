@@ -567,7 +567,7 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpFuture_Detected)
     score::ts::GptpIpcData data{};
     ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
     EXPECT_TRUE(data.status.is_time_jump_future);
-    EXPECT_FALSE(data.status.is_correct);
+    EXPECT_TRUE(data.status.is_correct);
 }
 
 TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
@@ -593,7 +593,25 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
     score::ts::GptpIpcData data{};
     ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
     EXPECT_TRUE(data.status.is_time_jump_past);
-    EXPECT_FALSE(data.status.is_correct);
+    EXPECT_TRUE(data.status.is_correct);
+}
+
+TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutBeforeFirstSync_FlagIsReported)
+{
+    GptpEngineOptions opts = FastOptions();
+    opts.sync_timeout_ms = 50;
+
+    GptpEngine eng{opts, std::make_unique<FakeSocket>(), std::make_unique<FakeIdentity>()};
+    ASSERT_TRUE(eng.Initialize());
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
+    score::ts::GptpIpcData info{};
+    eng.FinalizeSnapshot();
+    ASSERT_TRUE(eng.ReadPTPSnapshot(info));
+    EXPECT_TRUE(info.status.is_timeout);
+    // is_correct == false would make consumers discard the timeout flag.
+    EXPECT_TRUE(info.status.is_correct);
+    EXPECT_TRUE(eng.Deinitialize());
 }
 
 }  // namespace details

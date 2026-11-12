@@ -43,7 +43,7 @@ void TimeJumpsValidator::DoValidation(PtpTimeInfo& data)
             HandleIdleState(data);
             break;
         case ProcessingStates::kInitialSyncDebouncing:
-            HandleInitialSyncDebouncingState();
+            HandleInitialSyncDebouncingState(data);
             break;
         case ProcessingStates::kTimeJumpHandling:
             SyncFramesHandler(data);
@@ -107,8 +107,17 @@ bool TimeJumpsValidator::IsTimeJumpDetected(const PtpTimeInfo& data)
     return is_time_jump_detected;
 }
 
-void TimeJumpsValidator::HandleIdleState(const PtpTimeInfo& data)
+void TimeJumpsValidator::ClearTimeJumpFlags(PtpTimeInfo& data)
 {
+    // Time jumps are only validated in kTimeJumpHandling. Flags from upstream (e.g. a stale snapshot after a
+    // restart) must not reach consumers before that.
+    data.status.is_time_jump_future = false;
+    data.status.is_time_jump_past = false;
+}
+
+void TimeJumpsValidator::HandleIdleState(PtpTimeInfo& data)
+{
+    ClearTimeJumpFlags(data);
     if (data.status.is_synchronized)
     {
         GoToInitialSyncDebouncing();
@@ -120,8 +129,9 @@ void TimeJumpsValidator::HandleIdleState(const PtpTimeInfo& data)
     }
 }
 
-void TimeJumpsValidator::HandleInitialSyncDebouncingState()
+void TimeJumpsValidator::HandleInitialSyncDebouncingState(PtpTimeInfo& data)
 {
+    ClearTimeJumpFlags(data);
     if ((sync_debouncing_init_time_ + sync_debounce_threshold_) < debouncing_clock_.Now().TimeSinceEpoch())
     {
         GoToTimeJumpHandling();
@@ -130,7 +140,10 @@ void TimeJumpsValidator::HandleInitialSyncDebouncingState()
 
 void TimeJumpsValidator::SyncFramesHandler(PtpTimeInfo& data)
 {
-    if (last_sync_frame_.has_value())
+    if (last_sync_frame_.has_value() &&
+        // When the same sync frame is delivered repeatedly, the repetition is neither a valid
+        // frame (which would otherwise clear a time jump too early) nor a jump.
+        (last_sync_frame_.value().sync_fup_data.sequence_id != data.sync_fup_data.sequence_id))
     {
         if (not(IsTimeJumpDetected(data)))
         {
