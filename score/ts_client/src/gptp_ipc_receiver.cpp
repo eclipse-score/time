@@ -12,6 +12,11 @@
  ********************************************************************************/
 #include "score/ts_client/src/gptp_ipc_receiver.h"
 
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <cstring>
 #include <memory>
 
@@ -34,6 +39,7 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     if (shm_resource_ != nullptr)
         return true;
 
+    ipc_name_ = ipc_name;
     shm_resource_ = score::memory::shared::SharedMemoryFactory::Open(ipc_name, false);
     if (shm_resource_ == nullptr)
         return false;
@@ -58,6 +64,26 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     }
 
     return true;
+}
+
+bool GptpIpcReceiver::IsReplaced() const
+{
+    if (shm_resource_ == nullptr)
+        return false;
+
+    struct stat mapped{};
+    if (::fstat(static_cast<int>(shm_resource_->GetFileDescriptor()), &mapped) != 0)
+        return false;
+
+    const int fd = ::shm_open(ipc_name_.c_str(), O_RDONLY, 0);
+    if (fd < 0)
+        return false;  // name absent: nothing newer to switch to
+
+    struct stat current{};
+    const bool have_current = (::fstat(fd, &current) == 0);
+    static_cast<void>(::close(fd));
+
+    return have_current && ((current.st_dev != mapped.st_dev) || (current.st_ino != mapped.st_ino));
 }
 
 std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
@@ -98,6 +124,7 @@ void GptpIpcReceiver::Close()
 {
     shm_resource_.reset();
     region_ = nullptr;
+    ipc_name_.clear();
 }
 
 }  // namespace details

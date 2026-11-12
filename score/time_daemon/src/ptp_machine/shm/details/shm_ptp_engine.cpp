@@ -54,8 +54,35 @@ bool ShmPTPEngine::Deinitialize()
 
 bool ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 {
+    if (initialized_ && receiver_.IsReplaced())
+    {
+        // TimeSlave restarted and re-created the segment; our mapping is orphaned.
+        score::mw::log::LogInfo(kGPtpMachineContext)
+            << "ShmPTPEngine: IPC channel " << ipc_name_ << " was re-created, reconnecting";
+        receiver_.Close();
+        initialized_ = false;
+    }
+
     if (!initialized_)
-        return false;
+    {
+        // Covers both a failed reconnect (new segment not fully set up yet) and a
+        // fresh start; retried on every cycle until it succeeds.
+        const bool was_waiting = waiting_for_channel_;
+        waiting_for_channel_ = true;
+        if (was_waiting)
+        {
+            // Quiet retry: avoid logging an error on every cycle.
+            initialized_ = receiver_.Open(ipc_name_);
+            if (initialized_)
+                waiting_for_channel_ = false;
+        }
+        else if (Initialize())
+        {
+            waiting_for_channel_ = false;
+        }
+        if (!initialized_)
+            return false;
+    }
 
     auto result = receiver_.Receive();
     if (!result.has_value())

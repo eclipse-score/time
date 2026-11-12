@@ -65,6 +65,10 @@ class ShmPTPEngine final
     /// @brief Reads the latest gPTP snapshot from shared memory and converts it
     /// to @c PtpTimeInfo.
     ///
+    /// If TimeSlave was restarted (segment re-created under the same name), the
+    /// engine transparently re-opens the channel before reading. If the channel
+    /// is not open, a re-open is attempted on each call.
+    ///
     /// Calls @c GptpIpcReceiver::Receive() then performs a field-by-field
     /// mapping from @c GptpIpcData to @c PtpTimeInfo:
     ///
@@ -91,6 +95,7 @@ class ShmPTPEngine final
     std::string ipc_name_;
     score::ts::details::GptpIpcReceiver receiver_;
     bool initialized_{false};
+    bool waiting_for_channel_{false};  ///< Reconnect failed once already; suppress repeated error logs.
 };
 
 }  // namespace details
