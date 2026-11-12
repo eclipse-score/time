@@ -104,41 +104,57 @@ bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_l
     msg.msgtype = msg.ptpHdr.tsmt & 0x0FU;
 
     constexpr std::size_t kBodyOffset = 34U;
+    constexpr std::size_t kPidSize = 10U;  // ClockIdentity (8) + portNumber (2)
+    // Pdelay_Req body: originTimestamp (10 bytes, sent as zero, ignored by receivers)
+    // followed by 10 reserved bytes. Neither field is parsed; only its presence is validated.
+    constexpr std::size_t kPdelayReqBodySize = 20U;
+
+    // Minimum declared message length per type (IEEE 802.1AS): messages with a truncated
+    // body must be rejected rather than delivered with zero-initialised fields.
+    std::size_t min_len = sizeof(PTPHeader);
+    switch (msg.msgtype)
+    {
+        case kPtpMsgtypeSync:
+        case kPtpMsgtypeFollowUp:
+            min_len = kBodyOffset + sizeof(Timestamp);
+            break;
+        case kPtpMsgtypePdelayReq:
+            min_len = kBodyOffset + kPdelayReqBodySize;
+            break;
+        case kPtpMsgtypePdelayResp:
+        case kPtpMsgtypePdelayRespFollowUp:
+            min_len = kBodyOffset + sizeof(Timestamp) + kPidSize;
+            break;
+        default:
+            break;
+    }
+    if (static_cast<std::size_t>(declared_len) < min_len)
+        return false;
 
     switch (msg.msgtype)
     {
         case kPtpMsgtypeFollowUp:
-            if (payload_len >= kBodyOffset + sizeof(Timestamp))
-                msg.follow_up.preciseOriginTimestamp = LoadTimestamp(payload + kBodyOffset);
+            msg.follow_up.preciseOriginTimestamp = LoadTimestamp(payload + kBodyOffset);
             break;
 
         case kPtpMsgtypePdelayResp:
-            if (payload_len >= kBodyOffset + sizeof(Timestamp))
-            {
-                msg.pdelay_resp.requestReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
-                // Also parse requestingPortIdentity (8-byte ClockIdentity + 2-byte portNumber)
-                // so that ComputeAndStoreUnlocked() can verify the response is addressed to us.
-                constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);  // = 44
-                if (payload_len >= kPidOffset + 10U)
-                {
-                    std::memcpy(msg.pdelay_resp.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
-                    msg.pdelay_resp.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
-                }
-            }
+        {
+            msg.pdelay_resp.requestReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
+            // requestingPortIdentity lets ComputeAndStoreUnlocked() verify the response is addressed to us.
+            constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);
+            std::memcpy(msg.pdelay_resp.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
+            msg.pdelay_resp.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
             break;
+        }
 
         case kPtpMsgtypePdelayRespFollowUp:
-            if (payload_len >= kBodyOffset + sizeof(Timestamp))
-            {
-                msg.pdelay_resp_fup.responseOriginReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
-                constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);  // = 44
-                if (payload_len >= kPidOffset + 10U)
-                {
-                    std::memcpy(msg.pdelay_resp_fup.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
-                    msg.pdelay_resp_fup.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
-                }
-            }
+        {
+            msg.pdelay_resp_fup.responseOriginReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
+            constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);
+            std::memcpy(msg.pdelay_resp_fup.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
+            msg.pdelay_resp_fup.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
             break;
+        }
 
         default:
             break;
