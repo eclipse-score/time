@@ -97,7 +97,7 @@ class SvtCallbackWrapper final
     }
 
     /// @brief Returns @c true if a callback is currently installed.
-    bool IsSet() const noexcept
+    [[nodiscard]] bool IsSet() const noexcept
     {
         return is_set_.load(std::memory_order_acquire);
     }

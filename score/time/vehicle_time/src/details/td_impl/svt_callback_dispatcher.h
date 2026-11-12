@@ -91,7 +91,7 @@ class SvtCallbackDispatcher final
     void WaitForWakeupOrPollInterval(const score::cpp::stop_token& token) noexcept;
 
     /// @brief Returns @c true if at least one callback is currently registered. Lock-free.
-    bool IsAnyCallbackSet() const noexcept;
+    [[nodiscard]] bool IsAnyCallbackSet() const noexcept;
 
     /// @brief Reads one snapshot from the receiver and offers each part to its slot.
     void PollAndDispatch() noexcept;

@@ -35,7 +35,7 @@ class SteadyClockBackend
     SteadyClockBackend& operator=(SteadyClockBackend&&) = delete;
 
     /// @brief Returns the current steady-clock snapshot.
-    virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept = 0;
+    [[nodiscard]] virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept = 0;
 };
 
 }  // namespace score::time

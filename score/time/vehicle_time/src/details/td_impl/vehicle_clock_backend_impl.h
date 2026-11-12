@@ -72,7 +72,7 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     ///
     /// Returns empty snapshot when backend is not initialised, receiver has no
     /// sample, or local reference time is behind sample capture point.
-    ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept override;
+    [[nodiscard]] ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept override;
 
     /// @brief Initializes TimeDaemon SVT receiver once (thread-safe, idempotent).
     ///
@@ -81,13 +81,13 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     bool Init() noexcept override;
 
     /// @brief Returns cached readiness state set by @c Init().
-    bool IsAvailable() const noexcept override;
+    [[nodiscard]] bool IsAvailable() const noexcept override;
 
     /// @brief Polls readiness until available, stop requested, or deadline reached.
     ///
     /// Poll interval is 10 ms.
-    bool WaitUntilAvailable(const score::cpp::stop_token& token,
-                            std::chrono::steady_clock::time_point until) const noexcept override;
+    [[nodiscard]] bool WaitUntilAvailable(const score::cpp::stop_token& token,
+                                          std::chrono::steady_clock::time_point until) const noexcept override;
 
     /// @brief Installs the time-sync data callback, delivered from the worker thread.
     void SetTimeSlaveSyncDataReceivedCallback(

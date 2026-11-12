@@ -41,7 +41,7 @@ class SystemClockBackend
     SystemClockBackend& operator=(SystemClockBackend&&) = delete;
 
     /// @brief Returns the current system-clock snapshot.
-    virtual ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept = 0;
+    [[nodiscard]] virtual ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept = 0;
 };
 
 }  // namespace score::time

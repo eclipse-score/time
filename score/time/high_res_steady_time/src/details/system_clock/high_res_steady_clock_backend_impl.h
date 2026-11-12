@@ -34,7 +34,7 @@ class HighResSteadyClockBackendImpl final : public HighResSteadyClockBackend
     ~HighResSteadyClockBackendImpl() noexcept override;
 
     /// @brief Returns the current HIRS snapshot using @c high_resolution_clock.
-    ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override;
+    [[nodiscard]] ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override;
 };
 
 }  // namespace score::time::high_res_steady_time::sys_time

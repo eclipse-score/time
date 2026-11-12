@@ -115,7 +115,7 @@ class ClockStatus final
     ///
     /// @note Coverage of this method lives in the domain-level test (e.g.
     ///       @c vehicle_time_status_test.cpp), not in this file.
-    std::ostringstream PrintTo() const;
+    [[nodiscard]] std::ostringstream PrintTo() const;
 
     /// @brief Adds a flag bit-position to this status.
     ///

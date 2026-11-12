@@ -64,7 +64,7 @@ struct VehicleTime
 
 /// @brief Formats all active VehicleTime status flags into an ostringstream for diagnostics.
 template <>
-std::ostringstream ClockStatus<VehicleTime::StatusFlag>::PrintTo() const;
+[[nodiscard]] std::ostringstream ClockStatus<VehicleTime::StatusFlag>::PrintTo() const;
 
 ///
 /// @brief Synchronisation-quality status snapshot for the vehicle time domain.
@@ -85,7 +85,7 @@ struct VehicleTimeStatus
     /// @brief Returns true if the vehicle time data is reliable for use right now.
     ///
     /// Reliable := kSynchronized is set AND none of {kTimeOut, kTimeLeapFuture, kTimeLeapPast} is set.
-    bool IsReliable() const noexcept
+    [[nodiscard]] bool IsReliable() const noexcept
     {
         return (flags.IsFlagActive(VehicleTime::StatusFlag::kSynchronized) &&
                 (!flags.IsAnyOfFlagsActive({VehicleTime::StatusFlag::kTimeOut,
@@ -96,7 +96,7 @@ struct VehicleTimeStatus
     /// @brief Returns true if the vehicle time has been synchronized at least once during this lifecycle.
     ///
     /// HasBeenSynchronized := kSynchronized flag is set, regardless of any active fault flags.
-    bool HasBeenSynchronized() const noexcept
+    [[nodiscard]] bool HasBeenSynchronized() const noexcept
     {
         return flags.IsFlagActive(VehicleTime::StatusFlag::kSynchronized);
     }
@@ -104,7 +104,7 @@ struct VehicleTimeStatus
     /// @brief Returns true if the vehicle time status flags are internally consistent (no contradictory combination).
     ///
     /// Consistent := at least one flag is set AND kTimeLeapFuture and kTimeLeapPast are not both set simultaneously.
-    bool IsConsistent() const noexcept
+    [[nodiscard]] bool IsConsistent() const noexcept
     {
         if (!flags.IsAnyOfFlagsActive({VehicleTime::StatusFlag::kTimeOut,
                                        VehicleTime::StatusFlag::kSynchronized,
@@ -123,13 +123,13 @@ struct VehicleTimeStatus
 
     /// @brief Returns the fractional rate deviation of the local clock relative to the Grand Master.
     ///        Unit: dimensionless (e.g. 1.0e-9 == 1 ppb).
-    double RateDeviation() const noexcept
+    [[nodiscard]] double RateDeviation() const noexcept
     {
         return rate_deviation;
     }
 
     /// @brief Returns true if the given StatusFlag bit-position is active.
-    bool IsFlagActive(const VehicleTime::StatusFlag flag) const noexcept
+    [[nodiscard]] bool IsFlagActive(const VehicleTime::StatusFlag flag) const noexcept
     {
         return flags.IsFlagActive(flag);
     }

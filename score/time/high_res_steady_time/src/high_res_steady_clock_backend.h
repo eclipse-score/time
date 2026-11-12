@@ -33,7 +33,7 @@ class HighResSteadyClockBackend
     HighResSteadyClockBackend& operator=(HighResSteadyClockBackend&&) = delete;
 
     /// @brief Returns the current HIRS snapshot (time-point; status is NoStatus).
-    virtual ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept = 0;
+    [[nodiscard]] virtual ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept = 0;
 };
 
 }  // namespace score::time
