@@ -68,6 +68,9 @@ constexpr std::uint8_t kPtpMsgtypePdelayRespFollowUp = 0xA;
 constexpr std::uint8_t kPtpTransportSpecific = (1U << 4U);
 /// PTP protocol version (2 for IEEE 1588-2008 / 802.1AS).
 constexpr std::uint8_t kPtpVersion = 2U;
+/// Domain number carried by all transmitted Pdelay messages (Pdelay_Req, Pdelay_Resp, Pdelay_Resp_Follow_Up).
+/// IEEE 802.1AS requires peer delay messages to use domain 0, independent of the configured gPTP domain.
+constexpr std::uint8_t kPdelayDomainNumber = 0U;
 
 /// Nanoseconds per second.
 constexpr std::int64_t kNsPerSec = 1'000'000'000LL;

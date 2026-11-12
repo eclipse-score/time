@@ -80,7 +80,7 @@ bool GptpEngine::Initialize()
         return false;
     }
 
-    pdelay_ = std::make_unique<PeerDelayMeasurer>(identity_->GetClockIdentity(), opts_.domain_number);
+    pdelay_ = std::make_unique<PeerDelayMeasurer>(identity_->GetClockIdentity());
 
     if (!socket_->Open(opts_.iface_name))
     {
@@ -258,8 +258,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     switch (msg.msgtype)
     {
         case kPtpMsgtypePdelayReq:
-            if (msg.ptpHdr.domainNumber == opts_.domain_number)
-                SendPDelayResponseAndFollowUp(msg, hw_ts);
+            SendPDelayResponseAndFollowUp(msg, hw_ts);
             break;
 
         case kPtpMsgtypeSync:
@@ -363,7 +362,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     PTPMessage resp{};
     resp.ptpHdr.tsmt = kPtpMsgtypePdelayResp | kPtpTransportSpecific;
     resp.ptpHdr.version = kPtpVersion;
-    resp.ptpHdr.domainNumber = opts_.domain_number;
+    resp.ptpHdr.domainNumber = kPdelayDomainNumber;
     resp.ptpHdr.messageLength = htons(static_cast<std::uint16_t>(sizeof(PdelayRespBody)));
     resp.ptpHdr.flagField[0] = 0x02U;  // twoStepFlag
     resp.ptpHdr.correctionField = 0;
@@ -392,7 +391,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     PTPMessage fup{};
     fup.ptpHdr.tsmt = kPtpMsgtypePdelayRespFollowUp | kPtpTransportSpecific;
     fup.ptpHdr.version = kPtpVersion;
-    fup.ptpHdr.domainNumber = opts_.domain_number;
+    fup.ptpHdr.domainNumber = kPdelayDomainNumber;
     fup.ptpHdr.messageLength = htons(static_cast<std::uint16_t>(sizeof(PdelayRespFollowUpBody)));
     fup.ptpHdr.correctionField = 0;
     fup.ptpHdr.reserved2 = 0;

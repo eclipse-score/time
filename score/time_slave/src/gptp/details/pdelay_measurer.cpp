@@ -24,17 +24,14 @@ namespace ts
 namespace details
 {
 
-PeerDelayMeasurer::PeerDelayMeasurer(const ClockIdentity& local_identity, std::uint8_t domain) noexcept
-    : local_identity_{local_identity}, domain_{domain}
-{
-}
+PeerDelayMeasurer::PeerDelayMeasurer(const ClockIdentity& local_identity) noexcept : local_identity_{local_identity} {}
 
 int PeerDelayMeasurer::SendRequest(RawSocket& socket)
 {
     PTPMessage req{};
     req.ptpHdr.tsmt = kPtpMsgtypePdelayReq | kPtpTransportSpecific;
     req.ptpHdr.version = kPtpVersion;
-    req.ptpHdr.domainNumber = domain_;
+    req.ptpHdr.domainNumber = kPdelayDomainNumber;
     req.ptpHdr.messageLength = htons(sizeof(PdelayReqBody));
     req.ptpHdr.flagField[0] = 0;
     req.ptpHdr.flagField[1] = 0;
