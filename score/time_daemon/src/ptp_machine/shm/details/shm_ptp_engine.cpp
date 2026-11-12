@@ -54,7 +54,9 @@ bool ShmPTPEngine::Deinitialize()
 
 bool ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
 {
-    if (initialized_ && receiver_.IsReplaced())
+    // Only pay for the syscall-based check when the publisher stopped advancing;
+    // a healthy TimeSlave bumps the sequence number every cycle.
+    if (initialized_ && receiver_.LastReceiveStale() && receiver_.IsReplaced())
     {
         // TimeSlave restarted and re-created the segment; our mapping is orphaned.
         score::mw::log::LogInfo(kGPtpMachineContext)

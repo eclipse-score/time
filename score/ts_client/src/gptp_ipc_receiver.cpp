@@ -66,6 +66,11 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     return true;
 }
 
+bool GptpIpcReceiver::LastReceiveStale() const
+{
+    return last_receive_stale_;
+}
+
 bool GptpIpcReceiver::IsReplaced() const
 {
     if (shm_resource_ == nullptr)
@@ -114,7 +119,12 @@ std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
         const std::uint32_t seq3 = region_->seq.load(std::memory_order_acquire);
 
         if (seq1 == seq2 && seq1 == seq3)
+        {
+            last_receive_stale_ = has_last_seq_ && (seq1 == last_seq_);
+            last_seq_ = seq1;
+            has_last_seq_ = true;
             return data;
+        }
     }
 
     return std::nullopt;
@@ -125,6 +135,8 @@ void GptpIpcReceiver::Close()
     shm_resource_.reset();
     region_ = nullptr;
     ipc_name_.clear();
+    has_last_seq_ = false;
+    last_receive_stale_ = false;
 }
 
 }  // namespace details

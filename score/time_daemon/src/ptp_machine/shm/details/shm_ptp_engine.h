@@ -66,7 +66,9 @@ class ShmPTPEngine final
     /// to @c PtpTimeInfo.
     ///
     /// If TimeSlave was restarted (segment re-created under the same name), the
-    /// engine transparently re-opens the channel before reading. If the channel
+    /// engine transparently re-opens the channel before reading. The replacement
+    /// check runs only when the previous read showed no new data, so a healthy
+    /// publisher incurs no extra syscalls. If the channel
     /// is not open, a re-open is attempted on each call.
     ///
     /// Calls @c GptpIpcReceiver::Receive() then performs a field-by-field

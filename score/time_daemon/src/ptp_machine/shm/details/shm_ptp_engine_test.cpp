@@ -256,8 +256,9 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_AfterPublisherRestart_FollowsNewSegment
     ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
     EXPECT_EQ(info.ptp_assumed_time, std::chrono::nanoseconds{9'876'543'210LL});
 
-    first.Stop();                    // TimeSlave killed
-    ASSERT_TRUE(restarted.Start());  // TimeSlave restarted
+    first.Stop();                                 // TimeSlave killed
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));  // no new data: marks the channel stale
+    ASSERT_TRUE(restarted.Start());               // TimeSlave restarted
 
     ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
     EXPECT_EQ(info.ptp_assumed_time, std::chrono::nanoseconds{1'111'111'111LL});
@@ -276,6 +277,7 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_PublisherGoneThenReturns_Recovers)
 
     PtpTimeInfo info{};
     EXPECT_TRUE(engine_->ReadPTPSnapshot(info));  // last (stale) data, no crash
+    EXPECT_TRUE(engine_->ReadPTPSnapshot(info));
 
     ASSERT_TRUE(restarted.Start());
     ASSERT_TRUE(engine_->ReadPTPSnapshot(info));

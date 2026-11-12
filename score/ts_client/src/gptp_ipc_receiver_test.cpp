@@ -164,6 +164,29 @@ TEST_F(GptpIpcReceiverTest, Open_TooSmallShm_ReturnsFalse)
     ::shm_unlink(name.c_str());
 }
 
+TEST_F(GptpIpcReceiverTest, LastReceiveStale_TracksPublisherProgress)
+{
+    GptpIpcPublisher pub;
+    const std::string name = UniqueShmName();
+    ASSERT_TRUE(pub.Open(name));
+    ASSERT_TRUE(rx_.Open(name));
+    EXPECT_FALSE(rx_.LastReceiveStale());
+
+    pub.Publish(GptpIpcData{});
+    ASSERT_TRUE(rx_.Receive().has_value());
+    EXPECT_FALSE(rx_.LastReceiveStale());  // first read
+
+    ASSERT_TRUE(rx_.Receive().has_value());
+    EXPECT_TRUE(rx_.LastReceiveStale());  // nothing new published
+
+    pub.Publish(GptpIpcData{});
+    ASSERT_TRUE(rx_.Receive().has_value());
+    EXPECT_FALSE(rx_.LastReceiveStale());
+
+    rx_.Close();
+    EXPECT_FALSE(rx_.LastReceiveStale());
+}
+
 TEST_F(GptpIpcReceiverTest, IsReplaced_NotOpened_ReturnsFalse)
 {
     EXPECT_FALSE(rx_.IsReplaced());
