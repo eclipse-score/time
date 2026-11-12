@@ -33,6 +33,7 @@ std::chrono::nanoseconds ToNanoseconds(const std::uint64_t nanoseconds) noexcept
     return std::chrono::nanoseconds{static_cast<std::chrono::nanoseconds::rep>(nanoseconds)};
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters): PTP clock identity and port number, fixed order
 PortIdentity ToPortIdentity(const std::uint64_t clock_identity, const std::uint32_t port_number) noexcept
 {
     PortIdentity identity{};

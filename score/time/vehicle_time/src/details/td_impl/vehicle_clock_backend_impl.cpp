@@ -134,6 +134,7 @@ bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& t
 {
     constexpr std::chrono::milliseconds kAvailabilityPollInterval{10};
     bool should_poll = false;
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while): availability is checked at least once
     do
     {
         if (IsAvailable())

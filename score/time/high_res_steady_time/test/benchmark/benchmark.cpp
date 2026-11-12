@@ -36,6 +36,7 @@ class HighResSteadyClockBenchmarkFixture : public benchmark::Fixture
 
 BENCHMARK_F(HighResSteadyClockBenchmarkFixture, NowLatency)(benchmark::State& state)
 {
+    // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores,readability-identifier-length): Google Benchmark loop idiom
     for (auto _ : state)
     {
         benchmark::DoNotOptimize(clock_.Now());

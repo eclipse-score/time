@@ -43,6 +43,7 @@ SvtCallbackDispatcher::SvtCallbackDispatcher(std::shared_ptr<score::td::SvtRecei
 {
 }
 
+// NOLINTNEXTLINE(bugprone-exception-escape): jthread::join() may throw
 SvtCallbackDispatcher::~SvtCallbackDispatcher() noexcept
 {
     // The destructor never runs on the worker thread, so joining here is always safe.
