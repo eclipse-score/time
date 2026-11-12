@@ -74,9 +74,9 @@ bool AvailabilityHook<VehicleTime>::CallWaitUntilAvailable(const Backend& impl,
 
 void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Subscribe(
     Backend& impl,
-    VehicleTime::TimeSlaveSyncDataReceivedCallback cb) noexcept
+    VehicleTime::TimeSlaveSyncDataReceivedCallback callback) noexcept
 {
-    impl.SetTimeSlaveSyncDataReceivedCallback(std::move(cb));
+    impl.SetTimeSlaveSyncDataReceivedCallback(std::move(callback));
 }
 
 void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Unsubscribe(Backend& impl) noexcept
@@ -86,9 +86,9 @@ void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Unsubscribe(
 
 void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Subscribe(
     Backend& impl,
-    VehicleTime::PDelayMeasurementFinishedCallback cb) noexcept
+    VehicleTime::PDelayMeasurementFinishedCallback callback) noexcept
 {
-    impl.SetPDelayMeasurementFinishedCallback(std::move(cb));
+    impl.SetPDelayMeasurementFinishedCallback(std::move(callback));
 }
 
 void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Unsubscribe(Backend& impl) noexcept
@@ -97,9 +97,9 @@ void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Unsubscr
 }
 
 void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Subscribe(Backend& impl,
-                                                                 VehicleTime::StatusChangedCallback cb) noexcept
+                                                                 VehicleTime::StatusChangedCallback callback) noexcept
 {
-    impl.SetStatusChangedCallback(std::move(cb));
+    impl.SetStatusChangedCallback(std::move(callback));
 }
 
 void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Unsubscribe(Backend& impl) noexcept

@@ -72,7 +72,7 @@ struct SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>
     using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::TimeSlaveSyncDataReceivedCallback;
 
-    static void Subscribe(Backend& impl, Callback cb) noexcept;
+    static void Subscribe(Backend& impl, Callback callback) noexcept;
     static void Unsubscribe(Backend& impl) noexcept;
 };
 
@@ -82,7 +82,7 @@ struct SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>
     using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::PDelayMeasurementFinishedCallback;
 
-    static void Subscribe(Backend& impl, Callback cb) noexcept;
+    static void Subscribe(Backend& impl, Callback callback) noexcept;
     static void Unsubscribe(Backend& impl) noexcept;
 };
 
@@ -92,7 +92,7 @@ struct SubscriptionHook<VehicleTime, VehicleTimeStatus>
     using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::StatusChangedCallback;
 
-    static void Subscribe(Backend& impl, Callback cb) noexcept;
+    static void Subscribe(Backend& impl, Callback callback) noexcept;
     static void Unsubscribe(Backend& impl) noexcept;
 };
 

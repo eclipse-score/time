@@ -106,8 +106,8 @@ bool VehicleClockBackendImpl::Init() noexcept
         return true;
     }
 
-    const bool ok = svt_receiver_->Init();
-    if (!ok)
+    const bool initialized = svt_receiver_->Init();
+    if (!initialized)
     {
         score::mw::log::LogError(kVehicleTimeLogContext)
             << "VehicleClockBackendImpl: failed to open TimeDaemon shared memory segment.";
@@ -118,9 +118,9 @@ bool VehicleClockBackendImpl::Init() noexcept
         dispatcher_.Start();
     }
 
-    is_ready_.store(ok, std::memory_order_release);
+    is_ready_.store(initialized, std::memory_order_release);
 
-    return ok;
+    return initialized;
 }
 
 bool VehicleClockBackendImpl::IsAvailable() const noexcept

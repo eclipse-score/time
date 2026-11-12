@@ -41,8 +41,8 @@ class HighResSteadyClockBackendImpl final : public HighResSteadyClockBackend
     [[nodiscard]] ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override
     {
         const auto raw = std::chrono::steady_clock::now().time_since_epoch();
-        const HighResSteadyTime::Timepoint tp{std::chrono::duration_cast<HighResSteadyTime::Duration>(raw)};
-        return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{tp, NoStatus{}};
+        const HighResSteadyTime::Timepoint time_point{std::chrono::duration_cast<HighResSteadyTime::Duration>(raw)};
+        return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{time_point, NoStatus{}};
     }
 };
 
