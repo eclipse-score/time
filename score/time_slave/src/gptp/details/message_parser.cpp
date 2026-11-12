@@ -69,6 +69,14 @@ Timestamp LoadTimestamp(const std::uint8_t* p) noexcept
     return ts;
 }
 
+PortIdentity LoadPortIdentity(const std::uint8_t* p) noexcept
+{
+    PortIdentity pid{};
+    std::memcpy(pid.clockIdentity.id, p, 8);
+    pid.portNumber = LoadU16(p + 8);
+    return pid;
+}
+
 }  // namespace
 
 bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_len, PTPMessage& msg) const
@@ -108,53 +116,43 @@ bool GptpMessageParser::Parse(const std::uint8_t* payload, std::size_t payload_l
     // Pdelay_Req body: originTimestamp (10 bytes, sent as zero, ignored by receivers)
     // followed by 10 reserved bytes. Neither field is parsed; only its presence is validated.
     constexpr std::size_t kPdelayReqBodySize = 20U;
+    constexpr std::size_t kTimestampPlusPidSize = sizeof(Timestamp) + kPidSize;
 
-    // Minimum declared message length per type (IEEE 802.1AS): messages with a truncated
-    // body must be rejected rather than delivered with zero-initialised fields.
-    std::size_t min_len = sizeof(PTPHeader);
+    // Each case first rejects a declared length shorter than the body it is about to read
+    // (IEEE 802.1AS), so truncated messages are never delivered with zero-initialised fields.
+    const std::size_t declared = static_cast<std::size_t>(declared_len);
     switch (msg.msgtype)
     {
         case kPtpMsgtypeSync:
-        case kPtpMsgtypeFollowUp:
-            min_len = kBodyOffset + sizeof(Timestamp);
+            if (declared < kBodyOffset + sizeof(Timestamp))
+                return false;
             break;
-        case kPtpMsgtypePdelayReq:
-            min_len = kBodyOffset + kPdelayReqBodySize;
-            break;
-        case kPtpMsgtypePdelayResp:
-        case kPtpMsgtypePdelayRespFollowUp:
-            min_len = kBodyOffset + sizeof(Timestamp) + kPidSize;
-            break;
-        default:
-            break;
-    }
-    if (static_cast<std::size_t>(declared_len) < min_len)
-        return false;
 
-    switch (msg.msgtype)
-    {
         case kPtpMsgtypeFollowUp:
+            if (declared < kBodyOffset + sizeof(Timestamp))
+                return false;
             msg.follow_up.preciseOriginTimestamp = LoadTimestamp(payload + kBodyOffset);
             break;
 
+        case kPtpMsgtypePdelayReq:
+            if (declared < kBodyOffset + kPdelayReqBodySize)
+                return false;
+            break;
+
         case kPtpMsgtypePdelayResp:
-        {
+            if (declared < kBodyOffset + kTimestampPlusPidSize)
+                return false;
             msg.pdelay_resp.requestReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
             // requestingPortIdentity lets ComputeAndStoreUnlocked() verify the response is addressed to us.
-            constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);
-            std::memcpy(msg.pdelay_resp.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
-            msg.pdelay_resp.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
+            msg.pdelay_resp.requestingPortIdentity = LoadPortIdentity(payload + kBodyOffset + sizeof(Timestamp));
             break;
-        }
 
         case kPtpMsgtypePdelayRespFollowUp:
-        {
+            if (declared < kBodyOffset + kTimestampPlusPidSize)
+                return false;
             msg.pdelay_resp_fup.responseOriginReceiptTimestamp = LoadTimestamp(payload + kBodyOffset);
-            constexpr std::size_t kPidOffset = kBodyOffset + sizeof(Timestamp);
-            std::memcpy(msg.pdelay_resp_fup.requestingPortIdentity.clockIdentity.id, payload + kPidOffset, 8);
-            msg.pdelay_resp_fup.requestingPortIdentity.portNumber = LoadU16(payload + kPidOffset + 8U);
+            msg.pdelay_resp_fup.requestingPortIdentity = LoadPortIdentity(payload + kBodyOffset + sizeof(Timestamp));
             break;
-        }
 
         default:
             break;
