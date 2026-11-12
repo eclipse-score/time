@@ -278,5 +278,59 @@ TEST(TimeJumpsValidatorTest, StaysInInitialSyncDebouncingWhenThresholdNotElapsed
     EXPECT_FALSE(result.status.is_time_jump_past);
 }
 
+TEST(TimeJumpsValidatorTest, UpstreamTimeJumpFlagsAreClearedInIdleState)
+{
+    auto mock = std::make_shared<score::time::HighResSteadyClockBackendMock>();
+
+    TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
+                                 std::chrono::nanoseconds(500'000),
+                                 std::chrono::nanoseconds(5'000'000),
+                                 2U);
+
+    // Not synchronized -> validator stays in kIdle
+    PtpTimeInfo data{};
+    data.status.is_synchronized = false;
+    data.status.is_time_jump_future = true;
+    data.status.is_time_jump_past = true;
+
+    const auto result = validator.Process(data);
+
+    EXPECT_FALSE(result.status.is_time_jump_future);
+    EXPECT_FALSE(result.status.is_time_jump_past);
+}
+
+TEST(TimeJumpsValidatorTest, UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDebouncing)
+{
+    auto mock = std::make_shared<score::time::HighResSteadyClockBackendMock>();
+
+    TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
+                                 std::chrono::nanoseconds(500'000),
+                                 std::chrono::nanoseconds(5'000'000),
+                                 2U);
+
+    EXPECT_CALL(*mock, Now())
+        // Enter kInitialSyncDebouncing
+        .WillOnce(::testing::Return(
+            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(0)}, {}}))
+        // Threshold not yet elapsed -> stays in kInitialSyncDebouncing
+        .WillOnce(::testing::Return(
+            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(2'000'000)}, {}}));
+
+    PtpTimeInfo data{};
+    data.status.is_synchronized = true;
+    data.status.is_time_jump_future = true;
+    data.status.is_time_jump_past = true;
+
+    // First call: kIdle -> kInitialSyncDebouncing; second call: debouncing
+    for (int i = 0; i < 2; ++i)
+    {
+        const auto result = validator.Process(data);
+        EXPECT_FALSE(result.status.is_time_jump_future);
+        EXPECT_FALSE(result.status.is_time_jump_past);
+    }
+}
+
 }  // namespace td
 }  // namespace score

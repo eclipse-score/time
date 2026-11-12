@@ -45,8 +45,9 @@ class TimeJumpsValidator : public VerificationStage<PtpTimeInfo>
     void DoValidation(PtpTimeInfo& data) override;
 
   private:
-    void HandleIdleState(const PtpTimeInfo& data);
-    void HandleInitialSyncDebouncingState();
+    void HandleIdleState(PtpTimeInfo& data);
+    void HandleInitialSyncDebouncingState(PtpTimeInfo& data);
+    static void ClearTimeJumpFlags(PtpTimeInfo& data);
     void SyncFramesHandler(PtpTimeInfo& data);
     bool IsTimeJumpDetected(const PtpTimeInfo& data);
     void UpdateStatus(PtpTimeInfo& data);
