@@ -1,205 +1,5 @@
 [
   {
-    "need": "comp_req__time_slave__configuration",
-    "links": {
-      "CodeLinks": [
-        {
-          "file": "score/time_slave/src/application/configuration/config_parser.cpp",
-          "line": 124,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__configuration",
-          "full_line": "// req-Id: comp_req__time_slave__configuration",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/application/time_slave.cpp",
-          "line": 41,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__configuration",
-          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        }
-      ],
-      "TestLinks": []
-    }
-  },
-  {
-    "need": "comp_req__time_slave__shutdown",
-    "links": {
-      "CodeLinks": [
-        {
-          "file": "score/time_slave/src/application/main.cpp",
-          "line": 17,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__shutdown",
-          "full_line": "// req-Id: comp_req__time_slave__shutdown",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/application/time_slave.cpp",
-          "line": 119,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__shutdown",
-          "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-          "line": 129,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__shutdown",
-          "full_line": "// req-Id: comp_req__time_slave__shutdown",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
-          "line": 60,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__shutdown",
-          "full_line": "// req-Id: comp_req__time_slave__shutdown",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 136,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__shutdown",
-          "full_line": "// req-Id: comp_req__time_slave__shutdown",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        }
-      ],
-      "TestLinks": []
-    }
-  },
-  {
-    "need": "comp_req__time_slave__startup",
-    "links": {
-      "CodeLinks": [
-        {
-          "file": "score/time_slave/src/application/time_slave.cpp",
-          "line": 41,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__startup",
-          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 71,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__startup",
-          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        }
-      ],
-      "TestLinks": []
-    }
-  },
-  {
-    "need": "comp_req__time_slave__error_reporting",
-    "links": {
-      "CodeLinks": [
-        {
-          "file": "score/time_slave/src/application/time_slave.cpp",
-          "line": 41,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__error_reporting",
-          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 71,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__error_reporting",
-          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 183,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__error_reporting",
-          "full_line": "// req-Id: comp_req__time_slave__error_reporting",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 248,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__error_reporting",
-          "full_line": "// req-Id: comp_req__time_slave__error_reporting",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        }
-      ],
-      "TestLinks": []
-    }
-  },
-  {
-    "need": "comp_req__time_slave__sync_publishing",
-    "links": {
-      "CodeLinks": [
-        {
-          "file": "score/time_slave/src/application/time_slave.cpp",
-          "line": 119,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__sync_publishing",
-          "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 153,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__sync_publishing",
-          "full_line": "// req-Id: comp_req__time_slave__sync_publishing",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 327,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__sync_publishing",
-          "full_line": "// req-Id: comp_req__time_slave__sync_publishing",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        }
-      ],
-      "TestLinks": []
-    }
-  },
-  {
     "need": "comp_req__time_slave__ethernet_address",
     "links": {
       "CodeLinks": [
@@ -408,6 +208,180 @@
     }
   },
   {
+    "need": "comp_req__time_slave__sync_reception",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+          "line": 98,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__sync_reception",
+          "full_line": "// req-Id: comp_req__time_slave__sync_reception",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+          "line": 138,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__sync_reception",
+          "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+          "line": 272,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__sync_reception",
+          "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/qnx/qnx_raw_shim.cpp",
+          "line": 313,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__sync_reception",
+          "full_line": "// req-Id: comp_req__time_slave__sync_reception",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_slave__shutdown",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+          "line": 129,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__shutdown",
+          "full_line": "// req-Id: comp_req__time_slave__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+          "line": 136,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__shutdown",
+          "full_line": "// req-Id: comp_req__time_slave__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/application/main.cpp",
+          "line": 17,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__shutdown",
+          "full_line": "// req-Id: comp_req__time_slave__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/application/time_slave.cpp",
+          "line": 119,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__shutdown",
+          "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+          "line": 60,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__shutdown",
+          "full_line": "// req-Id: comp_req__time_slave__shutdown",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_slave__platform_support",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+          "line": 138,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__platform_support",
+          "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
+          "line": 180,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__platform_support",
+          "full_line": "// req-Id: comp_req__time_slave__platform_support",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
+          "line": 48,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__platform_support",
+          "full_line": "// req-Id: comp_req__time_slave__platform_support",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/qnx/phc_adjuster.cpp",
+          "line": 29,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__platform_support",
+          "full_line": "// req-Id: comp_req__time_slave__platform_support",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+          "line": 71,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__platform_support",
+          "full_line": "// req-Id: comp_req__time_slave__platform_support",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+          "line": 84,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__platform_support",
+          "full_line": "// req-Id: comp_req__time_slave__platform_support",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
     "need": "comp_req__time_slave__followup_processing",
     "links": {
       "CodeLinks": [
@@ -502,40 +476,12 @@
     }
   },
   {
-    "need": "comp_req__time_slave__diagnostics",
-    "links": {
-      "CodeLinks": [
-        {
-          "file": "score/time_slave/src/gptp/instrument/probe.cpp",
-          "line": 33,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__diagnostics",
-          "full_line": "// req-Id: comp_req__time_slave__diagnostics",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/record/recorder.cpp",
-          "line": 38,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__diagnostics",
-          "full_line": "// req-Id: comp_req__time_slave__diagnostics",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        }
-      ],
-      "TestLinks": []
-    }
-  },
-  {
     "need": "comp_req__time_slave__phc_offset",
     "links": {
       "CodeLinks": [
         {
-          "file": "score/time_slave/src/gptp/phc/phc_adjuster.h",
-          "line": 31,
+          "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
+          "line": 66,
           "tag": "// req-Id:",
           "need": "comp_req__time_slave__phc_offset",
           "full_line": "// req-Id: comp_req__time_slave__phc_offset",
@@ -544,8 +490,8 @@
           "url": ""
         },
         {
-          "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
-          "line": 66,
+          "file": "score/time_slave/src/gptp/phc/phc_adjuster.h",
+          "line": 31,
           "tag": "// req-Id:",
           "need": "comp_req__time_slave__phc_offset",
           "full_line": "// req-Id: comp_req__time_slave__phc_offset",
@@ -568,65 +514,25 @@
     }
   },
   {
-    "need": "comp_req__time_slave__platform_support",
+    "need": "comp_req__time_slave__startup",
     "links": {
       "CodeLinks": [
         {
-          "file": "score/time_slave/src/gptp/platform/linux/phc_adjuster.cpp",
-          "line": 48,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__platform_support",
-          "full_line": "// req-Id: comp_req__time_slave__platform_support",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-          "line": 138,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__platform_support",
-          "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-          "line": 180,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__platform_support",
-          "full_line": "// req-Id: comp_req__time_slave__platform_support",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/qnx/phc_adjuster.cpp",
-          "line": 29,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__platform_support",
-          "full_line": "// req-Id: comp_req__time_slave__platform_support",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
+          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
           "line": 71,
           "tag": "// req-Id:",
-          "need": "comp_req__time_slave__platform_support",
-          "full_line": "// req-Id: comp_req__time_slave__platform_support",
+          "need": "comp_req__time_slave__startup",
+          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         },
         {
-          "file": "score/time_slave/src/gptp/platform/qnx/raw_socket.cpp",
-          "line": 84,
+          "file": "score/time_slave/src/application/time_slave.cpp",
+          "line": 41,
           "tag": "// req-Id:",
-          "need": "comp_req__time_slave__platform_support",
-          "full_line": "// req-Id: comp_req__time_slave__platform_support",
+          "need": "comp_req__time_slave__startup",
+          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -636,45 +542,83 @@
     }
   },
   {
-    "need": "comp_req__time_slave__sync_reception",
+    "need": "comp_req__time_slave__error_reporting",
     "links": {
       "CodeLinks": [
         {
-          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-          "line": 98,
+          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+          "line": 71,
           "tag": "// req-Id:",
-          "need": "comp_req__time_slave__sync_reception",
-          "full_line": "// req-Id: comp_req__time_slave__sync_reception",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/linux/raw_socket.cpp",
-          "line": 138,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__sync_reception",
-          "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__platform_support",
-          "repo_name": "local_repo",
-          "hash": "",
-          "url": ""
-        },
-        {
-          "file": "score/time_slave/src/gptp/platform/qnx/qnx_raw_shim.cpp",
-          "line": 313,
-          "tag": "// req-Id:",
-          "need": "comp_req__time_slave__sync_reception",
-          "full_line": "// req-Id: comp_req__time_slave__sync_reception",
+          "need": "comp_req__time_slave__error_reporting",
+          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         },
         {
           "file": "score/time_slave/src/gptp/gptp_engine.cpp",
-          "line": 272,
+          "line": 183,
           "tag": "// req-Id:",
-          "need": "comp_req__time_slave__sync_reception",
-          "full_line": "// req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering",
+          "need": "comp_req__time_slave__error_reporting",
+          "full_line": "// req-Id: comp_req__time_slave__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+          "line": 248,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__error_reporting",
+          "full_line": "// req-Id: comp_req__time_slave__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/application/time_slave.cpp",
+          "line": 41,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__error_reporting",
+          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_slave__sync_publishing",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+          "line": 153,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__sync_publishing",
+          "full_line": "// req-Id: comp_req__time_slave__sync_publishing",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/gptp_engine.cpp",
+          "line": 327,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__sync_publishing",
+          "full_line": "// req-Id: comp_req__time_slave__sync_publishing",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/application/time_slave.cpp",
+          "line": 119,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__sync_publishing",
+          "full_line": "// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -712,15 +656,81 @@
     }
   },
   {
+    "need": "comp_req__time_slave__configuration",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_slave/src/application/configuration/config_parser.cpp",
+          "line": 124,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__configuration",
+          "full_line": "// req-Id: comp_req__time_slave__configuration",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/application/time_slave.cpp",
+          "line": 41,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__configuration",
+          "full_line": "// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
+    "need": "comp_req__time_slave__diagnostics",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time_slave/src/gptp/record/recorder.cpp",
+          "line": 38,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__diagnostics",
+          "full_line": "// req-Id: comp_req__time_slave__diagnostics",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_slave/src/gptp/instrument/probe.cpp",
+          "line": 33,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_slave__diagnostics",
+          "full_line": "// req-Id: comp_req__time_slave__diagnostics",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": []
+    }
+  },
+  {
     "need": "comp_req__time__unified_clock_facade",
     "links": {
       "CodeLinks": [
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 96,
-          "tag": "# req-Id:",
+          "line": 79,
+          "tag": "// req-Id:",
           "need": "comp_req__time__unified_clock_facade",
-          "full_line": "// # req-Id: comp_req__time__unified_clock_facade",
+          "full_line": "// req-Id: comp_req__time__unified_clock_facade",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/clock/src/clock.h",
+          "line": 97,
+          "tag": "// req-Id:",
+          "need": "comp_req__time__unified_clock_facade",
+          "full_line": "// req-Id: comp_req__time__unified_clock_facade",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -735,10 +745,20 @@
       "CodeLinks": [
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 116,
-          "tag": "# req-Id:",
+          "line": 117,
+          "tag": "// req-Id:",
           "need": "comp_req__time__snapshot_with_status",
-          "full_line": "// # req-Id: comp_req__time__snapshot_with_status",
+          "full_line": "// req-Id: comp_req__time__snapshot_with_status",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/clock/src/clock_snapshot.h",
+          "line": 34,
+          "tag": "// req-Id:",
+          "need": "comp_req__time__snapshot_with_status",
+          "full_line": "// req-Id: comp_req__time__snapshot_with_status",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -753,30 +773,30 @@
       "CodeLinks": [
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 154,
-          "tag": "# req-Id:",
+          "line": 155,
+          "tag": "// req-Id:",
           "need": "comp_req__time__explicit_lifecycle",
-          "full_line": "// # req-Id: comp_req__time__explicit_lifecycle",
+          "full_line": "// req-Id: comp_req__time__explicit_lifecycle",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         },
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 165,
-          "tag": "# req-Id:",
+          "line": 166,
+          "tag": "// req-Id:",
           "need": "comp_req__time__explicit_lifecycle",
-          "full_line": "// # req-Id: comp_req__time__explicit_lifecycle",
+          "full_line": "// req-Id: comp_req__time__explicit_lifecycle",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         },
         {
           "file": "score/time/clock/src/clock.h",
-          "line": 181,
-          "tag": "# req-Id:",
+          "line": 182,
+          "tag": "// req-Id:",
           "need": "comp_req__time__explicit_lifecycle",
-          "full_line": "// # req-Id: comp_req__time__explicit_lifecycle",
+          "full_line": "// req-Id: comp_req__time__explicit_lifecycle",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -792,9 +812,50 @@
         {
           "file": "score/time/high_res_steady_time/src/high_res_steady_clock.cpp",
           "line": 21,
-          "tag": "# req-Id:",
+          "tag": "// req-Id:",
           "need": "comp_req__high_res_steady_time__snapshot",
-          "full_line": "// # req-Id: comp_req__high_res_steady_time__snapshot",
+          "full_line": "// req-Id: comp_req__high_res_steady_time__snapshot",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": [
+        {
+          "name": "HighResSteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+          "file": "score/time/high_res_steady_time/src/high_res_steady_clock_adapter_test.cpp",
+          "line": 29,
+          "need": "comp_req__high_res_steady_time__snapshot",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ]
+    }
+  },
+  {
+    "need": "comp_req__time__supported_platforms",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/high_res_steady_time/src/details/qtime/high_res_steady_qclock.cpp",
+          "line": 63,
+          "tag": "// req-Id:",
+          "need": "comp_req__time__supported_platforms",
+          "full_line": "// req-Id: comp_req__time__supported_platforms",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.cpp",
+          "line": 43,
+          "tag": "// req-Id:",
+          "need": "comp_req__time__supported_platforms",
+          "full_line": "// req-Id: comp_req__time__supported_platforms",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -810,15 +871,28 @@
         {
           "file": "score/time/steady_time/src/steady_clock.cpp",
           "line": 21,
-          "tag": "# req-Id:",
+          "tag": "// req-Id:",
           "need": "comp_req__steady_time__snapshot",
-          "full_line": "// # req-Id: comp_req__steady_time__snapshot",
+          "full_line": "// req-Id: comp_req__steady_time__snapshot",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         }
       ],
-      "TestLinks": []
+      "TestLinks": [
+        {
+          "name": "SteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+          "file": "score/time/steady_time/src/steady_clock_adapter_test.cpp",
+          "line": 45,
+          "need": "comp_req__steady_time__snapshot",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ]
     }
   },
   {
@@ -828,33 +902,28 @@
         {
           "file": "score/time/system_time/src/system_clock.cpp",
           "line": 21,
-          "tag": "# req-Id:",
+          "tag": "// req-Id:",
           "need": "comp_req__system_time__snapshot",
-          "full_line": "// # req-Id: comp_req__system_time__snapshot",
+          "full_line": "// req-Id: comp_req__system_time__snapshot",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         }
       ],
-      "TestLinks": []
-    }
-  },
-  {
-    "need": "comp_req__vehicle_time__snapshot",
-    "links": {
-      "CodeLinks": [
+      "TestLinks": [
         {
-          "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-          "line": 44,
-          "tag": "# req-Id:",
-          "need": "comp_req__vehicle_time__snapshot",
-          "full_line": "// # req-Id: comp_req__vehicle_time__snapshot",
+          "name": "SystemClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+          "file": "score/time/system_time/src/system_clock_adapter_test.cpp",
+          "line": 45,
+          "need": "comp_req__system_time__snapshot",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         }
-      ],
-      "TestLinks": []
+      ]
     }
   },
   {
@@ -863,36 +932,136 @@
       "CodeLinks": [
         {
           "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-          "line": 50,
-          "tag": "# req-Id:",
+          "line": 49,
+          "tag": "// req-Id:",
           "need": "comp_req__vehicle_time__lifecycle",
-          "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle",
+          "full_line": "// req-Id: comp_req__vehicle_time__lifecycle",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         },
         {
           "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-          "line": 56,
-          "tag": "# req-Id:",
+          "line": 55,
+          "tag": "// req-Id:",
           "need": "comp_req__vehicle_time__lifecycle",
-          "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle",
+          "full_line": "// req-Id: comp_req__vehicle_time__lifecycle",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         },
         {
           "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-          "line": 62,
-          "tag": "# req-Id:",
+          "line": 61,
+          "tag": "// req-Id:",
           "need": "comp_req__vehicle_time__lifecycle",
-          "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle",
+          "full_line": "// req-Id: comp_req__vehicle_time__lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+          "line": 85,
+          "tag": "// req-Id:",
+          "need": "comp_req__vehicle_time__lifecycle",
+          "full_line": "// req-Id: comp_req__vehicle_time__lifecycle",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+          "line": 123,
+          "tag": "// req-Id:",
+          "need": "comp_req__vehicle_time__lifecycle",
+          "full_line": "// req-Id: comp_req__vehicle_time__lifecycle",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
         }
       ],
-      "TestLinks": []
+      "TestLinks": [
+        {
+          "name": "VehicleClockTest__InitForwardsToBackend",
+          "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+          "line": 104,
+          "need": "comp_req__vehicle_time__lifecycle",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "name": "VehicleClockTest__IsAvailableReturnsTrueWhenBackendReports",
+          "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+          "line": 119,
+          "need": "comp_req__vehicle_time__lifecycle",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "name": "VehicleClockTest__IsAvailableReturnsFalseWhenBackendUnavailable",
+          "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+          "line": 135,
+          "need": "comp_req__vehicle_time__lifecycle",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "name": "VehicleClockTest__WaitUntilAvailableForwardsTokenAndDeadlineToBackend",
+          "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+          "line": 151,
+          "need": "comp_req__vehicle_time__lifecycle",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ]
+    }
+  },
+  {
+    "need": "comp_req__vehicle_time__snapshot",
+    "links": {
+      "CodeLinks": [
+        {
+          "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+          "line": 51,
+          "tag": "// req-Id:",
+          "need": "comp_req__vehicle_time__snapshot",
+          "full_line": "// req-Id: comp_req__vehicle_time__snapshot",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ],
+      "TestLinks": [
+        {
+          "name": "VehicleClockTest__NowReturnsSynchronizedStatusAndTimepoint",
+          "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+          "line": 53,
+          "need": "comp_req__vehicle_time__snapshot",
+          "verify_type": "partially",
+          "result": "passed",
+          "result_text": "",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        }
+      ]
     }
   }
 ]
