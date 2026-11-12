@@ -389,6 +389,26 @@ TEST_F(GenericTimebaseHandlerTest, DoesNotStartMachinesWhenStoppedDuringInitiali
     handler.RunOnce();
 
     EXPECT_EQ(events, (std::vector<std::string>{"stop:source"}));
+    EXPECT_FALSE(handler.IsFailed());
+}
+
+TEST_F(GenericTimebaseHandlerTest, DoesNotReportFailureWhenStopRequestedBeforePollingFailedInitialization)
+{
+    std::vector<std::string> events;
+    TestHandler handler{"stop_then_poll"};
+    handler.Add(std::make_shared<FakeSource>("source", events, false), kInitTimeout);
+    handler.Initialize();
+    handler.Start(stop_token_);
+    stop_source_.request_stop();
+
+    // The job runner reports kFailed for a cancelled initialization; poll until it does.
+    for (int i = 0; i < 200 && !events.size(); ++i)
+    {
+        handler.RunOnce();
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    EXPECT_FALSE(handler.IsFailed());
 }
 
 TEST_F(GenericTimebaseHandlerTest, DeliversDataOfPublisherToSubscribersOfTheSameTopic)
@@ -548,6 +568,7 @@ TEST_F(GenericTimebaseHandlerTest, DoesNotStartProactiveMachinesWhenInitializati
         },
         std::chrono::seconds{2}));
     EXPECT_EQ(events, (std::vector<std::string>{"stop:source"}));
+    EXPECT_TRUE(handler.IsFailed());
 
     const auto init_calls = source->GetInitCallCount();
     handler.RunOnce();

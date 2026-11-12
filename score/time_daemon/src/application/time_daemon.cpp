@@ -59,14 +59,24 @@ std::int32_t TimeDaemon::Run(const score::cpp::stop_token& token)
 
     StartAllTimebases(token);
 
-    while (!token.stop_requested())
+    bool failed{false};
+    while (!token.stop_requested() && !failed)
     {
         IterateAllTimebases();
-        score::concurrency::wait_for(token, std::chrono::milliseconds(100));
+        failed = AnyTimebaseFailed();
+        if (!failed)
+        {
+            score::concurrency::wait_for(token, std::chrono::milliseconds(100));
+        }
     }
 
     StopAllTimebases();
 
+    if (failed)
+    {
+        score::mw::log::LogError(kAppContext) << "Run() finished: timebase initialization failed";
+        return EXIT_FAILURE;
+    }
     score::mw::log::LogInfo(kAppContext) << "Run() finished";
     return EXIT_SUCCESS;
 }
@@ -93,6 +103,13 @@ void TimeDaemon::IterateAllTimebases()
     {
         handler->RunOnce();
     }
+}
+
+bool TimeDaemon::AnyTimebaseFailed() const
+{
+    return std::any_of(timebase_handlers_.cbegin(), timebase_handlers_.cend(), [](const auto& handler) {
+        return handler->IsFailed();
+    });
 }
 
 void TimeDaemon::StopAllTimebases()
