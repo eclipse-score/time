@@ -373,7 +373,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     resp.ptpHdr.sequenceId = htons(req.ptpHdr.sequenceId);
     resp.ptpHdr.controlField = static_cast<std::uint8_t>(ControlField::kOther);
     resp.ptpHdr.logMessageInterval = 0x7F;
-    resp.pdelay_resp.requestReceiptTimestamp = TmvToTimestamp(t2);
+    resp.pdelay_resp.requestReceiptTimestamp = TimestampToNetwork(TmvToTimestamp(t2));
     resp.pdelay_resp.requestingPortIdentity.clockIdentity = req.ptpHdr.sourcePortIdentity.clockIdentity;
     resp.pdelay_resp.requestingPortIdentity.portNumber = htons(req.ptpHdr.sourcePortIdentity.portNumber);
 
@@ -401,7 +401,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     fup.ptpHdr.sequenceId = htons(req.ptpHdr.sequenceId);
     fup.ptpHdr.controlField = static_cast<std::uint8_t>(ControlField::kOther);
     fup.ptpHdr.logMessageInterval = 0x7F;
-    fup.pdelay_resp_fup.responseOriginReceiptTimestamp = TmvToTimestamp(t3);
+    fup.pdelay_resp_fup.responseOriginReceiptTimestamp = TimestampToNetwork(TmvToTimestamp(t3));
     fup.pdelay_resp_fup.requestingPortIdentity.clockIdentity = req.ptpHdr.sourcePortIdentity.clockIdentity;
     fup.pdelay_resp_fup.requestingPortIdentity.portNumber = htons(req.ptpHdr.sourcePortIdentity.portNumber);
 

@@ -239,6 +239,16 @@ inline Timestamp TmvToTimestamp(const TmvT& x) noexcept
     return t;
 }
 
+/// @brief Convert a host-order Timestamp to network (big-endian) byte order for transmission.
+inline Timestamp TimestampToNetwork(const Timestamp& ts) noexcept
+{
+    Timestamp t{};
+    t.seconds_msb = htons(ts.seconds_msb);
+    t.seconds_lsb = htonl(ts.seconds_lsb);
+    t.nanoseconds = htonl(ts.nanoseconds);
+    return t;
+}
+
 /// @brief Convert PTP correctionField (scaled nanoseconds, 16.48 fixed-point) to TmvT.
 inline TmvT CorrectionToTmv(std::int64_t corr) noexcept
 {
