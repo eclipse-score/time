@@ -32,6 +32,7 @@ cc_library(
     visibility = [
         "//score/time_daemon:__subpackages__",
         "//score/time_slave:__subpackages__",
+        "//score/ts_client:__pkg__",
     ],
     deps = [
         "@score_communication//score/memory/shared",
