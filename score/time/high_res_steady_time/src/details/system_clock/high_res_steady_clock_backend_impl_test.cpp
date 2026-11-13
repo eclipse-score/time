@@ -12,6 +12,9 @@
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.h"
 
+#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
+
 #include <gtest/gtest.h>
 #include <time.h>
 #include <chrono>
@@ -81,6 +84,20 @@ TEST_F(HighResSteadyClockBackendImplTest, NowIsBasedOnClockMonotonic)
     EXPECT_LE(now, after);
     // Realtime is ~decades since 1970, monotonic is uptime; they can never be this close.
     EXPECT_GT(ReadNs(CLOCK_REALTIME) - now, std::int64_t{365} * 24 * 3600 * 1'000'000'000);
+}
+
+TEST_F(HighResSteadyClockBackendImplTest, CreateBackendReturnsHighResSteadyClockBackendImpl)
+{
+    RecordProperty("Description",
+                   "Verifies that detail::CreateBackend<HighResSteadyTime>() returns a HighResSteadyClockBackendImpl.");
+    RecordProperty("Verifies", "score::time::detail::CreateBackend<HighResSteadyTime>()");
+    RecordProperty("TestType", "Interface test");
+    RecordProperty("ASIL", "QM");
+    RecordProperty("PartiallyVerifies", "comp_req__time__supported_platforms");
+
+    auto backend = detail::CreateBackend<HighResSteadyTime>();
+    ASSERT_NE(backend, nullptr);
+    EXPECT_NE(dynamic_cast<HighResSteadyClockBackendImpl*>(backend.get()), nullptr);
 }
 
 }  // namespace test

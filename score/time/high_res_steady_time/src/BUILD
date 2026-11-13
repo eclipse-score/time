@@ -61,11 +61,9 @@ cc_library(
     features = COMPILER_WARNING_FEATURES,
     tags = ["FFI"],
     visibility = ["//visibility:public"],
-    deps = select({
-        "@platforms//os:qnx": ["//score/time/high_res_steady_time/src/details/qtime:qclock"],
-        "//conditions:default": ["//score/time/high_res_steady_time/src/details/system_clock"],
-    }) + [
+    deps = [
         ":high_res_steady_clock",
+        "//score/time/high_res_steady_time/src/details/system_clock",
     ],
 )
 
