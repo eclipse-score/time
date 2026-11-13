@@ -13,8 +13,10 @@
 #include "score/time_daemon/src/application/timebase_handlers/timebase_handler_factory.h"
 
 #include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/factory.h"
+#include "score/time_daemon/src/application/timebase_handlers/timebase_handler.h"
 
 #include <memory>
+#include <vector>
 
 namespace score::td
 {

@@ -13,6 +13,7 @@
 #include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/factory.h"
 
 #include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/score_vehicle_timebase_handler.h"
+#include "score/time_daemon/src/application/timebase_handlers/timebase_handler.h"
 
 #include <memory>
 

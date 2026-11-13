@@ -17,9 +17,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// \brief Creates a new Vehicle Time timebase handler
@@ -27,7 +25,6 @@ namespace td
 /// \return std::unique_ptr<TimebaseHandler> New Vehicle Time timebase handler
 std::unique_ptr<TimebaseHandler> CreateVehicleTimebase();
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLERS_SCORE_VEHICLE_TIME_FACTORY_H
