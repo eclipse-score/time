@@ -7,195 +7,6 @@
     },
     "needs": [
       {
-        "need": "comp_req__ts_client__shm_validation",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_channel.h",
-              "line": 32,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__shm_validation",
-              "full_line": "// req-Id: comp_req__ts_client__shm_validation"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 34,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__shm_validation",
-              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__cache_optimization",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_channel.h",
-              "line": 45,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__cache_optimization",
-              "full_line": "// req-Id: comp_req__ts_client__cache_optimization, comp_req__ts_client__seqlock_protocol"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__seqlock_protocol",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_channel.h",
-              "line": 45,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__seqlock_protocol",
-              "full_line": "// req-Id: comp_req__ts_client__cache_optimization, comp_req__ts_client__seqlock_protocol"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 57,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__seqlock_protocol",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 25,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__seqlock_protocol",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 68,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__seqlock_protocol",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__sync_status_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 25,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_status_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_status_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 57,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_status_data",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 68,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_status_data",
-              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__sync_fup_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 36,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_fup_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 58,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_fup_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 69,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__sync_fup_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__pdelay_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 51,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__pdelay_data",
-              "full_line": "// req-Id: comp_req__ts_client__pdelay_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 58,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__pdelay_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 69,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__pdelay_data",
-              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__ts_client__time_correlation_data",
-        "links": {
-          "CodeLinks": [
-            {
-              "file": "score/ts_client/src/gptp_ipc_data.h",
-              "line": 72,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__time_correlation_data",
-              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
-              "line": 59,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__time_correlation_data",
-              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
-            },
-            {
-              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 70,
-              "tag": "// req-Id:",
-              "need": "comp_req__ts_client__time_correlation_data",
-              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
-            }
-          ],
-          "TestLinks": []
-        }
-      },
-      {
         "need": "comp_req__ts_client__shared_memory_mgmt",
         "links": {
           "CodeLinks": [
@@ -283,6 +94,180 @@
         }
       },
       {
+        "need": "comp_req__ts_client__seqlock_protocol",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 57,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 25,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 68,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_channel.h",
+              "line": 45,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__seqlock_protocol",
+              "full_line": "// req-Id: comp_req__ts_client__cache_optimization, comp_req__ts_client__seqlock_protocol"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__sync_status_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 57,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_status_data",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 68,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_status_data",
+              "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 25,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_status_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_status_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__sync_fup_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 58,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_fup_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 69,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_fup_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 36,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__sync_fup_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__pdelay_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 58,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__pdelay_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 69,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__pdelay_data",
+              "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 51,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__pdelay_data",
+              "full_line": "// req-Id: comp_req__ts_client__pdelay_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__time_correlation_data",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_publisher.cpp",
+              "line": 59,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__time_correlation_data",
+              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 70,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__time_correlation_data",
+              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_data.h",
+              "line": 72,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__time_correlation_data",
+              "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
+        "need": "comp_req__ts_client__shm_validation",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 34,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shm_validation",
+              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_channel.h",
+              "line": 32,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shm_validation",
+              "full_line": "// req-Id: comp_req__ts_client__shm_validation"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
         "need": "comp_req__ts_client__receiver_multi_reader",
         "links": {
           "CodeLinks": [
@@ -313,15 +298,37 @@
         }
       },
       {
+        "need": "comp_req__ts_client__cache_optimization",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/ts_client/src/gptp_ipc_channel.h",
+              "line": 45,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__cache_optimization",
+              "full_line": "// req-Id: comp_req__ts_client__cache_optimization, comp_req__ts_client__seqlock_protocol"
+            }
+          ],
+          "TestLinks": []
+        }
+      },
+      {
         "need": "comp_req__time__unified_clock_facade",
         "links": {
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 96,
-              "tag": "# req-Id:",
+              "line": 79,
+              "tag": "// req-Id:",
               "need": "comp_req__time__unified_clock_facade",
-              "full_line": "// # req-Id: comp_req__time__unified_clock_facade"
+              "full_line": "// req-Id: comp_req__time__unified_clock_facade"
+            },
+            {
+              "file": "score/time/clock/src/clock.h",
+              "line": 97,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__unified_clock_facade",
+              "full_line": "// req-Id: comp_req__time__unified_clock_facade"
             }
           ],
           "TestLinks": []
@@ -333,10 +340,17 @@
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 116,
-              "tag": "# req-Id:",
+              "line": 117,
+              "tag": "// req-Id:",
               "need": "comp_req__time__snapshot_with_status",
-              "full_line": "// # req-Id: comp_req__time__snapshot_with_status"
+              "full_line": "// req-Id: comp_req__time__snapshot_with_status"
+            },
+            {
+              "file": "score/time/clock/src/clock_snapshot.h",
+              "line": 34,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__snapshot_with_status",
+              "full_line": "// req-Id: comp_req__time__snapshot_with_status"
             }
           ],
           "TestLinks": []
@@ -348,24 +362,24 @@
           "CodeLinks": [
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 154,
-              "tag": "# req-Id:",
+              "line": 155,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             },
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 165,
-              "tag": "# req-Id:",
+              "line": 166,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             },
             {
               "file": "score/time/clock/src/clock.h",
-              "line": 181,
-              "tag": "# req-Id:",
+              "line": 182,
+              "tag": "// req-Id:",
               "need": "comp_req__time__explicit_lifecycle",
-              "full_line": "// # req-Id: comp_req__time__explicit_lifecycle"
+              "full_line": "// req-Id: comp_req__time__explicit_lifecycle"
             }
           ],
           "TestLinks": []
@@ -378,9 +392,41 @@
             {
               "file": "score/time/high_res_steady_time/src/high_res_steady_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__high_res_steady_time__snapshot",
-              "full_line": "// # req-Id: comp_req__high_res_steady_time__snapshot"
+              "full_line": "// req-Id: comp_req__high_res_steady_time__snapshot"
+            }
+          ],
+          "TestLinks": [
+            {
+              "name": "HighResSteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+              "file": "score/time/high_res_steady_time/src/high_res_steady_clock_adapter_test.cpp",
+              "line": 29,
+              "need": "comp_req__high_res_steady_time__snapshot",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
+            }
+          ]
+        }
+      },
+      {
+        "need": "comp_req__time__supported_platforms",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/high_res_steady_time/src/details/qtime/high_res_steady_qclock.cpp",
+              "line": 63,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__supported_platforms",
+              "full_line": "// req-Id: comp_req__time__supported_platforms"
+            },
+            {
+              "file": "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.cpp",
+              "line": 43,
+              "tag": "// req-Id:",
+              "need": "comp_req__time__supported_platforms",
+              "full_line": "// req-Id: comp_req__time__supported_platforms"
             }
           ],
           "TestLinks": []
@@ -393,12 +439,22 @@
             {
               "file": "score/time/steady_time/src/steady_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__steady_time__snapshot",
-              "full_line": "// # req-Id: comp_req__steady_time__snapshot"
+              "full_line": "// req-Id: comp_req__steady_time__snapshot"
             }
           ],
-          "TestLinks": []
+          "TestLinks": [
+            {
+              "name": "SteadyClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+              "file": "score/time/steady_time/src/steady_clock_adapter_test.cpp",
+              "line": 45,
+              "need": "comp_req__steady_time__snapshot",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
+            }
+          ]
         }
       },
       {
@@ -408,27 +464,22 @@
             {
               "file": "score/time/system_time/src/system_clock.cpp",
               "line": 21,
-              "tag": "# req-Id:",
+              "tag": "// req-Id:",
               "need": "comp_req__system_time__snapshot",
-              "full_line": "// # req-Id: comp_req__system_time__snapshot"
+              "full_line": "// req-Id: comp_req__system_time__snapshot"
             }
           ],
-          "TestLinks": []
-        }
-      },
-      {
-        "need": "comp_req__vehicle_time__snapshot",
-        "links": {
-          "CodeLinks": [
+          "TestLinks": [
             {
-              "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 44,
-              "tag": "# req-Id:",
-              "need": "comp_req__vehicle_time__snapshot",
-              "full_line": "// # req-Id: comp_req__vehicle_time__snapshot"
+              "name": "SystemClockTest__NowReturnsTimepointSuitableForDurationArithmetic",
+              "file": "score/time/system_time/src/system_clock_adapter_test.cpp",
+              "line": 45,
+              "need": "comp_req__system_time__snapshot",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
             }
-          ],
-          "TestLinks": []
+          ]
         }
       },
       {
@@ -437,27 +488,103 @@
           "CodeLinks": [
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 50,
-              "tag": "# req-Id:",
+              "line": 49,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 56,
-              "tag": "# req-Id:",
+              "line": 55,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
             },
             {
               "file": "score/time/vehicle_time/src/vehicle_clock.cpp",
-              "line": 62,
-              "tag": "# req-Id:",
+              "line": 61,
+              "tag": "// req-Id:",
               "need": "comp_req__vehicle_time__lifecycle",
-              "full_line": "// # req-Id: comp_req__vehicle_time__lifecycle"
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 85,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
+            },
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 123,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__lifecycle",
+              "full_line": "// req-Id: comp_req__vehicle_time__lifecycle"
             }
           ],
-          "TestLinks": []
+          "TestLinks": [
+            {
+              "name": "VehicleClockTest__InitForwardsToBackend",
+              "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+              "line": 104,
+              "need": "comp_req__vehicle_time__lifecycle",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
+            },
+            {
+              "name": "VehicleClockTest__IsAvailableReturnsTrueWhenBackendReports",
+              "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+              "line": 119,
+              "need": "comp_req__vehicle_time__lifecycle",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
+            },
+            {
+              "name": "VehicleClockTest__IsAvailableReturnsFalseWhenBackendUnavailable",
+              "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+              "line": 135,
+              "need": "comp_req__vehicle_time__lifecycle",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
+            },
+            {
+              "name": "VehicleClockTest__WaitUntilAvailableForwardsTokenAndDeadlineToBackend",
+              "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+              "line": 151,
+              "need": "comp_req__vehicle_time__lifecycle",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
+            }
+          ]
+        }
+      },
+      {
+        "need": "comp_req__vehicle_time__snapshot",
+        "links": {
+          "CodeLinks": [
+            {
+              "file": "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.cpp",
+              "line": 51,
+              "tag": "// req-Id:",
+              "need": "comp_req__vehicle_time__snapshot",
+              "full_line": "// req-Id: comp_req__vehicle_time__snapshot"
+            }
+          ],
+          "TestLinks": [
+            {
+              "name": "VehicleClockTest__NowReturnsSynchronizedStatusAndTimepoint",
+              "file": "score/time/vehicle_time/src/vehicle_clock_test.cpp",
+              "line": 53,
+              "need": "comp_req__vehicle_time__snapshot",
+              "verify_type": "partially",
+              "result": "passed",
+              "result_text": ""
+            }
+          ]
         }
       }
     ]
