@@ -72,6 +72,7 @@ bool FrameCodec::ParseEthernetHeader(const std::uint8_t* frame, int frame_len, i
     return true;
 }
 
+// req-Id: comp_req__time_slave__ethernet_address
 bool FrameCodec::AddEthernetHeader(std::uint8_t* buf,
                                    unsigned int& buf_len,
                                    const std::array<std::uint8_t, kMacAddrLen>& src_mac,

@@ -16,6 +16,12 @@ load("@score_docs_as_code//:docs.bzl", "docs_bundle")
 
 docs_bundle(
     name = "docs_bundle",
+    code_targets = [
+        ":time_slave",
+        "//score/time_slave/src/gptp/instrument:probe",
+        "//score/time_slave/src/gptp/platform/qnx:phc_adjuster_src",
+        "//score/time_slave/src/gptp/platform/qnx:raw_socket_src",
+    ],
     source_dir = "docs",
     visibility = ["//visibility:public"],
 )

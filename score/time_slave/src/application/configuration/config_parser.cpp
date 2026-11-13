@@ -121,6 +121,7 @@ void ParseQnxConfig(const Object& obj, TimeSlaveConfig::QnxSettings& qnx)
 
 }  // namespace
 
+// req-Id: comp_req__time_slave__configuration
 TimeSlaveConfig ParseConfig(const std::string& path)
 {
     const score::json::JsonParser parser;

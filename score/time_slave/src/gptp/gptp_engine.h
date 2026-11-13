@@ -41,6 +41,7 @@ namespace details
 /// @brief All configurable parameters for the gPTP engine.
 ///
 /// Platform-specific defaults apply for QNX (@c emac0) and Linux (@c /dev/ptp0).
+// req-Id: comp_req__time_slave__pdelay_req, comp_req__time_slave__domain_filtering
 struct GptpEngineOptions
 {
     std::string iface_name = "emac0";                       ///< Network interface for gPTP
