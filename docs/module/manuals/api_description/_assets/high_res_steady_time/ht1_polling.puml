@@ -56,26 +56,17 @@ activate clock
 clock -> backend : Now()
 activate backend
 
-alt QNX
-    backend -> os : ClockCycles()
-    activate os
-    note right of os
-        reads hardware performance counter
-        (raw CPU cycle count)
-    end note
-    os --> backend : cycle_count (uint64_t)
-    deactivate os
-else Linux
-    backend -> os : high_resolution_clock::now()
-    activate os
-    note right of os
-        delegates to CLOCK_MONOTONIC
-    end note
-    os --> backend : time_point
-    deactivate os
-end
+backend -> os : clock_gettime(CLOCK_MONOTONIC)
+activate os
+note right of os
+    same clock on QNX and Linux;
+    shared with the time slave's
+    Sync frame stamps (local_time)
+end note
+os --> backend : timespec
+deactivate os
 
-backend -> backend : cast to HighResSteadyTime::Timepoint
+backend -> backend : convert to HighResSteadyTime::Timepoint
 backend --> clock : ClockSnapshot{timepoint, NoStatus}
 deactivate backend
 clock --> app : ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>

@@ -26,8 +26,6 @@ cc_library(
     name = "qclock",
     srcs = [
         "high_res_steady_qclock.cpp",
-        "tick_provider.cpp",
-        "tick_provider.h",
     ],
     hdrs = [
         "high_res_steady_qclock.h",
@@ -39,7 +37,6 @@ cc_library(
     deps = [
         "//score/time/clock:clock_core",
         "//score/time/high_res_steady_time/src:high_res_steady_clock",
-        "@score_baselibs//score/os/qnx:neutrino",
     ],
 )
 
@@ -50,33 +47,12 @@ cc_test(
         "high_res_steady_qclock.cpp",
         "high_res_steady_qclock.h",
         "high_res_steady_qclock_test.cpp",
-        "tick_provider.h",
-        "tick_provider_mock.cpp",
-        "tick_provider_mock.h",
     ],
     tags = ["unit"],
     target_compatible_with = ["@platforms//os:qnx"],
     deps = [
         "//score/time/clock:clock_core",
         "//score/time/high_res_steady_time/src:high_res_steady_clock",
-        "@googletest//:gtest",
-        "@googletest//:gtest_main",
-        "@score_baselibs//score/mw/log:console_only_backend",
-        "@score_baselibs//score/os/mocklib/qnx:neutrino_qnx_mock",
-    ],
-)
-
-cc_test(
-    name = "tick_provider_test",
-    testonly = True,
-    srcs = [
-        "tick_provider.cpp",
-        "tick_provider.h",
-        "tick_provider_test.cpp",
-    ],
-    tags = ["unit"],
-    target_compatible_with = ["@platforms//os:qnx"],
-    deps = [
         "@googletest//:gtest",
         "@googletest//:gtest_main",
     ],

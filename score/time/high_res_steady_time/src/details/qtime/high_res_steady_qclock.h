@@ -16,8 +16,6 @@
 #include "score/time/clock/src/no_status.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
 
-#include <cstdint>
-
 namespace score
 {
 namespace time
@@ -29,8 +27,8 @@ namespace qtime
 
 /// @brief QNX production backend for HighResSteadyTime.
 ///
-/// Reads the current time from the QNX hardware clock via @c Neutrino::ClockCycles()
-/// and converts the raw cycle count to nanoseconds using @c GetClockCyclesPerSec().
+/// Reads @c CLOCK_MONOTONIC, the same clock the time slave uses to stamp Sync frames
+/// (@c local_time). @c Neutrino::ClockCycles() is deliberately not used: it has a different epoch.
 class HighResSteadyQClock final : public HighResSteadyClockBackend
 {
   public:
@@ -41,15 +39,9 @@ class HighResSteadyQClock final : public HighResSteadyClockBackend
     HighResSteadyQClock& operator=(HighResSteadyQClock&&) = delete;
     ~HighResSteadyQClock() noexcept override = default;
 
-    /// @brief Returns the current HIRS snapshot from the QNX hardware clock.
+    /// @brief Returns the current HIRS snapshot from @c CLOCK_MONOTONIC.
     /// @return The current HIRS clock snapshot.
     ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override;
-
-  private:
-    /// @brief Converts raw hardware clock cycles to nanoseconds.
-    /// @param clock_cycles  The raw cycle count from @c Neutrino::ClockCycles().
-    /// @return The equivalent duration in nanoseconds.
-    std::chrono::nanoseconds ClockCyclesToNanoseconds(std::uint64_t clock_cycles) const noexcept;
 };
 
 }  // namespace qtime
