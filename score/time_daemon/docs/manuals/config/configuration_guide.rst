@@ -15,12 +15,12 @@
 .. _time_daemon_configuration:
 
 TimeDaemon Configuration
-=========================
+========================
 
 The ``TimeDaemon`` process currently operates **without any external configuration**. It relies on default, built-in settings for IPC communication.
 
 Shared Memory Configuration
-----------------------------
+---------------------------
 
 The daemon reads from the shared memory segment published by ``TimeSlave``:
 

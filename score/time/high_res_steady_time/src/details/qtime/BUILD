@@ -13,6 +13,15 @@
 
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
+# Source files carrying `// req-Id:` markers, exposed to
+# //score/time:docs_bundle via its code_targets attribute.
+# Plain filegroup: qclock itself is QNX-only and not part of the host-config scan.
+filegroup(
+    name = "requirement_marked_sources",
+    srcs = ["high_res_steady_qclock.cpp"],
+    visibility = ["//score/time:__pkg__"],
+)
+
 cc_library(
     name = "qclock",
     srcs = [

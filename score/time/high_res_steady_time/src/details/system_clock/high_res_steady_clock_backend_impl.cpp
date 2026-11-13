@@ -40,6 +40,7 @@ ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> HighResSteadyClockBackendI
 }  // namespace sys_time
 }  // namespace high_res_steady_time
 
+// req-Id: comp_req__time__supported_platforms
 template <>
 std::shared_ptr<HighResSteadyClockBackend> detail::CreateBackend<HighResSteadyTime>()
 {

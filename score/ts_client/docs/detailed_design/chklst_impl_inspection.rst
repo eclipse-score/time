@@ -13,12 +13,13 @@
    # *******************************************************************************
 
 .. document:: Time Sync Client Implementation Inspection Checklist
-  :id: doc__ts_client_impl_inspection
+  :id: doc__time_sync_client_impl_inspection
   :status: draft
   :version: 1
   :safety: ASIL_B
   :security: NO
   :realizes: wp__sw_implementation_inspection
+  :belongs_to: comp__ts_client
   :tags: ts_client
 
 .. note::

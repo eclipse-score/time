@@ -60,7 +60,12 @@ class RealOsSyscalls final : public OsSyscalls
     }
     int ioctl_call(int fd, unsigned long req, void* arg) noexcept override
     {
+#ifdef __QNXNTO__
+        // QNX declares ioctl(int, int, ...); glibc uses unsigned long for the request.
+        return ::ioctl(fd, static_cast<int>(req), arg);
+#else
         return ::ioctl(fd, req, arg);
+#endif
     }
     int bind_call(int fd, const ::sockaddr* a, ::socklen_t l) noexcept override
     {

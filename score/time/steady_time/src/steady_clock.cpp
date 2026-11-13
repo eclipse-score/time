@@ -18,7 +18,7 @@ namespace score
 namespace time
 {
 
-// # req-Id: comp_req__steady_time__snapshot
+// req-Id: comp_req__steady_time__snapshot
 ClockTraits<std::chrono::steady_clock>::Snapshot ClockTraits<std::chrono::steady_clock>::CallNow(
     const Backend& impl) noexcept
 {

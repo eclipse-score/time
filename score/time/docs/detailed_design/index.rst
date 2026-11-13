@@ -24,6 +24,7 @@ Detailed Design
    :safety: ASIL_B
    :security: NO
    :realizes: wp__sw_implementation
+   :belongs_to: comp__time
    :tags: time, detailed_design
 
 Description
@@ -145,7 +146,7 @@ Design Decisions
 ----------------
 
 Single Entry Point — No Factory Classes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Classical time APIs expose a factory or manager object that clients instantiate and
 configure before reading time (e.g. ``TimeBaseManager tm; tm.GetCurrentTime(kVehicleBase)``).
@@ -154,7 +155,7 @@ sole entry point, and the production backend is chosen at **link time** by the B
 alias target.
 
 Compile-Time Domain Selection Over Runtime Integer Selector
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ``score::time`` addresses the same problem domain as time-base management modules found
 in automotive middleware stacks: reading a time snapshot, inspecting synchronization
@@ -178,7 +179,7 @@ value type. The ``*_mock.h`` headers are the only public headers permitted to in
 ``details/`` internals.
 
 ``ClockSnapshot`` — Immutable Composite Result
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Classical time APIs return a raw timestamp and require a separate call to retrieve the
 synchronization status, or expose a struct with public mutable data members and
@@ -213,7 +214,7 @@ The ``SubscriptionHook<Tag, EventType>`` specialisation bridges to the named vir
 on the backend interface — which must remain non-template (C++ forbids virtual templates).
 
 Extending with a New Clock Domain
-----------------------------------
+---------------------------------
 
 Adding a new time domain (e.g. ``SdatTime``) requires only new files — no existing file is modified:
 
