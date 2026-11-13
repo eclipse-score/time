@@ -43,7 +43,7 @@ This component implements a time synchronization daemon that receives time data 
 Specification
 =============
 
-The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.
+The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications, most notably the time component (:need:`comp__time`), which reads the provided time data via the ``svt_receiver`` interface. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.
 
 The component operates as a continuous loop with the following stages:
 
@@ -54,23 +54,20 @@ The component operates as a continuous loop with the following stages:
    * Timeout detection (no new time sync data within configured span of time)
    * Time jump detection (received master timestamp deviates from its expected value by more than the configured threshold)
 
-3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface at a fixed interval
+3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface
 
 Key Behaviors
 -------------
 
 **Startup Stabilization**: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.
 
-**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues publishing with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
+**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
 
-**Multi-Client Support**: Multiple client applications can concurrently read published time data.
+**Start Order Independence**: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon continues its own startup and retries establishing the synchronization channel until it succeeds or the startup timeout expires.
+
+**Multi-Client Support**: Multiple client applications can concurrently read the provided time data.
 
 **Platform Support**: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.
-
-Assumptions of Use
-------------------
-
-The gPTP shared memory must be available and initialized before synchronized time data published by time_daemon is relied upon. Otherwise shared memory access failures or stale data may occur.
 
 Footnotes
 =========
