@@ -13,9 +13,7 @@
 #ifndef SCORE_TIME_CLOCK_SRC_SUBSCRIPTION_HOOK_H
 #define SCORE_TIME_CLOCK_SRC_SUBSCRIPTION_HOOK_H
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief SFINAE gate for @c Clock<Tag>::Subscribe<EventType>() and @c Unsubscribe<EventType>().
@@ -34,7 +32,6 @@ namespace time
 template <typename Tag, typename EventType>
 struct SubscriptionHook;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_SUBSCRIPTION_HOOK_H

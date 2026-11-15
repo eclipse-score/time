@@ -25,9 +25,7 @@
 #include <memory>
 #include <mutex>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 // Forward declarations for test-only helpers. Placed in their own sub-namespace
@@ -226,7 +224,6 @@ class Clock
     inline static std::shared_ptr<Backend> instance_override_{};
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_CLOCK_H

@@ -12,19 +12,19 @@
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.h"
 
+#include "score/time/clock/src/clock.h"
+#include "score/time/clock/src/clock_snapshot.h"
+#include "score/time/clock/src/no_status.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 #include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
 #include <chrono>
 #include <memory>
 
-namespace score
+namespace score::time
 {
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace sys_time
+
+namespace high_res_steady_time::sys_time
 {
 
 HighResSteadyClockBackendImpl::HighResSteadyClockBackendImpl() noexcept = default;
@@ -33,12 +33,11 @@ HighResSteadyClockBackendImpl::~HighResSteadyClockBackendImpl() noexcept = defau
 ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> HighResSteadyClockBackendImpl::Now() const noexcept
 {
     const auto raw = std::chrono::high_resolution_clock::now().time_since_epoch();
-    const HighResSteadyTime::Timepoint tp{std::chrono::duration_cast<HighResSteadyTime::Duration>(raw)};
-    return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{tp, NoStatus{}};
+    const HighResSteadyTime::Timepoint time_point{std::chrono::duration_cast<HighResSteadyTime::Duration>(raw)};
+    return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{time_point, NoStatus{}};
 }
 
-}  // namespace sys_time
-}  // namespace high_res_steady_time
+}  // namespace high_res_steady_time::sys_time
 
 // req-Id: comp_req__time__supported_platforms
 template <>
@@ -47,5 +46,4 @@ std::shared_ptr<HighResSteadyClockBackend> detail::CreateBackend<HighResSteadyTi
     return std::make_shared<high_res_steady_time::sys_time::HighResSteadyClockBackendImpl>();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

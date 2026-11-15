@@ -12,13 +12,7 @@
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/details/qtime/tick_provider_mock.h"
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
+namespace score::time::high_res_steady_time::qtime
 {
 
 // GetClockCyclesPerSec() routes to the mock when the mock is active.
@@ -30,7 +24,4 @@ std::uint64_t GetClockCyclesPerSec()
 std::unique_ptr<TickProviderMock> TickProviderMock::mock_instance_{};
 std::mutex TickProviderMock::mutex_{};
 
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime

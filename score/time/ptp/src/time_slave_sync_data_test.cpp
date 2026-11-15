@@ -18,9 +18,7 @@
 #include <cstdint>
 #include <sstream>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 namespace
 {
@@ -145,5 +143,4 @@ TEST(TimeSlaveSyncDataTest, NotEqualsWhenAnyFieldDiffers)
 }
 
 }  // namespace
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

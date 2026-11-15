@@ -20,22 +20,24 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Abstract backend interface for the steady-clock domain.
 class SteadyClockBackend
 {
   public:
+    SteadyClockBackend() noexcept = default;
     virtual ~SteadyClockBackend() noexcept = default;
+    SteadyClockBackend(const SteadyClockBackend&) = delete;
+    SteadyClockBackend& operator=(const SteadyClockBackend&) = delete;
+    SteadyClockBackend(SteadyClockBackend&&) = delete;
+    SteadyClockBackend& operator=(SteadyClockBackend&&) = delete;
 
     /// @brief Returns the current steady-clock snapshot.
-    virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept = 0;
+    [[nodiscard]] virtual ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept = 0;
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_STEADY_TIME_SRC_STEADY_CLOCK_BACKEND_H

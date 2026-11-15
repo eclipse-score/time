@@ -16,9 +16,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Immutable snapshot of a clock reading at one instant, bundled with its quality metadata.
@@ -77,7 +75,6 @@ class ClockSnapshot
     StatusT status_{};
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_CLOCK_SNAPSHOT_H

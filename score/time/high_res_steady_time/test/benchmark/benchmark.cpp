@@ -14,10 +14,10 @@
 
 #include <benchmark/benchmark.h>
 
-namespace score
+namespace score::time
 {
-namespace time
-{
+
+constexpr int kMaxThreads{16};
 
 class HighResSteadyClockBenchmarkFixture : public benchmark::Fixture
 {
@@ -26,7 +26,7 @@ class HighResSteadyClockBenchmarkFixture : public benchmark::Fixture
     {
         this->Repetitions(1);
         this->ReportAggregatesOnly(true);
-        this->ThreadRange(1, 16);
+        this->ThreadRange(1, kMaxThreads);
         this->UseRealTime();
         this->MeasureProcessCPUTime();
     }
@@ -36,6 +36,7 @@ class HighResSteadyClockBenchmarkFixture : public benchmark::Fixture
 
 BENCHMARK_F(HighResSteadyClockBenchmarkFixture, NowLatency)(benchmark::State& state)
 {
+    // NOLINTNEXTLINE(clang-analyzer-deadcode.DeadStores,readability-identifier-length): Google Benchmark loop idiom
     for (auto _ : state)
     {
         benchmark::DoNotOptimize(clock_.Now());
@@ -44,5 +45,4 @@ BENCHMARK_F(HighResSteadyClockBenchmarkFixture, NowLatency)(benchmark::State& st
 
 BENCHMARK_MAIN();
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

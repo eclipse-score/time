@@ -21,11 +21,7 @@
 #include <optional>
 #include <utility>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Comparison for types that already provide @c operator==.
@@ -101,7 +97,7 @@ class SvtCallbackWrapper final
     }
 
     /// @brief Returns @c true if a callback is currently installed.
-    bool IsSet() const noexcept
+    [[nodiscard]] bool IsSet() const noexcept
     {
         return is_set_.load(std::memory_order_acquire);
     }
@@ -114,7 +110,7 @@ class SvtCallbackWrapper final
     void TryToEnvoke(const Data& data) noexcept
     {
         const std::lock_guard<std::recursive_mutex> lock{mutex_};
-        if ((callback_ == nullptr) || (last_data_.has_value() && IsSame(last_data_.value(), data)))
+        if ((callback_ == nullptr) || (last_data_.has_value() && IsSame(*last_data_, data)))
         {
             return;
         }
@@ -132,8 +128,6 @@ class SvtCallbackWrapper final
     std::atomic_bool is_set_{false};
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_SVT_CALLBACK_WRAPPER_H

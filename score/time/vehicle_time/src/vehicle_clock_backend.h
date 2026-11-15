@@ -20,9 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Pure-virtual backend contract for the vehicle time domain.
@@ -35,10 +33,15 @@ namespace time
 class VehicleClockBackend
 {
   public:
+    VehicleClockBackend() noexcept = default;
     virtual ~VehicleClockBackend() noexcept = default;
+    VehicleClockBackend(const VehicleClockBackend&) = delete;
+    VehicleClockBackend& operator=(const VehicleClockBackend&) = delete;
+    VehicleClockBackend(VehicleClockBackend&&) = delete;
+    VehicleClockBackend& operator=(VehicleClockBackend&&) = delete;
 
     /// @brief Returns the current vehicle time snapshot (time-point + quality status).
-    virtual ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept = 0;
+    [[nodiscard]] virtual ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept = 0;
 
     /// @brief Initializes backend resource(s).
     ///
@@ -52,7 +55,7 @@ class VehicleClockBackend
     /// @brief Returns true if backend resource(s) are available.
     ///
     /// Non-blocking check. Availability criteria are implementation-defined.
-    virtual bool IsAvailable() const noexcept = 0;
+    [[nodiscard]] virtual bool IsAvailable() const noexcept = 0;
 
     /// @brief Blocks until backend becomes available or wait is aborted.
     ///
@@ -60,8 +63,8 @@ class VehicleClockBackend
     /// @param until  Steady-clock deadline after which the wait is abandoned.
     ///
     /// @return true if backend became available, false if deadline or token aborted wait.
-    virtual bool WaitUntilAvailable(const score::cpp::stop_token& token,
-                                    std::chrono::steady_clock::time_point until) const noexcept = 0;
+    [[nodiscard]] virtual bool WaitUntilAvailable(const score::cpp::stop_token& token,
+                                                  std::chrono::steady_clock::time_point until) const noexcept = 0;
 
     /// @brief Installs the callback invoked when new time-sync data arrives.
     ///
@@ -119,7 +122,6 @@ class VehicleClockBackend
     virtual void UnsetStatusChangedCallback() noexcept = 0;
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_BACKEND_H

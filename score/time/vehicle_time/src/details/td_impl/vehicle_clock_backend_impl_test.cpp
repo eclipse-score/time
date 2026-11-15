@@ -26,9 +26,7 @@
 #include <optional>
 #include <thread>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 namespace
 {
@@ -304,5 +302,4 @@ TEST_F(VehicleClockBackendImplTest, CallbackRegisteredBeforeInitIsDeliveredOnceI
 }
 
 }  // namespace
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

@@ -12,17 +12,18 @@
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/svt_callback_dispatcher.h"
 #include "score/time/vehicle_time/src/details/td_impl/svt_converters.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
+#include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 
-#include <score/utility.hpp>
+#include <score/stop_token.hpp>
 
+#include <chrono>
+#include <memory>
+#include <mutex>
 #include <string>
 #include <utility>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 SvtCallbackDispatcher::SvtCallbackDispatcher(std::shared_ptr<score::td::SvtReceiver> receiver,
@@ -41,15 +42,7 @@ SvtCallbackDispatcher::SvtCallbackDispatcher(std::shared_ptr<score::td::SvtRecei
 {
 }
 
-SvtCallbackDispatcher::~SvtCallbackDispatcher() noexcept
-{
-    // The destructor never runs on the worker thread, so joining here is always safe.
-    if (worker_.joinable())
-    {
-        score::cpp::ignore = worker_.request_stop();
-        worker_.join();
-    }
-}
+SvtCallbackDispatcher::~SvtCallbackDispatcher() noexcept = default;
 
 void SvtCallbackDispatcher::Start() noexcept
 {
@@ -62,7 +55,7 @@ template <typename Slot, typename Callback>
 void SvtCallbackDispatcher::SetCallback(Slot& slot, Callback&& callback) noexcept
 {
     const bool present = !callback.empty();
-    slot.Set(std::move(callback));
+    slot.Set(std::forward<Callback>(callback));
     if (present)
     {
         OnCallbackRegistered();
@@ -120,7 +113,7 @@ void SvtCallbackDispatcher::StartWorkerIfReadyLocked() noexcept
         return;
     }
     worker_ = score::cpp::jthread{score::cpp::jthread::name_hint{std::string{"vt_cb_dispatch"}},
-                                  [this](const score::cpp::stop_token token) noexcept {
+                                  [this](const score::cpp::stop_token& token) noexcept {
                                       WorkerFunction(token);
                                   }};
 }
@@ -173,12 +166,9 @@ void SvtCallbackDispatcher::PollAndDispatch() noexcept
         return;
     }
 
-    sync_data_slot_.TryToEnvoke(ConvertSyncData(snapshot.value().sync_fup_data));
-    pdelay_slot_.TryToEnvoke(ConvertPDelayData(snapshot.value().pdelay_data));
-    status_slot_.TryToEnvoke(
-        VehicleTimeStatus{ConvertPtpStatus(snapshot.value().status), snapshot.value().rate_deviation});
+    sync_data_slot_.TryToEnvoke(ConvertSyncData(snapshot->sync_fup_data));
+    pdelay_slot_.TryToEnvoke(ConvertPDelayData(snapshot->pdelay_data));
+    status_slot_.TryToEnvoke(VehicleTimeStatus{ConvertPtpStatus(snapshot->status), snapshot->rate_deviation});
 }
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail

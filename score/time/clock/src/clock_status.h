@@ -20,9 +20,7 @@
 
 #include <score/assert.hpp>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Encapsulates the synchronisation-quality status of a timebase as a set of bit flags.
@@ -115,7 +113,7 @@ class ClockStatus final
     ///
     /// @note Coverage of this method lives in the domain-level test (e.g.
     ///       @c vehicle_time_status_test.cpp), not in this file.
-    std::ostringstream PrintTo() const;
+    [[nodiscard]] std::ostringstream PrintTo() const;
 
     /// @brief Adds a flag bit-position to this status.
     ///
@@ -170,7 +168,6 @@ auto operator<<(OutputStream& output_stream, const ClockStatus<FlagEnumT, Storag
     return output_stream;
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_CLOCK_STATUS_H

@@ -20,11 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Stub backend for the HIRS clock domain (host/test-only).
@@ -42,16 +38,14 @@ class HighResSteadyClockBackendImpl final : public HighResSteadyClockBackend
     HighResSteadyClockBackendImpl& operator=(HighResSteadyClockBackendImpl&&) = delete;
 
     /// @brief Returns the current HIRS snapshot from std::chrono::steady_clock.
-    ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override
+    [[nodiscard]] ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> Now() const noexcept override
     {
         const auto raw = std::chrono::steady_clock::now().time_since_epoch();
-        const HighResSteadyTime::Timepoint tp{std::chrono::duration_cast<HighResSteadyTime::Duration>(raw)};
-        return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{tp, NoStatus{}};
+        const HighResSteadyTime::Timepoint time_point{std::chrono::duration_cast<HighResSteadyTime::Duration>(raw)};
+        return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{time_point, NoStatus{}};
     }
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_STUB_IMPL_HIGH_RES_STEADY_CLOCK_BACKEND_IMPL_H

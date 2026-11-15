@@ -26,9 +26,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 class VehicleClockBackend;
@@ -74,7 +72,7 @@ struct SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>
     using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::TimeSlaveSyncDataReceivedCallback;
 
-    static void Subscribe(Backend& impl, Callback cb) noexcept;
+    static void Subscribe(Backend& impl, Callback callback) noexcept;
     static void Unsubscribe(Backend& impl) noexcept;
 };
 
@@ -84,7 +82,7 @@ struct SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>
     using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::PDelayMeasurementFinishedCallback;
 
-    static void Subscribe(Backend& impl, Callback cb) noexcept;
+    static void Subscribe(Backend& impl, Callback callback) noexcept;
     static void Unsubscribe(Backend& impl) noexcept;
 };
 
@@ -94,7 +92,7 @@ struct SubscriptionHook<VehicleTime, VehicleTimeStatus>
     using Backend = ClockTraits<VehicleTime>::Backend;
     using Callback = VehicleTime::StatusChangedCallback;
 
-    static void Subscribe(Backend& impl, Callback cb) noexcept;
+    static void Subscribe(Backend& impl, Callback callback) noexcept;
     static void Unsubscribe(Backend& impl) noexcept;
 };
 
@@ -102,7 +100,6 @@ using VehicleClock = Clock<VehicleTime>;
 using VehicleTimePoint = ClockTraits<VehicleTime>::Timepoint;
 using VehicleSnapshot = ClockTraits<VehicleTime>::Snapshot;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_H

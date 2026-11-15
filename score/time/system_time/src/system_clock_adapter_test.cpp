@@ -23,9 +23,7 @@
 
 using ::testing::Return;
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 namespace
@@ -137,5 +135,4 @@ TEST(SystemClockTest, GetInstanceCalledTwice)
     EXPECT_EQ(clock2.Now().TimePoint().time_since_epoch().count(), 0);
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

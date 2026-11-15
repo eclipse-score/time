@@ -26,9 +26,7 @@
 using ::testing::_;
 using ::testing::Return;
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 namespace
@@ -315,5 +313,4 @@ TEST(VehicleClockTest, GetInstanceCalledTwice)
     EXPECT_FALSE(clock2.IsAvailable());
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

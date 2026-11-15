@@ -16,13 +16,7 @@
 
 #include <thread>
 
-namespace score
-{
-namespace time
-{
-namespace detail
-{
-namespace test
+namespace score::time::detail::test
 {
 
 class SystemClockBackendImplTest : public ::testing::Test
@@ -60,7 +54,4 @@ TEST_F(SystemClockBackendImplTest, NowSnapshotCarriesNoStatus)
     SUCCEED();
 }
 
-}  // namespace test
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail::test

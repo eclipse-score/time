@@ -11,15 +11,17 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/svt_converters.h"
+#include "score/time/clock/src/clock_status.h"
+#include "score/time/ptp/src/pdelay_measurement_data.h"
+#include "score/time/ptp/src/port_identity.h"
+#include "score/time/ptp/src/time_slave_sync_data.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
+#include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
 #include <chrono>
 #include <cstdint>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 namespace
@@ -31,6 +33,7 @@ std::chrono::nanoseconds ToNanoseconds(const std::uint64_t nanoseconds) noexcept
     return std::chrono::nanoseconds{static_cast<std::chrono::nanoseconds::rep>(nanoseconds)};
 }
 
+// NOLINTNEXTLINE(bugprone-easily-swappable-parameters): PTP clock identity and port number, fixed order
 PortIdentity ToPortIdentity(const std::uint64_t clock_identity, const std::uint32_t port_number) noexcept
 {
     PortIdentity identity{};
@@ -103,6 +106,4 @@ PDelayMeasurementData<VehicleTime> ConvertPDelayData(const score::td::svt::PDela
     return converted;
 }
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail

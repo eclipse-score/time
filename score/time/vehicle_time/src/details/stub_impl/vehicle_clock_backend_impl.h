@@ -21,11 +21,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Stub backend for the vehicle time domain (host/test-only).
@@ -41,7 +37,7 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     VehicleClockBackendImpl(VehicleClockBackendImpl&&) = delete;
     VehicleClockBackendImpl& operator=(VehicleClockBackendImpl&&) = delete;
 
-    ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept override
+    [[nodiscard]] ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> Now() const noexcept override
     {
         return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{};
     }
@@ -51,13 +47,13 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
         return true;
     }
 
-    bool IsAvailable() const noexcept override
+    [[nodiscard]] bool IsAvailable() const noexcept override
     {
         return false;
     }
 
-    bool WaitUntilAvailable(const score::cpp::stop_token& /*token*/,
-                            std::chrono::steady_clock::time_point /*until*/) const noexcept override
+    [[nodiscard]] bool WaitUntilAvailable(const score::cpp::stop_token& /*token*/,
+                                          std::chrono::steady_clock::time_point /*until*/) const noexcept override
     {
         return false;
     }
@@ -81,8 +77,6 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     void UnsetStatusChangedCallback() noexcept override {}
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_STUB_IMPL_VEHICLE_CLOCK_BACKEND_IMPL_H

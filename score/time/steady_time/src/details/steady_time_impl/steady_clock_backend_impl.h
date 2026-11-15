@@ -20,11 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Production backend for the steady-clock domain.
@@ -41,15 +37,13 @@ class SteadyClockBackendImpl final : public SteadyClockBackend
     SteadyClockBackendImpl& operator=(SteadyClockBackendImpl&&) = delete;
 
     /// @brief Returns the current steady-clock snapshot using std::chrono::steady_clock.
-    ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept override
+    [[nodiscard]] ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> Now() const noexcept override
     {
         return ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>{std::chrono::steady_clock::now(),
                                                                               NoStatus{}};
     }
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_STEADY_TIME_SRC_DETAILS_STEADY_TIME_IMPL_STEADY_CLOCK_BACKEND_IMPL_H

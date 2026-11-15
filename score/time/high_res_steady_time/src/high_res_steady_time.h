@@ -15,9 +15,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 ///
@@ -28,7 +26,6 @@ struct HighResSteadyTime
     using Timepoint = std::chrono::time_point<HighResSteadyTime, Duration>;
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_HIGH_RES_STEADY_TIME_H

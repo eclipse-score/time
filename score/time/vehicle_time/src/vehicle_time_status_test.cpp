@@ -16,9 +16,7 @@
 
 #include <sstream>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 namespace
 {
@@ -218,5 +216,4 @@ TEST_F(TestVehicleTimeStatus, NotEqualsWhenOnlyRateDeviationDiffers)
 }
 
 }  // namespace
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

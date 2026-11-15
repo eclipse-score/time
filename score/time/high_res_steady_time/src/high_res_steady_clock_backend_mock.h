@@ -20,9 +20,7 @@
 
 #include <gmock/gmock.h>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief GMock test double for the HIRS clock domain.
@@ -59,7 +57,6 @@ class HighResSteadyClockBackendMock : public HighResSteadyClockBackend
     MOCK_METHOD((ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>), Now, (), (const, noexcept, override));
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_HIGH_RES_STEADY_CLOCK_BACKEND_MOCK_H

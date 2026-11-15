@@ -11,21 +11,29 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/vehicle_time/src/details/td_impl/vehicle_clock_backend_impl.h"
+#include "score/time/clock/src/clock.h"
+#include "score/time/clock/src/clock_snapshot.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
 #include "score/time/vehicle_time/src/details/logging_contexts.h"
 #include "score/time/vehicle_time/src/details/td_impl/svt_converters.h"
 
+#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
+#include "score/time/vehicle_time/src/vehicle_time.h"
 #include "score/time_daemon/src/ipc/svt/receiver/factory.h"
+#include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
 #include "score/mw/log/logging.h"
+#include <score/stop_token.hpp>
 
+#include <atomic>
 #include <chrono>
+#include <memory>
+#include <mutex>
 #include <thread>
 #include <utility>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 namespace detail
 {
@@ -66,8 +74,8 @@ ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl
     }
 
     const auto now_local = local_clock_.Now().TimePoint().time_since_epoch();
-    const auto local_at_capture = std::chrono::nanoseconds{rx_data.value().local_time};
-    const auto ptp_at_capture = std::chrono::nanoseconds{rx_data.value().ptp_assumed_time};
+    const auto local_at_capture = std::chrono::nanoseconds{rx_data->local_time};
+    const auto ptp_at_capture = std::chrono::nanoseconds{rx_data->ptp_assumed_time};
 
     if (now_local < local_at_capture)
     {
@@ -78,7 +86,7 @@ ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> VehicleClockBackendImpl
 
     const VehicleTime::Timepoint adjusted_tp{ptp_at_capture + (now_local - local_at_capture)};
 
-    const VehicleTimeStatus vehicle_status{ConvertPtpStatus(rx_data.value().status), rx_data.value().rate_deviation};
+    const VehicleTimeStatus vehicle_status{ConvertPtpStatus(rx_data->status), rx_data->rate_deviation};
     return ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus>{adjusted_tp, vehicle_status};
 }
 
@@ -98,8 +106,8 @@ bool VehicleClockBackendImpl::Init() noexcept
         return true;
     }
 
-    const bool ok = svt_receiver_->Init();
-    if (!ok)
+    const bool initialized = svt_receiver_->Init();
+    if (!initialized)
     {
         score::mw::log::LogError(kVehicleTimeLogContext)
             << "VehicleClockBackendImpl: failed to open TimeDaemon shared memory segment.";
@@ -110,9 +118,9 @@ bool VehicleClockBackendImpl::Init() noexcept
         dispatcher_.Start();
     }
 
-    is_ready_.store(ok, std::memory_order_release);
+    is_ready_.store(initialized, std::memory_order_release);
 
-    return ok;
+    return initialized;
 }
 
 bool VehicleClockBackendImpl::IsAvailable() const noexcept
@@ -124,7 +132,9 @@ bool VehicleClockBackendImpl::IsAvailable() const noexcept
 bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& token,
                                                  std::chrono::steady_clock::time_point until) const noexcept
 {
+    constexpr std::chrono::milliseconds kAvailabilityPollInterval{10};
     bool should_poll = false;
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-do-while): availability is checked at least once
     do
     {
         if (IsAvailable())
@@ -133,7 +143,7 @@ bool VehicleClockBackendImpl::WaitUntilAvailable(const score::cpp::stop_token& t
         }
         // Poll at 10 ms intervals: coarse enough to avoid busy-spinning, fine enough
         // to detect IPC readiness well within any realistic startup deadline.
-        std::this_thread::sleep_for(std::chrono::milliseconds{10});
+        std::this_thread::sleep_for(kAvailabilityPollInterval);
         should_poll = (!token.stop_requested()) && (std::chrono::steady_clock::now() <= until);
     } while (should_poll);
 
@@ -182,5 +192,4 @@ std::shared_ptr<VehicleClockBackend> detail::CreateBackend<VehicleTime>()
                                                              HighResSteadyClock::GetInstance());
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

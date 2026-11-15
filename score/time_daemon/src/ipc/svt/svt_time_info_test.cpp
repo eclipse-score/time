@@ -12,16 +12,12 @@
  ********************************************************************************/
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
 
-#include <chrono>
-#include <functional>
 #include <limits>
-#include <vector>
 
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 namespace
@@ -482,5 +478,4 @@ TEST(TimeBaseSnapshotTest, NotEqualsWhenEachTopLevelFieldDiffers)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

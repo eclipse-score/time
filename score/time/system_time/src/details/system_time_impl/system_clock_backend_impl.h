@@ -20,11 +20,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Production backend for the system-clock domain.
@@ -41,15 +37,13 @@ class SystemClockBackendImpl final : public SystemClockBackend
     SystemClockBackendImpl& operator=(SystemClockBackendImpl&&) = delete;
 
     /// @brief Returns the current system-clock snapshot using std::chrono::system_clock.
-    ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept override
+    [[nodiscard]] ClockSnapshot<std::chrono::system_clock::time_point, NoStatus> Now() const noexcept override
     {
         return ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>{std::chrono::system_clock::now(),
                                                                               NoStatus{}};
     }
 };
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_SYSTEM_TIME_SRC_DETAILS_SYSTEM_TIME_IMPL_SYSTEM_CLOCK_BACKEND_IMPL_H

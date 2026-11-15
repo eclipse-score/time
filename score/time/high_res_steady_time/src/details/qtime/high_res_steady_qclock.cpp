@@ -21,13 +21,9 @@
 #include <chrono>
 #include <memory>
 
-namespace score
+namespace score::time
 {
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
+namespace high_res_steady_time::qtime
 {
 
 ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> HighResSteadyQClock::Now() const noexcept
@@ -57,8 +53,7 @@ std::chrono::nanoseconds HighResSteadyQClock::ClockCyclesToNanoseconds(const std
     return converted;
 }
 
-}  // namespace qtime
-}  // namespace high_res_steady_time
+}  // namespace high_res_steady_time::qtime
 
 // req-Id: comp_req__time__supported_platforms
 template <>
@@ -67,5 +62,4 @@ std::shared_ptr<HighResSteadyClockBackend> detail::CreateBackend<HighResSteadyTi
     return std::make_shared<high_res_steady_time::qtime::HighResSteadyQClock>();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

@@ -18,13 +18,7 @@
 
 #include <cstdint>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
+namespace score::time::high_res_steady_time::qtime
 {
 
 /// @brief QNX production backend for HighResSteadyTime.
@@ -52,9 +46,6 @@ class HighResSteadyQClock final : public HighResSteadyClockBackend
     std::chrono::nanoseconds ClockCyclesToNanoseconds(std::uint64_t clock_cycles) const noexcept;
 };
 
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_QTIME_HIGH_RES_STEADY_QCLOCK_H

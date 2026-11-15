@@ -17,9 +17,7 @@
 #include <chrono>
 #include <thread>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 TEST(SteadyClockTest, GetInstanceNowIsMonotonicallyIncreasing)
@@ -29,5 +27,4 @@ TEST(SteadyClockTest, GetInstanceNowIsMonotonicallyIncreasing)
     EXPECT_GT(SteadyClock::GetInstance().Now().TimePoint(), first.TimePoint());
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

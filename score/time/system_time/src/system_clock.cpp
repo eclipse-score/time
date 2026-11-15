@@ -11,11 +11,11 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/system_time/src/system_clock.h"
-#include "score/time/system_time/src/system_clock_backend.h"
+#include "score/time/system_time/src/system_clock_backend.h"  // IWYU pragma: keep, complete type
 
-namespace score
-{
-namespace time
+#include <chrono>
+
+namespace score::time
 {
 
 // req-Id: comp_req__system_time__snapshot
@@ -25,5 +25,4 @@ ClockTraits<std::chrono::system_clock>::Snapshot ClockTraits<std::chrono::system
     return impl.Now();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

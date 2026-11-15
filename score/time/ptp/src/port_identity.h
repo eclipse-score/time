@@ -16,9 +16,7 @@
 #include <cstdint>
 #include <ostream>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Identifies a participant (port) involved in PTP communication.
@@ -70,7 +68,6 @@ auto& operator<<(OutputStream& output_stream, const PortIdentity& port_identity)
     return port_identity.PrintTo(output_stream);
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_PTP_SRC_PORT_IDENTITY_H

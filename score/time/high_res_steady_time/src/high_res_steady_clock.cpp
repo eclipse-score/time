@@ -11,11 +11,10 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/high_res_steady_time/src/high_res_steady_clock.h"
-#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"
+#include "score/time/high_res_steady_time/src/high_res_steady_clock_backend.h"  // IWYU pragma: keep, complete type
+#include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 // req-Id: comp_req__high_res_steady_time__snapshot
@@ -24,5 +23,4 @@ ClockTraits<HighResSteadyTime>::Snapshot ClockTraits<HighResSteadyTime>::CallNow
     return impl.Now();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

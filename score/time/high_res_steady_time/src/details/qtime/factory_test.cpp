@@ -15,13 +15,7 @@
 
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
+namespace score::time::high_res_steady_time::qtime
 {
 namespace
 {
@@ -51,7 +45,4 @@ TEST(HighResSteadyQClockFactoryTest, CreateBackendReturnsHighResSteadyQClock)
 }
 
 }  // namespace
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime

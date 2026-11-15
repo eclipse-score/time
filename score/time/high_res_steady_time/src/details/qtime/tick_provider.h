@@ -15,13 +15,7 @@
 
 #include <cstdint>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
+namespace score::time::high_res_steady_time::qtime
 {
 
 /// @brief Returns the number of hardware clock cycles per second from the QNX syspage.
@@ -29,9 +23,6 @@ namespace qtime
 /// Extracted as a free function so it can be replaced by a mock in unit tests.
 std::uint64_t GetClockCyclesPerSec();
 
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_QTIME_TICK_PROVIDER_H

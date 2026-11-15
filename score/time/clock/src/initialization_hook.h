@@ -15,9 +15,7 @@
 
 #include <type_traits>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief SFINAE gate for @c Clock<Tag>::Init().
@@ -54,7 +52,6 @@ struct HasInitialization<Tag, std::void_t<decltype(&InitializationHook<Tag>::Cal
 {
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_INITIALIZATION_HOOK_H

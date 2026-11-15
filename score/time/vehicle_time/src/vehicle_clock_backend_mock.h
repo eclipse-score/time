@@ -18,9 +18,7 @@
 
 #include <gmock/gmock.h>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief GMock test double for the vehicle time domain.
@@ -74,7 +72,6 @@ class VehicleClockBackendMock : public VehicleClockBackend
     MOCK_METHOD(void, UnsetStatusChangedCallback, (), (noexcept, override));
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_VEHICLE_CLOCK_BACKEND_MOCK_H

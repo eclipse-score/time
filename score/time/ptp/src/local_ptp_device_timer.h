@@ -15,9 +15,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Tag for the HW timer on the local Ethernet device where PTP messages are
@@ -30,7 +28,6 @@ struct LocalPTPDeviceTimer
 /// @brief Time-point type for the local PTP device timer.
 using LocalPTPDeviceTimerValue = std::chrono::time_point<LocalPTPDeviceTimer, LocalPTPDeviceTimer::Duration>;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_PTP_SRC_LOCAL_PTP_DEVICE_TIMER_H

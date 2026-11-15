@@ -15,18 +15,12 @@
 
 // Internal header — included by translation units under vehicle_time/details/.
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 
 /// @brief Logging context for vehicle time domain.
 constexpr auto kVehicleTimeLogContext = "MVTC";
 
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_LOGGING_CONTEXTS_H

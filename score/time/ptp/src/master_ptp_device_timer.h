@@ -15,9 +15,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Tag for the HW timer on the PTP time master's Ethernet device where the
@@ -31,7 +29,6 @@ struct MasterPTPDeviceTimer
 /// @brief Time-point type for the master PTP device timer.
 using MasterPTPDeviceTimerValue = std::chrono::time_point<MasterPTPDeviceTimer, MasterPTPDeviceTimer::Duration>;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_PTP_SRC_MASTER_PTP_DEVICE_TIMER_H

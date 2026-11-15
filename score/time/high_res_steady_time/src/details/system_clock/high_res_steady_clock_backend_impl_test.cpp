@@ -15,15 +15,7 @@
 #include <gtest/gtest.h>
 #include <thread>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace sys_time
-{
-namespace test
+namespace score::time::high_res_steady_time::sys_time::test
 {
 
 class HighResSteadyClockBackendImplTest : public ::testing::Test
@@ -50,8 +42,4 @@ TEST_F(HighResSteadyClockBackendImplTest, TimePointIsNotNegative)
     EXPECT_GT(clock.Now().TimePoint(), snapshot.TimePoint());
 }
 
-}  // namespace test
-}  // namespace sys_time
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::sys_time::test

@@ -11,15 +11,21 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time/vehicle_time/src/vehicle_clock.h"
-#include "score/time/vehicle_time/src/vehicle_clock_backend.h"
+#include "score/time/clock/src/clock_status.h"
+#include "score/time/ptp/src/pdelay_measurement_data.h"
+#include "score/time/ptp/src/time_slave_sync_data.h"
+#include "score/time/vehicle_time/src/vehicle_clock_backend.h"  // IWYU pragma: keep, complete type
+#include "score/time/vehicle_time/src/vehicle_time.h"
 
+#include <score/stop_token.hpp>
+
+#include <chrono>
 #include <map>
+#include <sstream>
 #include <string>
 #include <utility>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 template <>
@@ -68,9 +74,9 @@ bool AvailabilityHook<VehicleTime>::CallWaitUntilAvailable(const Backend& impl,
 
 void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Subscribe(
     Backend& impl,
-    VehicleTime::TimeSlaveSyncDataReceivedCallback cb) noexcept
+    VehicleTime::TimeSlaveSyncDataReceivedCallback callback) noexcept
 {
-    impl.SetTimeSlaveSyncDataReceivedCallback(std::move(cb));
+    impl.SetTimeSlaveSyncDataReceivedCallback(std::move(callback));
 }
 
 void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Unsubscribe(Backend& impl) noexcept
@@ -80,9 +86,9 @@ void SubscriptionHook<VehicleTime, TimeSlaveSyncData<VehicleTime>>::Unsubscribe(
 
 void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Subscribe(
     Backend& impl,
-    VehicleTime::PDelayMeasurementFinishedCallback cb) noexcept
+    VehicleTime::PDelayMeasurementFinishedCallback callback) noexcept
 {
-    impl.SetPDelayMeasurementFinishedCallback(std::move(cb));
+    impl.SetPDelayMeasurementFinishedCallback(std::move(callback));
 }
 
 void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Unsubscribe(Backend& impl) noexcept
@@ -91,9 +97,9 @@ void SubscriptionHook<VehicleTime, PDelayMeasurementData<VehicleTime>>::Unsubscr
 }
 
 void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Subscribe(Backend& impl,
-                                                                 VehicleTime::StatusChangedCallback cb) noexcept
+                                                                 VehicleTime::StatusChangedCallback callback) noexcept
 {
-    impl.SetStatusChangedCallback(std::move(cb));
+    impl.SetStatusChangedCallback(std::move(callback));
 }
 
 void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Unsubscribe(Backend& impl) noexcept
@@ -101,5 +107,4 @@ void SubscriptionHook<VehicleTime, VehicleTimeStatus>::Unsubscribe(Backend& impl
     impl.UnsetStatusChangedCallback();
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

@@ -15,9 +15,7 @@
 
 #include <type_traits>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief SFINAE gate for @c Clock<Tag>::IsAvailable() and @c WaitUntilAvailable().
@@ -54,7 +52,6 @@ struct HasAvailability<Tag, std::void_t<decltype(&AvailabilityHook<Tag>::CallIsA
 {
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_AVAILABILITY_HOOK_H

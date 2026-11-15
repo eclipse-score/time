@@ -18,11 +18,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace time
-{
-namespace test_utils
+namespace score::time::test_utils
 {
 
 /// @brief RAII guard that installs a test-double backend for @c Clock<Tag>.
@@ -77,8 +73,6 @@ class ScopedClockOverride final
     bool active_;
 };
 
-}  // namespace test_utils
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::test_utils
 
 #endif  // SCORE_TIME_CLOCK_SRC_SCOPED_CLOCK_OVERRIDE_H

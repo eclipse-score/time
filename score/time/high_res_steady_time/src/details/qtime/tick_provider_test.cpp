@@ -14,15 +14,7 @@
 
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
-{
-namespace test
+namespace score::time::high_res_steady_time::qtime::test
 {
 
 TEST(TickProviderTest, GetClockCyclesPerSecReturnsPositiveValue)
@@ -36,8 +28,4 @@ TEST(TickProviderTest, GetClockCyclesPerSecReturnsPositiveValue)
     EXPECT_GT(GetClockCyclesPerSec(), 0U);
 }
 
-}  // namespace test
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime::test
