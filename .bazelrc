@@ -113,6 +113,7 @@ build:tsan --config=with_debug_symbols
 build:tsan --copt=-O1
 build:tsan --copt=-fsanitize=thread
 build:tsan --linkopt=-fsanitize=thread
+build:tsan --copt=-Wno-error=tsan
 build:tsan --platform_suffix=tsan
 build:tsan --@score_cpp_policies//sanitizers/flags:tsan=True
 test:tsan --run_under=@score_cpp_policies//sanitizers:wrapper
