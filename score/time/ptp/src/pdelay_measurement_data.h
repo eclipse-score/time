@@ -21,9 +21,7 @@
 #include <cstdint>
 #include <ostream>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 ///
@@ -125,7 +123,6 @@ void PrintTo(const PDelayMeasurementData<Timebase>& pdelay_data, std::ostream* c
     pdelay_data.PrintTo(*output_stream);
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_PTP_SRC_PDELAY_MEASUREMENT_DATA_H

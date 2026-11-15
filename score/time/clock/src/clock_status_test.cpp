@@ -17,9 +17,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 class TestClockStatus : public ::testing::Test
@@ -184,5 +182,4 @@ TEST_F(TestClockStatus, InitializerListConstructorWithZeroFlagsMatchesDefault)
         {StatusFlag::kTimeOut, StatusFlag::kSynchronized, StatusFlag::kSynchToGateway, StatusFlag::kUnknown}));
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

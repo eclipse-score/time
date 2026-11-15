@@ -18,9 +18,7 @@
 
 #include <gmock/gmock.h>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief GMock test double for the steady-clock domain.
@@ -47,7 +45,6 @@ class SteadyClockBackendMock : public SteadyClockBackend
     MOCK_METHOD((ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus>), Now, (), (const, noexcept, override));
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_STEADY_TIME_SRC_STEADY_CLOCK_BACKEND_MOCK_H

@@ -13,9 +13,7 @@
 #ifndef SCORE_TIME_CLOCK_SRC_CLOCK_TRAITS_H
 #define SCORE_TIME_CLOCK_SRC_CLOCK_TRAITS_H
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Type and behaviour traits for a clock domain.
@@ -36,7 +34,6 @@ namespace time
 template <typename Tag>
 struct ClockTraits;
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_CLOCK_TRAITS_H

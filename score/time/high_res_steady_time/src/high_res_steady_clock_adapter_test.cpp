@@ -21,9 +21,7 @@
 
 using ::testing::Return;
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 TEST(HighResSteadyClockTest, NowReturnsTimepointSuitableForDurationArithmetic)
@@ -101,5 +99,4 @@ TEST(HighResSteadyClockTest, ClockTestFactoryCreatesClockFromMockBackend)
     EXPECT_EQ(clock.Now().TimePoint(), tp);
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time

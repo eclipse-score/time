@@ -22,11 +22,7 @@
 #include <mutex>
 #include <optional>
 
-namespace score
-{
-namespace time
-{
-namespace test_helpers
+namespace score::time::test_helpers
 {
 
 constexpr std::chrono::milliseconds kPollInterval{1};
@@ -199,8 +195,6 @@ class CallbackRecorder
     std::size_t count_{0U};
 };
 
-}  // namespace test_helpers
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::test_helpers
 
 #endif  // SCORE_TIME_VEHICLE_TIME_SRC_DETAILS_TD_IMPL_SVT_TEST_HELPERS_H

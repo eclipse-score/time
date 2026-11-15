@@ -22,11 +22,7 @@
 #include <future>
 #include <thread>
 
-namespace score
-{
-namespace time
-{
-namespace detail
+namespace score::time::detail
 {
 namespace
 {
@@ -226,6 +222,4 @@ TEST(SvtCallbackWrapperTest, SetFromAnotherThreadBlocksUntilInFlightInvocationRe
 }
 
 }  // namespace
-}  // namespace detail
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::detail

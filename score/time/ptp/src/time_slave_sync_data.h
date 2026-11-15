@@ -20,9 +20,7 @@
 #include <cstdint>
 #include <ostream>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Data delivered when new time-synchronization information is received by a Time Slave.
@@ -118,7 +116,6 @@ void PrintTo(const TimeSlaveSyncData<Timebase>& sync_data, std::ostream* const o
     sync_data.PrintTo(*output_stream);
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_PTP_SRC_TIME_SLAVE_SYNC_DATA_H

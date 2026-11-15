@@ -14,13 +14,7 @@
 
 #include <sys/syspage.h>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
+namespace score::time::high_res_steady_time::qtime
 {
 
 std::uint64_t GetClockCyclesPerSec()
@@ -28,7 +22,4 @@ std::uint64_t GetClockCyclesPerSec()
     return static_cast<std::uint64_t>(SYSPAGE_ENTRY(qtime)->cycles_per_sec);
 }
 
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime

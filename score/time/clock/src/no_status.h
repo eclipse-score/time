@@ -14,9 +14,7 @@
 #ifndef SCORE_TIME_CLOCK_SRC_NO_STATUS_H
 #define SCORE_TIME_CLOCK_SRC_NO_STATUS_H
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Empty placeholder status type for clocks that have no quality concept
@@ -28,7 +26,6 @@ struct NoStatus
 {
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_NO_STATUS_H

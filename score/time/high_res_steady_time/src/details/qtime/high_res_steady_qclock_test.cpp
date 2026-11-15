@@ -18,15 +18,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
-{
-namespace test
+namespace score::time::high_res_steady_time::qtime::test
 {
 
 using namespace ::testing;
@@ -168,8 +160,4 @@ TEST(HighResSteadyQClockTest, WhenClockCyclesAreValidNowReturnsCorrectNanosecond
     TickProviderMock::DestroyMockInstance();
 }
 
-}  // namespace test
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime::test

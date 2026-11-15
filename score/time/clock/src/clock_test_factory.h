@@ -18,11 +18,7 @@
 
 #include <memory>
 
-namespace score
-{
-namespace time
-{
-namespace test_utils
+namespace score::time::test_utils
 {
 
 /// @brief Test-only factory — constructs a @c Clock<Tag> wrapping an explicit backend.
@@ -60,8 +56,6 @@ class ClockTestFactory
     ClockTestFactory& operator=(ClockTestFactory&&) = delete;
 };
 
-}  // namespace test_utils
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::test_utils
 
 #endif  // SCORE_TIME_CLOCK_SRC_CLOCK_TEST_FACTORY_H

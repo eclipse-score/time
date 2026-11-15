@@ -18,9 +18,7 @@
 
 #include <gmock/gmock.h>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief GMock test double for the system-clock domain.
@@ -47,7 +45,6 @@ class SystemClockBackendMock : public SystemClockBackend
     MOCK_METHOD((ClockSnapshot<std::chrono::system_clock::time_point, NoStatus>), Now, (), (const, noexcept, override));
 };
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_SYSTEM_TIME_SRC_SYSTEM_CLOCK_BACKEND_MOCK_H

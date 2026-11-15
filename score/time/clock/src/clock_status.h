@@ -20,9 +20,7 @@
 
 #include <score/assert.hpp>
 
-namespace score
-{
-namespace time
+namespace score::time
 {
 
 /// @brief Encapsulates the synchronisation-quality status of a timebase as a set of bit flags.
@@ -170,7 +168,6 @@ auto operator<<(OutputStream& output_stream, const ClockStatus<FlagEnumT, Storag
     return output_stream;
 }
 
-}  // namespace time
-}  // namespace score
+}  // namespace score::time
 
 #endif  // SCORE_TIME_CLOCK_SRC_CLOCK_STATUS_H

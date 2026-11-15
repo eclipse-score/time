@@ -20,13 +20,7 @@
 #include <memory>
 #include <mutex>
 
-namespace score
-{
-namespace time
-{
-namespace high_res_steady_time
-{
-namespace qtime
+namespace score::time::high_res_steady_time::qtime
 {
 
 /// @brief Singleton GMock replacement for @c GetClockCyclesPerSec().
@@ -68,9 +62,6 @@ class TickProviderMock
     static std::mutex mutex_;
 };
 
-}  // namespace qtime
-}  // namespace high_res_steady_time
-}  // namespace time
-}  // namespace score
+}  // namespace score::time::high_res_steady_time::qtime
 
 #endif  // SCORE_TIME_HIGH_RES_STEADY_TIME_SRC_DETAILS_QTIME_TICK_PROVIDER_MOCK_H
