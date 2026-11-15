@@ -12,17 +12,20 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 #include "score/mw/log/logging.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
+#include <chrono>
+#include <cstdint>
+#include <optional>
+#include <utility>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 TimeJumpsValidator::TimeJumpsValidator(PtpTimeInfo::ReferenceClock debouncing_clock,
                                        std::chrono::nanoseconds max_time_jump_allowed,
-                                       std::chrono::nanoseconds sync_debounce_threshold,
-                                       std::uint8_t valid_frames_threshold)
+                                       std::uint8_t valid_frames_threshold,
+                                       std::chrono::nanoseconds sync_debounce_threshold)
     : max_time_jump_allowed_{max_time_jump_allowed},
       sync_debounce_threshold_{sync_debounce_threshold},
       valid_frames_threshold_{valid_frames_threshold},
@@ -55,6 +58,11 @@ void TimeJumpsValidator::DoValidation(PtpTimeInfo& data)
 
 bool TimeJumpsValidator::IsTimeJumpDetected(const PtpTimeInfo& data)
 {
+    if (!last_sync_frame_.has_value())
+    {
+        return false;
+    }
+
     bool is_time_jump_detected{false};
 
     if (data.sync_fup_data.sync_ingress_timestamp > last_sync_frame_.value().sync_fup_data.sync_ingress_timestamp)
@@ -189,5 +197,4 @@ void TimeJumpsValidator::GoToTimeJumpHandling()
     score::mw::log::LogDebug(kVerificationMachineContext) << "TimeJumpsValidator: Switch to kTimeJumpHandling state";
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

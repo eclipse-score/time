@@ -27,9 +27,7 @@
 #include <string>
 #include <type_traits>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -222,7 +220,6 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H
