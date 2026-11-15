@@ -16,7 +16,6 @@
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 
 #include <score/stop_token.hpp>
-#include <score/utility.hpp>
 
 #include <chrono>
 #include <memory>
@@ -43,16 +42,7 @@ SvtCallbackDispatcher::SvtCallbackDispatcher(std::shared_ptr<score::td::SvtRecei
 {
 }
 
-// NOLINTNEXTLINE(bugprone-exception-escape): jthread::join() may throw
-SvtCallbackDispatcher::~SvtCallbackDispatcher() noexcept
-{
-    // The destructor never runs on the worker thread, so joining here is always safe.
-    if (worker_.joinable())
-    {
-        score::cpp::ignore = worker_.request_stop();
-        worker_.join();
-    }
-}
+SvtCallbackDispatcher::~SvtCallbackDispatcher() noexcept = default;
 
 void SvtCallbackDispatcher::Start() noexcept
 {
