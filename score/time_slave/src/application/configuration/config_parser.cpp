@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_slave/src/application/configuration/config_parser.h"
 
-#include "score/time_slave/src/application/configuration/config_limits.h"
+#include "score/time_slave/src/application/configuration/config_schema_table.h"
 
 #include "score/json/json_parser.h"
 

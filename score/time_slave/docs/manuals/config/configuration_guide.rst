@@ -101,12 +101,13 @@ happens if the file cannot be read or parsed. Values are never silently
 clamped or applied, so a typo such as ``"domain_number": 128`` is reported at
 startup instead of causing every Sync message to be ignored.
 
-The parser enforces the keys, ranges and defaults listed in
-``config_limits.h``. A unit test (``config_schema_consistency_test``) compares
-that table with ``time_slave_config_schema.json`` in both directions and fails
-if the schema uses a constraint the parser does not implement, so the two
-cannot drift apart unnoticed. When changing the schema, update
-``config_limits.h`` accordingly.
+The parser enforces the keys, types and ranges listed in
+``config_schema_table.h``; defaults come from the C++ config structs. A unit
+test (``config_schema_consistency_test``) compares both with
+``time_slave_config_schema.json`` in both directions and fails if the schema
+uses a constraint the parser does not implement, so they cannot drift apart
+unnoticed. When changing the schema, update ``config_schema_table.h`` and the
+struct defaults accordingly.
 
 PHC configuration
 -----------------

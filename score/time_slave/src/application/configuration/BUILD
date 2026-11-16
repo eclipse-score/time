@@ -24,8 +24,8 @@ cc_library(
     name = "configuration",
     srcs = ["config_parser.cpp"],
     hdrs = [
-        "config_limits.h",
         "config_parser.h",
+        "config_schema_table.h",
         "time_slave_config.h",
     ],
     features = COMPILER_WARNING_FEATURES,

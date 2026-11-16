@@ -12,7 +12,7 @@
  ********************************************************************************/
 #include "score/time_slave/src/application/configuration/config_parser.h"
 
-#include "score/time_slave/src/application/configuration/config_limits.h"
+#include "score/time_slave/src/application/configuration/config_schema_table.h"
 
 #include <gtest/gtest.h>
 
@@ -55,21 +55,21 @@ TEST(ConfigParserTest, EmptyObjectReturnsDefaults)
     const auto path = WriteTempFile("empty_config.json", "{}");
     const auto cfg = ParseOk(path);
 
-    // The table mirrors the schema defaults (see config_schema_consistency_test); the C++
-    // option structs must agree with it.
-    namespace cs = config_schema;
-    EXPECT_EQ(cfg.engine_opts.iface_name, cs::kIfaceName.default_value);
-    EXPECT_EQ(cfg.engine_opts.domain_number, cs::kDomainNumber.default_value);
-    EXPECT_EQ(cfg.engine_opts.pdelay_req_interval_ms, cs::kPdelayReqIntervalMs.default_value);
-    EXPECT_EQ(cfg.engine_opts.pdelay_warmup_ms, cs::kPdelayWarmupMs.default_value);
-    EXPECT_EQ(cfg.engine_opts.sync_timeout_ms, cs::kSyncTimeoutMs.default_value);
-    EXPECT_EQ(cfg.engine_opts.jump_future_threshold_ns, cs::kJumpFutureThresholdNs.default_value);
-    EXPECT_EQ(cfg.shm_path, cs::kShmPath.default_value);
-    EXPECT_EQ(cfg.engine_opts.phc_config.enabled, cs::kPhcEnabled.default_value);
-    EXPECT_EQ(cfg.engine_opts.phc_config.device, cs::kPhcDevice.default_value);
-    EXPECT_EQ(cfg.engine_opts.phc_config.step_threshold_ns, cs::kPhcStepThresholdNs.default_value);
-    EXPECT_EQ(cfg.qnx.bpf_device_path, cs::kQnxBpfDevicePath.default_value);
-    EXPECT_EQ(cfg.qnx.see_sent, cs::kQnxSeeSent.default_value);
+    // Parsing {} must leave every field at its struct default. (That those defaults match the
+    // schema is checked by config_schema_consistency_test.)
+    const TimeSlaveConfig defaults{};
+    EXPECT_EQ(cfg.engine_opts.iface_name, defaults.engine_opts.iface_name);
+    EXPECT_EQ(cfg.engine_opts.domain_number, defaults.engine_opts.domain_number);
+    EXPECT_EQ(cfg.engine_opts.pdelay_req_interval_ms, defaults.engine_opts.pdelay_req_interval_ms);
+    EXPECT_EQ(cfg.engine_opts.pdelay_warmup_ms, defaults.engine_opts.pdelay_warmup_ms);
+    EXPECT_EQ(cfg.engine_opts.sync_timeout_ms, defaults.engine_opts.sync_timeout_ms);
+    EXPECT_EQ(cfg.engine_opts.jump_future_threshold_ns, defaults.engine_opts.jump_future_threshold_ns);
+    EXPECT_EQ(cfg.shm_path, defaults.shm_path);
+    EXPECT_EQ(cfg.engine_opts.phc_config.enabled, defaults.engine_opts.phc_config.enabled);
+    EXPECT_EQ(cfg.engine_opts.phc_config.device, defaults.engine_opts.phc_config.device);
+    EXPECT_EQ(cfg.engine_opts.phc_config.step_threshold_ns, defaults.engine_opts.phc_config.step_threshold_ns);
+    EXPECT_EQ(cfg.qnx.bpf_device_path, defaults.qnx.bpf_device_path);
+    EXPECT_EQ(cfg.qnx.see_sent, defaults.qnx.see_sent);
 }
 
 TEST(ConfigParserTest, ParseAllTopLevelFields)
@@ -293,7 +293,7 @@ TEST(ConfigParserTest, InvalidValueIsNeverApplied)
 {
     const auto result = ParseConfig(WriteTempFile("not_applied.json", R"({"domain_number": 128})"));
     ASSERT_FALSE(result.ok());
-    EXPECT_EQ(result.config.engine_opts.domain_number, config_schema::kDomainNumber.default_value);
+    EXPECT_EQ(result.config.engine_opts.domain_number, TimeSlaveConfig{}.engine_opts.domain_number);
 }
 
 /// Boundaries are taken from the table (which the consistency test ties to the schema).
