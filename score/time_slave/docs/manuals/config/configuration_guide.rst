@@ -70,19 +70,19 @@ The following table lists all available options and their default values as defi
      - The network interface to use for gPTP traffic.
    * - ``pdelay_req_interval_ms``
      - ``1000``
-     - The interval in milliseconds for sending Peer-Delay measurement requests. Valid range: 10..60000.
+     - The interval in milliseconds for sending Peer-Delay measurement requests.
    * - ``pdelay_warmup_ms``
      - ``2000``
-     - The initial delay in milliseconds before the first Peer-Delay request is sent. Valid range: 0..60000.
+     - The initial delay in milliseconds before the first Peer-Delay request is sent.
    * - ``sync_timeout_ms``
      - ``3300``
-     - The time in milliseconds without receiving a PTP Sync message before a timeout is declared and the clock is considered unreliable. Valid range: 10..60000.
+     - The time in milliseconds without receiving a PTP Sync message before a timeout is declared and the clock is considered unreliable.
    * - ``jump_future_threshold_ns``
      - ``500'000'000``
-     - The threshold in nanoseconds (500 ms) for detecting a significant forward time jump. Must be >= 0.
+     - The threshold in nanoseconds (500 ms) for detecting a significant forward time jump.
    * - ``domain_number``
      - ``0``
-     - The gPTP domain number. The TimeSlave will only interact with a PTP master in the same domain. Valid range: 0..127.
+     - The gPTP domain number. The TimeSlave will only interact with a PTP master in the same domain.
    * - ``phc_config``
      - ``disabled``
      - Configuration for hardware clock (PHC) adjustments. Disabled by default.
