@@ -503,13 +503,13 @@ during typical operations.</p>
 <section id="ht1-time-polling">
 <h3>HT1 — Time Polling<a class="headerlink" href="#ht1-time-polling" title="Link to this heading">#</a></h3>
 <p>Measure a short code-path latency or compute a tight deadline where call overhead matters.
-<code class="docutils literal notranslate"><span class="pre">HighResSteadyClock</span></code> reads POSIX <code class="docutils literal notranslate"><span class="pre">CLOCK_MONOTONIC</span></code> on all platforms — the same clock the
-time slave uses to stamp Sync frames, so its readings can be combined with <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>
-reference stamps. The read normally involves no kernel call: on QNX SDP 8.0, libc computes
-<code class="docutils literal notranslate"><span class="pre">CLOCK_MONOTONIC</span></code> in userspace from the hardware cycle counter and the syspage <code class="docutils literal notranslate"><span class="pre">qtime</span></code> data;
-on Linux it is served by the vDSO when the active clocksource supports it (e.g. TSC,
-<code class="docutils literal notranslate"><span class="pre">arch_sys_counter</span></code>). Resolution is that of the hardware counter. It uses the same <code class="docutils literal notranslate"><span class="pre">Now()</span></code>
-snapshot pattern as all clock domains, with no status check required.</p>
+<code class="docutils literal notranslate"><span class="pre">HighResSteadyClock</span></code> uses a standard system clock (<code class="docutils literal notranslate"><span class="pre">CLOCK_MONOTONIC</span></code>) that measures elapsed
+time since the system started up. Because this is the exact same clock used to timestamp Sync
+frames, you can seamlessly combine its readings with <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code> timestamps.</p>
+<p>To keep things fast, checking this clock doesn’t require a slow request to the operating system’s
+kernel. Instead, on both QNX SDP 8.0 and Linux, the system reads the CPU’s built-in hardware
+counter directly. This gives the most precise timing possible with zero lag or extra system
+overhead.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
 <object data="../../../_images/plantuml-b7fe610af879b1600c32a9a4a67a7a04d4cd5a3a.svg" type="image/svg+xml" style="width:1467px;height:732px;background:#FFFFFF;"></object></p>
 </div><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">"score/time/high_res_steady_time/src/high_res_steady_clock.h"</span>
