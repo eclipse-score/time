@@ -30,13 +30,14 @@ HT1 — Time Polling
 ~~~~~~~~~~~~~~~~~~
 
 Measure a short code-path latency or compute a tight deadline where call overhead matters.
-``HighResSteadyClock`` reads POSIX ``CLOCK_MONOTONIC`` on all platforms — the same clock the
-time slave uses to stamp Sync frames, so its readings can be combined with ``VehicleTime``
-reference stamps. The read normally involves no kernel call: on QNX SDP 8.0, libc computes
-``CLOCK_MONOTONIC`` in userspace from the hardware cycle counter and the syspage ``qtime`` data;
-on Linux it is served by the vDSO when the active clocksource supports it (e.g. TSC,
-``arch_sys_counter``). Resolution is that of the hardware counter. It uses the same ``Now()``
-snapshot pattern as all clock domains, with no status check required.
+``HighResSteadyClock`` uses a standard system clock (``CLOCK_MONOTONIC``) that measures elapsed
+time since the system started up. Because this is the exact same clock used to timestamp Sync
+frames, you can seamlessly combine its readings with ``VehicleTime`` timestamps.
+
+To keep things fast, checking this clock doesn't require a slow request to the operating system's
+kernel. Instead, on both QNX SDP 8.0 and Linux, the system reads the CPU's built-in hardware
+counter directly. This gives the most precise timing possible with zero lag or extra system
+overhead.
 
 .. raw:: html
 
