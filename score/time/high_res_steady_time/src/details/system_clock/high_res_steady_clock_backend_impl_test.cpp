@@ -66,7 +66,7 @@ std::int64_t ReadNs(const clockid_t id)
 TEST_F(HighResSteadyClockBackendImplTest, NowIsBasedOnClockMonotonic)
 {
     RecordProperty("Description",
-                   "Regression test for GH #310: Now() must share CLOCK_MONOTONIC's epoch (as used by the time "
+                   "Regression test for issue #310: Now() must share CLOCK_MONOTONIC's epoch (as used by the time "
                    "slave for local_time), not CLOCK_REALTIME's. The reading must lie between two direct "
                    "CLOCK_MONOTONIC reads and be far from CLOCK_REALTIME.");
     RecordProperty("Verifies", "score::time::high_res_steady_time::sys_time::HighResSteadyClockBackendImpl::Now()");
