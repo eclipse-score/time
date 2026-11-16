@@ -22,6 +22,7 @@
 #include <atomic>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <memory>
 #include <optional>
 #include <string>
@@ -36,7 +37,9 @@ namespace td
 /// \brief The class implements shared memory handling
 ///
 /// \details Only one thread at a time, across all processes, may call Send(). Slots use per-slot seqlocks.
-///          Payload accesses are not atomic yet; overlapping slot reuse and reads are not C++ data-race-free.
+///          The payload is stored as an array of relaxed atomic words, so a reader overlapping a write (slot
+///          reuse) is not a C++ data race. Torn snapshots are detected through the seqlock counter, with
+///          acquire/release fences ordering the payload accesses against the counter accesses.
 ///
 template <typename DataType>
 class SharedMemoryHandler
@@ -84,6 +87,8 @@ class SharedMemoryHandler
 
     static constexpr std::size_t kCacheLineSize{64U};
     static constexpr std::uint32_t kNumberOfSlots{4U};
+    static constexpr std::size_t kNumberOfPayloadWords{(sizeof(DataType) + sizeof(std::uint64_t) - 1U) /
+                                                       sizeof(std::uint64_t)};
 
     ///
     /// \brief Common type to store seqlock and specified data
@@ -103,9 +108,10 @@ class SharedMemoryHandler
         /// \brief seq_ seqlock counter: odd while a write is in progress, even otherwise.
         std::atomic<std::uint64_t> seq_{0U};
 
-        /// \brief data_ specific data placed in share dmemory region. Note: It has to be trivially copyable with
-        // trivial simple types that are not allocated on heap!
-        DataType data_{};
+        /// \brief words_ payload (a DataType object representation) placed in the shared memory region, stored as
+        /// atomic words so that concurrent access by reader and writer is well defined. DataType has to be trivially
+        /// copyable with simple types that are not allocated on heap!
+        std::array<std::atomic<std::uint64_t>, kNumberOfPayloadWords> words_{};
     };
 
     struct alignas(kCacheLineSize) SharedData
@@ -178,18 +184,26 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
         for (std::uint8_t retry_cnt = 0U; retry_cnt < max_number_of_read_retries_; ++retry_cnt)
         {
             const auto slot_index =
-                shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) % kNumberOfSlots;
+                shared_memory_data_->published_slot_.load(std::memory_order_acquire) % kNumberOfSlots;
             const auto& slot = shared_memory_data_->slots_[slot_index];
-            const auto seq_before_read = slot.seq_.load(std::memory_order_seq_cst);
+            const auto seq_before_read = slot.seq_.load(std::memory_order_acquire);
 
             if (NoWriteInProgress(seq_before_read))
             {
-                // Copy the payload
-                read_data = slot.data_;
+                // Copy the payload (relaxed atomic words, so overlapping a write is not a data race)
+                std::array<std::uint64_t, kNumberOfPayloadWords> words{};
+                for (std::size_t i = 0U; i < kNumberOfPayloadWords; ++i)
+                {
+                    words[i] = slot.words_[i].load(std::memory_order_relaxed);
+                }
+
+                // Order the payload loads before the validating re-read of the counter
+                std::atomic_thread_fence(std::memory_order_acquire);
 
                 // Unchanged counter: no write started or completed during the copy
-                if (slot.seq_.load(std::memory_order_seq_cst) == seq_before_read)
+                if (slot.seq_.load(std::memory_order_relaxed) == seq_before_read)
                 {
+                    std::memcpy(&read_data, words.data(), sizeof(DataType));
                     return read_data;
                 }
             }
@@ -212,13 +226,22 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
         auto& slot = shared_memory_data_->slots_[next_slot];
 
         // Single writer: counter becomes odd to signal write in progress
-        const auto seq = slot.seq_.fetch_add(1U, std::memory_order_seq_cst);
+        const auto seq = slot.seq_.load(std::memory_order_relaxed);
+        slot.seq_.store(seq + 1U, std::memory_order_relaxed);
 
-        slot.data_ = data;
+        // Order the odd counter store before the payload stores
+        std::atomic_thread_fence(std::memory_order_release);
+
+        std::array<std::uint64_t, kNumberOfPayloadWords> words{};
+        std::memcpy(words.data(), &data, sizeof(DataType));
+        for (std::size_t i = 0U; i < kNumberOfPayloadWords; ++i)
+        {
+            slot.words_[i].store(words[i], std::memory_order_relaxed);
+        }
 
         // Even again: publishes the payload to readers
-        slot.seq_.store(seq + 2U, std::memory_order_seq_cst);
-        shared_memory_data_->published_slot_.store(next_slot, std::memory_order_seq_cst);
+        slot.seq_.store(seq + 2U, std::memory_order_release);
+        shared_memory_data_->published_slot_.store(next_slot, std::memory_order_release);
     }
 }
 
