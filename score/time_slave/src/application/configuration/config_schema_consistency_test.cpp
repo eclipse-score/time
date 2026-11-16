@@ -43,8 +43,7 @@ namespace
 {
 
 namespace cs = config_schema;
-using score::json::GetAttribute;
-using score::json::Object;
+using JsonObject = score::json::Object;
 
 /// Schema keywords the parser implements. Anything else (enum, pattern, exclusiveMinimum,
 /// minLength, ...) would be silently ignored at runtime, so it must fail this test.
@@ -63,12 +62,12 @@ class SchemaConsistencyTest : public ::testing::Test
         auto parsed = parser.FromFile(path);
         ASSERT_TRUE(parsed.has_value()) << "cannot parse schema " << path;
         root_any_ = std::move(parsed).value();
-        const auto root = root_any_.As<Object>();
+        const auto root = root_any_.As<JsonObject>();
         ASSERT_TRUE(root.has_value());
         root_ = &root.value().get();
     }
 
-    static std::set<std::string> Keys(const Object& obj)
+    static std::set<std::string> Keys(const JsonObject& obj)
     {
         std::set<std::string> keys;
         for (const auto& entry : obj)
@@ -78,15 +77,15 @@ class SchemaConsistencyTest : public ::testing::Test
         return keys;
     }
 
-    static const Object& Child(const Object& obj, std::string_view key)
+    static const JsonObject& Child(const JsonObject& obj, std::string_view key)
     {
-        const auto r = GetAttribute<Object>(std::cref(obj), key);
+        const auto r = score::json::GetAttribute<JsonObject>(std::cref(obj), key);
         EXPECT_TRUE(r.has_value()) << "missing object '" << key << "'";
-        static const Object kEmpty;
+        static const JsonObject kEmpty;
         return r.has_value() ? r.value().get() : kEmpty;
     }
 
-    static void ExpectKeywordsSubsetOf(const Object& obj,
+    static void ExpectKeywordsSubsetOf(const JsonObject& obj,
                                        const std::set<std::string>& allowed,
                                        const std::string& where,
                                        bool allow_root_only = false)
@@ -99,27 +98,27 @@ class SchemaConsistencyTest : public ::testing::Test
         }
     }
 
-    static std::string Type(const Object& obj)
+    static std::string Type(const JsonObject& obj)
     {
-        const auto r = GetAttribute<std::string_view>(std::cref(obj), "type");
+        const auto r = score::json::GetAttribute<std::string_view>(std::cref(obj), "type");
         return r.has_value() ? std::string{r.value()} : std::string{};
     }
 
     /// Check an object schema: closed set of properties, and exactly the table's keys.
     template <std::size_t N>
-    static void ExpectObjectMatches(const Object& schema,
+    static void ExpectObjectMatches(const JsonObject& schema,
                                     const std::array<std::string_view, N>& table_keys,
                                     const std::string& where,
                                     bool is_root)
     {
         ExpectKeywordsSubsetOf(schema, kObjectKeywords, where, is_root);
         EXPECT_EQ(Type(schema), "object") << where;
-        const auto additional = GetAttribute<bool>(std::cref(schema), "additionalProperties");
+        const auto additional = score::json::GetAttribute<bool>(std::cref(schema), "additionalProperties");
         ASSERT_TRUE(additional.has_value()) << where << " must declare additionalProperties";
         EXPECT_FALSE(additional.value()) << where << ": the parser rejects unknown keys";
         if (schema.find("required") != schema.end())
         {
-            const auto required = GetAttribute<score::json::List>(std::cref(schema), "required");
+            const auto required = score::json::GetAttribute<score::json::List>(std::cref(schema), "required");
             ASSERT_TRUE(required.has_value());
             EXPECT_EQ(required.value().get().size(), 0U) << where << ": the parser does not support required keys";
         }
@@ -133,15 +132,15 @@ class SchemaConsistencyTest : public ::testing::Test
         EXPECT_EQ(schema_keys, table) << "schema properties and parser table differ at '" << where << "'";
     }
 
-    static void ExpectInt(const Object& props, const cs::IntProperty& p)
+    static void ExpectInt(const JsonObject& props, const cs::IntProperty& p)
     {
         const std::string key{p.key};
-        const Object& s = Child(props, key);
+        const JsonObject& s = Child(props, key);
         ExpectKeywordsSubsetOf(s, kScalarKeywords, key);
         EXPECT_EQ(Type(s), "integer") << key;
-        const auto min = GetAttribute<std::int64_t>(std::cref(s), "minimum");
-        const auto max = GetAttribute<std::int64_t>(std::cref(s), "maximum");
-        const auto def = GetAttribute<std::int64_t>(std::cref(s), "default");
+        const auto min = score::json::GetAttribute<std::int64_t>(std::cref(s), "minimum");
+        const auto max = score::json::GetAttribute<std::int64_t>(std::cref(s), "maximum");
+        const auto def = score::json::GetAttribute<std::int64_t>(std::cref(s), "default");
         EXPECT_EQ(min.has_value() ? min.value() : std::numeric_limits<std::int64_t>::min(), p.min) << key;
         EXPECT_EQ(max.has_value() ? max.value() : std::numeric_limits<std::int64_t>::max(), p.max) << key;
         ASSERT_TRUE(def.has_value()) << key << " needs a default";
@@ -150,36 +149,36 @@ class SchemaConsistencyTest : public ::testing::Test
         EXPECT_LE(p.default_value, p.max) << key << ": default outside range";
     }
 
-    static void ExpectBool(const Object& props, const cs::BoolProperty& p)
+    static void ExpectBool(const JsonObject& props, const cs::BoolProperty& p)
     {
         const std::string key{p.key};
-        const Object& s = Child(props, key);
+        const JsonObject& s = Child(props, key);
         ExpectKeywordsSubsetOf(s, kScalarKeywords, key);
         EXPECT_EQ(Type(s), "boolean") << key;
-        const auto def = GetAttribute<bool>(std::cref(s), "default");
+        const auto def = score::json::GetAttribute<bool>(std::cref(s), "default");
         ASSERT_TRUE(def.has_value()) << key << " needs a default";
         EXPECT_EQ(def.value(), p.default_value) << key;
     }
 
-    static void ExpectString(const Object& props, const cs::StringProperty& p)
+    static void ExpectString(const JsonObject& props, const cs::StringProperty& p)
     {
         const std::string key{p.key};
-        const Object& s = Child(props, key);
+        const JsonObject& s = Child(props, key);
         ExpectKeywordsSubsetOf(s, kScalarKeywords, key);
         EXPECT_EQ(Type(s), "string") << key;
-        const auto def = GetAttribute<std::string_view>(std::cref(s), "default");
+        const auto def = score::json::GetAttribute<std::string_view>(std::cref(s), "default");
         ASSERT_TRUE(def.has_value()) << key << " needs a default";
         EXPECT_EQ(def.value(), p.default_value) << key;
     }
 
     score::json::Any root_any_;
-    const Object* root_{nullptr};
+    const JsonObject* root_{nullptr};
 };
 
 TEST_F(SchemaConsistencyTest, RootMatchesTable)
 {
     ExpectObjectMatches(*root_, cs::kRootKeys, "<root>", true);
-    const Object& props = Child(*root_, "properties");
+    const JsonObject& props = Child(*root_, "properties");
     ExpectString(props, cs::kIfaceName);
     ExpectInt(props, cs::kDomainNumber);
     ExpectInt(props, cs::kPdelayReqIntervalMs);
@@ -191,9 +190,9 @@ TEST_F(SchemaConsistencyTest, RootMatchesTable)
 
 TEST_F(SchemaConsistencyTest, PhcMatchesTable)
 {
-    const Object& phc = Child(Child(*root_, "properties"), cs::kPhcKey);
+    const JsonObject& phc = Child(Child(*root_, "properties"), cs::kPhcKey);
     ExpectObjectMatches(phc, cs::kPhcKeys, "phc", false);
-    const Object& props = Child(phc, "properties");
+    const JsonObject& props = Child(phc, "properties");
     ExpectBool(props, cs::kPhcEnabled);
     ExpectString(props, cs::kPhcDevice);
     ExpectInt(props, cs::kPhcStepThresholdNs);
@@ -201,9 +200,9 @@ TEST_F(SchemaConsistencyTest, PhcMatchesTable)
 
 TEST_F(SchemaConsistencyTest, QnxMatchesTable)
 {
-    const Object& qnx = Child(Child(*root_, "properties"), cs::kQnxKey);
+    const JsonObject& qnx = Child(Child(*root_, "properties"), cs::kQnxKey);
     ExpectObjectMatches(qnx, cs::kQnxKeys, "qnx", false);
-    const Object& props = Child(qnx, "properties");
+    const JsonObject& props = Child(qnx, "properties");
     ExpectString(props, cs::kQnxBpfDevicePath);
     ExpectBool(props, cs::kQnxSeeSent);
 }

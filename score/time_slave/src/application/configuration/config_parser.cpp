@@ -31,7 +31,7 @@ namespace ts
 namespace
 {
 
-using score::json::Object;
+using JsonObject = score::json::Object;
 
 namespace cs = config_schema;
 
@@ -41,14 +41,14 @@ namespace cs = config_schema;
 /// Types are checked strictly: score::json::Any::As<arithmetic>() converts JSON booleans to
 /// numbers and numbers to booleans, which the schema forbids, so the stored kind is checked first.
 /// Finish() rejects keys the schema does not declare ("additionalProperties": false).
-class ObjectReader
+class JsonObjectReader
 {
   public:
     template <std::size_t N>
-    ObjectReader(const Object& obj,
-                 std::string_view scope,
-                 const std::array<std::string_view, N>& schema_keys,
-                 std::vector<std::string>& errors)
+    JsonObjectReader(const JsonObject& obj,
+                     std::string_view scope,
+                     const std::array<std::string_view, N>& schema_keys,
+                     std::vector<std::string>& errors)
         : obj_{obj}, scope_{scope}, keys_begin_{schema_keys.begin()}, keys_end_{schema_keys.end()}, errors_{errors}
     {
     }
@@ -125,14 +125,14 @@ class ObjectReader
     }
 
     /// Read a nested object property. Returns nullptr if the key is missing or not an object.
-    const Object* NestedObject(std::string_view key)
+    const JsonObject* NestedObject(std::string_view key)
     {
         const auto* value = Find(key);
         if (value == nullptr)
         {
             return nullptr;
         }
-        const auto result = value->As<Object>();
+        const auto result = value->As<JsonObject>();
         if (!result.has_value())
         {
             Error(key, "has wrong type: expected object");
@@ -169,7 +169,7 @@ class ObjectReader
         errors_.push_back("Config field '" + name + "' " + reason);
     }
 
-    const Object& obj_;
+    const JsonObject& obj_;
     std::string_view scope_;
     const std::string_view* keys_begin_;
     const std::string_view* keys_end_;
@@ -177,14 +177,14 @@ class ObjectReader
 };
 
 /// Parse the optional "phc" nested object. If absent, @p cfg keeps defaults.
-void ParsePhcConfig(ObjectReader& root, std::vector<std::string>& errors, details::PhcConfig& cfg)
+void ParsePhcConfig(JsonObjectReader& root, std::vector<std::string>& errors, details::PhcConfig& cfg)
 {
-    const Object* phc_obj = root.NestedObject(cs::kPhcKey);
+    const JsonObject* phc_obj = root.NestedObject(cs::kPhcKey);
     if (phc_obj == nullptr)
     {
         return;
     }
-    ObjectReader reader{*phc_obj, cs::kPhcKey, cs::kPhcKeys, errors};
+    JsonObjectReader reader{*phc_obj, cs::kPhcKey, cs::kPhcKeys, errors};
     reader.Bool(cs::kPhcEnabled, cfg.enabled);
     reader.String(cs::kPhcDevice, cfg.device);
     reader.Int<cs::kPhcStepThresholdNs>(cfg.step_threshold_ns);
@@ -192,14 +192,14 @@ void ParsePhcConfig(ObjectReader& root, std::vector<std::string>& errors, detail
 }
 
 /// Parse the optional "qnx" nested object. If absent, @p qnx keeps defaults.
-void ParseQnxConfig(ObjectReader& root, std::vector<std::string>& errors, TimeSlaveConfig::QnxSettings& qnx)
+void ParseQnxConfig(JsonObjectReader& root, std::vector<std::string>& errors, TimeSlaveConfig::QnxSettings& qnx)
 {
-    const Object* qnx_obj = root.NestedObject(cs::kQnxKey);
+    const JsonObject* qnx_obj = root.NestedObject(cs::kQnxKey);
     if (qnx_obj == nullptr)
     {
         return;
     }
-    ObjectReader reader{*qnx_obj, cs::kQnxKey, cs::kQnxKeys, errors};
+    JsonObjectReader reader{*qnx_obj, cs::kQnxKey, cs::kQnxKeys, errors};
     reader.String(cs::kQnxBpfDevicePath, qnx.bpf_device_path);
     reader.Bool(cs::kQnxSeeSent, qnx.see_sent);
     reader.Finish();
@@ -219,7 +219,7 @@ ConfigParseResult ParseConfig(const std::string& path)
         return result;
     }
 
-    const auto obj_result = root_result.value().As<Object>();
+    const auto obj_result = root_result.value().As<JsonObject>();
     if (!obj_result.has_value())
     {
         result.errors.push_back("Config file '" + path + "' root is not a JSON object");
@@ -229,7 +229,7 @@ ConfigParseResult ParseConfig(const std::string& path)
     auto& cfg = result.config;
     auto& opts = cfg.engine_opts;
 
-    ObjectReader reader{obj_result.value().get(), "", cs::kRootKeys, result.errors};
+    JsonObjectReader reader{obj_result.value().get(), "", cs::kRootKeys, result.errors};
     reader.String(cs::kIfaceName, opts.iface_name);
     reader.Int<cs::kDomainNumber>(opts.domain_number);
     reader.Int<cs::kPdelayReqIntervalMs>(opts.pdelay_req_interval_ms);
