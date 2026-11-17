@@ -24,6 +24,7 @@ Time
    :safety: ASIL_B
    :security: NO
    :realizes: wp__cmpt_request
+   :belongs_to: comp__time
    :tags: time
 
 .. comp:: Time

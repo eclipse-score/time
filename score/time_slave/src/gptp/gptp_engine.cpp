@@ -68,6 +68,7 @@ GptpEngine::~GptpEngine() noexcept
     Deinitialize();
 }
 
+// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting
 bool GptpEngine::Initialize()
 {
     if (running_.load(std::memory_order_acquire))
@@ -132,6 +133,7 @@ bool GptpEngine::Initialize()
     return true;
 }
 
+// req-Id: comp_req__time_slave__shutdown
 bool GptpEngine::Deinitialize()
 {
     running_.store(false, std::memory_order_release);
@@ -148,6 +150,7 @@ bool GptpEngine::Deinitialize()
     return true;
 }
 
+// req-Id: comp_req__time_slave__sync_publishing
 void GptpEngine::FinalizeSnapshot() noexcept
 {
     if (!running_.load(std::memory_order_acquire))
@@ -179,6 +182,7 @@ bool GptpEngine::ReadPTPSnapshot(score::ts::GptpIpcData& data) const noexcept
     return true;
 }
 
+// req-Id: comp_req__time_slave__error_reporting
 void GptpEngine::RxLoop() noexcept
 {
     std::uint8_t buf[kRxBufferSize];
@@ -194,6 +198,7 @@ void GptpEngine::RxLoop() noexcept
     }
 }
 
+// req-Id: comp_req__time_slave__pdelay_req
 void GptpEngine::PdelayLoop() noexcept
 {
     ::timespec next{};
@@ -242,6 +247,7 @@ void GptpEngine::PdelayLoop() noexcept
     }
 }
 
+// req-Id: comp_req__time_slave__error_reporting
 void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timespec& hwts) noexcept
 {
     int ptp_offset = 0;
@@ -259,11 +265,13 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
 
     switch (msg.msgtype)
     {
+        // req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering
         case kPtpMsgtypePdelayReq:
             if (msg.ptpHdr.domainNumber == opts_.domain_number)
                 SendPDelayResponseAndFollowUp(msg, hw_ts);
             break;
 
+        // req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering
         case kPtpMsgtypeSync:
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
                 break;
@@ -272,6 +280,8 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             sync_sm_.OnSync(msg);
             break;
 
+        // req-Id: comp_req__time_slave__followup_processing, comp_req__time_slave__offset_calculation
+        // req-Id: comp_req__time_slave__domain_filtering
         case kPtpMsgtypeFollowUp:
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
                 break;
@@ -296,6 +306,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             }
             break;
 
+        // req-Id: comp_req__time_slave__pdelay_resp_reception
         case kPtpMsgtypePdelayResp:
             msg.recvHardwareTS = hw_ts;
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp.requestReceiptTimestamp);
@@ -303,6 +314,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
                 pdelay_->OnResponse(msg);
             break;
 
+        // req-Id: comp_req__time_slave__pdelay_resp_fu_rx
         case kPtpMsgtypePdelayRespFollowUp:
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp_fup.responseOriginReceiptTimestamp);
             if (pdelay_)
@@ -314,6 +326,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     }
 }
 
+// req-Id: comp_req__time_slave__sync_publishing
 void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdelay) noexcept
 {
     const double rate_ratio = sync_sm_.GetNeighborRateRatio();
@@ -358,6 +371,7 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
     }
 }
 
+// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering
 void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) noexcept
 {
     const ClockIdentity& ci = identity_->GetClockIdentity();

@@ -14,12 +14,13 @@
 
 
 .. document:: Time Sync Client Requirements Inspection Checklist
-  :id: doc__ts_client_req_inspection
+  :id: doc__time_sync_client_req_inspection
   :status: draft
   :version: 2
   :safety: ASIL_B
   :security: NO
   :realizes: wp__requirements_inspect
+  :belongs_to: comp__ts_client
   :tags: ts_client
 
 .. note::

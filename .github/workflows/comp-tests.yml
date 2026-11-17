@@ -16,18 +16,9 @@ name: Test / Component Tests
 permissions:
   contents: read
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
+# Regular CI runs the component tests in docs.yml; this workflow is for manual runs only.
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
-  push:
-    branches:
-      - main
-  merge_group:
-    types: [checks_requested]
+  workflow_dispatch:
 
 jobs:
   run-comp-tests:
@@ -37,5 +28,5 @@ jobs:
       pull-requests: read
     with:
       bazel-target: 'test --config=x86_64-linux //score/...'
-      upload-name: 'bazel-testlogs'
+      upload-name: 'tests-report'
       packages: 'fakechroot'
