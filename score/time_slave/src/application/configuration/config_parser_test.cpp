@@ -163,6 +163,31 @@ TEST(ConfigParserTest, FullExampleConfigRoundTrip)
     EXPECT_TRUE(cfg.qnx.see_sent);
 }
 
+TEST(ConfigParserTest, DirectoryPathReturnsDefaults)
+{
+    const auto cfg = ParseConfig(testing::TempDir());
+
+    EXPECT_EQ(cfg.engine_opts.iface_name, "emac0");
+    EXPECT_EQ(cfg.shm_path, "/gptp_shmem");
+    EXPECT_FALSE(cfg.engine_opts.phc_config.enabled);
+}
+
+TEST(ConfigParserTest, NonExistentPathReturnsDefaults)
+{
+    const auto cfg = ParseConfig(testing::TempDir() + "does_not_exist.json");
+
+    EXPECT_EQ(cfg.engine_opts.iface_name, "emac0");
+    EXPECT_EQ(cfg.shm_path, "/gptp_shmem");
+}
+
+TEST(ConfigParserTest, InvalidJsonReturnsDefaults)
+{
+    const auto cfg = ParseConfig(WriteTempFile("invalid_config.json", "{not json"));
+
+    EXPECT_EQ(cfg.engine_opts.iface_name, "emac0");
+    EXPECT_EQ(cfg.shm_path, "/gptp_shmem");
+}
+
 }  // namespace
 }  // namespace ts
 }  // namespace score

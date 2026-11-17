@@ -68,6 +68,7 @@ GptpEngine::~GptpEngine() noexcept
     Deinitialize();
 }
 
+// req-Id: comp_req__time_slave__startup, comp_req__time_slave__error_reporting
 bool GptpEngine::Initialize()
 {
     if (running_.load(std::memory_order_acquire))
@@ -132,6 +133,7 @@ bool GptpEngine::Initialize()
     return true;
 }
 
+// req-Id: comp_req__time_slave__shutdown
 bool GptpEngine::Deinitialize()
 {
     running_.store(false, std::memory_order_release);
@@ -148,6 +150,7 @@ bool GptpEngine::Deinitialize()
     return true;
 }
 
+// req-Id: comp_req__time_slave__sync_publishing
 void GptpEngine::FinalizeSnapshot() noexcept
 {
     if (!running_.load(std::memory_order_acquire))
@@ -163,7 +166,9 @@ void GptpEngine::FinalizeSnapshot() noexcept
     {
         current_snapshot_.status.is_synchronized = false;
         current_snapshot_.status.is_timeout = true;
-        current_snapshot_.status.is_correct = false;
+        // The record is valid and carries a legitimate timeout; is_correct == false would make consumers
+        // discard all flags (see ConvertPtpStatus), also for a timeout before the first Sync/FollowUp.
+        current_snapshot_.status.is_correct = true;
     }
 }
 
@@ -177,6 +182,7 @@ bool GptpEngine::ReadPTPSnapshot(score::ts::GptpIpcData& data) const noexcept
     return true;
 }
 
+// req-Id: comp_req__time_slave__error_reporting
 void GptpEngine::RxLoop() noexcept
 {
     std::uint8_t buf[kRxBufferSize];
@@ -192,6 +198,7 @@ void GptpEngine::RxLoop() noexcept
     }
 }
 
+// req-Id: comp_req__time_slave__pdelay_req
 void GptpEngine::PdelayLoop() noexcept
 {
     ::timespec next{};
@@ -240,6 +247,7 @@ void GptpEngine::PdelayLoop() noexcept
     }
 }
 
+// req-Id: comp_req__time_slave__error_reporting
 void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timespec& hwts) noexcept
 {
     int ptp_offset = 0;
@@ -257,11 +265,13 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
 
     switch (msg.msgtype)
     {
+        // req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering
         case kPtpMsgtypePdelayReq:
             if (msg.ptpHdr.domainNumber == opts_.domain_number)
                 SendPDelayResponseAndFollowUp(msg, hw_ts);
             break;
 
+        // req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering
         case kPtpMsgtypeSync:
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
                 break;
@@ -270,6 +280,8 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             sync_sm_.OnSync(msg);
             break;
 
+        // req-Id: comp_req__time_slave__followup_processing, comp_req__time_slave__offset_calculation
+        // req-Id: comp_req__time_slave__domain_filtering
         case kPtpMsgtypeFollowUp:
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
                 break;
@@ -294,6 +306,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
             }
             break;
 
+        // req-Id: comp_req__time_slave__pdelay_resp_reception
         case kPtpMsgtypePdelayResp:
             msg.recvHardwareTS = hw_ts;
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp.requestReceiptTimestamp);
@@ -301,6 +314,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
                 pdelay_->OnResponse(msg);
             break;
 
+        // req-Id: comp_req__time_slave__pdelay_resp_fu_rx
         case kPtpMsgtypePdelayRespFollowUp:
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp_fup.responseOriginReceiptTimestamp);
             if (pdelay_)
@@ -312,6 +326,7 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     }
 }
 
+// req-Id: comp_req__time_slave__sync_publishing
 void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdelay) noexcept
 {
     const double rate_ratio = sync_sm_.GetNeighborRateRatio();
@@ -328,7 +343,9 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
         pending_snapshot_.status.is_timeout = false;
         pending_snapshot_.status.is_time_jump_future = sync.is_time_jump_future;
         pending_snapshot_.status.is_time_jump_past = sync.is_time_jump_past;
-        pending_snapshot_.status.is_correct = !sync.is_time_jump_future && !sync.is_time_jump_past;
+        // Timeout and time jumps are reported by their own flags; clearing is_correct would make consumers
+        // drop all flags (see ConvertPtpStatus), hiding exactly these conditions.
+        pending_snapshot_.status.is_correct = true;
 
         pending_snapshot_.sync_fup_data = sync.sync_fup_data;
         pending_snapshot_.pdelay_data = pdelay.pdelay_data;
@@ -354,6 +371,7 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
     }
 }
 
+// req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering
 void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) noexcept
 {
     const ClockIdentity& ci = identity_->GetClockIdentity();
@@ -384,7 +402,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
         return;
 
     ::timespec hwts{};
-    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0)
+    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0 || !HasTimestamp(hwts))
         return;
     const TmvT t3{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
 
