@@ -2,7 +2,7 @@
   {
     "name": "GptpEngineTest__Deinitialize_WhenNotInitialized_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "309",
+    "line": "338",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -16,7 +16,7 @@
   {
     "name": "GptpEngineTest__Deinitialize_CalledTwice_BothReturnTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "314",
+    "line": "343",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -30,7 +30,7 @@
   {
     "name": "GptpEngineTest__ReadPTPSnapshot_WhenNotInitialized_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "320",
+    "line": "349",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -44,7 +44,7 @@
   {
     "name": "GptpEngineTest__ReadPTPSnapshot_InfoUnchanged_WhenNotInitialized",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "326",
+    "line": "355",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -58,7 +58,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_WithFakeSocket_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "336",
+    "line": "365",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -72,7 +72,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_CalledTwice_ReturnsTrueOnSecondCall",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "341",
+    "line": "370",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -86,7 +86,7 @@
   {
     "name": "GptpEngineFakeTest__Deinitialize_AfterInitialize_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "347",
+    "line": "376",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -100,7 +100,7 @@
   {
     "name": "GptpEngineFakeTest__ReadPTPSnapshot_AfterInitialize_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "353",
+    "line": "382",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -114,7 +114,7 @@
   {
     "name": "GptpEngineFakeTest__ReadPTPSnapshot_NotSynchronized_BeforeAnySync",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "361",
+    "line": "390",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -128,7 +128,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_HwTsUnavailable_StillReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "383",
+    "line": "412",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -142,7 +142,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_SyncFollowUp_SnapshotBecomesSync",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "391",
+    "line": "420",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -156,7 +156,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_MultipleSyncFup_SnapshotUpdated",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "410",
+    "line": "439",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -170,7 +170,21 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_PdelayRespSequence_DoesNotCrash",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "425",
+    "line": "454",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "GptpEngineFakeTest__PdelayReq_Response_TimestampsInNetworkByteOrder",
+    "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
+    "line": "501",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -184,7 +198,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_UnknownMsgtype_DefaultBranchNocrash",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "438",
+    "line": "525",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -198,7 +212,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TooShortFrame_EarlyReturn",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "447",
+    "line": "534",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -212,7 +226,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TwoSyncFup_TimeJumpFuture_Detected",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "547",
+    "line": "634",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -226,7 +240,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TwoSyncFup_TimeJumpPast_Detected",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "573",
+    "line": "660",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -240,7 +254,7 @@
   {
     "name": "GptpEngineIdentityFailTest__Initialize_IdentityResolveFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "372",
+    "line": "401",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -254,7 +268,21 @@
   {
     "name": "GptpEngineTimeoutTest__ReadPTPSnapshot_TimeoutPath_IsTimeoutSet",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "456",
+    "line": "543",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "GptpEngineTimeoutTest__ReadPTPSnapshot_TimeoutBeforeFirstSync_FlagIsReported",
+    "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
+    "line": "686",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -268,7 +296,7 @@
   {
     "name": "GptpEngineRealSocketTest__Initialize_NonExistentInterface_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "504",
+    "line": "591",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -282,7 +310,7 @@
   {
     "name": "GptpEngineSocketFailTest__Initialize_SocketOpenFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "516",
+    "line": "603",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1834,6 +1862,48 @@
     "FullyVerifies": null
   },
   {
+    "name": "ConfigParserTest__DirectoryPathReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "166",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "ConfigParserTest__NonExistentPathReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "175",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "ConfigParserTest__InvalidJsonReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "183",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "GetEnvWithDefaultTest__ReturnsDefaultWhenEnvVarUnset",
     "file": "score/time_slave/src/common/definitions_test.cpp",
     "line": "54",
@@ -2464,7 +2534,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__JumpToPastWithinThresholdIsNotFlagged",
+    "name": "TimeJumpsValidatorTest__RepeatedDeliveryOfSameFrameDoesNotClearTimeJump",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "103",
     "result": "passed",
@@ -2478,7 +2548,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__JumpToFutureWithinThresholdIsNotFlagged",
+    "name": "TimeJumpsValidatorTest__JumpToPastWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "149",
     "result": "passed",
@@ -2492,9 +2562,51 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__StaysInInitialSyncDebouncingWhenThresholdNotElapsed",
+    "name": "TimeJumpsValidatorTest__JumpToFutureWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "195",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__StaysInInitialSyncDebouncingWhenThresholdNotElapsed",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "241",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedInIdleState",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "281",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDebouncing",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "302",
     "result": "passed",
     "repo_name": null,
     "hash": null,
