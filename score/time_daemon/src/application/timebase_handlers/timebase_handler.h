@@ -78,6 +78,12 @@ class TimebaseHandler
     /// Signals the handler to stop its operation and clean up resources. Should
     /// return quickly and not throw exceptions.
     virtual void Stop() noexcept = 0;
+
+    /// \brief Reports whether initialization failed
+    ///
+    /// Returns true once the handler gave up on its own, e.g. an initialization timeout.
+    /// A stop requested from outside is not a failure. Call from the thread that calls RunOnce().
+    virtual bool IsFailed() const noexcept = 0;
 };
 
 }  // namespace td
