@@ -661,7 +661,7 @@
       "CodeLinks": [
         {
           "file": "score/time_slave/src/application/configuration/config_parser.cpp",
-          "line": 124,
+          "line": 126,
           "tag": "// req-Id:",
           "need": "comp_req__time_slave__configuration",
           "full_line": "// req-Id: comp_req__time_slave__configuration",

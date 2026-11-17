@@ -1848,6 +1848,48 @@
     "FullyVerifies": null
   },
   {
+    "name": "ConfigParserTest__DirectoryPathReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "166",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "ConfigParserTest__NonExistentPathReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "175",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "ConfigParserTest__InvalidJsonReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "183",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "GetEnvWithDefaultTest__ReturnsDefaultWhenEnvVarUnset",
     "file": "score/time_slave/src/common/definitions_test.cpp",
     "line": "54",
