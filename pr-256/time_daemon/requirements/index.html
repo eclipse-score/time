@@ -484,7 +484,7 @@
                   
   <section id="time-daemon-component-requirements">
 <h1>Time Daemon Component Requirements<a class="headerlink" href="#time-daemon-component-requirements" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-c941a7ea">
+<div class="need_container docutils container" id="SNCB-a8d4a777">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_daemon_requirements">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -533,7 +533,7 @@
 <h2>Functional Requirements<a class="headerlink" href="#functional-requirements" title="Link to this heading">#</a></h2>
 <section id="initialization-and-lifecycle">
 <h3>Initialization and Lifecycle<a class="headerlink" href="#initialization-and-lifecycle" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-19c6d015">
+<div class="need_container docutils container" id="SNCB-7878689b">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__startup">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -563,7 +563,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>On startup the time_daemon component shall apply its configuration and become ready to receive time synchronization data from the time_slave component and to provide time data to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>).</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>On startup the time_daemon component shall apply its configuration and become ready to receive time synchronization data from its time data sources and to provide time data to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>).</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__startup" title="comp_req__time_daemon__startup">comp_req__time_daemon__startup</a></span></span></div>
@@ -579,7 +579,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-3ead8970">
+<div class="need_container docutils container" id="SNCB-0c8b83db">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__init_timeout">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -609,7 +609,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>If the time_daemon component does not complete its startup within 20 seconds, it shall not provide time data to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>) and shall not retry the startup.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>If initialization of a time base does not complete within the configured startup timeout, the time_daemon component shall not provide time data for that time base and shall not retry its initialization.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__init_timeout" title="comp_req__time_daemon__init_timeout">comp_req__time_daemon__init_timeout</a></span></span></div>
@@ -625,7 +625,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-21fe6fcb">
+<div class="need_container docutils container" id="SNCB-594af440">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__shutdown">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -671,7 +671,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-342f6fbc">
+<div class="need_container docutils container" id="SNCB-36f1d9b9">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__start_order_indep">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -701,7 +701,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not require the time_slave component to be started before it. If the time_slave component is not yet available on startup, the time_daemon component shall continue its own startup and retry establishing the time synchronization channel with the time_slave component until it succeeds or the startup timeout expires.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not depend on the start order of its time data sources (e.g. the time_slave component). If a time data source is not yet available on startup, the time_daemon component shall continue its own startup without blocking on it and retry establishing the connection to it until it succeeds or the startup timeout expires.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__start_order_indep" title="comp_req__time_daemon__start_order_indep">comp_req__time_daemon__start_order_indep</a></span></span></div>
@@ -720,7 +720,7 @@
 </section>
 <section id="data-reception-and-validation">
 <h3>Data Reception and Validation<a class="headerlink" href="#data-reception-and-validation" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-54f3dd3a">
+<div class="need_container docutils container" id="SNCB-5d59b323">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_sync_reception">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -750,7 +750,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall receive the time synchronization data provided by the time_slave component.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall receive the time synchronization data provided by its time data sources (e.g. the time_slave component).</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_sync_reception" title="comp_req__time_daemon__time_sync_reception">comp_req__time_daemon__time_sync_reception</a></span></span></div>
@@ -769,7 +769,7 @@
 </section>
 <section id="verification-pipeline">
 <h3>Verification Pipeline<a class="headerlink" href="#verification-pipeline" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-c5d99070">
+<div class="need_container docutils container" id="SNCB-f88ec49f">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__sync_validation">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -815,7 +815,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-eb849876">
+<div class="need_container docutils container" id="SNCB-06ac308b">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__sync_debounce">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -845,7 +845,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not report time jumps during the configured time span (default: 5 seconds) after initial synchronization to avoid spuriously detected time jumps during startup.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not report time jumps during the configured time span after initial synchronization to avoid spuriously detected time jumps during startup.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__sync_debounce" title="comp_req__time_daemon__sync_debounce">comp_req__time_daemon__sync_debounce</a></span></span></div>
@@ -861,7 +861,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-03163b0d">
+<div class="need_container docutils container" id="SNCB-eea1312f">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_jump_detection">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -891,7 +891,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect time jumps when the master clock timestamp of a gPTP time sync data update differs from the expected value by more than the configured time span (default: 500 microseconds). Both forward and backward time jumps shall be detected.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect time jumps when the master clock timestamp of a gPTP time sync data update differs from the expected value by more than the configured time span. Both forward and backward time jumps shall be detected.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_jump_detection" title="comp_req__time_daemon__time_jump_detection">comp_req__time_daemon__time_jump_detection</a></span></span></div>
@@ -907,7 +907,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-9fc640f9">
+<div class="need_container docutils container" id="SNCB-c8598c02">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__timeout_detection">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -937,7 +937,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect timeout condition when no new time synchronization data is received within the configured time span (default: 3.3 seconds).</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect timeout condition when no new time synchronization data is received within the configured time span.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__timeout_detection" title="comp_req__time_daemon__timeout_detection">comp_req__time_daemon__timeout_detection</a></span></span></div>
@@ -956,7 +956,7 @@
 </section>
 <section id="data-provision">
 <h3>Data Provision<a class="headerlink" href="#data-provision" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-770dd6cd">
+<div class="need_container docutils container" id="SNCB-6c407344">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_data_publishing">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1002,7 +1002,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-e5205628">
+<div class="need_container docutils container" id="SNCB-0f56d2f9">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__published_data_content">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1032,7 +1032,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall include in the time data provided to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>, see <a class="reference internal" href="#comp_req__time_daemon__time_data_publishing" title="comp_req__time_daemon__time_data_publishing"><em class="xref need">Time Data Provision (comp_req__time_daemon__time_data_publishing)</em></a>): the timestamp of the master clock, the corresponding timestamp of the local reference clock, the rate deviation between those two clocks, synchronization status, time jump status, and timeout status.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall include in the time data provided to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>, see <a class="reference internal" href="#comp_req__time_daemon__time_data_publishing" title="comp_req__time_daemon__time_data_publishing"><em class="xref need">Time Data Provision (comp_req__time_daemon__time_data_publishing)</em></a>): the timestamp of the master clock, the corresponding timestamp of the local reference clock, and the rate deviation between those two clocks.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__published_data_content" title="comp_req__time_daemon__published_data_content">comp_req__time_daemon__published_data_content</a></span></span></div>
@@ -1048,7 +1048,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-8e574484">
+<div class="need_container docutils container" id="SNCB-6f6dc300">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__published_raw_data">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1094,7 +1094,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-987ec6c3">
+<div class="need_container docutils container" id="SNCB-fc4788ae">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_point_qualifier">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1124,7 +1124,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide the synchronization status, time jump status, and timeout status in the time data provided to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>), such that the time component can derive the time point qualifier (quality indicator) from them.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide the evaluated synchronization status (<a class="reference internal" href="#comp_req__time_daemon__sync_validation" title="comp_req__time_daemon__sync_validation"><em class="xref need">Synchronization Status Vali... (comp_req__time_daemon__sync_validation)</em></a>), time jump status (<a class="reference internal" href="#comp_req__time_daemon__time_jump_detection" title="comp_req__time_daemon__time_jump_detection"><em class="xref need">Time Jump Detection (comp_req__time_daemon__time_jump_detection)</em></a>), and timeout status (<a class="reference internal" href="#comp_req__time_daemon__timeout_detection" title="comp_req__time_daemon__timeout_detection"><em class="xref need">Timeout Detection (comp_req__time_daemon__timeout_detection)</em></a>) together with the received time synchronization data (<a class="reference internal" href="#comp_req__time_daemon__time_sync_reception" title="comp_req__time_daemon__time_sync_reception"><em class="xref need">Time Synchronization Data R... (comp_req__time_daemon__time_sync_reception)</em></a>) to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>).</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_point_qualifier" title="comp_req__time_daemon__time_point_qualifier">comp_req__time_daemon__time_point_qualifier</a></span></span></div>
@@ -1140,7 +1140,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-49baf50c">
+<div class="need_container docutils container" id="SNCB-6c22ee16">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__client_read_access">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1170,7 +1170,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide functionality for client applications to read the time data.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall enable client applications to read the time data.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__client_read_access" title="comp_req__time_daemon__client_read_access">comp_req__time_daemon__client_read_access</a></span></span></div>
@@ -1186,7 +1186,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-d14c423e">
+<div class="need_container docutils container" id="SNCB-5d2d1492">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__non_blocking">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1232,7 +1232,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-b9902ca9">
+<div class="need_container docutils container" id="SNCB-7adf7e8e">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__multi_client">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1281,7 +1281,7 @@
 </section>
 <section id="error-handling-and-recovery">
 <h3>Error Handling and Recovery<a class="headerlink" href="#error-handling-and-recovery" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-f2f8df97">
+<div class="need_container docutils container" id="SNCB-311a2b1f">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__error_reporting">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1291,7 +1291,7 @@
 <td class="head_center" colspan="2"><div class="needs_head line-block">
 <div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
 <div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
 </div>
 </td>
 <td class="head_right" colspan="2"><div class="needs_head_right line-block">
@@ -1327,7 +1327,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-acb9d606">
+<div class="need_container docutils container" id="SNCB-d20a1e92">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__error_reaction">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1373,7 +1373,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-7c6d16eb">
+<div class="need_container docutils container" id="SNCB-b0ec71d8">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_jump_recovery">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1403,7 +1403,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall clear time jump condition after receiving 2 consecutive valid gPTP frames without time jump.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall clear time jump condition after receiving the configured number of consecutive valid gPTP frames without time jump.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_jump_recovery" title="comp_req__time_daemon__time_jump_recovery">comp_req__time_daemon__time_jump_recovery</a></span></span></div>
@@ -1422,7 +1422,7 @@
 </section>
 <section id="platform-abstraction">
 <h3>Platform Abstraction<a class="headerlink" href="#platform-abstraction" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-fc3700ce">
+<div class="need_container docutils container" id="SNCB-2fdddbe4">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__platform_support">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">

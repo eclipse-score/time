@@ -478,7 +478,7 @@
                   
   <section id="time-daemon">
 <span id="id1"></span><h1>Time Daemon<a class="headerlink" href="#time-daemon" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-e8b00324">
+<div class="need_container docutils container" id="SNCB-b0437a59">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_daemon">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -523,7 +523,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-f44ba09b">
+<div class="need_container docutils container" id="SNCB-e1a4badd">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp table" id="comp__time_daemon">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -571,14 +571,14 @@
 </div>
 <section id="abstract">
 <h2>Abstract<a class="headerlink" href="#abstract" title="Link to this heading">#</a></h2>
-<p>This component implements a time synchronization daemon that receives time data from time_slave via IPC, performs verification and qualification, and provides validated time information to applications.</p>
+<p>This component implements a time daemon that receives time synchronization data from its time data sources, performs verification and qualification, and provides validated time information to client applications.</p>
 </section>
 <section id="specification">
 <h2>Specification<a class="headerlink" href="#specification" title="Link to this heading">#</a></h2>
-<p>The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications, most notably the time component (<a class="reference internal" href="../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>), which reads the provided time data via the <code class="docutils literal notranslate"><span class="pre">svt_receiver</span></code> interface. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.</p>
-<p>The component operates as a continuous loop with the following stages:</p>
+<p>The time_daemon component acts as a verification layer between its time data sources and client applications, most notably the time component (<a class="reference internal" href="../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>). It is designed to host one or more time bases. The time base currently provided is vehicle time, which receives gPTP time synchronization data from the time_slave component.</p>
+<p>For each time base the component performs the following stages:</p>
 <ol class="arabic simple">
-<li><p><strong>Data Reception</strong>: Reads gPTP time synchronization data from shared memory written by time_slave</p></li>
+<li><p><strong>Data Reception</strong>: Receives time synchronization data from the time data source (for vehicle time: gPTP data from time_slave)</p></li>
 <li><p><strong>Verification Pipeline</strong>: Validates data through three checks:</p>
 <ul class="simple">
 <li><p>Synchronization status validation</p></li>
@@ -586,15 +586,15 @@
 <li><p>Time jump detection (received master timestamp deviates from its expected value by more than the configured threshold)</p></li>
 </ul>
 </li>
-<li><p><strong>Publishing</strong>: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface</p></li>
+<li><p><strong>Provision</strong>: Provides verified time data with quality indicators to client applications</p></li>
 </ol>
 <section id="key-behaviors">
 <h3>Key Behaviors<a class="headerlink" href="#key-behaviors" title="Link to this heading">#</a></h3>
 <p><strong>Startup Stabilization</strong>: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.</p>
-<p><strong>Error Recovery</strong>: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.</p>
-<p><strong>Start Order Independence</strong>: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon continues its own startup and retries establishing the synchronization channel until it succeeds or the startup timeout expires.</p>
+<p><strong>Error Recovery</strong>: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of consecutive valid frames.</p>
+<p><strong>Start Order Independence</strong>: Time data sources do not need to be started before time_daemon. If a time data source is not yet available, time_daemon continues its own startup without blocking on it and retries establishing the connection until it succeeds or the startup timeout expires. If initialization of a time base does not complete within the startup timeout, no time data is provided for it and initialization is not retried.</p>
 <p><strong>Multi-Client Support</strong>: Multiple client applications can concurrently read the provided time data.</p>
-<p><strong>Platform Support</strong>: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.</p>
+<p><strong>Platform Support</strong>: Linux and QNX 8.0 SDP platforms supported.</p>
 </section>
 </section>
 <section id="footnotes">
