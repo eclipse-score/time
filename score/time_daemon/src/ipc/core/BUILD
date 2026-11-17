@@ -108,10 +108,7 @@ cc_test(
         "shared_memory_handler_test.cpp",
         "test_types.h",
     ],
-    tags = [
-        "no-tsan",
-        "unit",
-    ],
+    tags = ["unit"],
     deps = [
         ":shared_memory_handler",
         "//score/time_daemon/src/common/data_types:ptp_time_info",
