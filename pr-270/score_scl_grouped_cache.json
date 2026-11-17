@@ -758,7 +758,7 @@
           "line": 57,
           "tag": "// req-Id:",
           "need": "comp_req__time_daemon__shutdown",
-          "full_line": "// req-Id: comp_req__time_daemon__shutdown",
+          "full_line": "// req-Id: comp_req__time_daemon__shutdown, comp_req__time_daemon__init_timeout",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -828,15 +828,35 @@
     }
   },
   {
-    "need": "comp_req__time_daemon__start_order_indep",
+    "need": "comp_req__time_daemon__init_timeout",
     "links": {
       "CodeLinks": [
         {
-          "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
-          "line": 50,
+          "file": "score/time_daemon/src/application/time_daemon.cpp",
+          "line": 57,
           "tag": "// req-Id:",
-          "need": "comp_req__time_daemon__start_order_indep",
-          "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__start_order_indep",
+          "need": "comp_req__time_daemon__init_timeout",
+          "full_line": "// req-Id: comp_req__time_daemon__shutdown, comp_req__time_daemon__init_timeout",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
+          "line": 51,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__init_timeout",
+          "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting",
+          "repo_name": "local_repo",
+          "hash": "",
+          "url": ""
+        },
+        {
+          "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler.h",
+          "line": 239,
+          "tag": "// req-Id:",
+          "need": "comp_req__time_daemon__init_timeout",
+          "full_line": "// req-Id: comp_req__time_daemon__init_timeout",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
@@ -846,15 +866,15 @@
     }
   },
   {
-    "need": "comp_req__time_daemon__init_timeout",
+    "need": "comp_req__time_daemon__start_order_indep",
     "links": {
       "CodeLinks": [
         {
           "file": "score/time_daemon/src/application/job_runner/job_runner.cpp",
-          "line": 51,
+          "line": 50,
           "tag": "// req-Id:",
-          "need": "comp_req__time_daemon__init_timeout",
-          "full_line": "// req-Id: comp_req__time_daemon__init_timeout, comp_req__time_daemon__error_reporting",
+          "need": "comp_req__time_daemon__start_order_indep",
+          "full_line": "// req-Id: comp_req__time_daemon__startup, comp_req__time_daemon__start_order_indep",
           "repo_name": "local_repo",
           "hash": "",
           "url": ""
