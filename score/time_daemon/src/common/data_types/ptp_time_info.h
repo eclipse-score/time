@@ -31,7 +31,10 @@ namespace td
  * - is_timeout: true if a timeout occurred in current frame, false otherwise
  * - is_time_jump_future: true if a future time jump was detected in current frame, false otherwise
  * - is_time_jump_past: true if a past time jump was detected in current frame, false otherwise
- * - is_correct: true if the PTP status is correct, false otherwise
+ * - is_correct: true if the status record itself is valid and its flags can be trusted, false otherwise.
+ *   It is not an "all is well" indicator: timeouts and time jumps are reported through is_timeout and
+ *   is_time_jump_future/is_time_jump_past while is_correct stays true. Consumers discard all flags of a
+ *   status with is_correct == false (see ConvertPtpStatus).
  */
 struct PtpStatus
 {
