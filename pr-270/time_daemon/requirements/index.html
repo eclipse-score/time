@@ -174,6 +174,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../verification_report/module_verification_report.html">
+    Verification Report
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../quality_pack.html">
     Quality Pack Targets
   </a>
@@ -304,6 +311,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../module/index.html">
     Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../verification_report/module_verification_report.html">
+    Verification Report
   </a>
 </li>
 
@@ -470,7 +484,7 @@
                   
   <section id="time-daemon-component-requirements">
 <h1>Time Daemon Component Requirements<a class="headerlink" href="#time-daemon-component-requirements" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-3a7e6fb7">
+<div class="need_container docutils container" id="SNCB-8c132286">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_daemon_requirements">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -493,6 +507,7 @@
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/requirements_engineering/requirements_workproducts.html#wp__requirements_comp">wp__requirements_comp</a></span></span></div>
+<div class="line">belongs to: <span class="belongs_to"><span><a class="reference internal" href="../index.html#comp__time_daemon" title="doc__time_daemon_requirements">comp__time_daemon</a></span></span></div>
 </span></div>
 </div>
 </td>
@@ -518,7 +533,7 @@
 <h2>Functional Requirements<a class="headerlink" href="#functional-requirements" title="Link to this heading">#</a></h2>
 <section id="initialization-and-lifecycle">
 <h3>Initialization and Lifecycle<a class="headerlink" href="#initialization-and-lifecycle" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-25abf264">
+<div class="need_container docutils container" id="SNCB-a35e557c">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__startup">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -539,7 +554,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/job_runner/job_runner.cpp#L52">score/time_daemon/src/application/job_runner/job_runner.cpp:52</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/factory.cpp#L24">score/time_daemon/src/verification_machine/svt/factory.cpp:24</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/svt/svt_handler.cpp#L32">score/time_daemon/src/application/svt/svt_handler.cpp:32</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/time_daemon.cpp#L30">score/time_daemon/src/application/time_daemon.cpp:30</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/application/time_daemon.cpp#L37">score/time_daemon/src/application/time_daemon.cpp:37</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/application/job_runner/job_runner.cpp#L50">score/time_daemon/src/application/job_runner/job_runner.cpp:50</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/factory.cpp#L24">score/time_daemon/src/verification_machine/svt/factory.cpp:24</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -549,7 +564,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>On startup the time_daemon component shall apply its configuration and become ready to receive time synchronization data from the time_slave component and to provide time data to the time component.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>On startup the time_daemon component shall apply its configuration and become ready to receive time synchronization data from its time data sources and to provide time data to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>).</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__startup" title="comp_req__time_daemon__startup">comp_req__time_daemon__startup</a></span></span></div>
@@ -565,7 +580,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-1d752e26">
+<div class="need_container docutils container" id="SNCB-98a5c3d5">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__init_timeout">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -586,7 +601,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/job_runner/job_runner.cpp#L53">score/time_daemon/src/application/job_runner/job_runner.cpp:53</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/svt/svt_handler.cpp#L32">score/time_daemon/src/application/svt/svt_handler.cpp:32</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/svt/svt_handler.cpp#L92">score/time_daemon/src/application/svt/svt_handler.cpp:92</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/application/job_runner/job_runner.cpp#L51">score/time_daemon/src/application/job_runner/job_runner.cpp:51</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -596,7 +611,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>If the time_daemon component does not complete its startup within 20 seconds, it shall end its process.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>If initialization of a time base does not complete within the configured startup timeout, the time_daemon component shall not provide time data for that time base and shall not retry its initialization.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__init_timeout" title="comp_req__time_daemon__init_timeout">comp_req__time_daemon__init_timeout</a></span></span></div>
@@ -612,7 +627,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-e4eb0198">
+<div class="need_container docutils container" id="SNCB-d4a491d9">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__shutdown">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -633,7 +648,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/common/machines/event_driven_machine.cpp#L34">score/time_daemon/src/common/machines/event_driven_machine.cpp:34</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/common/machines/periodic_machine.cpp#L34">score/time_daemon/src/common/machines/periodic_machine.cpp:34</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/shared_memory_handler.h#L65">score/time_daemon/src/ipc/core/shared_memory_handler.h:65</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ptp_machine/core/ptp_machine.h#L151">score/time_daemon/src/ptp_machine/core/ptp_machine.h:151</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp#L46">score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp:46</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/svt/svt_handler.cpp#L140">score/time_daemon/src/application/svt/svt_handler.cpp:140</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/main.cpp#L17">score/time_daemon/src/application/main.cpp:17</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/time_daemon.cpp#L41">score/time_daemon/src/application/time_daemon.cpp:41</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/application/time_daemon.cpp#L57">score/time_daemon/src/application/time_daemon.cpp:57</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/application/main.cpp#L17">score/time_daemon/src/application/main.cpp:17</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/common/machines/event_driven_machine.cpp#L34">score/time_daemon/src/common/machines/event_driven_machine.cpp:34</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/common/machines/periodic_machine.cpp#L34">score/time_daemon/src/common/machines/periodic_machine.cpp:34</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/shared_memory_handler.h#L69">score/time_daemon/src/ipc/core/shared_memory_handler.h:69</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ptp_machine/core/ptp_machine.h#L152">score/time_daemon/src/ptp_machine/core/ptp_machine.h:152</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp#L46">score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp:46</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a></span></span></div>
@@ -659,7 +674,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-b85434e5">
+<div class="need_container docutils container" id="SNCB-f5885ff8">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__start_order_indep">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -680,7 +695,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/job_runner/job_runner.cpp#L52">score/time_daemon/src/application/job_runner/job_runner.cpp:52</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/application/job_runner/job_runner.cpp#L50">score/time_daemon/src/application/job_runner/job_runner.cpp:50</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -690,7 +705,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not require the time_slave component to be started before it. If the time_slave component is not yet available on startup, the time_daemon component shall wait for it until the startup timeout expires.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not depend on the start order of its time data sources (e.g. the time_slave component). If a time data source is not yet available on startup, the time_daemon component shall continue its own startup without blocking on it and retry establishing the connection to it until it succeeds or the startup timeout expires.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__start_order_indep" title="comp_req__time_daemon__start_order_indep">comp_req__time_daemon__start_order_indep</a></span></span></div>
@@ -709,7 +724,7 @@
 </section>
 <section id="data-reception-and-validation">
 <h3>Data Reception and Validation<a class="headerlink" href="#data-reception-and-validation" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-0e67ad76">
+<div class="need_container docutils container" id="SNCB-717b62d5">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_sync_reception">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -730,7 +745,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp#L57">score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp:57</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp#L57">score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp:57</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -740,7 +755,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall receive the time synchronization data provided by the time_slave component.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall receive the time synchronization data provided by its time data sources (e.g. the time_slave component).</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_sync_reception" title="comp_req__time_daemon__time_sync_reception">comp_req__time_daemon__time_sync_reception</a></span></span></div>
@@ -759,7 +774,7 @@
 </section>
 <section id="verification-pipeline">
 <h3>Verification Pipeline<a class="headerlink" href="#verification-pipeline" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-d70757d2">
+<div class="need_container docutils container" id="SNCB-17e189d3">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__sync_validation">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -780,7 +795,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp#L24">score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp:24</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp#L24">score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp:24</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a></span></span></div>
@@ -806,7 +821,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-c18dc460">
+<div class="need_container docutils container" id="SNCB-98b458ac">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__sync_debounce">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -827,7 +842,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L124">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:124</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/factory.cpp#L25">score/time_daemon/src/verification_machine/svt/factory.cpp:25</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L133">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:133</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/factory.cpp#L25">score/time_daemon/src/verification_machine/svt/factory.cpp:25</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a></span></span></div>
@@ -837,7 +852,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not report time jumps during the configured time span (default: 5 seconds) after initial synchronization to avoid spuriously detected time jumps during startup.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall not report time jumps during the configured time span after initial synchronization to avoid spuriously detected time jumps during startup.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__sync_debounce" title="comp_req__time_daemon__sync_debounce">comp_req__time_daemon__sync_debounce</a></span></span></div>
@@ -853,7 +868,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-7d986eaa">
+<div class="need_container docutils container" id="SNCB-116c885c">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_jump_detection">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -874,7 +889,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L56">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:56</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/factory.cpp#L25">score/time_daemon/src/verification_machine/svt/factory.cpp:25</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L56">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:56</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/factory.cpp#L25">score/time_daemon/src/verification_machine/svt/factory.cpp:25</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a></span></span></div>
@@ -884,7 +899,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect time jumps when the master clock timestamp of a gPTP time sync data update differs from the expected value by more than the configured time span (default: 500 microseconds). Both forward and backward time jumps shall be detected.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect time jumps when the master clock timestamp of a gPTP time sync data update differs from the expected value by more than the configured time span. Both forward and backward time jumps shall be detected.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_jump_detection" title="comp_req__time_daemon__time_jump_detection">comp_req__time_daemon__time_jump_detection</a></span></span></div>
@@ -900,7 +915,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-a563dab0">
+<div class="need_container docutils container" id="SNCB-836aef60">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__timeout_detection">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -921,7 +936,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp#L29">score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp:29</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/factory.cpp#L24">score/time_daemon/src/verification_machine/svt/factory.cpp:24</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp#L29">score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp:29</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/factory.cpp#L24">score/time_daemon/src/verification_machine/svt/factory.cpp:24</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -931,7 +946,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect timeout condition when no new time synchronization data is received within the configured time span (default: 3.3 seconds).</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall detect timeout condition when no new time synchronization data is received within the configured time span.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__timeout_detection" title="comp_req__time_daemon__timeout_detection">comp_req__time_daemon__timeout_detection</a></span></span></div>
@@ -950,7 +965,7 @@
 </section>
 <section id="data-provision">
 <h3>Data Provision<a class="headerlink" href="#data-provision" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-25d0bf9e">
+<div class="need_container docutils container" id="SNCB-29c420b7">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_data_publishing">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -971,7 +986,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/publisher_impl.h#L93">score/time_daemon/src/ipc/core/publisher_impl.h:93</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/publisher_impl.h#L93">score/time_daemon/src/ipc/core/publisher_impl.h:93</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_time_api">feat_req__time__vehicle_time_time_api</a></span></span></div>
@@ -981,7 +996,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide the verified time data to the time component.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide the verified time data to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>).</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_data_publishing" title="comp_req__time_daemon__time_data_publishing">comp_req__time_daemon__time_data_publishing</a></span></span></div>
@@ -997,7 +1012,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-5546f2d2">
+<div class="need_container docutils container" id="SNCB-74a2ff8a">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__published_data_content">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1018,7 +1033,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/svt/svt_time_info.cpp#L119">score/time_daemon/src/ipc/svt/svt_time_info.cpp:119</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/svt/svt_time_info.cpp#L119">score/time_daemon/src/ipc/svt/svt_time_info.cpp:119</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a></span></span></div>
@@ -1028,7 +1043,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall include in the time data provided to the time component: the timestamp of the master clock, the corresponding timestamp of the local reference clock, the rate deviation between those two clocks, synchronization status, time jump status, and timeout status.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall include in the time data provided to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>, see <a class="reference internal" href="#comp_req__time_daemon__time_data_publishing" title="comp_req__time_daemon__time_data_publishing"><em class="xref need">Time Data Provision (comp_req__time_daemon__time_data_publishing)</em></a>): the timestamp of the master clock, the corresponding timestamp of the local reference clock, and the rate deviation between those two clocks.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__published_data_content" title="comp_req__time_daemon__published_data_content">comp_req__time_daemon__published_data_content</a></span></span></div>
@@ -1044,7 +1059,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-8ee64db7">
+<div class="need_container docutils container" id="SNCB-bc9e5ace">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__published_raw_data">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1065,7 +1080,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/svt/svt_time_info.cpp#L119">score/time_daemon/src/ipc/svt/svt_time_info.cpp:119</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/svt/svt_time_info.cpp#L119">score/time_daemon/src/ipc/svt/svt_time_info.cpp:119</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a></span></span></div>
@@ -1075,7 +1090,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall include in the time data provided to the time component condensed raw data of the last received Sync/FollowUp pair and the last finished Pdelay measurement.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall include in the time data provided to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>, see <a class="reference internal" href="#comp_req__time_daemon__time_data_publishing" title="comp_req__time_daemon__time_data_publishing"><em class="xref need">Time Data Provision (comp_req__time_daemon__time_data_publishing)</em></a>) condensed raw data of the last received Sync/FollowUp pair and the last finished Pdelay measurement.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__published_raw_data" title="comp_req__time_daemon__published_raw_data">comp_req__time_daemon__published_raw_data</a></span></span></div>
@@ -1091,7 +1106,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-cc48a33c">
+<div class="need_container docutils container" id="SNCB-474c76ba">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_point_qualifier">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1112,7 +1127,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/svt/svt_time_info.cpp#L120">score/time_daemon/src/ipc/svt/svt_time_info.cpp:120</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/svt/svt_time_info.cpp#L120">score/time_daemon/src/ipc/svt/svt_time_info.cpp:120</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_time_pt_qual">feat_req__time__vehicle_time_time_pt_qual</a></span></span></div>
@@ -1122,7 +1137,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide the synchronization status, time jump status, and timeout status in the time data provided to the time component, such that the time component can derive the time point qualifier (quality indicator) from them.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide the evaluated synchronization status (<a class="reference internal" href="#comp_req__time_daemon__sync_validation" title="comp_req__time_daemon__sync_validation"><em class="xref need">Synchronization Status Vali... (comp_req__time_daemon__sync_validation)</em></a>), time jump status (<a class="reference internal" href="#comp_req__time_daemon__time_jump_detection" title="comp_req__time_daemon__time_jump_detection"><em class="xref need">Time Jump Detection (comp_req__time_daemon__time_jump_detection)</em></a>), and timeout status (<a class="reference internal" href="#comp_req__time_daemon__timeout_detection" title="comp_req__time_daemon__timeout_detection"><em class="xref need">Timeout Detection (comp_req__time_daemon__timeout_detection)</em></a>) together with the received time synchronization data (<a class="reference internal" href="#comp_req__time_daemon__time_sync_reception" title="comp_req__time_daemon__time_sync_reception"><em class="xref need">Time Synchronization Data R... (comp_req__time_daemon__time_sync_reception)</em></a>) to the time component (<a class="reference internal" href="../../time/index.html#comp__time" title="comp__time"><em class="xref need">Time (comp__time)</em></a>).</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_point_qualifier" title="comp_req__time_daemon__time_point_qualifier">comp_req__time_daemon__time_point_qualifier</a></span></span></div>
@@ -1138,7 +1153,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-5e23a50a">
+<div class="need_container docutils container" id="SNCB-3c5d5ca4">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__client_read_access">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1159,7 +1174,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/receiver_impl.h#L84">score/time_daemon/src/ipc/core/receiver_impl.h:84</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/receiver_impl.h#L84">score/time_daemon/src/ipc/core/receiver_impl.h:84</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a></span></span></div>
@@ -1169,7 +1184,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall provide the time component with functionality to read the time data.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall enable client applications to read the time data.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__client_read_access" title="comp_req__time_daemon__client_read_access">comp_req__time_daemon__client_read_access</a></span></span></div>
@@ -1185,7 +1200,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-179531f8">
+<div class="need_container docutils container" id="SNCB-91b9fd17">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__non_blocking">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1206,7 +1221,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/shared_memory_handler.h#L145">score/time_daemon/src/ipc/core/shared_memory_handler.h:145</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/shared_memory_handler.h#L173">score/time_daemon/src/ipc/core/shared_memory_handler.h:173</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a></span></span></div>
@@ -1232,7 +1247,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-23898510">
+<div class="need_container docutils container" id="SNCB-1573a943">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__multi_client">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1253,7 +1268,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/shared_memory_handler.h#L145">score/time_daemon/src/ipc/core/shared_memory_handler.h:145</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/shared_memory_handler.h#L173">score/time_daemon/src/ipc/core/shared_memory_handler.h:173</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a></span></span></div>
@@ -1282,7 +1297,7 @@
 </section>
 <section id="error-handling-and-recovery">
 <h3>Error Handling and Recovery<a class="headerlink" href="#error-handling-and-recovery" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-c3ce8aba">
+<div class="need_container docutils container" id="SNCB-aa75faea">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__error_reporting">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1292,7 +1307,7 @@
 <td class="head_center" colspan="2"><div class="needs_head line-block">
 <div class="line"><span><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></span></div>
 <div class="line"><span><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></span></div>
-<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></span></div>
+<div class="line"><span><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">QM</span></span></span></div>
 </div>
 </td>
 <td class="head_right" colspan="2"><div class="needs_head_right line-block">
@@ -1303,7 +1318,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/job_runner/job_runner.cpp#L53">score/time_daemon/src/application/job_runner/job_runner.cpp:53</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/shared_memory_handler.h#L109">score/time_daemon/src/ipc/core/shared_memory_handler.h:109</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/shared_memory_handler.h#L146">score/time_daemon/src/ipc/core/shared_memory_handler.h:146</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ptp_machine/core/ptp_machine.h#L130">score/time_daemon/src/ptp_machine/core/ptp_machine.h:130</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ptp_machine/core/ptp_machine.h#L162">score/time_daemon/src/ptp_machine/core/ptp_machine.h:162</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp#L28">score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp:28</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L56">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:56</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp#L29">score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp:29</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/application/svt/svt_handler.cpp#L92">score/time_daemon/src/application/svt/svt_handler.cpp:92</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/application/job_runner/job_runner.cpp#L51">score/time_daemon/src/application/job_runner/job_runner.cpp:51</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/shared_memory_handler.h#L127">score/time_daemon/src/ipc/core/shared_memory_handler.h:127</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/shared_memory_handler.h#L174">score/time_daemon/src/ipc/core/shared_memory_handler.h:174</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ptp_machine/core/ptp_machine.h#L131">score/time_daemon/src/ptp_machine/core/ptp_machine.h:131</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ptp_machine/core/ptp_machine.h#L163">score/time_daemon/src/ptp_machine/core/ptp_machine.h:163</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp#L28">score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine.cpp:28</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L56">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:56</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp#L29">score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp:29</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync_log">feat_req__time__vehicle_time_sync_log</a></span></span></div>
@@ -1329,7 +1344,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-545150ac">
+<div class="need_container docutils container" id="SNCB-9283bb47">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__error_reaction">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1350,7 +1365,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/core/verification_machine.h#L142">score/time_daemon/src/verification_machine/core/verification_machine.h:142</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp#L24">score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp:24</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L158">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:158</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp#L30">score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp:30</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/core/verification_machine.h#L142">score/time_daemon/src/verification_machine/core/verification_machine.h:142</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp#L24">score/time_daemon/src/verification_machine/svt/validators/synchronization_validator.cpp:24</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L171">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:171</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp#L30">score/time_daemon/src/verification_machine/svt/validators/timeout_validator.cpp:30</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a>, <a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -1376,7 +1391,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-a5c3dd77">
+<div class="need_container docutils container" id="SNCB-3a65b686">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__time_jump_recovery">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1397,7 +1412,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L133">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:133</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/verification_machine/svt/factory.cpp#L26">score/time_daemon/src/verification_machine/svt/factory.cpp:26</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp#L143">score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.cpp:143</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/verification_machine/svt/factory.cpp#L26">score/time_daemon/src/verification_machine/svt/factory.cpp:26</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a></span></span></div>
@@ -1407,7 +1422,7 @@
 </td>
 <td class="meta" colspan="3"></td>
 </tr>
-<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall clear time jump condition after receiving 2 consecutive valid gPTP frames without time jump.</p></td>
+<tr class="content row-odd"><td class="content" colspan="6"><p>The time_daemon component shall clear time jump condition after receiving the configured number of consecutive valid gPTP frames without time jump.</p></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
 <div class="line"><span><span class="needs-id"><a class="reference internal" href="#comp_req__time_daemon__time_jump_recovery" title="comp_req__time_daemon__time_jump_recovery">comp_req__time_daemon__time_jump_recovery</a></span></span></div>
@@ -1426,7 +1441,7 @@
 </section>
 <section id="platform-abstraction">
 <h3>Platform Abstraction<a class="headerlink" href="#platform-abstraction" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-e1025900">
+<div class="need_container docutils container" id="SNCB-7ab1980c">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__time_daemon__platform_support">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1447,7 +1462,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">time_daemon</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
-<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/1be561af5a9d289f0c7b084bcfd080cbc907a147/score/time_daemon/src/ipc/core/shared_memory_handler.h#L109">score/time_daemon/src/ipc/core/shared_memory_handler.h:109</a></span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/825119e43e312dba68896de7928f9794717810d3/score/time_daemon/src/ipc/core/shared_memory_handler.h#L127">score/time_daemon/src/ipc/core/shared_memory_handler.h:127</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
