@@ -196,7 +196,7 @@ http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "ht
 bazel_dep(name = "score_tools", version = "0.0.0", dev_dependency = True)
 git_override(
     module_name = "score_tools",
-    commit = "3d8f1663b0b026fb623ca93ccd86f46f30367bcf",
+    commit = "dcae6b869409341d668c2ef6efb212f1609f515d",
     remote = "https://github.com/etas-contrib/score_tools.git",
 )
 
