@@ -266,6 +266,20 @@
     "FullyVerifies": null
   },
   {
+    "name": "GptpEngineTimeoutTest__ReadPTPSnapshot_TimeoutBeforeFirstSync_FlagIsReported",
+    "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
+    "line": "599",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "GptpEngineRealSocketTest__Initialize_NonExistentInterface_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
     "line": "504",
@@ -2450,7 +2464,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__JumpToPastWithinThresholdIsNotFlagged",
+    "name": "TimeJumpsValidatorTest__RepeatedDeliveryOfSameFrameDoesNotClearTimeJump",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "103",
     "result": "passed",
@@ -2464,7 +2478,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__JumpToFutureWithinThresholdIsNotFlagged",
+    "name": "TimeJumpsValidatorTest__JumpToPastWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "149",
     "result": "passed",
@@ -2478,9 +2492,51 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__StaysInInitialSyncDebouncingWhenThresholdNotElapsed",
+    "name": "TimeJumpsValidatorTest__JumpToFutureWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "195",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__StaysInInitialSyncDebouncingWhenThresholdNotElapsed",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "241",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedInIdleState",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "281",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDebouncing",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "302",
     "result": "passed",
     "repo_name": null,
     "hash": null,
