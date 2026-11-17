@@ -53,7 +53,7 @@ Initialization and Lifecycle
    :version: 1
    :satisfied_by: comp__time_daemon
 
-   If initialization of a time base does not complete within the configured startup timeout, the time_daemon component shall not provide time data for that time base and shall not retry its initialization.
+   If initialization of a time base does not complete within the configured startup timeout, the time_daemon component shall not provide time data for that time base and shall terminate.
 
 .. comp_req:: Component Shutdown
    :id: comp_req__time_daemon__shutdown
