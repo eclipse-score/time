@@ -2830,7 +2830,7 @@
   {
     "name": "TimeDaemonTest__InitializesHandlersFromLinkedFactory",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "88",
+    "line": "91",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2844,7 +2844,7 @@
   {
     "name": "TimeDaemonTest__RunsOneInjectedHandler",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "95",
+    "line": "98",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2858,7 +2858,7 @@
   {
     "name": "TimeDaemonTest__PollsEveryHandlerInOrderAndStopsInReverseOrder",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "111",
+    "line": "114",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2872,7 +2872,7 @@
   {
     "name": "TimeDaemonTest__CompletesThePollingPassWhenAHandlerRequestsStop",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "134",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2886,7 +2886,21 @@
   {
     "name": "TimeDaemonTest__StopsInitializedHandlersWithoutPollingWhenAlreadyCancelled",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "157",
+    "line": "160",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeDaemonTest__ReturnsFailureAndStopsAllHandlersWhenAHandlerFails",
+    "file": "score/time_daemon/src/application/time_daemon_test.cpp",
+    "line": "178",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2900,7 +2914,7 @@
   {
     "name": "TimeDaemonTest__RejectsEmptyComposition",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "175",
+    "line": "200",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2914,7 +2928,7 @@
   {
     "name": "TimeDaemonTest__RejectsNullEntriesBeforeInitializingAnyHandler",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "182",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2928,7 +2942,7 @@
   {
     "name": "TimeDaemonTest__OwnsInjectedHandlersUntilDestruction",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "192",
+    "line": "217",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3108,9 +3122,23 @@
     "FullyVerifies": null
   },
   {
+    "name": "GenericTimebaseHandlerTest__DoesNotReportFailureWhenStopRequestedBeforePollingFailedInitialization",
+    "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
+    "line": "395",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "GenericTimebaseHandlerTest__DeliversDataOfPublisherToSubscribersOfTheSameTopic",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "394",
+    "line": "414",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3124,7 +3152,7 @@
   {
     "name": "GenericTimebaseHandlerTest__DisconnectsRetainedProducerAfterRepeatedStopAndDestruction",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "417",
+    "line": "437",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3138,7 +3166,7 @@
   {
     "name": "GenericTimebaseHandlerTest__DestructionWaitsForPublicationInProgress",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "449",
+    "line": "469",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3152,7 +3180,7 @@
   {
     "name": "GenericTimebaseHandlerTest__RejectsPublishingTheSameProducerTwice",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "509",
+    "line": "529",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3166,7 +3194,7 @@
   {
     "name": "GenericTimebaseHandlerTest__RejectsPublishingTheSameExpiredProducerTwice",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "521",
+    "line": "541",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3180,7 +3208,7 @@
   {
     "name": "GenericTimebaseHandlerTest__DoesNotStartProactiveMachinesWhenInitializationTimesOut",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "536",
+    "line": "556",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3194,7 +3222,7 @@
   {
     "name": "GenericTimebaseHandlerTest__AppliesTheWiringDeclaredInCreateComponents",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "565",
+    "line": "586",
     "result": "passed",
     "repo_name": null,
     "hash": null,
