@@ -54,7 +54,7 @@ std::int32_t TimeDaemon::Initialize(const score::mw::lifecycle::ApplicationConte
     return EXIT_SUCCESS;
 }
 
-// req-Id: comp_req__time_daemon__shutdown
+// req-Id: comp_req__time_daemon__shutdown, comp_req__time_daemon__init_timeout
 std::int32_t TimeDaemon::Run(const score::cpp::stop_token& token)
 {
     score::mw::log::LogInfo(kAppContext) << "Run() started";

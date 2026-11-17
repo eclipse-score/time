@@ -236,6 +236,7 @@ bool GenericTimebaseHandler<T>::IsFailed() const noexcept
     return is_failed_;
 }
 
+// req-Id: comp_req__time_daemon__init_timeout
 template <typename T>
 void GenericTimebaseHandler<T>::PollInitialization() noexcept
 {
