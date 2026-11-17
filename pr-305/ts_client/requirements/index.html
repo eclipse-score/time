@@ -174,6 +174,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../verification_report/module_verification_report.html">
+    Verification Report
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../quality_pack.html">
     Quality Pack Targets
   </a>
@@ -304,6 +311,13 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../module/index.html">
     Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../verification_report/module_verification_report.html">
+    Verification Report
   </a>
 </li>
 
@@ -469,8 +483,8 @@
                   
   <section id="component-time-sync-client-requirements">
 <h1>Component Time Sync Client Requirements<a class="headerlink" href="#component-time-sync-client-requirements" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-02745d27">
-<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__ts_client_requirements">
+<div class="need_container docutils container" id="SNCB-7f293d49">
+<div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_sync_client_requirements">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
 <div class="line"><span><span class="needs_title"><span class="needs_data">Time Sync Client Requirements</span></span></span></div>
@@ -492,6 +506,7 @@
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">realizes: <span class="realizes"><span><a class="external_link reference external" href="https://eclipse-score.github.io/process_description//main/process_areas/requirements_engineering/requirements_workproducts.html#wp__requirements_comp">wp__requirements_comp</a></span></span></div>
+<div class="line">belongs to: <span class="belongs_to"><span><a class="reference internal" href="../index.html#comp__ts_client" title="doc__time_sync_client_requirements">comp__ts_client</a></span></span></div>
 </span></div>
 </div>
 </td>
@@ -500,7 +515,7 @@
 <tr class="content row-odd"><td class="content" colspan="6"></td>
 </tr>
 <tr class="footer row-even"><td class="footer_left" colspan="2"><div class="needs_footer_left line-block">
-<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__ts_client_requirements" title="doc__ts_client_requirements">doc__ts_client_requirements</a></span></span></div>
+<div class="line"><span><span class="needs-id"><a class="reference internal" href="#doc__time_sync_client_requirements" title="doc__time_sync_client_requirements">doc__time_sync_client_requirements</a></span></span></div>
 </div>
 </td>
 <td class="footer" colspan="2"><div class="needs_footer line-block">
@@ -517,7 +532,7 @@
 <h2>Functional Requirements<a class="headerlink" href="#functional-requirements" title="Link to this heading">#</a></h2>
 <section id="shared-memory-management">
 <h3>Shared Memory Management<a class="headerlink" href="#shared-memory-management" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-09818868">
+<div class="need_container docutils container" id="SNCB-7fb87255">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__shared_memory_mgmt">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -538,6 +553,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L28">score/ts_client/src/gptp_ipc_publisher.cpp:28</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L34">score/ts_client/src/gptp_ipc_publisher.cpp:34</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L78">score/ts_client/src/gptp_ipc_publisher.cpp:78</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L28">score/ts_client/src/gptp_ipc_receiver.cpp:28</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L34">score/ts_client/src/gptp_ipc_receiver.cpp:34</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L105">score/ts_client/src/gptp_ipc_receiver.cpp:105</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a>, <a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -563,7 +579,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-fb651852">
+<div class="need_container docutils container" id="SNCB-719e540c">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__shm_validation">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -584,6 +600,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L34">score/ts_client/src/gptp_ipc_receiver.cpp:34</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_channel.h#L32">score/ts_client/src/gptp_ipc_channel.h:32</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a>, <a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a>, <a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_time_pt_qual">feat_req__time__vehicle_time_time_pt_qual</a></span></span></div>
@@ -609,7 +626,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-782f6593">
+<div class="need_container docutils container" id="SNCB-7f81cec6">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__publisher_creates">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -630,6 +647,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L34">score/ts_client/src/gptp_ipc_publisher.cpp:34</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -655,7 +673,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-3a2681ec">
+<div class="need_container docutils container" id="SNCB-cbf2578e">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__receiver_multi_reader">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -676,6 +694,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L35">score/ts_client/src/gptp_ipc_receiver.cpp:35</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a></span></span></div>
@@ -701,7 +720,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-e389f775">
+<div class="need_container docutils container" id="SNCB-e3f06ff1">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__data_validity">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -722,6 +741,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L58">score/ts_client/src/gptp_ipc_receiver.cpp:58</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_acc_qual_api">feat_req__time__vehicle_time_acc_qual_api</a>, <a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a>, <a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_time_pt_qual">feat_req__time__vehicle_time_time_pt_qual</a></span></span></div>
@@ -750,7 +770,7 @@
 </section>
 <section id="data-synchronization">
 <h3>Data Synchronization<a class="headerlink" href="#data-synchronization" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-c0bed0a4">
+<div class="need_container docutils container" id="SNCB-da5f60d1">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__seqlock_protocol">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -771,6 +791,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L57">score/ts_client/src/gptp_ipc_publisher.cpp:57</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L25">score/ts_client/src/gptp_ipc_receiver.cpp:25</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L68">score/ts_client/src/gptp_ipc_receiver.cpp:68</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_channel.h#L45">score/ts_client/src/gptp_ipc_channel.h:45</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a>, <a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -799,7 +820,7 @@
 </section>
 <section id="data-exchange-interfaces">
 <h3>Data Exchange Interfaces<a class="headerlink" href="#data-exchange-interfaces" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-1ec8b603">
+<div class="need_container docutils container" id="SNCB-6a1de1cd">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__sync_status_data">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -820,6 +841,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L57">score/ts_client/src/gptp_ipc_publisher.cpp:57</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L68">score/ts_client/src/gptp_ipc_receiver.cpp:68</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_data.h#L25">score/ts_client/src/gptp_ipc_data.h:25</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -845,7 +867,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-eef95b7c">
+<div class="need_container docutils container" id="SNCB-30ad14c2">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__sync_fup_data">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -866,6 +888,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L58">score/ts_client/src/gptp_ipc_publisher.cpp:58</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L69">score/ts_client/src/gptp_ipc_receiver.cpp:69</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_data.h#L38">score/ts_client/src/gptp_ipc_data.h:38</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -891,7 +914,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-5a1cf37b">
+<div class="need_container docutils container" id="SNCB-4af0cef0">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__pdelay_data">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -912,6 +935,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L58">score/ts_client/src/gptp_ipc_publisher.cpp:58</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L69">score/ts_client/src/gptp_ipc_receiver.cpp:69</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_data.h#L53">score/ts_client/src/gptp_ipc_data.h:53</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -937,7 +961,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-108860f7">
+<div class="need_container docutils container" id="SNCB-861d210f">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__time_correlation_data">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -958,6 +982,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Interface</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L59">score/ts_client/src/gptp_ipc_publisher.cpp:59</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L70">score/ts_client/src/gptp_ipc_receiver.cpp:70</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_data.h#L74">score/ts_client/src/gptp_ipc_data.h:74</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -986,7 +1011,7 @@
 </section>
 <section id="platform-abstraction">
 <h3>Platform Abstraction<a class="headerlink" href="#platform-abstraction" title="Link to this heading">#</a></h3>
-<div class="need_container docutils container" id="SNCB-0a5d0e94">
+<div class="need_container docutils container" id="SNCB-a5e14420">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__platform_support">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1007,6 +1032,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_publisher.cpp#L35">score/ts_client/src/gptp_ipc_publisher.cpp:35</a><em>; </em><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_receiver.cpp#L35">score/ts_client/src/gptp_ipc_receiver.cpp:35</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_sync">feat_req__time__vehicle_time_sync</a></span></span></div>
@@ -1036,7 +1062,7 @@
 </section>
 <section id="non-functional-requirements">
 <h2>Non-Functional Requirements<a class="headerlink" href="#non-functional-requirements" title="Link to this heading">#</a></h2>
-<div class="need_container docutils container" id="SNCB-3d9c78ea">
+<div class="need_container docutils container" id="SNCB-6016bc0d">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_comp_req table" id="comp_req__ts_client__cache_optimization">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1057,6 +1083,7 @@
 <tr class="meta row-even"><td class="meta" colspan="3"><div class="needs_meta_left line-block">
 <div class="line"><span><span><div class="line"><span class="needs_tags"><span class="needs_label">tags: </span><span class="needs_data_container"><span class="needs_data">ts_client</span></span></span></div>
 <div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_source_code_link"><span class="needs_label">source_code_link: </span><span class="needs_data"><a class="reference external" href="https://github.com/eclipse-score/time/blob/82dd1b8a2f0bd3a0e1305bc586cc0ddf799956ef/score/ts_client/src/gptp_ipc_channel.h#L45">score/ts_client/src/gptp_ipc_channel.h:45</a></span></span></div>
 <div class="line"><span class="needs_version"><span class="needs_label">version: </span>1</span></div>
 </span></span></div>
 <div class="line"><span><div class="line">derived from: <span class="derived_from"><span><a class="external_link reference external" href="https://eclipse-score.github.io/score/main/features/time/requirements/index.html#feat_req__time__vehicle_time_ctrl_flow">feat_req__time__vehicle_time_ctrl_flow</a></span></span></div>
@@ -1085,7 +1112,7 @@
 </section>
 <section id="assumption-of-use-requirements">
 <h2>Assumption of Use Requirements<a class="headerlink" href="#assumption-of-use-requirements" title="Link to this heading">#</a></h2>
-<div class="need_container docutils container" id="SNCB-2b357684">
+<div class="need_container docutils container" id="SNCB-26f5c7ce">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_aou_req table" id="aou_req__ts_client__single_publisher">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -1129,7 +1156,7 @@
 </table>
 </div>
 </div>
-<div class="need_container docutils container" id="SNCB-ea91093b">
+<div class="need_container docutils container" id="SNCB-00107106">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_aou_req table" id="aou_req__ts_client__shm_permissions">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
