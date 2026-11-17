@@ -16,6 +16,7 @@
 #include <netinet/in.h>
 #include <cstdint>
 #include <cstring>
+#include <ctime>
 #include <limits>
 
 #ifndef __QNXNTO__
@@ -71,6 +72,13 @@ constexpr std::uint8_t kPtpVersion = 2U;
 
 /// Nanoseconds per second.
 constexpr std::int64_t kNsPerSec = 1'000'000'000LL;
+
+/// A zeroed timespec is the "no timestamp delivered" marker used by RawSocket::Recv()/Send().
+/// @return true if @p ts holds an actual timestamp.
+inline bool HasTimestamp(const ::timespec& ts) noexcept
+{
+    return ts.tv_sec != 0 || ts.tv_nsec != 0;
+}
 
 // ─── Control field ───────────────────────────────────────────────────────────
 /// PTP control field values (IEEE 1588-2008 §13.3.2.10).
