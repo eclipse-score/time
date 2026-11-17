@@ -1,0 +1,53 @@
+' *******************************************************************************
+' Copyright (c) 2026 Contributors to the Eclipse Foundation
+'
+' See the NOTICE file(s) distributed with this work for additional
+' information regarding copyright ownership.
+'
+' This program and the accompanying materials are made available under the
+' terms of the Apache License Version 2.0 which is available at
+' https://www.apache.org/licenses/LICENSE-2.0
+'
+' SPDX-License-Identifier: Apache-2.0
+' *******************************************************************************
+
+@startuml app_setup_seq_diagram
+
+title Application: Setup
+
+hide footbox
+
+autonumber "<font color=red><b>[00]"
+
+legend top left
+    |= Color        |= Description            |
+    |<#LightCyan>   | Application objects     |
+    |<#Wheat>       | Handler machines        |
+    |<#LightGreen>  | Middleware components   |
+endlegend
+
+participant "LifecycleManager" as lcm #LightGreen
+participant "TimeDaemon" as vtd_app #LightCyan
+participant "TimebaseHandler" as tb_handler #LightCyan
+participant "Machines" as machines #Wheat
+
+lcm -> vtd_app : Initialize(context)
+activate vtd_app
+loop handlers in list order
+    vtd_app -> tb_handler : Initialize()
+    activate tb_handler
+    tb_handler -> tb_handler : CreateComponents()
+    activate tb_handler
+    tb_handler -> machines ** : create producers / consumers
+    machines --> tb_handler : machine
+    tb_handler -> tb_handler : Add(machine, init_timeout)
+    tb_handler -> tb_handler : Subscribe(consumer, topic)
+    tb_handler -> tb_handler : Publish(producer, topic)
+    deactivate tb_handler
+    tb_handler --> vtd_app
+    deactivate tb_handler
+end
+vtd_app --> lcm : EXIT_SUCCESS (valid handler list)
+deactivate vtd_app
+
+@enduml

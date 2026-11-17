@@ -18,12 +18,13 @@ Time Sync Client
 ################
 
 .. document:: Time Sync Client
-   :id: doc__ts_client
+   :id: doc__time_sync_client
    :status: draft
    :version: 1
    :safety: ASIL_B
    :security: NO
    :realizes: wp__cmpt_request
+   :belongs_to: comp__ts_client
    :tags: ts_client
 
 .. comp:: Time Sync Client

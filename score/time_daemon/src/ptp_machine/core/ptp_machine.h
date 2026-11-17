@@ -21,6 +21,7 @@
 #include "score/mw/log/logging.h"
 
 #include <memory>
+#include <utility>
 
 namespace score
 {

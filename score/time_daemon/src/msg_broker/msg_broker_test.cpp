@@ -67,11 +67,11 @@ class MessageBrokerTest : public ::testing::Test
 {
     void SetUp() override
     {
-        broker = std::make_shared<MessageBroker<int>>();
+        broker = std::make_unique<MessageBroker<int>>();
     }
 
   protected:
-    std::shared_ptr<MessageBroker<int>> broker;
+    std::unique_ptr<MessageBroker<int>> broker;
 };
 
 TEST_F(MessageBrokerTest, SingleSubscriberReceivesData)
@@ -132,7 +132,7 @@ TEST_F(MessageBrokerTest, MultipleDataProduction)
         producer->Produce(i);
 
     ASSERT_EQ(consumer->received_data.size(), 5);
-    for (int i = 0; i < 5; ++i)
+    for (std::size_t i = 0; i < 5; ++i)
         EXPECT_EQ(consumer->received_data[i], i);
 }
 
@@ -178,8 +178,30 @@ TEST_F(MessageBrokerTest, ExpiredBrokerDoesNotProcessCallback)
 
     broker.reset();
 
+    EXPECT_FALSE(producer->publish_callback_);
     EXPECT_NO_THROW(producer->Produce(2));
     EXPECT_EQ(consumer->received_data.size(), 1U);
+}
+
+TEST_F(MessageBrokerTest, DestroyedBrokerDisconnectsAllSurvivingProducers)
+{
+    auto first = std::make_shared<MockProducer<int>>();
+    auto expired = std::make_shared<MockProducer<int>>();
+    auto last = std::make_shared<MockProducer<int>>();
+    broker->AddProducer(Topic("first"), first);
+    broker->AddProducer(Topic("expired"), expired);
+    broker->AddProducer(Topic("last"), last);
+
+    ASSERT_TRUE(first->publish_callback_);
+    ASSERT_TRUE(last->publish_callback_);
+    expired.reset();
+
+    broker.reset();
+
+    EXPECT_FALSE(first->publish_callback_);
+    EXPECT_FALSE(last->publish_callback_);
+    EXPECT_NO_THROW(first->Produce(1));
+    EXPECT_NO_THROW(last->Produce(2));
 }
 
 TEST(MessageBrokerTopicTest, LongNameIsTrimmedToMaximumLength)

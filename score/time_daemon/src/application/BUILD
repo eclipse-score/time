@@ -15,44 +15,70 @@ load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and
 load("@score_baselibs//score/language/safecpp:toolchain_features.bzl", "COMPILER_WARNING_FEATURES")
 
 cc_library(
-    name = "timebase_handler",
-    hdrs = [
-        "timebase_handler.h",
-    ],
+    name = "time_daemon_core",
+    srcs = ["time_daemon.cpp"],
+    hdrs = ["time_daemon.h"],
     features = COMPILER_WARNING_FEATURES,
-    visibility = ["//score/time_daemon/src/application:__subpackages__"],
+    visibility = ["//score/time_daemon:__pkg__"],
     deps = [
+        "//score/time_daemon/src/application/timebase_handlers:timebase_handler",
+        "//score/time_daemon/src/application/timebase_handlers:timebase_handler_factory",
         "//score/time_daemon/src/common:logging_contexts",
         "@score_baselibs//score/concurrency",
         "@score_baselibs//score/mw/log:frontend",
+        "@score_lifecycle//score/launch_manager:lifecycle_cc",
+    ],
+)
+
+cc_library(
+    name = "time_daemon_main",
+    srcs = ["main.cpp"],
+    features = COMPILER_WARNING_FEATURES,
+    visibility = ["//score/time_daemon:__pkg__"],
+    deps = [
+        ":time_daemon_core",
+        "@score_lifecycle//score/launch_manager:lifecycle_cc",
     ],
 )
 
 cc_binary(
     name = "time_daemon",
-    srcs = [
-        "main.cpp",
-        "time_daemon.cpp",
-        "time_daemon.h",
-    ],
     features = COMPILER_WARNING_FEATURES,
     tags = ["QM"],
     visibility = ["//score/time_daemon:__pkg__"],
     deps = [
-        "//score/time_daemon/src/application/svt:svt_handler",
-        "//score/time_daemon/src/common:logging_contexts",
-        "@score_baselibs//score/concurrency",
-        "@score_lifecycle//score/launch_manager:lifecycle_cc",
-        # "@score_logging//score/mw/log",
+        ":time_daemon_main",
+        "//score/time_daemon/src/application/timebase_handlers/score:score_timebase_handler_factory",
         "@score_baselibs//score/mw/log:console_only_backend",
     ],
 )
 
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
+    cc_unit_tests = [
+        ":time_daemon_test",
+    ],
     test_suites_from_sub_packages = [
         "//score/time_daemon/src/application/job_runner:unit_test_suite",
-        "//score/time_daemon/src/application/svt:unit_test_suite",
+        "//score/time_daemon/src/application/timebase_handlers/generic:unit_test_suite",
+        "//score/time_daemon/src/application/timebase_handlers/score/vehicle_time:unit_test_suite",
     ],
     visibility = ["//score/time_daemon:__pkg__"],
+)
+
+cc_test(
+    name = "time_daemon_test",
+    srcs = ["time_daemon_test.cpp"],
+    features = COMPILER_WARNING_FEATURES,
+    tags = ["unit"],
+    deps = [
+        ":time_daemon_core",
+        "//score/time_daemon/src/application/timebase_handlers:timebase_handler",
+        "//score/time_daemon/src/application/timebase_handlers:timebase_handler_factory",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+        "@score_baselibs//score/concurrency",
+        "@score_baselibs//score/mw/log:console_only_backend",
+        "@score_lifecycle//score/launch_manager:lifecycle_cc",
+    ],
 )

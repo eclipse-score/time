@@ -26,7 +26,9 @@ cc_library(
     visibility = ["//score/time_daemon:__subpackages__"],
     deps = [
         "//score/time/high_res_steady_time:interface",
+        "//score/time_daemon/src/common:logging_contexts",
         "//score/time_daemon/src/common/data_flow",
+        "//score/time_daemon/src/common/data_types:ptp_time_info",
         "//score/time_daemon/src/common/machines",
         "@score_baselibs//score/mw/log:frontend",
     ],

@@ -16,7 +16,6 @@
 title Application: Initialization Sequence
 
 hide footbox
-autoactivate on
 
 autonumber "<font color=red><b>[00]"
 
@@ -28,57 +27,55 @@ legend top left
 endlegend
 
 participant "LifecycleManager" as lcm #LightGreen
-participant "TimeDaemon" as vtd_app #LightCyan
-participant "TimebaseHandler" as tb_handler #LightCyan
+participant "TimeDaemon" as td_app #LightCyan
+participant "Linked handler factory\n(default: S-CORE)" as factory #LightCyan
+participant "GenericTimebaseHandler<T>\n(default: ScoreVehicleTimebaseHandler)" as tb_handler #LightCyan
 participant "Components" as components #Beige
+participant "JobRunner" as runner #LightCyan
 
 == TimeDaemon Construction ==
 
-lcm -> vtd_app ** : Construct TimeDaemon()
-activate vtd_app
-vtd_app -> tb_handler ** : create TimebaseHandler()
+lcm -> td_app ** : Construct TimeDaemon()
+activate td_app
+td_app -> factory : CreateTimebaseHandlers()
+activate factory
+factory -> tb_handler ** : create handler (default: via CreateVehicleTimebase())
 activate tb_handler
 
-tb_handler -> components ** : create all components
-note right of components
-    TimebaseHandler creates:
-    - MessageBroker
-    - PtpMachine
-    - VerificationMachine
-    - ControlFlowDivider
-    - IPCPublisher
-end note
+tb_handler -> tb_handler : create MessageBroker<T>
 
-tb_handler --> vtd_app : TimebaseHandler instance
+tb_handler --> factory : unique_ptr<TimebaseHandler>
 deactivate tb_handler
-vtd_app --> lcm : TimeDaemon instance
-deactivate vtd_app
+factory --> td_app : vector<unique_ptr<TimebaseHandler>>
+deactivate factory
+td_app --> lcm : TimeDaemon instance
+deactivate td_app
 
-== Initialization Phase ==
+== Setup Phase ==
 
-lcm -> vtd_app : Initialize(context)
-activate vtd_app
+lcm -> td_app : Initialize(context)
+activate td_app
+td_app -> td_app : validate entire handler list
 
-vtd_app -> tb_handler : Initialize()
-activate tb_handler
+alt empty list or null handler
+    td_app --> lcm : EXIT_FAILURE (no handlers initialized)
+else valid composition
+    loop handlers in list order
+        td_app -> tb_handler : Initialize()
+        activate tb_handler
 
-tb_handler -> tb_handler : Setup MessageBroker\nsubscriptions
-note right
-    Connect components via topics:
-    - input_ptp_data
-    - raw_ptp_data
-    - validated_ptp_data
-end note
+        tb_handler -> tb_handler : CreateComponents()
+        tb_handler -> components ** : create and Add() machines with timeouts
+        tb_handler -> tb_handler : Publish() / Subscribe() topic wiring
+        tb_handler -> runner ** : JobRunner(initialization jobs)
+        tb_handler -> tb_handler : is_configured_ = true\nstatus remains kIdle
 
-tb_handler --> vtd_app
-deactivate tb_handler
+        tb_handler --> td_app : setup complete
+        deactivate tb_handler
+    end
 
-vtd_app --> lcm
-deactivate vtd_app
-
-note right of tb_handler
-    All components created and connected,
-    but not yet started
-end note
+    td_app --> lcm : EXIT_SUCCESS
+end
+deactivate td_app
 
 @enduml

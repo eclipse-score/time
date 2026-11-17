@@ -42,7 +42,7 @@ For backwards compatibility, the ``GPTP_IFACE`` environment variable
 is loaded.
 
 Command-Line Arguments
------------------------
+----------------------
 
 The following command-line arguments are available to configure the
 ``TimeSlave`` at runtime:
@@ -54,7 +54,7 @@ The following command-line arguments are available to configure the
   for the full resolution order.
 
 Default Configuration (`GptpEngineOptions`)
---------------------------------------------
+-------------------------------------------
 
 The following table lists all available options and their default values as defined in the source code. Currently, only ``iface_name`` can be changed without recompiling the application.
 

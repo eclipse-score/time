@@ -84,7 +84,7 @@ auto VerificationStage<DataType>::Process(DataType data) -> DataType
         return next_stage_->Process(std::move(data));
     }
 
-    return std::move(data);
+    return data;
 }
 
 template <class DataType>

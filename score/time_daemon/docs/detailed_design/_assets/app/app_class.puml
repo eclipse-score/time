@@ -26,8 +26,18 @@ legend top left
 endlegend
 
 class "TimeDaemon" as vtd_app #LightCyan {
+    +TimeDaemon()
+    +TimeDaemon(vector<unique_ptr<TimebaseHandler>> handlers)
     +std::int32_t Initialize(const ApplicationContext& context) override
-    +std::int32_t Run(score::cpp::stop_token& token) override
+    +std::int32_t Run(const score::cpp::stop_token& token) override
+}
+
+class "Handler factory contract" as factory {
+    +CreateTimebaseHandlers(): vector<unique_ptr<TimebaseHandler>>
+}
+
+class "S-CORE handler factory" as score_factory {
+    +CreateTimebaseHandlers(): vector<unique_ptr<TimebaseHandler>>
 }
 
 class "TimebaseHandler" as tb_handler #LightCyan{
@@ -40,6 +50,18 @@ note right
     based on amount of supported time bases.
 end note
 
+class "GenericTimebaseHandler<T>" as generic_handler #LightCyan {
+    -void CreateComponents()
+}
+
+class "ScoreVehicleTimebaseHandler" as score_vehicle_time_handler #LightCyan {
+    #void CreateComponents()
+}
+note right of score_vehicle_time_handler
+    S-CORE-specific Vehicle Time composition:
+    selects machines, timings, topics, and wiring.
+end note
+
 class "MessageBroker" as msg_broker #PaleTurquoise
 class "PtpMachine" as ptp_machine #Wheat
 class "VerificationMachine" as ver_machine #Lavender
@@ -47,11 +69,17 @@ class "ControlFlowDivider" as cf_divider #LightBlue
 class "IpcPublisher" as ipc_publisher #LightPink
 
 vtd_app *-- "1..*" tb_handler : owns
+vtd_app ..> factory : default constructor
+factory ..> tb_handler : returns
+score_factory ..> factory : defines
+score_factory ..> score_vehicle_time_handler : creates
+tb_handler <|-- generic_handler
+generic_handler <|-- score_vehicle_time_handler : T = PtpTimeInfo
 
-tb_handler *-- msg_broker : owns
-tb_handler *-- ptp_machine : owns
-tb_handler *-- ver_machine : owns
-tb_handler *-- cf_divider : owns
-tb_handler *-- ipc_publisher : owns
+generic_handler *-- msg_broker : owns
+generic_handler *-- ptp_machine : owns
+generic_handler *-- ver_machine : owns
+generic_handler *-- cf_divider : owns
+generic_handler *-- ipc_publisher : owns
 
 @enduml

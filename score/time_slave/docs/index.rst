@@ -24,6 +24,7 @@ Time Slave
    :safety: QM
    :security: NO
    :realizes: wp__cmpt_request
+   :belongs_to: comp__time_slave
    :tags: time_slave
 
 .. comp:: Time Slave

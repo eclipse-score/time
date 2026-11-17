@@ -24,6 +24,7 @@ Time Slave User Manual
    :safety: QM
    :security: NO
    :realizes: wp__training_path[version==1]
+   :belongs_to: comp__time_slave
 
 Overview
 ========

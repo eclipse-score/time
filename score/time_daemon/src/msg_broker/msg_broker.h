@@ -42,9 +42,17 @@ namespace td
 ///
 /// @see ControlFlowDivider For control flow separation between threads.
 template <typename T>
-class MessageBroker : public std::enable_shared_from_this<MessageBroker<T>>
+class MessageBroker
 {
   public:
+    MessageBroker() = default;
+    ~MessageBroker() noexcept;
+
+    MessageBroker(const MessageBroker&) = delete;
+    MessageBroker& operator=(const MessageBroker&) = delete;
+    MessageBroker(MessageBroker&&) = delete;
+    MessageBroker& operator=(MessageBroker&&) = delete;
+
     /// @brief Registers a consumer component to receive messages on the specified topic.
     ///
     /// Creates a subscription wrapping the consumer's @c OnMessage() callback and
@@ -72,7 +80,21 @@ class MessageBroker : public std::enable_shared_from_this<MessageBroker<T>>
     void OnNewData(const Topic& topic, const T& data) const;
 
     std::unordered_map<Topic, std::vector<Subscription<T>>> subscribers_;
+    std::vector<std::weak_ptr<Producer<T>>> producers_;
 };
+
+template <typename T>
+MessageBroker<T>::~MessageBroker() noexcept
+{
+    for (const auto& producer_weak : producers_)
+    {
+        const auto producer = producer_weak.lock();
+        if (producer)
+        {
+            producer->SetPublishCallback({});
+        }
+    }
+}
 
 template <typename T>
 void MessageBroker<T>::AddSubscriber(const Topic& topic, std::weak_ptr<Consumer<T>> subscriber_weak)
@@ -92,14 +114,9 @@ void MessageBroker<T>::AddProducer(const Topic& topic, std::weak_ptr<Producer<T>
     const auto producer = producer_weak.lock();
     if (producer)
     {
-        std::weak_ptr<MessageBroker<T>> weak_broker = this->shared_from_this();
-
-        producer->SetPublishCallback([weak_broker, topic](const T& data) {
-            const auto broker = weak_broker.lock();
-            if (broker)
-            {
-                broker->OnNewData(topic, data);
-            }
+        producers_.push_back(producer_weak);
+        producer->SetPublishCallback([this, topic](const T& data) {
+            OnNewData(topic, data);
         });
     }
 }

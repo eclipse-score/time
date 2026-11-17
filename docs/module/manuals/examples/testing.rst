@@ -33,7 +33,7 @@ clock:
 +------------------------------+----------------------------------------------------------+
 
 T1 — ScopedClockOverride (Scope-Bound Override)
-------------------------------------------------
+-----------------------------------------------
 
 Use when the system under test calls ``Clock<Tag>::GetInstance()`` internally. The guard
 installs a mock backend into the process-wide singleton for the duration of its scope,
@@ -127,7 +127,7 @@ The full working example is in
 ``examples/time/vehicle_time/src/vehicle_time_handler_test.cpp``.
 
 T2 — ClockTestFactory (Constructor Injection)
-----------------------------------------------
+---------------------------------------------
 
 Use when the SUT accepts ``Clock<Tag>`` as a constructor argument.  No global singleton
 is touched — safe to run in parallel without ``"exclusive"`` tag.

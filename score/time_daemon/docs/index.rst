@@ -24,6 +24,7 @@ Time Daemon
    :safety: ASIL_B
    :security: NO
    :realizes: wp__cmpt_request
+   :belongs_to: comp__time_daemon
    :tags: time_daemon
 
 .. comp:: Time Daemon
@@ -37,36 +38,36 @@ Time Daemon
 Abstract
 ========
 
-This component implements a time synchronization daemon that receives time data from time_slave via IPC, performs verification and qualification, and provides validated time information to applications.
+This component implements a time daemon that receives time synchronization data from its time data sources, performs verification and qualification, and provides validated time information to client applications.
 
 Specification
 =============
 
-The time_daemon component acts as a verification and publishing layer between the time_slave component and client applications. It receives gPTP time synchronization data from shared memory, validates it through multiple verification stages, and publishes qualified time data via IPC.
+The time_daemon component acts as a verification layer between its time data sources and client applications, most notably the time component (:need:`comp__time`). It is designed to host one or more time bases. The time base currently provided is vehicle time, which receives gPTP time synchronization data from the time_slave component.
 
-The component operates as a continuous loop with the following stages:
+For each time base the component performs the following stages:
 
-1. **Data Reception**: Reads gPTP time synchronization data from shared memory written by time_slave
+1. **Data Reception**: Receives time synchronization data from the time data source (for vehicle time: gPTP data from time_slave)
 2. **Verification Pipeline**: Validates data through three checks:
 
    * Synchronization status validation
    * Timeout detection (no new time sync data within configured span of time)
    * Time jump detection (received master timestamp deviates from its expected value by more than the configured threshold)
 
-3. **Publishing**: Publishes verified time data with quality indicators to clients via VehicleTime IPC interface
+3. **Provision**: Provides verified time data with quality indicators to client applications
 
 Key Behaviors
 -------------
 
 **Startup Stabilization**: Synchronization state changes are not reported during a configurable span of time after initial synchronization to avoid spurious time jump detection.
 
-**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of  consecutive valid frames.
+**Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of consecutive valid frames.
 
-**Start Order Independence**: time_slave does not need to be started before time_daemon. If time_slave is not yet available, time_daemon waits for it up to the startup timeout.
+**Start Order Independence**: Time data sources do not need to be started before time_daemon. If a time data source is not yet available, time_daemon continues its own startup without blocking on it and retries establishing the connection until it succeeds or the startup timeout expires. If initialization of a time base does not complete within the startup timeout, no time data is provided for it and initialization is not retried.
 
 **Multi-Client Support**: Multiple client applications can concurrently read the provided time data.
 
-**Platform Support**: Linux and QNX 8.0 SDP platforms supported for shared memory and IPC operations.
+**Platform Support**: Linux and QNX 8.0 SDP platforms supported.
 
 Footnotes
 =========

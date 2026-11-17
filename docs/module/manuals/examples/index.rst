@@ -30,7 +30,7 @@ different SCORE time sources:
 All examples follow consistent patterns and can be used as starting points for real applications.
 
 Building and Running Examples
-------------------------------
+-----------------------------
 
 All examples use Bazel:
 

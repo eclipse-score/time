@@ -10,18 +10,18 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
-#include "score/time_daemon/src/application/svt/factory.h"
+#include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/factory.h"
 
-#include "score/time_daemon/src/application/svt/svt_handler.h"
+#include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/score_vehicle_timebase_handler.h"
 
 namespace score
 {
 namespace td
 {
 
-std::unique_ptr<TimebaseHandler> CreateSvtTimebase()
+std::unique_ptr<TimebaseHandler> CreateVehicleTimebase()
 {
-    return std::make_unique<SvtHandler>();
+    return std::make_unique<ScoreVehicleTimebaseHandler>();
 }
 
 }  // namespace td
