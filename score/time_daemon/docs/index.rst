@@ -63,7 +63,7 @@ Key Behaviors
 
 **Error Recovery**: Time jump and timeout conditions are non-fatal. The component continues providing time data with appropriate status flags set. Time jump condition clears after configurable number of consecutive valid frames.
 
-**Start Order Independence**: Time data sources do not need to be started before time_daemon. If a time data source is not yet available, time_daemon continues its own startup without blocking on it and retries establishing the connection until it succeeds or the startup timeout expires. If initialization of a time base does not complete within the startup timeout, no time data is provided for it and initialization is not retried.
+**Start Order Independence**: Time data sources do not need to be started before time_daemon. If a time data source is not yet available, time_daemon continues its own startup without blocking on it and retries establishing the connection until it succeeds or the startup timeout expires. If initialization of a time base does not complete within the startup timeout, time_daemon provides no time data and terminates.
 
 **Multi-Client Support**: Multiple client applications can concurrently read the provided time data.
 
