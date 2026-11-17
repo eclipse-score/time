@@ -94,5 +94,9 @@
   {
     "version": "pr-333",
     "url": "https://eclipse-score.github.io/time/pr-333/"
+  },
+  {
+    "version": "pr-318",
+    "url": "https://eclipse-score.github.io/time/pr-318/"
   }
 ]
