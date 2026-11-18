@@ -39,6 +39,7 @@ constexpr std::int32_t kInitFailure = -1;
 
 TimeSlave::TimeSlave() = default;
 
+// req-Id: comp_req__time_slave__startup, comp_req__time_slave__configuration, comp_req__time_slave__error_reporting
 std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContext& context)
 {
     namespace fs = std::filesystem;
@@ -127,6 +128,7 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     return kInitSuccess;
 }
 
+// req-Id: comp_req__time_slave__shutdown, comp_req__time_slave__sync_publishing
 std::int32_t TimeSlave::Run(const score::cpp::stop_token& token)
 {
     constexpr auto kPublishInterval = std::chrono::milliseconds{50};

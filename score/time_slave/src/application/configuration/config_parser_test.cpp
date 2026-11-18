@@ -332,11 +332,34 @@ TEST(ConfigParserTest, RangeBoundariesAreEnforcedExactly)
     }
 }
 
-TEST(ConfigParserTest, MissingFileIsReported)
+/// A path that is not a regular file (directory or missing) is not a config file: the built-in
+/// defaults are used and no error is reported (see the directory-path crash fix).
+TEST(ConfigParserTest, DirectoryPathReturnsDefaults)
+{
+    const auto result = ParseConfig(testing::TempDir());
+
+    EXPECT_TRUE(result.ok());
+    EXPECT_EQ(result.config.engine_opts.iface_name, "emac0");
+    EXPECT_EQ(result.config.shm_path, "/gptp_shmem");
+    EXPECT_FALSE(result.config.engine_opts.phc_config.enabled);
+}
+
+TEST(ConfigParserTest, NonExistentPathReturnsDefaults)
 {
     const auto result = ParseConfig(testing::TempDir() + "does_not_exist.json");
+
+    EXPECT_TRUE(result.ok());
+    EXPECT_EQ(result.config.engine_opts.iface_name, "emac0");
+    EXPECT_EQ(result.config.shm_path, "/gptp_shmem");
+}
+
+/// Invalid JSON is an error (not defaults): the caller refuses to start on it.
+TEST(ConfigParserTest, InvalidJsonIsReportedNotDefaulted)
+{
+    const auto result = ParseConfig(WriteTempFile("invalid_config.json", "{not json"));
+
     ASSERT_FALSE(result.ok());
-    EXPECT_NE(result.errors.front().find("does_not_exist.json"), std::string::npos);
+    EXPECT_NE(result.errors.front().find("Failed to parse"), std::string::npos);
 }
 
 }  // namespace

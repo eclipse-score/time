@@ -15,13 +15,17 @@
 #include "score/time_slave/src/application/configuration/config_schema_table.h"
 
 #include "score/json/json_parser.h"
+#include "score/mw/log/logging.h"
+#include "score/time_slave/src/common/logging_contexts.h"
 
 #include <algorithm>
 #include <array>
 #include <cstdint>
+#include <filesystem>
 #include <limits>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <vector>
 
 namespace score
@@ -207,9 +211,21 @@ void ParseQnxConfig(JsonObjectReader& root, std::vector<std::string>& errors, Ti
 
 }  // namespace
 
+// req-Id: comp_req__time_slave__configuration
 ConfigParseResult ParseConfig(const std::string& path)
 {
     ConfigParseResult result;
+
+    // A directory or a missing path is not a config file: keep the built-in defaults rather than
+    // failing (see the directory-path crash fix). Invalid content is still rejected below.
+    std::error_code ec;
+    if (!std::filesystem::is_regular_file(path, ec))
+    {
+        score::mw::log::LogWarn(kTimeSlaveAppContext)
+            << "Config path '" << path << "' is not a regular file, using built-in defaults";
+        return result;
+    }
+
     const score::json::JsonParser parser;
     const auto root_result = parser.FromFile(path);
     if (!root_result.has_value())

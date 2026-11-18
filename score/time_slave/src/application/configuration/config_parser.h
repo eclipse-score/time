@@ -46,8 +46,9 @@ struct ConfigParseResult
  * Every constraint of the schema is enforced: value types (a JSON boolean is not an
  * integer and vice versa), numeric ranges (``minimum`` / ``maximum``) and unknown keys
  * (``additionalProperties: false``). Invalid values are never clamped or applied; they are
- * reported in ConfigParseResult::errors. An unreadable file, invalid JSON or a root that
- * is not an object is reported the same way.
+ * reported in ConfigParseResult::errors. Invalid JSON or a root that is not an object is
+ * reported the same way. A path that is not a regular file (a directory or a missing file)
+ * is not a config file: the built-in defaults are returned with no errors.
  *
  * @param path  Filesystem path to the JSON config file.
  * @return Parsed config, or the list of errors (check ConfigParseResult::ok()).
