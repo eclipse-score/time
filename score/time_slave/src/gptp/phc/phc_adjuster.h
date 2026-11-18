@@ -28,6 +28,7 @@ namespace details
 /// The @c device field is platform-specific:
 ///   - Linux: path to the PHC character device, e.g. @c /dev/ptp0
 ///   - QNX: network interface name, e.g. @c emac0
+// req-Id: comp_req__time_slave__phc_offset
 struct PhcConfig
 {
     bool enabled = false;                            ///< Enable or disable PHC adjustment. Default: @c false

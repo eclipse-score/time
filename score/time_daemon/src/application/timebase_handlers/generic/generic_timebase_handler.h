@@ -66,6 +66,9 @@ class GenericTimebaseHandler : public TimebaseHandler
     /// \brief Stops the timebase handler.
     void Stop() noexcept override;
 
+    /// \brief Returns true if initialization failed, e.g. timed out. Not set by a requested stop.
+    bool IsFailed() const noexcept override;
+
   protected:
     /// \param name Name used in log messages and for the initialization thread.
     explicit GenericTimebaseHandler(std::string name);
@@ -103,6 +106,9 @@ class GenericTimebaseHandler : public TimebaseHandler
     TimebaseHandler::Status handler_status_;
     /// Set by Initialize(). The machines may still be initializing.
     bool is_configured_;
+    /// Set when initialization failed on its own, not because a stop was requested.
+    bool is_failed_;
+    score::cpp::stop_token stop_token_;
 };
 
 template <typename T>
@@ -115,7 +121,9 @@ GenericTimebaseHandler<T>::GenericTimebaseHandler(std::string name)
       producers_{},
       init_job_runner_{nullptr},
       handler_status_{TimebaseHandler::Status::kIdle},
-      is_configured_{false}
+      is_configured_{false},
+      is_failed_{false},
+      stop_token_{}
 {
     score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": handler created";
 }
@@ -206,6 +214,7 @@ void GenericTimebaseHandler<T>::RunOnce() noexcept
 template <typename T>
 void GenericTimebaseHandler<T>::Start(const score::cpp::stop_token& token) noexcept
 {
+    stop_token_ = token;
     init_job_runner_->Start(token);
     MoveToStartingState();
 }
@@ -219,6 +228,12 @@ void GenericTimebaseHandler<T>::Stop() noexcept
     }
     score::mw::log::LogInfo(kTimeBaseHandlerGeneric) << name_ << ": proactive machines stopped";
     MoveToStoppedState();
+}
+
+template <typename T>
+bool GenericTimebaseHandler<T>::IsFailed() const noexcept
+{
+    return is_failed_;
 }
 
 template <typename T>
@@ -247,6 +262,8 @@ void GenericTimebaseHandler<T>::PollInitialization() noexcept
         case JobRunner::Result::kFailed:
         {
             score::mw::log::LogError(kTimeBaseHandlerGeneric) << name_ << ": " << "Initialization failed";
+            // The job runner also reports failure when a stop was requested during initialization.
+            is_failed_ = !stop_token_.stop_requested();
             Stop();
             break;
         }

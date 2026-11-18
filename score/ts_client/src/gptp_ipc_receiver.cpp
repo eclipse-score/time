@@ -27,13 +27,17 @@ namespace ts
 namespace details
 {
 
+// req-Id: comp_req__ts_client__seqlock_protocol
 static constexpr int kMaxRetries = 20;
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt
 GptpIpcReceiver::~GptpIpcReceiver()
 {
     Close();
 }
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation
+// req-Id: comp_req__ts_client__platform_support, comp_req__ts_client__receiver_multi_reader
 bool GptpIpcReceiver::Open(const std::string& ipc_name)
 {
     if (shm_resource_ != nullptr)
@@ -57,6 +61,7 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     }
     region_ = static_cast<const GptpIpcRegion*>(ptr);
 
+    // req-Id: comp_req__ts_client__data_validity
     if (region_->magic.load(std::memory_order_acquire) != kGptpIpcMagic)
     {
         Close();
@@ -91,6 +96,9 @@ bool GptpIpcReceiver::IsReplaced() const
     return have_current && ((current.st_dev != mapped.st_dev) || (current.st_ino != mapped.st_ino));
 }
 
+// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data
+// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data
+// req-Id: comp_req__ts_client__time_correlation_data
 std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
 {
     if (region_ == nullptr)
@@ -130,6 +138,7 @@ std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
     return std::nullopt;
 }
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt
 void GptpIpcReceiver::Close()
 {
     shm_resource_.reset();
