@@ -16,6 +16,7 @@
 #include <netinet/in.h>
 #include <cstdint>
 #include <cstring>
+#include <ctime>
 #include <limits>
 
 #ifndef __QNXNTO__
@@ -74,6 +75,13 @@ constexpr std::uint8_t kPdelayDomainNumber = 0U;
 
 /// Nanoseconds per second.
 constexpr std::int64_t kNsPerSec = 1'000'000'000LL;
+
+/// A zeroed timespec is the "no timestamp delivered" marker used by RawSocket::Recv()/Send().
+/// @return true if @p ts holds an actual timestamp.
+inline bool HasTimestamp(const ::timespec& ts) noexcept
+{
+    return ts.tv_sec != 0 || ts.tv_nsec != 0;
+}
 
 // ─── Control field ───────────────────────────────────────────────────────────
 /// PTP control field values (IEEE 1588-2008 §13.3.2.10).
@@ -239,6 +247,16 @@ inline Timestamp TmvToTimestamp(const TmvT& x) noexcept
     t.seconds_lsb = static_cast<std::uint32_t>(sec & 0xFFFFFFFFULL);
     t.seconds_msb = static_cast<std::uint16_t>((sec >> 32U) & 0xFFFFULL);
     t.nanoseconds = static_cast<std::uint32_t>(nsec);
+    return t;
+}
+
+/// @brief Convert a host-order Timestamp to network (big-endian) byte order for transmission.
+inline Timestamp TimestampToNetwork(const Timestamp& ts) noexcept
+{
+    Timestamp t{};
+    t.seconds_msb = htons(ts.seconds_msb);
+    t.seconds_lsb = htonl(ts.seconds_lsb);
+    t.nanoseconds = htonl(ts.nanoseconds);
     return t;
 }
 

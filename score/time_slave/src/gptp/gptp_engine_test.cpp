@@ -100,17 +100,25 @@ class FakeSocket final : public RawSocket
         return static_cast<int>(n);
     }
 
-    int Send(const void* buf, int len, ::timespec&) override
+    int Send(const void* buf, int len, ::timespec& hwts) override
     {
-        const auto* p = static_cast<const std::uint8_t*>(buf);
-        std::lock_guard<std::mutex> lk(mtx_);
-        sent_.emplace_back(p, p + len);
+        {
+            std::lock_guard<std::mutex> lk(sent_mtx_);
+            const auto* p = static_cast<const std::uint8_t*>(buf);
+            sent_.emplace_back(p, p + len);
+        }
+        hwts = send_hwts_;
         return len;
     }
 
-    std::vector<Frame> Sent()
+    void SetSendHwts(::timespec ts)
     {
-        std::lock_guard<std::mutex> lk(mtx_);
+        send_hwts_ = ts;
+    }
+
+    std::vector<std::vector<std::uint8_t>> SentFrames()
+    {
+        std::lock_guard<std::mutex> lk(sent_mtx_);
         return sent_;
     }
     int GetFd() const override
@@ -125,12 +133,14 @@ class FakeSocket final : public RawSocket
 
   private:
     std::deque<std::pair<std::vector<std::uint8_t>, ::timespec>> frames_;
-    std::vector<Frame> sent_;
     std::mutex mtx_;
     std::condition_variable cv_;
     bool closed_{false};
     bool hw_ts_ok_{true};
     bool open_ok_{true};
+    std::mutex sent_mtx_;
+    std::vector<std::vector<std::uint8_t>> sent_;
+    ::timespec send_hwts_{};
 };
 
 // ── FakeIdentity ──────────────────────────────────────────────────────────────
@@ -244,6 +254,15 @@ std::vector<std::uint8_t> MakePdelayRespFupFrame(std::uint16_t seqId)
     return f;
 }
 
+std::vector<std::uint8_t> MakePdelayReqFrame(std::uint16_t seqId)
+{
+    std::vector<std::uint8_t> f;
+    AppendEthHeader(f);
+    AppendPtpHeader(f, kPtpMsgtypePdelayReq, seqId, /*ctl=*/5);
+    f.resize(f.size() + 20, 0);  // reserved body
+    return f;
+}
+
 std::vector<std::uint8_t> MakeUnknownFrame()
 {
     std::vector<std::uint8_t> f;
@@ -252,7 +271,7 @@ std::vector<std::uint8_t> MakeUnknownFrame()
     return f;
 }
 
-std::vector<std::uint8_t> MakePdelayReqFrame(std::uint8_t domain)
+std::vector<std::uint8_t> MakePdelayReqFrameWithDomain(std::uint8_t domain)
 {
     std::vector<std::uint8_t> f = MakeUnknownFrame();
     f[kDomainOffset] = domain;
@@ -467,14 +486,17 @@ TEST_F(GptpEngineFakeTest, HandlePacket_PdelayReqWithAnyDomain_RespondsWithDomai
     opts.pdelay_warmup_ms = 100000;
     auto sock = std::make_unique<FakeSocket>();
     FakeSocket* raw = sock.get();
+    ::timespec tx{};
+    tx.tv_sec = 1;
+    raw->SetSendHwts(tx);  // engine skips FollowUp without a TX timestamp
     GptpEngine eng{opts, std::move(sock), std::make_unique<FakeIdentity>()};
     ASSERT_TRUE(eng.Initialize());
 
-    raw->Push(MakePdelayReqFrame(9U));
-    for (int i = 0; i < 100 && raw->Sent().size() < 2U; ++i)
+    raw->Push(MakePdelayReqFrameWithDomain(9U));
+    for (int i = 0; i < 100 && raw->SentFrames().size() < 2U; ++i)
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-    const auto sent = raw->Sent();
+    const auto sent = raw->SentFrames();
     ASSERT_EQ(sent.size(), 2U);
     EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayResp);
     EXPECT_EQ(sent[0][kDomainOffset], 0U);
@@ -492,14 +514,72 @@ TEST_F(GptpEngineFakeTest, PdelayReqSent_WithConfiguredDomain_HasDomainZero)
     GptpEngine eng{opts, std::move(sock), std::make_unique<FakeIdentity>()};
     ASSERT_TRUE(eng.Initialize());
 
-    for (int i = 0; i < 100 && raw->Sent().empty(); ++i)
+    for (int i = 0; i < 100 && raw->SentFrames().empty(); ++i)
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-    const auto sent = raw->Sent();
+    const auto sent = raw->SentFrames();
     ASSERT_FALSE(sent.empty());
     EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayReq);
     EXPECT_EQ(sent[0][kDomainOffset], 0U);
     eng.Deinitialize();
+}
+
+// ── GptpEngineFakeTest — PdelayReq → PdelayResp/FollowUp wire byte order ─────
+
+namespace
+{
+constexpr std::size_t kEthHdrLen = 14U;
+constexpr std::size_t kPtpBodyOffset = 34U;
+
+// Find the first sent frame with the given PTP message type; empty if none.
+std::vector<std::uint8_t> FindSent(FakeSocket& sock, std::uint8_t msgtype)
+{
+    for (auto& f : sock.SentFrames())
+    {
+        if (f.size() > kEthHdrLen + kPtpBodyOffset + 10U && (f[kEthHdrLen] & 0x0FU) == msgtype)
+            return f;
+    }
+    return {};
+}
+
+std::vector<std::uint8_t> WaitForSent(FakeSocket& sock, std::uint8_t msgtype)
+{
+    for (int i = 0; i < 100; ++i)
+    {
+        auto f = FindSent(sock, msgtype);
+        if (!f.empty())
+            return f;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    return {};
+}
+
+// Expected big-endian encoding of sec=0x0001'2345'6789 (48 bit), ns=987654321.
+const std::uint8_t kExpectedTs[10] = {0x00, 0x01, 0x23, 0x45, 0x67, 0x89, 0x3A, 0xDE, 0x68, 0xB1};
+constexpr std::int64_t kSec = 0x123456789LL;
+constexpr long kNs = 987654321L;
+}  // namespace
+
+TEST_F(GptpEngineFakeTest, PdelayReq_Response_TimestampsInNetworkByteOrder)
+{
+    ::timespec tx{};
+    tx.tv_sec = static_cast<time_t>(kSec);
+    tx.tv_nsec = kNs;
+    socket_raw_->SetSendHwts(tx);
+    ASSERT_TRUE(engine_->Initialize());
+
+    ::timespec rx{};
+    rx.tv_sec = static_cast<time_t>(kSec);
+    rx.tv_nsec = kNs;
+    socket_raw_->Push(MakePdelayReqFrame(7U), rx);
+
+    const auto resp = WaitForSent(*socket_raw_, kPtpMsgtypePdelayResp);
+    ASSERT_FALSE(resp.empty());
+    EXPECT_EQ(0, std::memcmp(resp.data() + kEthHdrLen + kPtpBodyOffset, kExpectedTs, sizeof(kExpectedTs)));
+
+    const auto fup = WaitForSent(*socket_raw_, kPtpMsgtypePdelayRespFollowUp);
+    ASSERT_FALSE(fup.empty());
+    EXPECT_EQ(0, std::memcmp(fup.data() + kEthHdrLen + kPtpBodyOffset, kExpectedTs, sizeof(kExpectedTs)));
 }
 
 // ── GptpEngineFakeTest — unknown msgtype (default branch) ────────────────────
@@ -636,7 +716,7 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpFuture_Detected)
     score::ts::GptpIpcData data{};
     ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
     EXPECT_TRUE(data.status.is_time_jump_future);
-    EXPECT_FALSE(data.status.is_correct);
+    EXPECT_TRUE(data.status.is_correct);
 }
 
 TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
@@ -662,7 +742,25 @@ TEST_F(GptpEngineFakeTest, HandlePacket_TwoSyncFup_TimeJumpPast_Detected)
     score::ts::GptpIpcData data{};
     ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
     EXPECT_TRUE(data.status.is_time_jump_past);
-    EXPECT_FALSE(data.status.is_correct);
+    EXPECT_TRUE(data.status.is_correct);
+}
+
+TEST(GptpEngineTimeoutTest, ReadPTPSnapshot_TimeoutBeforeFirstSync_FlagIsReported)
+{
+    GptpEngineOptions opts = FastOptions();
+    opts.sync_timeout_ms = 50;
+
+    GptpEngine eng{opts, std::make_unique<FakeSocket>(), std::make_unique<FakeIdentity>()};
+    ASSERT_TRUE(eng.Initialize());
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+
+    score::ts::GptpIpcData info{};
+    eng.FinalizeSnapshot();
+    ASSERT_TRUE(eng.ReadPTPSnapshot(info));
+    EXPECT_TRUE(info.status.is_timeout);
+    // is_correct == false would make consumers discard the timeout flag.
+    EXPECT_TRUE(info.status.is_correct);
+    EXPECT_TRUE(eng.Deinitialize());
 }
 
 }  // namespace details

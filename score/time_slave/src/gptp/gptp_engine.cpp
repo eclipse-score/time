@@ -166,7 +166,9 @@ void GptpEngine::FinalizeSnapshot() noexcept
     {
         current_snapshot_.status.is_synchronized = false;
         current_snapshot_.status.is_timeout = true;
-        current_snapshot_.status.is_correct = false;
+        // The record is valid and carries a legitimate timeout; is_correct == false would make consumers
+        // discard all flags (see ConvertPtpStatus), also for a timeout before the first Sync/FollowUp.
+        current_snapshot_.status.is_correct = true;
     }
 }
 
@@ -340,7 +342,9 @@ void GptpEngine::UpdateSnapshot(const SyncResult& sync, const PDelayResult& pdel
         pending_snapshot_.status.is_timeout = false;
         pending_snapshot_.status.is_time_jump_future = sync.is_time_jump_future;
         pending_snapshot_.status.is_time_jump_past = sync.is_time_jump_past;
-        pending_snapshot_.status.is_correct = !sync.is_time_jump_future && !sync.is_time_jump_past;
+        // Timeout and time jumps are reported by their own flags; clearing is_correct would make consumers
+        // drop all flags (see ConvertPtpStatus), hiding exactly these conditions.
+        pending_snapshot_.status.is_correct = true;
 
         pending_snapshot_.sync_fup_data = sync.sync_fup_data;
         pending_snapshot_.pdelay_data = pdelay.pdelay_data;
@@ -386,7 +390,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     resp.ptpHdr.sequenceId = htons(req.ptpHdr.sequenceId);
     resp.ptpHdr.controlField = static_cast<std::uint8_t>(ControlField::kOther);
     resp.ptpHdr.logMessageInterval = 0x7F;
-    resp.pdelay_resp.requestReceiptTimestamp = TmvToTimestamp(t2);
+    resp.pdelay_resp.requestReceiptTimestamp = TimestampToNetwork(TmvToTimestamp(t2));
     resp.pdelay_resp.requestingPortIdentity.clockIdentity = req.ptpHdr.sourcePortIdentity.clockIdentity;
     resp.pdelay_resp.requestingPortIdentity.portNumber = htons(req.ptpHdr.sourcePortIdentity.portNumber);
 
@@ -397,7 +401,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
         return;
 
     ::timespec hwts{};
-    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0)
+    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0 || !HasTimestamp(hwts))
         return;
     const TmvT t3{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
 
@@ -414,7 +418,7 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
     fup.ptpHdr.sequenceId = htons(req.ptpHdr.sequenceId);
     fup.ptpHdr.controlField = static_cast<std::uint8_t>(ControlField::kOther);
     fup.ptpHdr.logMessageInterval = 0x7F;
-    fup.pdelay_resp_fup.responseOriginReceiptTimestamp = TmvToTimestamp(t3);
+    fup.pdelay_resp_fup.responseOriginReceiptTimestamp = TimestampToNetwork(TmvToTimestamp(t3));
     fup.pdelay_resp_fup.requestingPortIdentity.clockIdentity = req.ptpHdr.sourcePortIdentity.clockIdentity;
     fup.pdelay_resp_fup.requestingPortIdentity.portNumber = htons(req.ptpHdr.sourcePortIdentity.portNumber);
 
