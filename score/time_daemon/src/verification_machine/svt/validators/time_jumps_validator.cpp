@@ -140,6 +140,16 @@ void TimeJumpsValidator::HandleInitialSyncDebouncingState(PtpTimeInfo& data)
 
 void TimeJumpsValidator::SyncFramesHandler(PtpTimeInfo& data)
 {
+    // A snapshot without a Sync ingress timestamp carries no Sync/FollowUp data (e.g. the empty snapshot a restarted
+    // TimeSlave publishes before its first Sync). It must neither be counted as a valid frame nor become the
+    // reference for the next prediction, otherwise the first real Sync after a restart is compared against T2 = 0
+    // and reported as a false time jump.
+    if (data.sync_fup_data.sync_ingress_timestamp == 0U)
+    {
+        UpdateStatus(data);
+        return;
+    }
+
     if (last_sync_frame_.has_value() &&
         // When the same sync frame is delivered repeatedly, the repetition is neither a valid
         // frame (which would otherwise clear a time jump too early) nor a jump.

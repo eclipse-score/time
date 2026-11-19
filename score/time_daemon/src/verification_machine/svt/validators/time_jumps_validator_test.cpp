@@ -332,5 +332,60 @@ TEST(TimeJumpsValidatorTest, UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDeb
     }
 }
 
+TEST(TimeJumpsValidatorTest, EmptySnapshotBetweenFramesDoesNotCauseFalseTimeJump)
+{
+    auto mock = std::make_shared<score::time::HighResSteadyClockBackendMock>();
+
+    TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
+                                 std::chrono::nanoseconds(500'000),
+                                 std::chrono::nanoseconds(5'000'000),
+                                 2U);
+
+    EXPECT_CALL(*mock, Now())
+        .WillOnce(::testing::Return(
+            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(0)}, {}}))
+        .WillOnce(::testing::Return(
+            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(6'000'000'000)}, {}}));
+
+    PtpTimeInfo entry_data{};
+    entry_data.status.is_synchronized = true;
+    std::ignore = validator.Process(entry_data);
+    std::ignore = validator.Process(entry_data);
+
+    // T1 (GM time) and T2 (local hardware time) are in unrelated epochs, as on a real system.
+    const auto make_frame = [](std::uint16_t seq, std::uint64_t t1, std::uint64_t t2) {
+        SyncFupData sync{};
+        sync.sequence_id = seq;
+        sync.precise_origin_timestamp = t1;
+        sync.sync_ingress_timestamp = t2;
+        return PtpTimeInfo{std::chrono::nanoseconds{0}, PtpTimeInfo::ReferenceClock::time_point{}, 0, {}, sync, {}};
+    };
+
+    // Frames before the TimeSlave restart
+    for (std::uint16_t i = 1U; i <= 3U; ++i)
+    {
+        const auto result = validator.Process(
+            make_frame(i, 1'000'000'000'000ULL + i * 125'000'000ULL, 5'000'000'000ULL + i * 125'000'000ULL));
+        EXPECT_FALSE(result.status.is_time_jump_future);
+        EXPECT_FALSE(result.status.is_time_jump_past);
+    }
+
+    // Empty snapshot published by the restarted TimeSlave
+    auto empty = validator.Process(make_frame(0U, 0U, 0U));
+    EXPECT_FALSE(empty.status.is_time_jump_future);
+    EXPECT_FALSE(empty.status.is_time_jump_past);
+
+    // First real frames after the restart continue the same T1/T2 progression
+    for (std::uint16_t i = 4U; i <= 6U; ++i)
+    {
+        const auto result = validator.Process(
+            make_frame(i, 1'000'000'000'000ULL + i * 125'000'000ULL, 5'000'000'000ULL + i * 125'000'000ULL));
+        EXPECT_FALSE(result.status.is_time_jump_future);
+        EXPECT_FALSE(result.status.is_time_jump_past);
+    }
+}
+
 }  // namespace td
 }  // namespace score
