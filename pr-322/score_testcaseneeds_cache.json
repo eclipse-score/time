@@ -2674,6 +2674,20 @@
     "FullyVerifies": null
   },
   {
+    "name": "TimeJumpsValidatorTest__EmptySnapshotBetweenFramesDoesNotCauseFalseTimeJump",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "335",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "TestIfSynchronizedFlagIsNotCleared/TimeJumpsValidatorParamTest__ValidationTest/0",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "62",
