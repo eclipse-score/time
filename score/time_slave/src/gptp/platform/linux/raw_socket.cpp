@@ -24,6 +24,8 @@
 #include <unistd.h>
 #include <cerrno>
 #include <cstring>
+#include <ctime>
+#include <mutex>
 
 namespace score
 {
@@ -115,7 +117,10 @@ bool RawSocketImpl::EnableHwTimestamping()
     {
         // Fall back to PTP-only filter
         cfg.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
-        (void)sys_->ioctl_call(fd, SIOCSHWTSTAMP, &ifr);
+        if (sys_->ioctl_call(fd, SIOCSHWTSTAMP, &ifr) < 0)
+        {
+            return false;
+        }
     }
 
     const int ts_opts = SOF_TIMESTAMPING_TX_HARDWARE | SOF_TIMESTAMPING_RX_HARDWARE | SOF_TIMESTAMPING_RAW_HARDWARE;
@@ -194,6 +199,7 @@ int RawSocketImpl::Send(const void* buf, int len, ::timespec& hwts)
     if (fd < 0 || buf == nullptr || len <= 0)
         return -1;
 
+    std::lock_guard<std::mutex> lk(send_mutex_);
     DrainErrQueue(fd, *sys_);
 
     const int sent = static_cast<int>(sys_->send_call(fd, buf, static_cast<std::size_t>(len), 0));

@@ -16,6 +16,7 @@
 #include <netinet/in.h>
 #include <cstdint>
 #include <cstring>
+#include <ctime>
 #include <limits>
 
 #ifndef __QNXNTO__
@@ -236,6 +237,16 @@ inline Timestamp TmvToTimestamp(const TmvT& x) noexcept
     t.seconds_lsb = static_cast<std::uint32_t>(sec & 0xFFFFFFFFULL);
     t.seconds_msb = static_cast<std::uint16_t>((sec >> 32U) & 0xFFFFULL);
     t.nanoseconds = static_cast<std::uint32_t>(nsec);
+    return t;
+}
+
+/// @brief Convert a host-order Timestamp to network (big-endian) byte order for transmission.
+inline Timestamp TimestampToNetwork(const Timestamp& ts) noexcept
+{
+    Timestamp t{};
+    t.seconds_msb = htons(ts.seconds_msb);
+    t.seconds_lsb = htonl(ts.seconds_lsb);
+    t.nanoseconds = htonl(ts.nanoseconds);
     return t;
 }
 

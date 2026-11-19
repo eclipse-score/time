@@ -20,7 +20,6 @@ namespace
 {
 
 constexpr ::timespec kBpfTs{10, 1};
-constexpr ::timespec kPtpTs{20, 2};
 constexpr ::timespec kMonoTs{30, 3};
 
 bool TsEq(const ::timespec& a, const ::timespec& b) noexcept
@@ -28,46 +27,45 @@ bool TsEq(const ::timespec& a, const ::timespec& b) noexcept
     return a.tv_sec == b.tv_sec && a.tv_nsec == b.tv_nsec;
 }
 
-TEST(TimestampSelectTest, SoftwareLocked_IgnoresValidHardwareInputs_ReturnsMonoFallback)
+TEST(TimestampSelectTest, SoftwareLocked_IgnoresValidHardwareInput_ReturnsMonoFallback)
 {
-    // Even though both BPF and PTP_GET_TIME report valid timestamps, a software-locked
-    // interface must never mix in a hardware reading — this is the AC3 guarantee.
-    const ::timespec result = SelectTimestamp(
-        /*hw_ts_supported=*/false, /*bpf_ts_valid=*/true, kBpfTs, /*ptp_get_time_valid=*/true, kPtpTs, kMonoTs);
+    // A software-locked interface must never mix in a hardware reading — this is the AC3 guarantee.
+    const ::timespec result = SelectTimestamp(/*hw_ts_supported=*/false, /*bpf_ts_valid=*/true, kBpfTs, kMonoTs);
     EXPECT_TRUE(TsEq(result, kMonoTs));
 }
 
-TEST(TimestampSelectTest, SoftwareLocked_NoHardwareInputs_ReturnsMonoFallback)
+TEST(TimestampSelectTest, SoftwareLocked_NoHardwareInput_ReturnsMonoFallback)
 {
-    const ::timespec result =
-        SelectTimestamp(/*hw_ts_supported=*/false, false, ::timespec{}, false, ::timespec{}, kMonoTs);
+    const ::timespec result = SelectTimestamp(/*hw_ts_supported=*/false, false, ::timespec{}, kMonoTs);
     EXPECT_TRUE(TsEq(result, kMonoTs));
 }
 
-TEST(TimestampSelectTest, HardwareLocked_BpfValid_PrefersBpfOverPtpGetTime)
+TEST(TimestampSelectTest, HardwareLocked_BpfValid_ReturnsBpf)
 {
-    const ::timespec result = SelectTimestamp(
-        /*hw_ts_supported=*/true, /*bpf_ts_valid=*/true, kBpfTs, /*ptp_get_time_valid=*/true, kPtpTs, kMonoTs);
+    const ::timespec result = SelectTimestamp(/*hw_ts_supported=*/true, /*bpf_ts_valid=*/true, kBpfTs, kMonoTs);
     EXPECT_TRUE(TsEq(result, kBpfTs));
 }
 
-TEST(TimestampSelectTest, HardwareLocked_BpfInvalid_FallsBackToPtpGetTime)
+TEST(TimestampSelectTest, HardwareLocked_BpfInvalid_ReturnsSentinel_NeverMono)
 {
-    const ::timespec result = SelectTimestamp(
-        /*hw_ts_supported=*/true, /*bpf_ts_valid=*/false, ::timespec{}, /*ptp_get_time_valid=*/true, kPtpTs, kMonoTs);
-    EXPECT_TRUE(TsEq(result, kPtpTs));
+    const ::timespec result = SelectTimestamp(/*hw_ts_supported=*/true, false, ::timespec{}, kMonoTs);
+    EXPECT_TRUE(TsEq(result, kNoTimestamp));
 }
 
-TEST(TimestampSelectTest, HardwareLocked_NeitherBpfNorPtpGetTimeValid_ReturnsSentinel_NeverMono)
+TEST(SelectHwTsSupportedTest, AllCapabilitiesPresent_LocksHardware)
 {
-    const ::timespec result = SelectTimestamp(
-        /*hw_ts_supported=*/true,
-        /*bpf_ts_valid=*/false,
-        ::timespec{},
-        /*ptp_get_time_valid=*/false,
-        ::timespec{},
-        kMonoTs);
-    EXPECT_TRUE(TsEq(result, kNoTimestamp));
+    EXPECT_TRUE(SelectHwTsSupported(true, true, true));
+}
+
+TEST(SelectHwTsSupportedTest, VirtioLike_TimestampIoctlsOkButNoPtpGetTime_LocksSoftware)
+{
+    EXPECT_FALSE(SelectHwTsSupported(true, true, false));
+}
+
+TEST(SelectHwTsSupportedTest, MissingRxOrTxTimestamping_LocksSoftware)
+{
+    EXPECT_FALSE(SelectHwTsSupported(false, true, true));
+    EXPECT_FALSE(SelectHwTsSupported(true, false, true));
 }
 
 }  // namespace

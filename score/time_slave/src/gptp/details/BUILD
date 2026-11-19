@@ -125,6 +125,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = [
+        ":clock_util",
         ":frame_codec",
         ":ptp_types",
         ":raw_socket",

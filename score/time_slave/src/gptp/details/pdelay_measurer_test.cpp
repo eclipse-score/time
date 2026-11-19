@@ -113,6 +113,45 @@ TEST_F(PeerDelayMeasurerTest, T1Missing_SendHardwareTsSentinel_NoResult)
     EXPECT_FALSE(measurer_.GetResult().valid);
 }
 
+namespace
+{
+class SentinelSendSocket final : public RawSocket
+{
+  public:
+    bool Open(const std::string&) override
+    {
+        return true;
+    }
+    bool EnableHwTimestamping() override
+    {
+        return true;
+    }
+    void Close() override {}
+    int Recv(std::uint8_t*, std::size_t, ::timespec&, int) override
+    {
+        return -1;
+    }
+    int Send(const void*, int len, ::timespec& hwts) override
+    {
+        hwts = kNoHwTimestamp;
+        return len;
+    }
+    int GetFd() const override
+    {
+        return -1;
+    }
+};
+}  // namespace
+
+TEST_F(PeerDelayMeasurerTest, T1Missing_SendSucceedsWithSentinel_NoResult)
+{
+    SentinelSendSocket socket;
+    ASSERT_GT(measurer_.SendRequest(socket), 0);
+    measurer_.OnResponse(MakeResp(0U, 100LL, 180LL));
+    measurer_.OnResponseFollowUp(MakeResp(0U, 80LL));
+    EXPECT_FALSE(measurer_.GetResult().valid);
+}
+
 // ── Delay computation (symmetric link) ───────────────────────────────────────
 //
 // Default req_ gives:  t1 = 0 ns (sendHardwareTS == 0)

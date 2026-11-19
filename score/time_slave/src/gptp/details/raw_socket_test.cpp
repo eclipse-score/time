@@ -59,6 +59,7 @@ class FakeOsSyscalls final : public OsSyscalls
     // ── ioctl ─────────────────────────────────────────────────────────────────
     bool ioctl_siocgifindex_fail{false};   // SIOCGIFINDEX failure
     bool ioctl_siocshwtstamp_fail{false};  // first SIOCSHWTSTAMP failure (fallback exercised)
+    bool ioctl_siocshwtstamp_fail_always{false};
 
     int ioctl_call(int /*fd*/, unsigned long req, void* /*arg*/) noexcept override
     {
@@ -66,6 +67,8 @@ class FakeOsSyscalls final : public OsSyscalls
             return ioctl_siocgifindex_fail ? -1 : 0;
         if (req == SIOCSHWTSTAMP)
         {
+            if (ioctl_siocshwtstamp_fail_always)
+                return -1;
             if (ioctl_siocshwtstamp_fail)
             {
                 ioctl_siocshwtstamp_fail = false;  // first call fails; second succeeds
@@ -415,6 +418,15 @@ TEST(RawSocketTest, EnableHwTimestamping_SiocshwtstampFallback_StillReturnsTrue)
     RawSocketImpl sock{&fake};
     OpenSocket(sock, fake);
     EXPECT_TRUE(sock.EnableHwTimestamping());
+}
+
+TEST(RawSocketTest, EnableHwTimestamping_SiocshwtstampAlwaysFails_ReturnsFalseAndDoesNotLock)
+{
+    FakeOsSyscalls fake;
+    fake.ioctl_siocshwtstamp_fail_always = true;
+    RawSocketImpl sock{&fake};
+    OpenSocket(sock, fake);
+    EXPECT_FALSE(sock.EnableHwTimestamping());
 }
 
 TEST(RawSocketTest, EnableHwTimestamping_SetsockoptFails_ReturnsFalse)

@@ -53,6 +53,11 @@ inline bool IsValidTmv(TmvT t) noexcept
     return t.ns >= 0;
 }
 
+inline TmvT TimespecToTmv(const ::timespec& ts) noexcept
+{
+    return TmvT{static_cast<std::int64_t>(ts.tv_sec) * kNsPerSec + ts.tv_nsec};
+}
+
 }  // namespace details
 }  // namespace ts
 }  // namespace score

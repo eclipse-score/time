@@ -21,6 +21,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace score
@@ -69,7 +70,7 @@ class RawSocketImpl : public RawSocket
     ///
     /// @param buf       Output buffer.
     /// @param buf_len   Capacity of @p buf.
-    /// @param hwts      Output: hardware receive timestamp (zeroed if unavailable).
+    /// @param hwts      Output: hardware receive timestamp, or kNoHwTimestamp if unavailable.
     /// @param timeout_ms  <0 block indefinitely, 0 non-blocking, >0 timeout in ms.
     /// @return Number of bytes received, 0 on timeout, -1 on error.
     int Recv(std::uint8_t* buf, std::size_t buf_len, ::timespec& hwts, int timeout_ms) override;
@@ -78,7 +79,7 @@ class RawSocketImpl : public RawSocket
     ///
     /// @param buf       Frame data including Ethernet header.
     /// @param len       Number of bytes to send.
-    /// @param hwts      Output: hardware transmit timestamp (zeroed if unavailable).
+    /// @param hwts      Output: hardware transmit timestamp, or kNoHwTimestamp if unavailable.
     /// @return Number of bytes sent, or -1 on error.
     int Send(const void* buf, int len, ::timespec& hwts) override;
 
@@ -93,6 +94,8 @@ class RawSocketImpl : public RawSocket
     std::atomic<int> fd_{-1};
     std::string iface_{};
     std::atomic<bool> hw_ts_locked_{false};
+    // Send() is called from the Rx and Pdelay threads; the TX timestamp error queue must not be shared between them.
+    std::mutex send_mutex_{};
 };
 
 }  // namespace details

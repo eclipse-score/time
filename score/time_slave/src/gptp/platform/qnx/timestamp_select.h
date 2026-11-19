@@ -22,24 +22,25 @@ namespace score::ts::details::qnx
 /// clock source could be determined.
 constexpr ::timespec kNoTimestamp{-1, 0};
 
+constexpr bool SelectHwTsSupported(bool rx_ts_ok, bool tx_ts_ok, bool ptp_get_time_works) noexcept
+{
+    return rx_ts_ok && tx_ts_ok && ptp_get_time_works;
+}
+
 /// @brief Picks the timestamp for one frame given the per-interface source lock.
 ///
 /// When @p hw_ts_supported is false the interface is software-locked and @p mono_fallback
-/// is always returned. Otherwise @p bpf_ts is preferred, then @p ptp_get_time_ts, else
+/// is always returned. Otherwise @p bpf_ts if valid, else
 /// @c kNoTimestamp.
 constexpr ::timespec SelectTimestamp(bool hw_ts_supported,
                                      bool bpf_ts_valid,
                                      ::timespec bpf_ts,
-                                     bool ptp_get_time_valid,
-                                     ::timespec ptp_get_time_ts,
                                      ::timespec mono_fallback) noexcept
 {
     if (!hw_ts_supported)
         return mono_fallback;
     if (bpf_ts_valid)
         return bpf_ts;
-    if (ptp_get_time_valid)
-        return ptp_get_time_ts;
     return kNoTimestamp;
 }
 
