@@ -70,18 +70,8 @@ bool ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
         // Covers both a failed reconnect (new segment not fully set up yet) and a
         // fresh start; retried on every cycle until it succeeds.
         const bool was_waiting = waiting_for_channel_;
-        waiting_for_channel_ = true;
-        if (was_waiting)
-        {
-            // Quiet retry: avoid logging an error on every cycle.
-            initialized_ = receiver_.Open(ipc_name_);
-            if (initialized_)
-                waiting_for_channel_ = false;
-        }
-        else if (Initialize())
-        {
-            waiting_for_channel_ = false;
-        }
+        initialized_ = was_waiting ? receiver_.Open(ipc_name_) : Initialize();
+        waiting_for_channel_ = !initialized_;
         if (!initialized_)
             return false;
     }
