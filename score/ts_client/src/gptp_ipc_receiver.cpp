@@ -71,11 +71,13 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     return true;
 }
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt
 bool GptpIpcReceiver::LastReceiveStale() const
 {
     return last_receive_stale_;
 }
 
+// req-Id: comp_req__ts_client__shared_memory_mgmt
 bool GptpIpcReceiver::IsReplaced() const
 {
     if (shm_resource_ == nullptr)
