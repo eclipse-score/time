@@ -85,7 +85,7 @@ bool GptpIpcReceiver::IsReplaced() const
     if (::fstat(static_cast<int>(shm_resource_->GetFileDescriptor()), &mapped) != 0)
         return false;
 
-    const int fd = ::shm_open(ipc_name_.c_str(), O_RDONLY, 0);
+    const int fd = ::shm_open(ipc_name_.c_str(), O_RDONLY, static_cast<mode_t>(0));
     if (fd < 0)
         return false;  // name absent: nothing newer to switch to
 
