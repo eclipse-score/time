@@ -2,7 +2,7 @@
   {
     "name": "GptpEngineTest__Deinitialize_WhenNotInitialized_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "309",
+    "line": "338",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -16,7 +16,7 @@
   {
     "name": "GptpEngineTest__Deinitialize_CalledTwice_BothReturnTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "314",
+    "line": "343",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -30,7 +30,7 @@
   {
     "name": "GptpEngineTest__ReadPTPSnapshot_WhenNotInitialized_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "320",
+    "line": "349",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -44,7 +44,7 @@
   {
     "name": "GptpEngineTest__ReadPTPSnapshot_InfoUnchanged_WhenNotInitialized",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "326",
+    "line": "355",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -58,7 +58,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_WithFakeSocket_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "336",
+    "line": "365",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -72,7 +72,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_CalledTwice_ReturnsTrueOnSecondCall",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "341",
+    "line": "370",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -86,7 +86,7 @@
   {
     "name": "GptpEngineFakeTest__Deinitialize_AfterInitialize_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "347",
+    "line": "376",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -100,7 +100,7 @@
   {
     "name": "GptpEngineFakeTest__ReadPTPSnapshot_AfterInitialize_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "353",
+    "line": "382",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -114,7 +114,7 @@
   {
     "name": "GptpEngineFakeTest__ReadPTPSnapshot_NotSynchronized_BeforeAnySync",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "361",
+    "line": "390",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -128,7 +128,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_HwTsUnavailable_StillReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "383",
+    "line": "412",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -142,7 +142,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_SyncFollowUp_SnapshotBecomesSync",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "391",
+    "line": "420",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -156,7 +156,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_SyncWithMissingTimestamp_IsDiscarded",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "410",
+    "line": "439",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -170,7 +170,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_MultipleSyncFup_SnapshotUpdated",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "424",
+    "line": "453",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -184,7 +184,35 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_PdelayRespSequence_DoesNotCrash",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "439",
+    "line": "468",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "GptpEngineFakeTest__PdelayReq_Response_TimestampsInNetworkByteOrder",
+    "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
+    "line": "515",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "GptpEngineFakeTest__HandlePacket_PdelayReq_SendSucceedsWithSentinel_NoFollowUp",
+    "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
+    "line": "537",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -198,7 +226,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_UnknownMsgtype_DefaultBranchNocrash",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "452",
+    "line": "557",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -212,7 +240,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TooShortFrame_EarlyReturn",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "461",
+    "line": "566",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -226,7 +254,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TwoSyncFup_TimeJumpFuture_Detected",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "561",
+    "line": "666",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -240,7 +268,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TwoSyncFup_TimeJumpPast_Detected",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "587",
+    "line": "692",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -254,7 +282,7 @@
   {
     "name": "GptpEngineIdentityFailTest__Initialize_IdentityResolveFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "372",
+    "line": "401",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -268,7 +296,21 @@
   {
     "name": "GptpEngineTimeoutTest__ReadPTPSnapshot_TimeoutPath_IsTimeoutSet",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "470",
+    "line": "575",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "GptpEngineTimeoutTest__ReadPTPSnapshot_TimeoutBeforeFirstSync_FlagIsReported",
+    "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
+    "line": "718",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -282,7 +324,7 @@
   {
     "name": "GptpEngineRealSocketTest__Initialize_NonExistentInterface_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "518",
+    "line": "623",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -296,7 +338,7 @@
   {
     "name": "GptpEngineSocketFailTest__Initialize_SocketOpenFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "530",
+    "line": "635",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -602,9 +644,9 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimestampSelectTest__SoftwareLocked_IgnoresValidHardwareInputs_ReturnsMonoFallback",
+    "name": "TimestampSelectTest__SoftwareLocked_IgnoresValidHardwareInput_ReturnsMonoFallback",
     "file": "score/time_slave/src/gptp/platform/qnx/timestamp_select_test.cpp",
-    "line": "31",
+    "line": "30",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -616,9 +658,9 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimestampSelectTest__SoftwareLocked_NoHardwareInputs_ReturnsMonoFallback",
+    "name": "TimestampSelectTest__SoftwareLocked_NoHardwareInput_ReturnsMonoFallback",
     "file": "score/time_slave/src/gptp/platform/qnx/timestamp_select_test.cpp",
-    "line": "40",
+    "line": "37",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -630,9 +672,9 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimestampSelectTest__HardwareLocked_BpfValid_PrefersBpfOverPtpGetTime",
+    "name": "TimestampSelectTest__HardwareLocked_BpfValid_ReturnsBpf",
     "file": "score/time_slave/src/gptp/platform/qnx/timestamp_select_test.cpp",
-    "line": "47",
+    "line": "43",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -644,9 +686,9 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimestampSelectTest__HardwareLocked_BpfInvalid_FallsBackToPtpGetTime",
+    "name": "TimestampSelectTest__HardwareLocked_BpfInvalid_ReturnsSentinel_NeverMono",
     "file": "score/time_slave/src/gptp/platform/qnx/timestamp_select_test.cpp",
-    "line": "54",
+    "line": "49",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -658,9 +700,37 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimestampSelectTest__HardwareLocked_NeitherBpfNorPtpGetTimeValid_ReturnsSentinel_NeverMono",
+    "name": "SelectHwTsSupportedTest__AllCapabilitiesPresent_LocksHardware",
     "file": "score/time_slave/src/gptp/platform/qnx/timestamp_select_test.cpp",
-    "line": "61",
+    "line": "55",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "SelectHwTsSupportedTest__VirtioLike_TimestampIoctlsOkButNoPtpGetTime_LocksSoftware",
+    "file": "score/time_slave/src/gptp/platform/qnx/timestamp_select_test.cpp",
+    "line": "60",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "SelectHwTsSupportedTest__MissingRxOrTxTimestamping_LocksSoftware",
+    "file": "score/time_slave/src/gptp/platform/qnx/timestamp_select_test.cpp",
+    "line": "65",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -674,7 +744,7 @@
   {
     "name": "RawSocketTest__DefaultConstruct_GetFd_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "219",
+    "line": "222",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -688,7 +758,7 @@
   {
     "name": "RawSocketTest__Close_WhenNotOpen_IsNoOp",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "227",
+    "line": "230",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -702,7 +772,7 @@
   {
     "name": "RawSocketTest__EnableHwTimestamping_WhenNotOpen_ReturnsFalse",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "236",
+    "line": "239",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -716,7 +786,7 @@
   {
     "name": "RawSocketTest__Recv_WhenNotOpen_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "243",
+    "line": "246",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -730,7 +800,7 @@
   {
     "name": "RawSocketTest__Recv_NullBuf_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "252",
+    "line": "255",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -744,7 +814,7 @@
   {
     "name": "RawSocketTest__Recv_ZeroBufLen_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "261",
+    "line": "264",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -758,7 +828,7 @@
   {
     "name": "RawSocketTest__Send_WhenNotOpen_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "271",
+    "line": "274",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -772,7 +842,7 @@
   {
     "name": "RawSocketTest__Send_NullBuf_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "280",
+    "line": "283",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -786,7 +856,7 @@
   {
     "name": "RawSocketTest__Send_ZeroLen_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "289",
+    "line": "292",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -800,7 +870,7 @@
   {
     "name": "RawSocketTest__Send_NegativeLen_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "299",
+    "line": "302",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -814,7 +884,7 @@
   {
     "name": "RawSocketTest__Open_SocketCallFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "311",
+    "line": "314",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -828,7 +898,7 @@
   {
     "name": "RawSocketTest__Open_IoctlSiocgifindexFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "320",
+    "line": "323",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -842,7 +912,7 @@
   {
     "name": "RawSocketTest__Open_BindFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "332",
+    "line": "335",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -856,7 +926,7 @@
   {
     "name": "RawSocketTest__Open_Success_ReturnsTrueAndStoresFd",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "342",
+    "line": "345",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -870,7 +940,7 @@
   {
     "name": "RawSocketTest__Open_NonExistentInterface_ReturnsFalse",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "350",
+    "line": "353",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -884,7 +954,7 @@
   {
     "name": "RawSocketTest__Open_NonExistentInterface_GetFdRemainsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "357",
+    "line": "360",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -898,7 +968,7 @@
   {
     "name": "RawSocketTest__Close_AfterOpen_CallsCloseOnFd",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "366",
+    "line": "369",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -912,7 +982,7 @@
   {
     "name": "RawSocketTest__Close_CalledTwiceAfterOpen_IsIdempotent",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "378",
+    "line": "381",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -926,7 +996,7 @@
   {
     "name": "RawSocketTest__Destructor_AfterOpen_ClosesSocket",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "389",
+    "line": "392",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -940,7 +1010,7 @@
   {
     "name": "RawSocketTest__EnableHwTimestamping_Success_ReturnsTrue",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "402",
+    "line": "405",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -954,7 +1024,21 @@
   {
     "name": "RawSocketTest__EnableHwTimestamping_SiocshwtstampFallback_StillReturnsTrue",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "410",
+    "line": "413",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "RawSocketTest__EnableHwTimestamping_SiocshwtstampAlwaysFails_ReturnsFalseAndDoesNotLock",
+    "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
+    "line": "423",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -968,7 +1052,7 @@
   {
     "name": "RawSocketTest__EnableHwTimestamping_SetsockoptFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "420",
+    "line": "432",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -982,7 +1066,7 @@
   {
     "name": "RawSocketTest__Recv_PollTimeout_ReturnsZero",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "431",
+    "line": "443",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -996,7 +1080,7 @@
   {
     "name": "RawSocketTest__Recv_PollError_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "442",
+    "line": "454",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1010,7 +1094,7 @@
   {
     "name": "RawSocketTest__Recv_RecvmsgFails_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "453",
+    "line": "465",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1024,7 +1108,7 @@
   {
     "name": "RawSocketTest__Recv_HwLocked_NoCmsgTimestamp_ReturnsSentinel",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "465",
+    "line": "477",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1038,7 +1122,7 @@
   {
     "name": "RawSocketTest__Recv_WithSoTimestampingCmsg_ExtractsHwts",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "480",
+    "line": "492",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1052,7 +1136,7 @@
   {
     "name": "RawSocketTest__Recv_HwTimestampingUnavailable_UsesMonotonicFreeRunningClock",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "496",
+    "line": "508",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1066,7 +1150,7 @@
   {
     "name": "RawSocketTest__Send_SendFails_ReturnsNegativeOne",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "522",
+    "line": "534",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1080,7 +1164,7 @@
   {
     "name": "RawSocketTest__Send_HwLocked_NoTxTimestampCmsg_ReturnsSentinel",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "533",
+    "line": "545",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1094,7 +1178,7 @@
   {
     "name": "RawSocketTest__Send_Success_TxTimestampCmsg_ExtractsHwts",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "548",
+    "line": "560",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1108,7 +1192,7 @@
   {
     "name": "RawSocketTest__Send_DrainErrQueue_WhileBodyExecuted",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "567",
+    "line": "579",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1122,7 +1206,7 @@
   {
     "name": "RawSocketTest__Send_HwTimestampingUnavailable_UsesMonotonicFreeRunningClock",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "585",
+    "line": "597",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1136,7 +1220,7 @@
   {
     "name": "NetworkIdentityTest__GetClockIdentity_BeforeResolve_ReturnsZeroIdentity",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "614",
+    "line": "626",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1150,7 +1234,7 @@
   {
     "name": "NetworkIdentityTest__Resolve_NonExistentInterface_ReturnsFalse",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "624",
+    "line": "636",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1164,7 +1248,7 @@
   {
     "name": "NetworkIdentityTest__Resolve_NonExistentInterface_GetClockIdentityRemainsZero",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "630",
+    "line": "642",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1178,7 +1262,7 @@
   {
     "name": "NetworkIdentityTest__Resolve_LoInterface_ReturnsTrue",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "641",
+    "line": "653",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1192,7 +1276,7 @@
   {
     "name": "NetworkIdentityTest__GetClockIdentity_AfterResolveOnLo_HasFfFeBytes",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "649",
+    "line": "661",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1206,7 +1290,7 @@
   {
     "name": "NetworkIdentityTest__Resolve_CalledTwice_SecondCallSucceeds",
     "file": "score/time_slave/src/gptp/details/raw_socket_test.cpp",
-    "line": "659",
+    "line": "671",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1792,9 +1876,23 @@
     "FullyVerifies": null
   },
   {
+    "name": "PeerDelayMeasurerTest__T1Missing_SendSucceedsWithSentinel_NoResult",
+    "file": "score/time_slave/src/gptp/details/pdelay_measurer_test.cpp",
+    "line": "146",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "PeerDelayMeasurerTest__Computation_SymmetricLink_CorrectDelay",
     "file": "score/time_slave/src/gptp/details/pdelay_measurer_test.cpp",
-    "line": "130",
+    "line": "169",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1808,7 +1906,7 @@
   {
     "name": "PeerDelayMeasurerTest__Computation_AsymmetricLink_CorrectDelay",
     "file": "score/time_slave/src/gptp/details/pdelay_measurer_test.cpp",
-    "line": "140",
+    "line": "179",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1822,7 +1920,7 @@
   {
     "name": "PeerDelayMeasurerTest__Computation_CorrectionField_AppliedToT3",
     "file": "score/time_slave/src/gptp/details/pdelay_measurer_test.cpp",
-    "line": "158",
+    "line": "197",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1836,7 +1934,7 @@
   {
     "name": "PeerDelayMeasurerTest__PDelayData_TimestampFields_PopulatedCorrectly",
     "file": "score/time_slave/src/gptp/details/pdelay_measurer_test.cpp",
-    "line": "170",
+    "line": "209",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1850,7 +1948,7 @@
   {
     "name": "PeerDelayMeasurerTest__SecondCycle_OverwritesPreviousResult",
     "file": "score/time_slave/src/gptp/details/pdelay_measurer_test.cpp",
-    "line": "185",
+    "line": "224",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -1949,6 +2047,48 @@
     "name": "ConfigParserTest__FullExampleConfigRoundTrip",
     "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
     "line": "128",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "ConfigParserTest__DirectoryPathReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "166",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "ConfigParserTest__NonExistentPathReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "175",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "ConfigParserTest__InvalidJsonReturnsDefaults",
+    "file": "score/time_slave/src/application/configuration/config_parser_test.cpp",
+    "line": "183",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2576,7 +2716,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__JumpToPastWithinThresholdIsNotFlagged",
+    "name": "TimeJumpsValidatorTest__RepeatedDeliveryOfSameFrameDoesNotClearTimeJump",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "103",
     "result": "passed",
@@ -2590,7 +2730,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__JumpToFutureWithinThresholdIsNotFlagged",
+    "name": "TimeJumpsValidatorTest__JumpToPastWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "149",
     "result": "passed",
@@ -2604,9 +2744,51 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__StaysInInitialSyncDebouncingWhenThresholdNotElapsed",
+    "name": "TimeJumpsValidatorTest__JumpToFutureWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "195",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__StaysInInitialSyncDebouncingWhenThresholdNotElapsed",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "241",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedInIdleState",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "281",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDebouncing",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "302",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2844,7 +3026,7 @@
   {
     "name": "TimeDaemonTest__InitializesHandlersFromLinkedFactory",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "88",
+    "line": "91",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2858,7 +3040,7 @@
   {
     "name": "TimeDaemonTest__RunsOneInjectedHandler",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "95",
+    "line": "98",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2872,7 +3054,7 @@
   {
     "name": "TimeDaemonTest__PollsEveryHandlerInOrderAndStopsInReverseOrder",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "111",
+    "line": "114",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2886,7 +3068,7 @@
   {
     "name": "TimeDaemonTest__CompletesThePollingPassWhenAHandlerRequestsStop",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "134",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2900,7 +3082,21 @@
   {
     "name": "TimeDaemonTest__StopsInitializedHandlersWithoutPollingWhenAlreadyCancelled",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "157",
+    "line": "160",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeDaemonTest__ReturnsFailureAndStopsAllHandlersWhenAHandlerFails",
+    "file": "score/time_daemon/src/application/time_daemon_test.cpp",
+    "line": "178",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2914,7 +3110,7 @@
   {
     "name": "TimeDaemonTest__RejectsEmptyComposition",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "175",
+    "line": "200",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2928,7 +3124,7 @@
   {
     "name": "TimeDaemonTest__RejectsNullEntriesBeforeInitializingAnyHandler",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "182",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2942,7 +3138,7 @@
   {
     "name": "TimeDaemonTest__OwnsInjectedHandlersUntilDestruction",
     "file": "score/time_daemon/src/application/time_daemon_test.cpp",
-    "line": "192",
+    "line": "217",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3122,9 +3318,23 @@
     "FullyVerifies": null
   },
   {
+    "name": "GenericTimebaseHandlerTest__DoesNotReportFailureWhenStopRequestedBeforePollingFailedInitialization",
+    "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
+    "line": "395",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "GenericTimebaseHandlerTest__DeliversDataOfPublisherToSubscribersOfTheSameTopic",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "394",
+    "line": "414",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3138,7 +3348,7 @@
   {
     "name": "GenericTimebaseHandlerTest__DisconnectsRetainedProducerAfterRepeatedStopAndDestruction",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "417",
+    "line": "437",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3152,7 +3362,7 @@
   {
     "name": "GenericTimebaseHandlerTest__DestructionWaitsForPublicationInProgress",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "449",
+    "line": "469",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3166,7 +3376,7 @@
   {
     "name": "GenericTimebaseHandlerTest__RejectsPublishingTheSameProducerTwice",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "509",
+    "line": "529",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3180,7 +3390,7 @@
   {
     "name": "GenericTimebaseHandlerTest__RejectsPublishingTheSameExpiredProducerTwice",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "521",
+    "line": "541",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3194,7 +3404,7 @@
   {
     "name": "GenericTimebaseHandlerTest__DoesNotStartProactiveMachinesWhenInitializationTimesOut",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "536",
+    "line": "556",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3208,7 +3418,7 @@
   {
     "name": "GenericTimebaseHandlerTest__AppliesTheWiringDeclaredInCreateComponents",
     "file": "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler_test.cpp",
-    "line": "565",
+    "line": "586",
     "result": "passed",
     "repo_name": null,
     "hash": null,
