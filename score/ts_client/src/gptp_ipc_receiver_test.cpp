@@ -187,6 +187,24 @@ TEST_F(GptpIpcReceiverTest, LastReceiveStale_TracksPublisherProgress)
     EXPECT_FALSE(rx_.LastReceiveStale());
 }
 
+TEST_F(GptpIpcReceiverTest, LastReceiveStale_FailedReceive_ReportsStale)
+{
+    // Publisher killed mid-Publish(): seq stays odd, Receive() never succeeds. The failed read must count as
+    // stale so the caller goes on to check IsReplaced().
+    const std::string name = UniqueShmName();
+    ManualShm shm{name};
+    ASSERT_TRUE(shm.Valid());
+    auto* region = new (shm.Region()) GptpIpcRegion{};
+    region->seq.store(1U, std::memory_order_relaxed);
+    region->seq_confirm.store(0U, std::memory_order_relaxed);
+
+    ASSERT_TRUE(rx_.Open(name));
+    EXPECT_FALSE(rx_.LastReceiveStale());
+
+    EXPECT_FALSE(rx_.Receive().has_value());
+    EXPECT_TRUE(rx_.LastReceiveStale());
+}
+
 TEST_F(GptpIpcReceiverTest, IsReplaced_NotOpened_ReturnsFalse)
 {
     EXPECT_FALSE(rx_.IsReplaced());

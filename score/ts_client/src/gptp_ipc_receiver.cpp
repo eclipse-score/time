@@ -137,6 +137,9 @@ std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
         }
     }
 
+    // No consistent read: the publisher may have died mid-Publish() leaving seq odd. Report as stale so the caller
+    // checks whether the segment was replaced; otherwise it would never reconnect.
+    last_receive_stale_ = true;
     return std::nullopt;
 }
 
