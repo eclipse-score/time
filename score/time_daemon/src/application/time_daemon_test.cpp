@@ -47,6 +47,7 @@ class TimebaseHandlerMock : public TimebaseHandler
     MOCK_METHOD(void, Start, (const score::cpp::stop_token&), (noexcept, override));
     MOCK_METHOD(void, RunOnce, (), (noexcept, override));
     MOCK_METHOD(void, Stop, (), (noexcept, override));
+    MOCK_METHOD(bool, IsFailed, (), (const, noexcept, override));
 
   private:
     bool* destroyed_;
@@ -58,6 +59,7 @@ std::vector<std::unique_ptr<TimebaseHandler>> CreateTimebaseHandlers()
 {
     auto handler = std::make_unique<::testing::StrictMock<TimebaseHandlerMock>>();
     EXPECT_CALL(*handler, Initialize());
+    EXPECT_CALL(*handler, IsFailed()).WillRepeatedly(::testing::Return(false));
 
     std::vector<std::unique_ptr<TimebaseHandler>> handlers;
     handlers.push_back(std::move(handler));
@@ -74,6 +76,7 @@ class TimeDaemonTest : public ::testing::Test
     {
         auto handler = std::make_unique<::testing::StrictMock<TimebaseHandlerMock>>(destroyed);
         auto& result = *handler;
+        EXPECT_CALL(result, IsFailed()).WillRepeatedly(::testing::Return(false));
         handlers_.push_back(std::move(handler));
         return result;
     }
@@ -170,6 +173,28 @@ TEST_F(TimeDaemonTest, StopsInitializedHandlersWithoutPollingWhenAlreadyCancelle
     ASSERT_EQ(daemon.Initialize(context_), EXIT_SUCCESS);
     stop_source_.request_stop();
     EXPECT_EQ(daemon.Run(stop_token_), EXIT_SUCCESS);
+}
+
+TEST_F(TimeDaemonTest, ReturnsFailureAndStopsAllHandlersWhenAHandlerFails)
+{
+    auto& first = AddHandler();
+    auto& second = AddHandler();
+    TimeDaemon daemon{std::move(handlers_)};
+    const ::testing::InSequence sequence;
+    EXPECT_CALL(first, Initialize());
+    EXPECT_CALL(second, Initialize());
+    EXPECT_CALL(first, Start(::testing::Ref(stop_token_)));
+    EXPECT_CALL(second, Start(::testing::Ref(stop_token_)));
+    EXPECT_CALL(first, RunOnce());
+    EXPECT_CALL(second, RunOnce());
+    EXPECT_CALL(first, IsFailed()).WillOnce(::testing::Return(false));
+    EXPECT_CALL(second, IsFailed()).WillOnce(::testing::Return(true));
+    EXPECT_CALL(second, Stop());
+    EXPECT_CALL(first, Stop());
+
+    ASSERT_EQ(daemon.Initialize(context_), EXIT_SUCCESS);
+    EXPECT_EQ(daemon.Run(stop_token_), EXIT_FAILURE);
+    EXPECT_FALSE(stop_token_.stop_requested());
 }
 
 TEST_F(TimeDaemonTest, RejectsEmptyComposition)
