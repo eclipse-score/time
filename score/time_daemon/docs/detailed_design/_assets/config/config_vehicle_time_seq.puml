@@ -1,0 +1,90 @@
+' *******************************************************************************
+' Copyright (c) 2026 Contributors to the Eclipse Foundation
+'
+' See the NOTICE file(s) distributed with this work for additional
+' information regarding copyright ownership.
+'
+' This program and the accompanying materials are made available under the
+' terms of the Apache License Version 2.0 which is available at
+' https://www.apache.org/licenses/LICENSE-2.0
+'
+' SPDX-License-Identifier: Apache-2.0
+' *******************************************************************************
+
+@startuml config_vehicle_time_seq_diagram
+title score Vehicle Time - link-time configuration per machine (proposed)
+
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 8
+skinparam BoxPadding 6
+
+participant "main()\nrun_application<TimeDaemon>()" as Main
+participant "TimeDaemon" as TD
+
+box "Integrator-provided (linked)" #LightYellow
+participant "CreateTimebaseHandlers()" as Hook
+end box
+
+box "score: Vehicle Time timebase" #AliceBlue
+participant "CreateVehicleTimebase()" as Factory
+participant "ScoreVehicleTimebaseHandler\n(GenericTimebaseHandler<PtpTimeInfo>)" as Handler
+participant "MessageBroker<PtpTimeInfo>" as Broker
+participant "JobRunner" as Runner
+end box
+
+box "score: machines" #Honeydew
+participant "PtpControlFlowDivider\n(ControlFlowDivider<PtpTimeInfo, kBufferSize>,\nEventDrivenMachine)" as Divider
+participant "GPTPShmMachine\n(PTPMachine<ShmPTPEngine>,\nPeriodicMachine)" as Ptp
+participant "SvtVerificationMachine\n(VerificationMachine<PtpTimeInfo>,\nReactiveMachine)" as Verif
+participant "SvtPublisher\n(PublisherImpl<PtpTimeInfo, svt::TimeBaseSnapshot>,\nReactiveMachine)" as Pub
+end box
+
+== 1. Construction: integrator selects timebases and values ==
+
+Main -> TD ++ : TimeDaemon()
+TD -> Hook ++ : CreateTimebaseHandlers()
+Hook -> Factory ++ : CreateVehicleTimebase(config)
+Factory -> Handler ** : std::make_unique<ScoreVehicleTimebaseHandler>(config)
+note right of Handler : stores a copy of config: VehicleTimebaseConfig\n(one struct per machine + init_timeout,\nused later in CreateComponents)
+Factory --> Hook -- : std::unique_ptr<TimebaseHandler>
+Hook --> TD -- : std::vector<std::unique_ptr<TimebaseHandler>>
+TD --> Main --
+
+== 2. Initialize: handler creates and wires machines from config ==
+
+Main -> TD ++ : Initialize(context)
+TD -> TD : InitializeAllTimebases()
+TD -> Handler ++ : Initialize()
+Handler -> Handler ++ : CreateComponents()
+
+Handler -> Divider ** : CreatePtpControlFlowDivider(config.control_flow_divider)
+Handler -> Handler : Add(divider, config.init_timeout.Get())
+Handler -> Ptp ** : CreateGPTPShmMachine(config.ptp_machine)
+Handler -> Handler : Add(ptp, config.init_timeout.Get())
+Handler -> Verif ** : CreateSvtVerificationMachine(config.verification_machine)
+note right of Verif
+  validators built from
+  config.verification_machine:
+  SynchronizationValidator()
+  TimeoutValidator(reception_timeout)
+  TimeJumpsValidator(max_time_jump_allowed,
+                     sync_debounce_threshold,
+                     valid_frames_threshold)
+end note
+Handler -> Handler : Add(verification, config.init_timeout.Get())
+Handler -> Pub ** : CreateSvtPublisher(config.publisher)
+Handler -> Handler : Add(publisher, config.init_timeout.Get())
+
+Handler -> Broker : Subscribe(divider, "in_ptp_data")\n→ AddSubscriber()
+Handler -> Broker : Subscribe(verification, "raw_ptp_data")\n→ AddSubscriber()
+Handler -> Broker : Subscribe(publisher, "validated_ptp_data")\n→ AddSubscriber()
+Handler -> Broker : Publish(ptp, "in_ptp_data")\n→ AddProducer()
+Handler -> Broker : Publish(divider, "raw_ptp_data")\n→ AddProducer()
+Handler -> Broker : Publish(verification, "validated_ptp_data")\n→ AddProducer()
+deactivate Handler
+
+Handler -> Runner ** : JobRunner(init_jobs_, name_ + "_init")
+Handler --> TD -- : void (is_configured_ = true)
+TD --> Main -- : EXIT_SUCCESS
+
+@enduml
