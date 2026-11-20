@@ -11,6 +11,7 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_slave/src/gptp/details/pdelay_measurer.h"
+#include "score/time_slave/src/gptp/details/clock_util.h"
 #include "score/time_slave/src/gptp/details/frame_codec.h"
 
 #include <arpa/inet.h>
@@ -83,10 +84,11 @@ int PeerDelayMeasurer::SendRequest(RawSocket& socket)
 
     ::timespec hwts{};
     const int r = socket.Send(buf, static_cast<int>(len), hwts);
-    if (r > 0 && HasTimestamp(hwts))
+    const TmvT t1 = TimespecToTmv(hwts);
+    if (r > 0 && IsValidTmv(t1))
     {
         std::lock_guard<std::mutex> lk(mutex_);
-        req_.sendHardwareTS = TmvT{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
+        req_.sendHardwareTS = t1;
     }
     return r;
 }

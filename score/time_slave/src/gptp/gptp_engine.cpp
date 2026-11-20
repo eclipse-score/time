@@ -267,13 +267,15 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
     {
         // req-Id: comp_req__time_slave__pdelay_req_response, comp_req__time_slave__domain_filtering
         case kPtpMsgtypePdelayReq:
-            if (msg.ptpHdr.domainNumber == opts_.domain_number)
+            if (msg.ptpHdr.domainNumber == opts_.domain_number && IsValidTmv(hw_ts))
                 SendPDelayResponseAndFollowUp(msg, hw_ts);
             break;
 
         // req-Id: comp_req__time_slave__sync_reception, comp_req__time_slave__domain_filtering
         case kPtpMsgtypeSync:
             if (msg.ptpHdr.domainNumber != opts_.domain_number)
+                break;
+            if (!IsValidTmv(hw_ts))
                 break;
             msg.recvHardwareTS = hw_ts;
             msg.recvMonoNs = MonoNs();
@@ -308,6 +310,8 @@ void GptpEngine::HandlePacket(const std::uint8_t* frame, int len, const ::timesp
 
         // req-Id: comp_req__time_slave__pdelay_resp_reception
         case kPtpMsgtypePdelayResp:
+            if (!IsValidTmv(hw_ts))
+                break;
             msg.recvHardwareTS = hw_ts;
             msg.parseMessageTs = TimestampToTmv(msg.pdelay_resp.requestReceiptTimestamp);
             if (pdelay_)
@@ -402,9 +406,11 @@ void GptpEngine::SendPDelayResponseAndFollowUp(const PTPMessage& req, TmvT t2) n
         return;
 
     ::timespec hwts{};
-    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0 || !HasTimestamp(hwts))
+    if (socket_->Send(buf, static_cast<int>(len), hwts) <= 0)
         return;
-    const TmvT t3{static_cast<std::int64_t>(hwts.tv_sec) * kNsPerSec + hwts.tv_nsec};
+    const TmvT t3 = TimespecToTmv(hwts);
+    if (!IsValidTmv(t3))
+        return;
 
     // --- PDelayRespFollowUp ---
     PTPMessage fup{};

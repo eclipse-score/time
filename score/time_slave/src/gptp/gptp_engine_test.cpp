@@ -450,6 +450,20 @@ TEST_F(GptpEngineFakeTest, HandlePacket_SyncFollowUp_SnapshotBecomesSync)
     EXPECT_FALSE(data.status.is_timeout);
 }
 
+TEST_F(GptpEngineFakeTest, HandlePacket_SyncWithMissingTimestamp_IsDiscarded)
+{
+    ASSERT_TRUE(engine_->Initialize());
+
+    socket_raw_->Push(MakeSyncFrame(1U), kNoHwTimestamp);
+    socket_raw_->Push(MakeFollowUpFrame(1U, /*sec=*/2, /*ns=*/0));
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    engine_->FinalizeSnapshot();
+    score::ts::GptpIpcData data{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(data));
+    EXPECT_FALSE(data.status.is_synchronized);
+}
+
 TEST_F(GptpEngineFakeTest, HandlePacket_MultipleSyncFup_SnapshotUpdated)
 {
     ASSERT_TRUE(engine_->Initialize());
@@ -532,6 +546,24 @@ TEST_F(GptpEngineFakeTest, PdelayReq_Response_TimestampsInNetworkByteOrder)
     const auto fup = WaitForSent(*socket_raw_, kPtpMsgtypePdelayRespFollowUp);
     ASSERT_FALSE(fup.empty());
     EXPECT_EQ(0, std::memcmp(fup.data() + kEthHdrLen + kPtpBodyOffset, kExpectedTs, sizeof(kExpectedTs)));
+}
+
+TEST_F(GptpEngineFakeTest, HandlePacket_PdelayReq_SendSucceedsWithSentinel_NoFollowUp)
+{
+    socket_raw_->SetSendHwts(kNoHwTimestamp);
+    ASSERT_TRUE(engine_->Initialize());
+
+    ::timespec rx{};
+    rx.tv_sec = 1;
+    socket_raw_->Push(MakePdelayReqFrame(9U), rx);
+
+    EXPECT_FALSE(WaitForSent(*socket_raw_, kPtpMsgtypePdelayResp).empty());
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    for (const auto& f : socket_raw_->SentFrames())
+    {
+        ASSERT_GT(f.size(), kEthHdrLen);
+        EXPECT_NE(f[kEthHdrLen] & 0x0F, kPtpMsgtypePdelayRespFollowUp & 0x0F);
+    }
 }
 
 // ── GptpEngineFakeTest — unknown msgtype (default branch) ────────────────────
