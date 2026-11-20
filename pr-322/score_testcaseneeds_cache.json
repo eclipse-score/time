@@ -2254,7 +2254,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "GptpIpcReceiverTest__IsReplaced_NotOpened_ReturnsFalse",
+    "name": "GptpIpcReceiverTest__LastReceiveStale_FailedReceive_ReportsStale",
     "file": "score/ts_client/src/gptp_ipc_receiver_test.cpp",
     "line": "190",
     "result": "passed",
@@ -2268,9 +2268,23 @@
     "FullyVerifies": null
   },
   {
+    "name": "GptpIpcReceiverTest__IsReplaced_NotOpened_ReturnsFalse",
+    "file": "score/ts_client/src/gptp_ipc_receiver_test.cpp",
+    "line": "208",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "GptpIpcReceiverTest__IsReplaced_SegmentUnchanged_ReturnsFalse",
     "file": "score/ts_client/src/gptp_ipc_receiver_test.cpp",
-    "line": "195",
+    "line": "213",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2284,7 +2298,7 @@
   {
     "name": "GptpIpcReceiverTest__IsReplaced_PublisherClosed_ReturnsFalse",
     "file": "score/ts_client/src/gptp_ipc_receiver_test.cpp",
-    "line": "204",
+    "line": "222",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2298,7 +2312,7 @@
   {
     "name": "GptpIpcReceiverTest__IsReplaced_PublisherRestarted_ReturnsTrue",
     "file": "score/ts_client/src/gptp_ipc_receiver_test.cpp",
-    "line": "214",
+    "line": "232",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2674,9 +2688,23 @@
     "FullyVerifies": null
   },
   {
-    "name": "TimeJumpsValidatorTest__EmptySnapshotBetweenFramesDoesNotCauseFalseTimeJump",
+    "name": "TimeJumpsValidatorTest__EmptySnapshotDropsReferenceAndRestartsDebouncing",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
     "line": "335",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
+    "name": "TimeJumpsValidatorTest__JumpAfterRestartIsStillDetectedOnceDebouncingCompleted",
+    "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
+    "line": "398",
     "result": "passed",
     "repo_name": null,
     "hash": null,
