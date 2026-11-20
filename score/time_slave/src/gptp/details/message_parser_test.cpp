@@ -313,7 +313,6 @@ TEST_F(MessageParserTest, PdelayReq_FullBody_ReturnsTrue)
 
 TEST_F(MessageParserTest, UnknownMsgtype_ReturnsTrue_HeaderParsed)
 {
-    // Use PdelayReq (type 0x2) which has no special body decoding branch.
     auto buf = BuildPayload(kPtpMsgtypePdelayReq, 20U, 0, 0, 0, 0, 0, kPdelayBodySize);
     PTPMessage msg{};
     ASSERT_TRUE(parser_.Parse(buf.data(), buf.size(), msg));
