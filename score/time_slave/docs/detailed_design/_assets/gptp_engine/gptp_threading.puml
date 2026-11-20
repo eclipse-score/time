@@ -43,7 +43,7 @@ fork
 fork again
     |#LightSkyBlue| PdelayThread
     repeat
-        :Sleep(pdelay_interval_ms);
+        :Sleep(pdelay_req_interval_ms);
         :Send PDelayReq;
         :Recv PDelayResp;
         :Recv PDelayRespFollowUp\ncompute path delay;

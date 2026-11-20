@@ -25,6 +25,7 @@ cc_library(
     srcs = ["config_parser.cpp"],
     hdrs = [
         "config_parser.h",
+        "config_schema_table.h",
         "time_slave_config.h",
     ],
     features = COMPILER_WARNING_FEATURES,
@@ -53,9 +54,43 @@ cc_test(
     ],
 )
 
+cc_test(
+    name = "config_schema_consistency_test",
+    srcs = ["config_schema_consistency_test.cpp"],
+    data = [":time_slave_config_schema"],
+    env = {"TIME_SLAVE_CONFIG_SCHEMA": "$(rootpath :time_slave_config_schema)"},
+    tags = ["unit"],
+    target_compatible_with = ["@platforms//os:linux"],
+    deps = [
+        ":configuration",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+        "@score_baselibs//score/json",
+        "@score_baselibs//score/json:json_parser",
+        "@score_baselibs//score/mw/log:console_only_backend",
+    ],
+)
+
 validate_json_schema_test(
     name = "validate_time_slave_config_schema",
     json = "example/time_slave_config.json",
+    schema = ":time_slave_config_schema",
+    tags = ["lint"],
+    target_compatible_with = ["@platforms//os:linux"],
+)
+
+# Deployed configurations must satisfy the schema too.
+validate_json_schema_test(
+    name = "validate_qnx_config_schema",
+    json = "//score/time_slave/config/qnx:time_slave_qnx_config.json",
+    schema = ":time_slave_config_schema",
+    tags = ["lint"],
+    target_compatible_with = ["@platforms//os:linux"],
+)
+
+validate_json_schema_test(
+    name = "validate_reference_integration_qnx_config_schema",
+    json = "//score/time_slave/tests/reference_integration/qnx:time_slave_config.json",
     schema = ":time_slave_config_schema",
     tags = ["lint"],
     target_compatible_with = ["@platforms//os:linux"],

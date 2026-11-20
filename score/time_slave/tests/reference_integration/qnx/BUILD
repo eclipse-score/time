@@ -14,6 +14,11 @@
 load("@rules_pkg//pkg:mappings.bzl", "pkg_attributes", "pkg_files", "strip_prefix")
 load("@score_rules_imagefs//rules/qnx:ifs.bzl", "qnx_ifs")
 
+exports_files(
+    ["time_slave_config.json"],
+    visibility = ["//score/time_slave/src/application/configuration:__pkg__"],
+)
+
 pkg_files(
     name = "time_slave_bin",
     srcs = ["//score/time_slave"],

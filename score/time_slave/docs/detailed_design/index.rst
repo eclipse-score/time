@@ -357,9 +357,9 @@ The ``GptpEngineOptions`` struct provides all configurable parameters for the gP
    * - ``iface_name``
      - string
      - Network interface for gPTP frames (e.g., ``emac0``); default: ``"emac0"``
-   * - ``pdelay_interval_ms``
+   * - ``pdelay_req_interval_ms``
      - int
-     - Interval between PDelayReq transmissions (ms); default: ``1000``
+     - Interval between PDelayReq transmissions (ms); range 10..60000; default: ``1000``
    * - ``pdelay_warmup_ms``
      - int
      - Delay before the first PDelayReq is sent (ms); default: ``2000``

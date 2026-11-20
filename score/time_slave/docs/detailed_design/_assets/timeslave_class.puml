@@ -62,7 +62,7 @@ package "score::ts::details" {
 
     struct GptpEngineOptions #Beige {
         + iface_name : string = "emac0"
-        + pdelay_interval_ms : int = 1000
+        + pdelay_req_interval_ms : int = 1000
         + pdelay_warmup_ms : int = 2000
         + sync_timeout_ms : int = 3300
         + jump_future_threshold_ns : int64_t = 500000000
