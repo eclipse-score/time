@@ -117,7 +117,7 @@ class VehicleTimeHandler
         clock_.Subscribe<score::time::VehicleTimeStatus>(std::move(callback));
     }
 
-    /// @brief Removes the status-change callback.
+    /// @brief Removes all status-change callbacks.
     void UnregisterStatusCallback() noexcept
     {
         clock_.Unsubscribe<score::time::VehicleTimeStatus>();

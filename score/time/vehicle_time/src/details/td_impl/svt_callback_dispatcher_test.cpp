@@ -51,7 +51,7 @@ class SvtCallbackDispatcherTest : public ::testing::Test
 
     void KeepWorkerPolling()
     {
-        dispatcher_->SetPDelayMeasurementFinishedCallback([](const PDelayMeasurementData<VehicleTime>&) {});
+        dispatcher_->AddCallback<PDelayMeasurementData<VehicleTime>>([](const PDelayMeasurementData<VehicleTime>&) {});
     }
 
     [[nodiscard]] bool WorkerPolledAgain()
@@ -101,7 +101,7 @@ TEST_F(SvtCallbackDispatcherTest, WorkerDoesNotPollBeforeStartAndDeliversOnceSta
     receiver_->Serve(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ExpectNeverPolled();
 
     dispatcher_->Start();
@@ -113,23 +113,23 @@ TEST_F(SvtCallbackDispatcherTest, WorkerResumesPollingWhenCallbackReRegisteredAf
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
-    dispatcher_->UnsetStatusChangedCallback();
+    dispatcher_->UnsetCallback<VehicleTimeStatus>();
     ExpectNoFurtherPolls();
 
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(2U));
 }
 
-TEST_F(SvtCallbackDispatcherTest, SettingEmptyCallbackDoesNotInvokeAnything)
+TEST_F(SvtCallbackDispatcherTest, AddingEmptyCallbackDoesNotInvokeAnything)
 {
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
-    dispatcher_->SetStatusChangedCallback(VehicleTime::StatusChangedCallback{});
-    dispatcher_->SetTimeSlaveSyncDataReceivedCallback(VehicleTime::TimeSlaveSyncDataReceivedCallback{});
-    dispatcher_->SetPDelayMeasurementFinishedCallback(VehicleTime::PDelayMeasurementFinishedCallback{});
+    dispatcher_->AddCallback(VehicleTime::StatusChangedCallback{});
+    dispatcher_->AddCallback(VehicleTime::TimeSlaveSyncDataReceivedCallback{});
+    dispatcher_->AddCallback(VehicleTime::PDelayMeasurementFinishedCallback{});
 
     ExpectNeverPolled();
 }
@@ -141,9 +141,9 @@ TEST_F(SvtCallbackDispatcherTest, NoCallbackIsDeliveredWhileReceiveReturnsNullop
     CallbackRecorder<VehicleTimeStatus> status_recorder;
     CallbackRecorder<TimeSlaveSyncData<VehicleTime>> sync_recorder;
     CallbackRecorder<PDelayMeasurementData<VehicleTime>> pdelay_recorder;
-    dispatcher_->SetStatusChangedCallback(status_recorder.Callback());
-    dispatcher_->SetTimeSlaveSyncDataReceivedCallback(sync_recorder.Callback());
-    dispatcher_->SetPDelayMeasurementFinishedCallback(pdelay_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(status_recorder.Callback());
+    dispatcher_->AddCallback<TimeSlaveSyncData<VehicleTime>>(sync_recorder.Callback());
+    dispatcher_->AddCallback<PDelayMeasurementData<VehicleTime>>(pdelay_recorder.Callback());
 
     ASSERT_TRUE(WorkerPolledAgain());
     EXPECT_EQ(status_recorder.Count(), 0U);
@@ -156,7 +156,7 @@ TEST_F(SvtCallbackDispatcherTest, DestructorJoinsWorkerWhileCallbacksAreRegister
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
     dispatcher_.reset();
@@ -169,9 +169,9 @@ TEST_F(SvtCallbackDispatcherTest, DestructorJoinsIdleWorkerAfterLastCallbackUnse
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
-    dispatcher_->UnsetStatusChangedCallback();
+    dispatcher_->UnsetCallback<VehicleTimeStatus>();
 
     dispatcher_.reset();
 
@@ -183,7 +183,7 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackFiresOnFirstSnapshotAfterRegistr
     StartServing(MakeSvtSnapshot(kSynchronizedStatus, 2.5));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
 
     ASSERT_TRUE(recorder.WaitForCount(1U));
     EXPECT_TRUE(recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
@@ -196,7 +196,7 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackFiresForInvalidSnapshotWithEmpty
     StartServing(MakeSvtSnapshot(kNotCorrectStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
 
     ASSERT_TRUE(recorder.WaitForCount(1U));
     EXPECT_FALSE(recorder.Last().IsConsistent());
@@ -207,7 +207,7 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackDoesNotRepeatWhileFlagsAreUnchan
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
 
     ASSERT_TRUE(recorder.WaitForCount(1U));
     ASSERT_TRUE(WorkerPolledAgain());
@@ -219,7 +219,7 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackFiresWhenFlagsChange)
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
     receiver_->Serve(MakeSvtSnapshot(kTimeoutStatus));
@@ -234,7 +234,7 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackIgnoresRateDeviationChanges)
     StartServing(MakeSvtSnapshot(kSynchronizedStatus, 1.0));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
     receiver_->Serve(MakeSvtSnapshot(kSynchronizedStatus, 9.0));
@@ -249,13 +249,13 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackReRegisteredReceivesUnchangedSta
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> first_recorder;
-    dispatcher_->SetStatusChangedCallback(first_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(first_recorder.Callback());
     ASSERT_TRUE(first_recorder.WaitForCount(1U));
 
-    dispatcher_->UnsetStatusChangedCallback();
+    dispatcher_->UnsetCallback<VehicleTimeStatus>();
 
     CallbackRecorder<VehicleTimeStatus> second_recorder;
-    dispatcher_->SetStatusChangedCallback(second_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(second_recorder.Callback());
 
     ASSERT_TRUE(second_recorder.WaitForCount(1U));
     EXPECT_TRUE(second_recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
@@ -265,20 +265,24 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackReRegisteredReceivesUnchangedSta
     EXPECT_EQ(second_recorder.Count(), 1U);
 }
 
-TEST_F(SvtCallbackDispatcherTest, StatusCallbackReplacedWithoutUnsetReceivesUnchangedStatusAgain)
+TEST_F(SvtCallbackDispatcherTest, StatusCallbackAddedWhileAnotherIsRegisteredReceivesUnchangedStatusAgain)
 {
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> first_recorder;
-    dispatcher_->SetStatusChangedCallback(first_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(first_recorder.Callback());
     ASSERT_TRUE(first_recorder.WaitForCount(1U));
 
     CallbackRecorder<VehicleTimeStatus> second_recorder;
-    dispatcher_->SetStatusChangedCallback(second_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(second_recorder.Callback());
 
     ASSERT_TRUE(second_recorder.WaitForCount(1U));
     EXPECT_TRUE(second_recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kSynchronized));
     EXPECT_EQ(first_recorder.Count(), 1U);
+
+    receiver_->Serve(MakeSvtSnapshot(kTimeoutStatus));
+    ASSERT_TRUE(first_recorder.WaitForCount(2U));
+    ASSERT_TRUE(second_recorder.WaitForCount(2U));
 }
 
 TEST_F(SvtCallbackDispatcherTest, StatusCallbackRegisteredWhileWorkerIsActiveReceivesCurrentStatusFirst)
@@ -289,7 +293,7 @@ TEST_F(SvtCallbackDispatcherTest, StatusCallbackRegisteredWhileWorkerIsActiveRec
     ASSERT_TRUE(WorkerPolledAgain());
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
 
     ASSERT_TRUE(recorder.WaitForCount(1U));
     EXPECT_TRUE(recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kTimeOut));
@@ -304,10 +308,10 @@ TEST_F(SvtCallbackDispatcherTest, UnsetStatusCallbackStopsDelivery)
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback(recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
-    dispatcher_->UnsetStatusChangedCallback();
+    dispatcher_->UnsetCallback<VehicleTimeStatus>();
     receiver_->Serve(MakeSvtSnapshot(kTimeoutStatus));
 
     KeepWorkerPolling();
@@ -322,7 +326,7 @@ TEST_F(SvtCallbackDispatcherTest, SyncDataCallbackFiresOnEachNewSnapshot)
     StartServing(published);
 
     CallbackRecorder<TimeSlaveSyncData<VehicleTime>> recorder;
-    dispatcher_->SetTimeSlaveSyncDataReceivedCallback(recorder.Callback());
+    dispatcher_->AddCallback<TimeSlaveSyncData<VehicleTime>>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
     EXPECT_EQ(recorder.Last().sequence_id, 1U);
 
@@ -345,7 +349,7 @@ TEST_F(SvtCallbackDispatcherTest, SyncDataCallbackReceivesConvertedFields)
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<TimeSlaveSyncData<VehicleTime>> recorder;
-    dispatcher_->SetTimeSlaveSyncDataReceivedCallback(recorder.Callback());
+    dispatcher_->AddCallback<TimeSlaveSyncData<VehicleTime>>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
     auto published = MakeSvtSnapshot(kSynchronizedStatus);
@@ -373,7 +377,7 @@ TEST_F(SvtCallbackDispatcherTest, PDelayCallbackFiresOnEachNewSnapshot)
     StartServing(published);
 
     CallbackRecorder<PDelayMeasurementData<VehicleTime>> recorder;
-    dispatcher_->SetPDelayMeasurementFinishedCallback(recorder.Callback());
+    dispatcher_->AddCallback<PDelayMeasurementData<VehicleTime>>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
     EXPECT_EQ(recorder.Last().sequence_id, 1U);
 
@@ -396,7 +400,7 @@ TEST_F(SvtCallbackDispatcherTest, PDelayCallbackReceivesConvertedFields)
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<PDelayMeasurementData<VehicleTime>> recorder;
-    dispatcher_->SetPDelayMeasurementFinishedCallback(recorder.Callback());
+    dispatcher_->AddCallback<PDelayMeasurementData<VehicleTime>>(recorder.Callback());
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
     auto published = MakeSvtSnapshot(kSynchronizedStatus);
@@ -428,9 +432,9 @@ TEST_F(SvtCallbackDispatcherTest, AllThreeCallbacksAreDeliveredFromTheSameSnapsh
     CallbackRecorder<VehicleTimeStatus> status_recorder;
     CallbackRecorder<TimeSlaveSyncData<VehicleTime>> sync_recorder;
     CallbackRecorder<PDelayMeasurementData<VehicleTime>> pdelay_recorder;
-    dispatcher_->SetTimeSlaveSyncDataReceivedCallback(sync_recorder.Callback());
-    dispatcher_->SetPDelayMeasurementFinishedCallback(pdelay_recorder.Callback());
-    dispatcher_->SetStatusChangedCallback(status_recorder.Callback());
+    dispatcher_->AddCallback<TimeSlaveSyncData<VehicleTime>>(sync_recorder.Callback());
+    dispatcher_->AddCallback<PDelayMeasurementData<VehicleTime>>(pdelay_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(status_recorder.Callback());
     ASSERT_TRUE(status_recorder.WaitForCount(1U));
     ASSERT_TRUE(sync_recorder.WaitForCount(1U));
     ASSERT_TRUE(pdelay_recorder.WaitForCount(1U));
@@ -456,9 +460,9 @@ TEST_F(SvtCallbackDispatcherTest, ChangeInOneSnapshotPartFiresOnlyThatCallback)
     CallbackRecorder<VehicleTimeStatus> status_recorder;
     CallbackRecorder<TimeSlaveSyncData<VehicleTime>> sync_recorder;
     CallbackRecorder<PDelayMeasurementData<VehicleTime>> pdelay_recorder;
-    dispatcher_->SetTimeSlaveSyncDataReceivedCallback(sync_recorder.Callback());
-    dispatcher_->SetPDelayMeasurementFinishedCallback(pdelay_recorder.Callback());
-    dispatcher_->SetStatusChangedCallback(status_recorder.Callback());
+    dispatcher_->AddCallback<TimeSlaveSyncData<VehicleTime>>(sync_recorder.Callback());
+    dispatcher_->AddCallback<PDelayMeasurementData<VehicleTime>>(pdelay_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(status_recorder.Callback());
     ASSERT_TRUE(status_recorder.WaitForCount(1U));
     ASSERT_TRUE(sync_recorder.WaitForCount(1U));
     ASSERT_TRUE(pdelay_recorder.WaitForCount(1U));
@@ -483,9 +487,9 @@ TEST_F(SvtCallbackDispatcherTest, UnsetFromWithinCallbackDoesNotDeadlock)
     StartServing(MakeSvtSnapshot(kSynchronizedStatus));
 
     CallbackRecorder<VehicleTimeStatus> recorder;
-    dispatcher_->SetStatusChangedCallback([this, &recorder](const VehicleTimeStatus& status) {
+    dispatcher_->AddCallback<VehicleTimeStatus>([this, &recorder](const VehicleTimeStatus& status) {
         recorder.Record(status);
-        dispatcher_->UnsetStatusChangedCallback();
+        dispatcher_->UnsetCallback<VehicleTimeStatus>();
     });
     ASSERT_TRUE(recorder.WaitForCount(1U));
 
@@ -503,10 +507,11 @@ TEST_F(SvtCallbackDispatcherTest, SubscribingToAnotherEventFromWithinCallbackDoe
 
     CallbackRecorder<VehicleTimeStatus> status_recorder;
     CallbackRecorder<TimeSlaveSyncData<VehicleTime>> sync_recorder;
-    dispatcher_->SetStatusChangedCallback([this, &status_recorder, &sync_recorder](const VehicleTimeStatus& status) {
-        status_recorder.Record(status);
-        dispatcher_->SetTimeSlaveSyncDataReceivedCallback(sync_recorder.Callback());
-    });
+    dispatcher_->AddCallback<VehicleTimeStatus>(
+        [this, &status_recorder, &sync_recorder](const VehicleTimeStatus& status) {
+            status_recorder.Record(status);
+            dispatcher_->AddCallback<TimeSlaveSyncData<VehicleTime>>(sync_recorder.Callback());
+        });
     ASSERT_TRUE(status_recorder.WaitForCount(1U));
     ASSERT_TRUE(sync_recorder.WaitForCount(1U));
 
@@ -524,19 +529,66 @@ TEST_F(SvtCallbackDispatcherTest, UnsetBlocksUntilInFlightCallbackReturns)
     std::promise<void> callback_entered;
     std::promise<void> release_callback;
     auto release_future = release_callback.get_future().share();
-    dispatcher_->SetStatusChangedCallback([&callback_entered, release_future](const VehicleTimeStatus&) {
+    dispatcher_->AddCallback<VehicleTimeStatus>([&callback_entered, release_future](const VehicleTimeStatus&) {
         callback_entered.set_value();
         release_future.wait();
     });
     ASSERT_EQ(callback_entered.get_future().wait_for(kWaitTimeout), std::future_status::ready);
 
     auto unset_done = std::async(std::launch::async, [this]() {
-        dispatcher_->UnsetStatusChangedCallback();
+        dispatcher_->UnsetCallback<VehicleTimeStatus>();
     });
     EXPECT_EQ(unset_done.wait_for(50 * kPollInterval), std::future_status::timeout);
 
     release_callback.set_value();
     EXPECT_EQ(unset_done.wait_for(kWaitTimeout), std::future_status::ready);
+}
+
+TEST_F(SvtCallbackDispatcherTest, AllCallbacksOfOneKindReceiveEachChange)
+{
+    StartServing(MakeSvtSnapshot(kSynchronizedStatus));
+
+    CallbackRecorder<VehicleTimeStatus> first_recorder;
+    CallbackRecorder<VehicleTimeStatus> second_recorder;
+    dispatcher_->AddCallback<VehicleTimeStatus>(first_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(second_recorder.Callback());
+    ASSERT_TRUE(first_recorder.WaitForCount(1U));
+    ASSERT_TRUE(second_recorder.WaitForCount(1U));
+
+    receiver_->Serve(MakeSvtSnapshot(kTimeoutStatus));
+
+    ASSERT_TRUE(first_recorder.WaitForCount(2U));
+    ASSERT_TRUE(second_recorder.WaitForCount(2U));
+    EXPECT_TRUE(first_recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kTimeOut));
+    EXPECT_TRUE(second_recorder.Last().IsFlagActive(VehicleTime::StatusFlag::kTimeOut));
+}
+
+TEST_F(SvtCallbackDispatcherTest, UnsetCallbackRemovesAllCallbacksOfThatKindAndKeepsOtherKinds)
+{
+    auto published = MakeSvtSnapshot(kSynchronizedStatus);
+    StartServing(published);
+
+    CallbackRecorder<VehicleTimeStatus> first_recorder;
+    CallbackRecorder<VehicleTimeStatus> second_recorder;
+    CallbackRecorder<TimeSlaveSyncData<VehicleTime>> sync_recorder;
+    dispatcher_->AddCallback<VehicleTimeStatus>(first_recorder.Callback());
+    dispatcher_->AddCallback<VehicleTimeStatus>(second_recorder.Callback());
+    dispatcher_->AddCallback<TimeSlaveSyncData<VehicleTime>>(sync_recorder.Callback());
+    ASSERT_TRUE(first_recorder.WaitForCount(1U));
+    ASSERT_TRUE(second_recorder.WaitForCount(1U));
+    ASSERT_TRUE(sync_recorder.WaitForCount(1U));
+
+    dispatcher_->UnsetCallback<VehicleTimeStatus>();
+
+    published.status = kTimeoutStatus;
+    published.sync_fup_data.sequence_id = 7U;
+    receiver_->Serve(published);
+
+    ASSERT_TRUE(sync_recorder.WaitForCount(2U));
+    EXPECT_EQ(sync_recorder.Last().sequence_id, 7U);
+    ASSERT_TRUE(WorkerPolledAgain());
+    EXPECT_EQ(first_recorder.Count(), 1U);
+    EXPECT_EQ(second_recorder.Count(), 1U);
 }
 
 }  // namespace

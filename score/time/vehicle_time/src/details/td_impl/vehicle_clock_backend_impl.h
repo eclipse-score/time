@@ -93,24 +93,24 @@ class VehicleClockBackendImpl final : public VehicleClockBackend
     bool WaitUntilAvailable(const score::cpp::stop_token& token,
                             std::chrono::steady_clock::time_point until) const noexcept override;
 
-    /// @brief Installs the time-sync data callback, delivered from the worker thread.
+    /// @brief Adds a time-sync data callback, delivered from the worker thread.
     void SetTimeSlaveSyncDataReceivedCallback(
         VehicleTime::TimeSlaveSyncDataReceivedCallback&& callback) noexcept override;
 
-    /// @brief Removes the time-sync data callback, waiting for an in-flight invocation.
+    /// @brief Removes all time-sync data callbacks, waiting for an in-flight invocation.
     void UnsetTimeSlaveSyncDataReceivedCallback() noexcept override;
 
-    /// @brief Installs the pDelay measurement callback, delivered from the worker thread.
+    /// @brief Adds a pDelay measurement callback, delivered from the worker thread.
     void SetPDelayMeasurementFinishedCallback(
         VehicleTime::PDelayMeasurementFinishedCallback&& callback) noexcept override;
 
-    /// @brief Removes the pDelay measurement callback, waiting for an in-flight invocation.
+    /// @brief Removes all pDelay measurement callbacks, waiting for an in-flight invocation.
     void UnsetPDelayMeasurementFinishedCallback() noexcept override;
 
-    /// @brief Installs the status-changed callback, delivered from the worker thread.
+    /// @brief Adds a status-changed callback, delivered from the worker thread.
     void SetStatusChangedCallback(VehicleTime::StatusChangedCallback&& callback) noexcept override;
 
-    /// @brief Removes the status-changed callback, waiting for an in-flight invocation.
+    /// @brief Removes all status-changed callbacks, waiting for an in-flight invocation.
     void UnsetStatusChangedCallback() noexcept override;
 
   private:
