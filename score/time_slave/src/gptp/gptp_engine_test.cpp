@@ -263,6 +263,7 @@ std::vector<std::uint8_t> MakePdelayReqFrame(std::uint16_t seqId)
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayReq, seqId, /*ctl=*/5);
     f.resize(f.size() + 20, 0);  // reserved body
+    FinalizeLength(f);
     return f;
 }
 
