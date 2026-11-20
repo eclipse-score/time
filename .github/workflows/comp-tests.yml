@@ -16,9 +16,11 @@ name: Test / Component Tests
 permissions:
   contents: read
 
-# Regular CI runs the component tests in docs.yml; this workflow is for manual runs only.
+# Regular CI runs the component tests in docs.yml; this workflow is for manual
+# runs and for the general validation gate.
 on:
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   run-comp-tests:
