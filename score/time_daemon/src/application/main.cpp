@@ -14,6 +14,7 @@
 
 #include "score/mw/lifecycle/runapplication.h"
 
+// req-Id: comp_req__time_daemon__shutdown
 int main(int argc, const char* argv[])
 {
     return score::mw::lifecycle::run_application<score::td::TimeDaemon>(argc, argv);

@@ -16,6 +16,10 @@ load("@score_docs_as_code//:docs.bzl", "docs_bundle")
 
 docs_bundle(
     name = "docs_bundle",
+    code_targets = [
+        ":time_daemon",
+        "//score/time_daemon/src/ipc:svt_receiver",
+    ],
     source_dir = "docs",
     visibility = ["//visibility:public"],
 )

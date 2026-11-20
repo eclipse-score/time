@@ -139,6 +139,7 @@ void VerificationMachine<DataType>::Publish(const DataType& data)
     }
 }
 
+// req-Id: comp_req__time_daemon__error_reaction
 template <typename DataType>
 void VerificationMachine<DataType>::OnMessage(DataType data)
 {
