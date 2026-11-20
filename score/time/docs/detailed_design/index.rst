@@ -71,9 +71,10 @@ Each ``Now()`` call returns a ``ClockSnapshot`` that bundles the timepoint with 
 ``kTimeLeapFuture``, ``kTimeLeapPast``) and a rate-deviation measurement.
 
 **HighResSteadyTime** is a monotonic, nanosecond-resolution clock optimized for
-low-overhead timing. On QNX the backend reads the hardware cycle counter directly via
-``ClockCycles()`` — no kernel call, no scheduler interaction. On Linux it delegates to
-``std::chrono::high_resolution_clock``.
+low-overhead timing. On all platforms the backend reads POSIX ``CLOCK_MONOTONIC``, the
+same clock the time slave uses to stamp Sync frames (``local_time``). ``VehicleTime``
+relies on this: it subtracts the slave's stamp from a ``HighResSteadyTime`` reading, so
+both must share one timeline.
 
 **SteadyClock** wraps ``std::chrono::steady_clock`` (POSIX ``CLOCK_MONOTONIC``).
 Monotonic and never goes backward, making it the standard choice for measuring elapsed

@@ -23,7 +23,7 @@ filegroup(
 )
 
 # Non-QNX production backend for HighResSteadyTime.
-# Wraps std::chrono::high_resolution_clock and provides CreateBackend<HighResSteadyTime>().
+# Reads CLOCK_MONOTONIC and provides CreateBackend<HighResSteadyTime>().
 cc_library(
     name = "system_clock",
     srcs = [
