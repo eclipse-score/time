@@ -1,0 +1,135 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+name: QA / Static Analysis CodeQL
+
+permissions:
+  contents: read
+
+# The event name is part of the group, so that the nightly ASIL run of `main` and the
+# QM run of a `push` to `main` (same ref, but different jobs and categories) do not
+# cancel each other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
+  # Nightly ASIL analysis of `main`, Linux only (see the `plan` job).
+  schedule:
+    - cron: "0 2 * * *"
+  # Manual runs choose the platform(s) and preset(s). The `plan` job expands `all` into
+  # both values of that axis, so `-f platform=all -f preset=ASIL` analyses Linux and QNX
+  # with the ASIL preset in one run. QNX is never analysed automatically: it is much
+  # slower than the Linux analysis, and it is only needed on demand (the QNX secrets are
+  # configured, `Build / QNX8` uses them already).
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform(s) to analyse
+        type: choice
+        default: linux
+        options:
+          - linux
+          - qnx
+          - all
+      preset:
+        description: Safety preset(s) to run
+        type: choice
+        default: QM
+        options:
+          - QM
+          - ASIL
+          - all
+
+jobs:
+  # Turns the trigger into the list of analyses to run: `uses:` cannot be computed, but
+  # `strategy.matrix` can, and `with:` accepts expressions. Hence one analysis job for
+  # all four (platform, preset) pairs instead of one job per pair.
+  # PR/push -> linux/QM (`main` needs a QM baseline for the PR diffs), schedule ->
+  # linux/ASIL, manual runs -> whatever the inputs select.
+  plan:
+    name: Plan analyses
+    runs-on: ubuntu-24.04
+    permissions: {}
+    outputs:
+      matrix: ${{ steps.select.outputs.matrix }}
+    steps:
+      - name: Select the analyses to run
+        id: select
+        env:
+          EVENT: ${{ github.event_name }}
+          PLATFORM: ${{ inputs.platform }}
+          PRESET: ${{ inputs.preset }}
+        run: |
+          set -euo pipefail
+
+          case "${EVENT}" in
+            schedule) platform=linux; preset=ASIL ;;
+            workflow_dispatch) platform="${PLATFORM:-linux}"; preset="${PRESET:-QM}" ;;
+            *) platform=linux; preset=QM ;;
+          esac
+
+          case "${platform}" in
+            linux | qnx) platforms=("${platform}") ;;
+            all) platforms=(linux qnx) ;;
+            *) echo "::error::Unsupported platform '${platform}'."; exit 1 ;;
+          esac
+
+          case "${preset}" in
+            QM | ASIL) presets=("${preset}") ;;
+            all) presets=(QM ASIL) ;;
+            *) echo "::error::Unsupported preset '${preset}'."; exit 1 ;;
+          esac
+
+          include=""
+          for platform in "${platforms[@]}"; do
+            for preset in "${presets[@]}"; do
+              include="${include:+${include},}{\"platform\":\"${platform}\",\"preset\":\"${preset}\"}"
+            done
+          done
+          echo "matrix={\"include\":[${include}]}" >> "${GITHUB_OUTPUT}"
+          echo "Analyses to run: ${include}"
+
+  # One matrix instance per selected pair, named `static-analysis (<platform>, <preset>)`.
+  # The Code Scanning category is derived from the matrix values,
+  # static-analysis-codeql/<platform>/<preset>, so QM/ASIL and Linux/QNX keep separate
+  # alert sets.
+  static-analysis:
+    needs: plan
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    # Pinned by commit SHA (branch `feat/static-analysis-codeql` of the
+    # etas-contrib fork, not merged upstream yet). Once the workflow is released
+    # switch to `eclipse-score/cicd-workflows@<sha> # <tag>` like build-qnx.yml.
+    uses: etas-contrib/score_cicd-workflows/.github/workflows/static-analysis-codeql.yml@2571edd13f5b981e11f7626fcb1f173ad5be8223 # feat/static-analysis-codeql
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+      security-events: write
+    with:
+      sca-target: //tools/codeql:sca_${{ matrix.platform }}
+      platform: ${{ matrix.platform }}
+      safety-level: ${{ matrix.preset }}
+      category: static-analysis-codeql/${{ matrix.platform }}/${{ matrix.preset }}
+    # The QNX secrets are configured and are only required for the `qnx` platform, so
+    # they are passed for every instance and ignored by the Linux analysis.
+    secrets:
+      score-qnx-license: ${{ secrets.SCORE_QNX_LICENSE }}
+      score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
+      score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
