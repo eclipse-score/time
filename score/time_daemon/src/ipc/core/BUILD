@@ -24,6 +24,7 @@ cc_library(
     visibility = ["//score/time_daemon/src/ipc:__subpackages__"],
     deps = [
         "//score/time_daemon/src/common:logging_contexts",
+        "@score_baselibs//score/language/futurecpp",
         "@score_baselibs//score/mw/log:frontend",
         "@score_communication//score/memory/shared",
         "@score_communication//score/memory/shared/typedshm/typedshm_wrapper:typedmemory",
@@ -109,7 +110,6 @@ cc_test(
         "test_types.h",
     ],
     tags = [
-        "no-tsan",
         "unit",
     ],
     deps = [
