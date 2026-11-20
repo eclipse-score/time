@@ -49,7 +49,7 @@ INSTANTIATE_TEST_CASE_P(
     TestIfSynchronizedFlagIsNotCleared,
     TimeJumpsValidatorParamTest,
     ::testing::Values(TestScenario{{
-        {0, 0, 0, false, false},                     /* Initial frame*/
+        {0, 1, 1, false, false},                     /* Initial frame (T2 != 0, T2 == 0 means empty snapshot) */
         {1, 125'000'000, 125'000'000, false, false}, /* New frame -> No jump */
         {2, 251'000'000, 250'000'000, true, false},  /* New frame -> Jump to future */
         {3, 376'000'000, 375'000'000, true, false},  /* 1st correct frame after jump -> Jump to past  */
@@ -332,7 +332,7 @@ TEST(TimeJumpsValidatorTest, UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDeb
     }
 }
 
-TEST(TimeJumpsValidatorTest, EmptySnapshotBetweenFramesDoesNotCauseFalseTimeJump)
+TEST(TimeJumpsValidatorTest, EmptySnapshotDropsReferenceAndRestartsDebouncing)
 {
     auto mock = std::make_shared<score::time::HighResSteadyClockBackendMock>();
 
@@ -341,18 +341,22 @@ TEST(TimeJumpsValidatorTest, EmptySnapshotBetweenFramesDoesNotCauseFalseTimeJump
                                  std::chrono::nanoseconds(5'000'000),
                                  2U);
 
+    const auto at = [](std::int64_t ns) {
+        return score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+            score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(ns)}, {}};
+    };
+    // Initial debounce: init + check. Debounce after the restart: init + check.
+    // The last value is returned for any further call.
     EXPECT_CALL(*mock, Now())
-        .WillOnce(::testing::Return(
-            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
-                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(0)}, {}}))
-        .WillOnce(::testing::Return(
-            score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
-                score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(6'000'000'000)}, {}}));
+        .WillOnce(::testing::Return(at(0)))
+        .WillOnce(::testing::Return(at(6'000'000'000)))
+        .WillOnce(::testing::Return(at(10'000'000'000)))
+        .WillRepeatedly(::testing::Return(at(16'000'000'000)));
 
     PtpTimeInfo entry_data{};
     entry_data.status.is_synchronized = true;
-    std::ignore = validator.Process(entry_data);
-    std::ignore = validator.Process(entry_data);
+    std::ignore = validator.Process(entry_data);  // kIdle -> kInitialSyncDebouncing
+    std::ignore = validator.Process(entry_data);  // -> kTimeJumpHandling
 
     // T1 (GM time) and T2 (local hardware time) are in unrelated epochs, as on a real system.
     const auto make_frame = [](std::uint16_t seq, std::uint64_t t1, std::uint64_t t2) {
@@ -360,10 +364,11 @@ TEST(TimeJumpsValidatorTest, EmptySnapshotBetweenFramesDoesNotCauseFalseTimeJump
         sync.sequence_id = seq;
         sync.precise_origin_timestamp = t1;
         sync.sync_ingress_timestamp = t2;
-        return PtpTimeInfo{std::chrono::nanoseconds{0}, PtpTimeInfo::ReferenceClock::time_point{}, 0, {}, sync, {}};
+        PtpTimeInfo info{std::chrono::nanoseconds{0}, PtpTimeInfo::ReferenceClock::time_point{}, 0, {}, sync, {}};
+        info.status.is_synchronized = true;
+        return info;
     };
 
-    // Frames before the TimeSlave restart
     for (std::uint16_t i = 1U; i <= 3U; ++i)
     {
         const auto result = validator.Process(
@@ -372,19 +377,64 @@ TEST(TimeJumpsValidatorTest, EmptySnapshotBetweenFramesDoesNotCauseFalseTimeJump
         EXPECT_FALSE(result.status.is_time_jump_past);
     }
 
-    // Empty snapshot published by the restarted TimeSlave
-    auto empty = validator.Process(make_frame(0U, 0U, 0U));
+    // TimeSlave restarts: empty snapshot, then a gap of 5 s during which PHC and GM drift apart by 1 ms
+    // (more than the 500 us limit).
+    const auto empty = validator.Process(make_frame(0U, 0U, 0U));
     EXPECT_FALSE(empty.status.is_time_jump_future);
     EXPECT_FALSE(empty.status.is_time_jump_past);
 
-    // First real frames after the restart continue the same T1/T2 progression
-    for (std::uint16_t i = 4U; i <= 6U; ++i)
+    constexpr std::uint64_t kGap = 5'000'000'000ULL;
+    constexpr std::uint64_t kDrift = 1'000'000ULL;
+    for (std::uint16_t i = 4U; i <= 8U; ++i)
     {
-        const auto result = validator.Process(
-            make_frame(i, 1'000'000'000'000ULL + i * 125'000'000ULL, 5'000'000'000ULL + i * 125'000'000ULL));
+        const auto result = validator.Process(make_frame(i,
+                                                         1'000'000'000'000ULL + i * 125'000'000ULL + kGap + kDrift,
+                                                         5'000'000'000ULL + i * 125'000'000ULL + kGap));
         EXPECT_FALSE(result.status.is_time_jump_future);
         EXPECT_FALSE(result.status.is_time_jump_past);
     }
+}
+
+TEST(TimeJumpsValidatorTest, JumpAfterRestartIsStillDetectedOnceDebouncingCompleted)
+{
+    auto mock = std::make_shared<score::time::HighResSteadyClockBackendMock>();
+
+    TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
+                                 std::chrono::nanoseconds(500'000),
+                                 std::chrono::nanoseconds(5'000'000),
+                                 2U);
+
+    // Always 6 s after the previous call's init, so every debounce completes on its first check.
+    std::int64_t now_ns = 0;
+    EXPECT_CALL(*mock, Now()).WillRepeatedly(::testing::Invoke([&now_ns]() {
+        now_ns += 6'000'000'000;
+        return score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
+            score::time::HighResSteadyTime::Timepoint{std::chrono::nanoseconds(now_ns)}, {}};
+    }));
+
+    PtpTimeInfo entry_data{};
+    entry_data.status.is_synchronized = true;
+    std::ignore = validator.Process(entry_data);
+    std::ignore = validator.Process(entry_data);
+
+    const auto make_frame = [](std::uint16_t seq, std::uint64_t t1, std::uint64_t t2) {
+        SyncFupData sync{};
+        sync.sequence_id = seq;
+        sync.precise_origin_timestamp = t1;
+        sync.sync_ingress_timestamp = t2;
+        PtpTimeInfo info{std::chrono::nanoseconds{0}, PtpTimeInfo::ReferenceClock::time_point{}, 0, {}, sync, {}};
+        info.status.is_synchronized = true;
+        return info;
+    };
+
+    std::ignore = validator.Process(make_frame(0U, 0U, 0U));  // restart
+    std::ignore = validator.Process(entry_data);              // kIdle -> kInitialSyncDebouncing
+    std::ignore = validator.Process(entry_data);              // -> kTimeJumpHandling
+
+    std::ignore = validator.Process(make_frame(1U, 1'000'000'000'000ULL, 5'000'000'000ULL));  // new reference
+    const auto result = validator.Process(
+        make_frame(2U, 1'000'000'000'000ULL + 125'000'000ULL + 10'000'000ULL, 5'000'000'000ULL + 125'000'000ULL));
+    EXPECT_TRUE(result.status.is_time_jump_future);
 }
 
 }  // namespace td

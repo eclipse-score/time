@@ -141,11 +141,18 @@ void TimeJumpsValidator::HandleInitialSyncDebouncingState(PtpTimeInfo& data)
 void TimeJumpsValidator::SyncFramesHandler(PtpTimeInfo& data)
 {
     // A snapshot without a Sync ingress timestamp carries no Sync/FollowUp data (e.g. the empty snapshot a restarted
-    // TimeSlave publishes before its first Sync). It must neither be counted as a valid frame nor become the
-    // reference for the next prediction, otherwise the first real Sync after a restart is compared against T2 = 0
-    // and reported as a false time jump.
+    // TimeSlave publishes before its first Sync). It must not be counted as a valid frame or become the reference
+    // for the next prediction. It also marks a gap in the Sync stream: predicting the first real Sync from a
+    // pre-restart frame accumulates PHC/GM drift over the whole gap (~500 us for a few seconds at 100 ppm) and can
+    // report a false time jump. Drop the reference and start over as after a fresh start.
     if (data.sync_fup_data.sync_ingress_timestamp == 0U)
     {
+        last_sync_frame_.reset();
+        valid_frames_cnt_ = 0U;
+        time_jump_state_ = TimeJumpState::kNoTimeJump;
+        current_state_ = ProcessingStates::kIdle;
+        score::mw::log::LogDebug(kVerificationMachineContext)
+            << "TimeJumpsValidator: Empty snapshot received, reference dropped. Switch to kIdle state";
         UpdateStatus(data);
         return;
     }
