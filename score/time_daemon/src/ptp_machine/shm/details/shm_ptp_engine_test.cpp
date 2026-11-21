@@ -16,6 +16,12 @@
 
 #include <gtest/gtest.h>
 
+#include <poll.h>
+#include <sys/mman.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
+
 #include <atomic>
 #include <chrono>
 
@@ -71,6 +77,83 @@ score::ts::GptpIpcData MakeTestIpcData()
     d.pdelay_data.resp_clock_identity = 0x0807060504030201ULL;
     return d;
 }
+
+/// Publisher running in a forked child process, as TimeSlave does in production.
+/// A second publisher cannot live in the reader's process (and a child forked
+/// after the reader opened the segment inherits its registry), because the
+/// shared-memory registry rejects two resources with the same path. Therefore
+/// construct instances BEFORE the reader opens anything, then call Start().
+/// Stop() mimics `kill -9` (no cleanup) and unlinks the segment afterwards.
+class ForkedPublisher
+{
+  public:
+    ForkedPublisher(const std::string& name, const score::ts::GptpIpcData& data) : name_{name}
+    {
+        int go[2];
+        int ready[2];
+        if ((::pipe(go) != 0) || (::pipe(ready) != 0))
+            return;
+        pid_ = ::fork();
+        if (pid_ == 0)
+        {
+            char c = 0;
+            if (::read(go[0], &c, 1) != 1)
+                ::_exit(1);
+            score::ts::details::GptpIpcPublisher pub;
+            const char ok = pub.Open(name) ? 1 : 0;
+            if (ok != 0)
+                pub.Publish(data);
+            static_cast<void>(::write(ready[1], &ok, 1));
+            for (;;)
+                ::pause();
+        }
+        ::close(go[0]);
+        ::close(ready[1]);
+        go_fd_ = go[1];
+        ready_fd_ = ready[0];
+    }
+
+    ~ForkedPublisher()
+    {
+        Stop();
+        if (go_fd_ >= 0)
+            ::close(go_fd_);
+        if (ready_fd_ >= 0)
+            ::close(ready_fd_);
+    }
+
+    ForkedPublisher(const ForkedPublisher&) = delete;
+    ForkedPublisher& operator=(const ForkedPublisher&) = delete;
+
+    /// Lets the child create the segment and publish once; true when it is ready.
+    bool Start()
+    {
+        char c = 1;
+        char ok = 0;
+        if ((pid_ <= 0) || (::write(go_fd_, &c, 1) != 1))
+            return false;
+        struct pollfd pfd{ready_fd_, POLLIN, 0};
+        // Bounded wait: a child stuck after fork must fail the test, not hang it.
+        return (::poll(&pfd, 1, 5000) == 1) && (::read(ready_fd_, &ok, 1) == 1) && (ok == 1);
+    }
+
+    void Stop()
+    {
+        if (pid_ > 0)
+        {
+            ::kill(pid_, SIGKILL);
+            ::waitpid(pid_, nullptr, 0);
+            ::shm_unlink(name_.c_str());
+            pid_ = -1;
+        }
+    }
+
+  private:
+    std::string name_;
+    pid_t pid_{-1};
+    int go_fd_{-1};
+    int ready_fd_{-1};
+};
 
 }  // namespace
 
@@ -158,6 +241,56 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_WithPublishedData_ReturnsTrue)
 
     PtpTimeInfo result{};
     EXPECT_TRUE(engine_->ReadPTPSnapshot(result));
+}
+
+TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_AfterPublisherRestart_FollowsNewSegment)
+{
+    auto restarted_data = MakeTestIpcData();
+    restarted_data.ptp_assumed_time = std::chrono::nanoseconds{1'111'111'111LL};
+    ForkedPublisher first{name_, MakeTestIpcData()};
+    ForkedPublisher restarted{name_, restarted_data};
+
+    ASSERT_TRUE(first.Start());
+    ASSERT_TRUE(engine_->Initialize());
+    PtpTimeInfo info{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
+    EXPECT_EQ(info.ptp_assumed_time, std::chrono::nanoseconds{9'876'543'210LL});
+
+    first.Stop();                                 // TimeSlave killed
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));  // no new data: marks the channel stale
+    ASSERT_TRUE(restarted.Start());               // TimeSlave restarted
+
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
+    EXPECT_EQ(info.ptp_assumed_time, std::chrono::nanoseconds{1'111'111'111LL});
+}
+
+TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_PublisherGoneThenReturns_Recovers)
+{
+    auto restarted_data = MakeTestIpcData();
+    restarted_data.ptp_assumed_time = std::chrono::nanoseconds{3'333'333'333LL};
+    ForkedPublisher first{name_, MakeTestIpcData()};
+    ForkedPublisher restarted{name_, restarted_data};
+
+    ASSERT_TRUE(first.Start());
+    ASSERT_TRUE(engine_->Initialize());
+    first.Stop();  // segment unlinked, mapping still held
+
+    PtpTimeInfo info{};
+    EXPECT_TRUE(engine_->ReadPTPSnapshot(info));  // last (stale) data, no crash
+    EXPECT_TRUE(engine_->ReadPTPSnapshot(info));
+
+    ASSERT_TRUE(restarted.Start());
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(info));
+    EXPECT_EQ(info.ptp_assumed_time, std::chrono::nanoseconds{3'333'333'333LL});
+}
+
+TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_NotInitializedThenPublisherAppears_Connects)
+{
+    PtpTimeInfo info{};
+    EXPECT_FALSE(engine_->ReadPTPSnapshot(info));
+    ASSERT_TRUE(pub_.Open(name_));
+    pub_.Publish(MakeTestIpcData());
+    EXPECT_TRUE(engine_->ReadPTPSnapshot(info));
 }
 
 TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesTimeAndStatusCorrectly)
