@@ -16,7 +16,7 @@ Time Component Requirements
 ###########################
 
 .. document:: Time Requirements
-   :id: doc__time_requirements
+   :id: doc__time_comp_requirements
    :status: valid
    :version: 1
    :safety: ASIL_B
