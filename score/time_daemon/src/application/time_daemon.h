@@ -67,7 +67,7 @@ class TimeDaemon final : public score::mw::lifecycle::Application
     void InitializeAllTimebases();
     void StartAllTimebases(const score::cpp::stop_token& token);
     void IterateAllTimebases();
-    bool AnyTimebaseFailed() const;
+    [[nodiscard]] bool AnyTimebaseFailed() const;
     void StopAllTimebases();
 
     std::vector<std::unique_ptr<TimebaseHandler>> timebase_handlers_;

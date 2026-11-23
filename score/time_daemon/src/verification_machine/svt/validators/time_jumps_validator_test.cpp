@@ -107,8 +107,8 @@ TEST(TimeJumpsValidatorTest, RepeatedDeliveryOfSameFrameDoesNotClearTimeJump)
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     EXPECT_CALL(*mock, Now())
         .WillOnce(::testing::Return(
@@ -285,8 +285,8 @@ TEST(TimeJumpsValidatorTest, UpstreamTimeJumpFlagsAreClearedInIdleState)
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     // Not synchronized -> validator stays in kIdle
     PtpTimeInfo data{};
@@ -306,8 +306,8 @@ TEST(TimeJumpsValidatorTest, UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDeb
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     EXPECT_CALL(*mock, Now())
         // Enter kInitialSyncDebouncing
