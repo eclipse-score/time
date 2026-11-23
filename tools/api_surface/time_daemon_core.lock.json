@@ -1,0 +1,127 @@
+{
+  "target": "//score/time_daemon:time_daemon_core",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "TimeDaemon",
+      "qualified_name": "score::td::TimeDaemon",
+      "kind": "class",
+      "signature": "class TimeDaemon"
+    },
+    {
+      "name": "TimeDaemon",
+      "qualified_name": "score::td::TimeDaemon::TimeDaemon",
+      "kind": "constructor",
+      "signature": "TimeDaemon : void ()"
+    },
+    {
+      "name": "TimeDaemon",
+      "qualified_name": "score::td::TimeDaemon::TimeDaemon",
+      "kind": "constructor",
+      "signature": "TimeDaemon : void (std::vector<std::unique_ptr<TimebaseHandler>>)"
+    },
+    {
+      "name": "~TimeDaemon",
+      "qualified_name": "score::td::TimeDaemon::~TimeDaemon",
+      "kind": "destructor",
+      "signature": "~TimeDaemon : void () noexcept"
+    },
+    {
+      "name": "Initialize",
+      "qualified_name": "score::td::TimeDaemon::Initialize",
+      "kind": "method",
+      "signature": "Initialize : std::int32_t (const score::mw::lifecycle::ApplicationContext &)"
+    },
+    {
+      "name": "Run",
+      "qualified_name": "score::td::TimeDaemon::Run",
+      "kind": "method",
+      "signature": "Run : std::int32_t (const score::cpp::stop_token &)"
+    },
+    {
+      "name": "TimebaseHandler",
+      "qualified_name": "score::td::TimebaseHandler",
+      "kind": "class",
+      "signature": "class TimebaseHandler"
+    },
+    {
+      "name": "TimebaseHandler",
+      "qualified_name": "score::td::TimebaseHandler::TimebaseHandler",
+      "kind": "constructor",
+      "signature": "constexpr TimebaseHandler : void () noexcept"
+    },
+    {
+      "name": "~TimebaseHandler",
+      "qualified_name": "score::td::TimebaseHandler::~TimebaseHandler",
+      "kind": "destructor",
+      "signature": "~TimebaseHandler : void () noexcept"
+    },
+    {
+      "name": "Status",
+      "qualified_name": "score::td::TimebaseHandler::Status",
+      "kind": "enum",
+      "signature": "enum class Status"
+    },
+    {
+      "name": "kIdle",
+      "qualified_name": "score::td::TimebaseHandler::Status::kIdle",
+      "kind": "enum_value",
+      "signature": "kIdle"
+    },
+    {
+      "name": "kStarting",
+      "qualified_name": "score::td::TimebaseHandler::Status::kStarting",
+      "kind": "enum_value",
+      "signature": "kStarting"
+    },
+    {
+      "name": "kWorking",
+      "qualified_name": "score::td::TimebaseHandler::Status::kWorking",
+      "kind": "enum_value",
+      "signature": "kWorking"
+    },
+    {
+      "name": "kStopped",
+      "qualified_name": "score::td::TimebaseHandler::Status::kStopped",
+      "kind": "enum_value",
+      "signature": "kStopped"
+    },
+    {
+      "name": "Initialize",
+      "qualified_name": "score::td::TimebaseHandler::Initialize",
+      "kind": "method",
+      "signature": "Initialize : void () noexcept"
+    },
+    {
+      "name": "Start",
+      "qualified_name": "score::td::TimebaseHandler::Start",
+      "kind": "method",
+      "signature": "Start : void (const score::cpp::stop_token &) noexcept"
+    },
+    {
+      "name": "RunOnce",
+      "qualified_name": "score::td::TimebaseHandler::RunOnce",
+      "kind": "method",
+      "signature": "RunOnce : void () noexcept"
+    },
+    {
+      "name": "Stop",
+      "qualified_name": "score::td::TimebaseHandler::Stop",
+      "kind": "method",
+      "signature": "Stop : void () noexcept"
+    },
+    {
+      "name": "IsFailed",
+      "qualified_name": "score::td::TimebaseHandler::IsFailed",
+      "kind": "method",
+      "signature": "IsFailed : bool () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "CreateTimebaseHandlers",
+      "qualified_name": "score::td::CreateTimebaseHandlers",
+      "kind": "function",
+      "signature": "CreateTimebaseHandlers : std::vector<std::unique_ptr<TimebaseHandler>> ()"
+    }
+  ],
+  "version": "1"
+}

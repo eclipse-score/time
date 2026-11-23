@@ -64,3 +64,8 @@ test_suite(
     ],
     visibility = ["//visibility:public"],
 )
+
+test_suite(
+    name = "api_surface_tests",
+    tests = ["//tools/api_surface:api_surface_tests"],
+)

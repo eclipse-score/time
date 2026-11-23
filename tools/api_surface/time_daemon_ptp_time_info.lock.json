@@ -1,0 +1,343 @@
+{
+  "target": "//score/time_daemon:ptp_time_info",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "PtpStatus",
+      "qualified_name": "score::td::PtpStatus",
+      "kind": "struct",
+      "signature": "struct PtpStatus"
+    },
+    {
+      "name": "is_synchronized",
+      "qualified_name": "score::td::PtpStatus::is_synchronized",
+      "kind": "field",
+      "signature": "is_synchronized"
+    },
+    {
+      "name": "is_timeout",
+      "qualified_name": "score::td::PtpStatus::is_timeout",
+      "kind": "field",
+      "signature": "is_timeout"
+    },
+    {
+      "name": "is_time_jump_future",
+      "qualified_name": "score::td::PtpStatus::is_time_jump_future",
+      "kind": "field",
+      "signature": "is_time_jump_future"
+    },
+    {
+      "name": "is_time_jump_past",
+      "qualified_name": "score::td::PtpStatus::is_time_jump_past",
+      "kind": "field",
+      "signature": "is_time_jump_past"
+    },
+    {
+      "name": "is_correct",
+      "qualified_name": "score::td::PtpStatus::is_correct",
+      "kind": "field",
+      "signature": "is_correct"
+    },
+    {
+      "name": "SyncFupData",
+      "qualified_name": "score::td::SyncFupData",
+      "kind": "struct",
+      "signature": "struct SyncFupData"
+    },
+    {
+      "name": "precise_origin_timestamp",
+      "qualified_name": "score::td::SyncFupData::precise_origin_timestamp",
+      "kind": "field",
+      "signature": "precise_origin_timestamp"
+    },
+    {
+      "name": "reference_global_timestamp",
+      "qualified_name": "score::td::SyncFupData::reference_global_timestamp",
+      "kind": "field",
+      "signature": "reference_global_timestamp"
+    },
+    {
+      "name": "reference_local_timestamp",
+      "qualified_name": "score::td::SyncFupData::reference_local_timestamp",
+      "kind": "field",
+      "signature": "reference_local_timestamp"
+    },
+    {
+      "name": "sync_ingress_timestamp",
+      "qualified_name": "score::td::SyncFupData::sync_ingress_timestamp",
+      "kind": "field",
+      "signature": "sync_ingress_timestamp"
+    },
+    {
+      "name": "correction_field",
+      "qualified_name": "score::td::SyncFupData::correction_field",
+      "kind": "field",
+      "signature": "correction_field"
+    },
+    {
+      "name": "sequence_id",
+      "qualified_name": "score::td::SyncFupData::sequence_id",
+      "kind": "field",
+      "signature": "sequence_id"
+    },
+    {
+      "name": "pdelay",
+      "qualified_name": "score::td::SyncFupData::pdelay",
+      "kind": "field",
+      "signature": "pdelay"
+    },
+    {
+      "name": "port_number",
+      "qualified_name": "score::td::SyncFupData::port_number",
+      "kind": "field",
+      "signature": "port_number"
+    },
+    {
+      "name": "clock_identity",
+      "qualified_name": "score::td::SyncFupData::clock_identity",
+      "kind": "field",
+      "signature": "clock_identity"
+    },
+    {
+      "name": "PDelayData",
+      "qualified_name": "score::td::PDelayData",
+      "kind": "struct",
+      "signature": "struct PDelayData"
+    },
+    {
+      "name": "request_origin_timestamp",
+      "qualified_name": "score::td::PDelayData::request_origin_timestamp",
+      "kind": "field",
+      "signature": "request_origin_timestamp"
+    },
+    {
+      "name": "request_receipt_timestamp",
+      "qualified_name": "score::td::PDelayData::request_receipt_timestamp",
+      "kind": "field",
+      "signature": "request_receipt_timestamp"
+    },
+    {
+      "name": "response_origin_timestamp",
+      "qualified_name": "score::td::PDelayData::response_origin_timestamp",
+      "kind": "field",
+      "signature": "response_origin_timestamp"
+    },
+    {
+      "name": "response_receipt_timestamp",
+      "qualified_name": "score::td::PDelayData::response_receipt_timestamp",
+      "kind": "field",
+      "signature": "response_receipt_timestamp"
+    },
+    {
+      "name": "reference_global_timestamp",
+      "qualified_name": "score::td::PDelayData::reference_global_timestamp",
+      "kind": "field",
+      "signature": "reference_global_timestamp"
+    },
+    {
+      "name": "reference_local_timestamp",
+      "qualified_name": "score::td::PDelayData::reference_local_timestamp",
+      "kind": "field",
+      "signature": "reference_local_timestamp"
+    },
+    {
+      "name": "sequence_id",
+      "qualified_name": "score::td::PDelayData::sequence_id",
+      "kind": "field",
+      "signature": "sequence_id"
+    },
+    {
+      "name": "pdelay",
+      "qualified_name": "score::td::PDelayData::pdelay",
+      "kind": "field",
+      "signature": "pdelay"
+    },
+    {
+      "name": "req_port_number",
+      "qualified_name": "score::td::PDelayData::req_port_number",
+      "kind": "field",
+      "signature": "req_port_number"
+    },
+    {
+      "name": "req_clock_identity",
+      "qualified_name": "score::td::PDelayData::req_clock_identity",
+      "kind": "field",
+      "signature": "req_clock_identity"
+    },
+    {
+      "name": "resp_port_number",
+      "qualified_name": "score::td::PDelayData::resp_port_number",
+      "kind": "field",
+      "signature": "resp_port_number"
+    },
+    {
+      "name": "resp_clock_identity",
+      "qualified_name": "score::td::PDelayData::resp_clock_identity",
+      "kind": "field",
+      "signature": "resp_clock_identity"
+    },
+    {
+      "name": "PtpTimeInfo",
+      "qualified_name": "score::td::PtpTimeInfo",
+      "kind": "struct",
+      "signature": "struct PtpTimeInfo"
+    },
+    {
+      "name": "ReferenceClock",
+      "qualified_name": "score::td::PtpTimeInfo::ReferenceClock",
+      "kind": "type_alias",
+      "signature": "using ReferenceClock = score::time::HighResSteadyClock"
+    },
+    {
+      "name": "ptp_assumed_time",
+      "qualified_name": "score::td::PtpTimeInfo::ptp_assumed_time",
+      "kind": "field",
+      "signature": "ptp_assumed_time"
+    },
+    {
+      "name": "local_time",
+      "qualified_name": "score::td::PtpTimeInfo::local_time",
+      "kind": "field",
+      "signature": "local_time"
+    },
+    {
+      "name": "rate_deviation",
+      "qualified_name": "score::td::PtpTimeInfo::rate_deviation",
+      "kind": "field",
+      "signature": "rate_deviation"
+    },
+    {
+      "name": "status",
+      "qualified_name": "score::td::PtpTimeInfo::status",
+      "kind": "field",
+      "signature": "status"
+    },
+    {
+      "name": "sync_fup_data",
+      "qualified_name": "score::td::PtpTimeInfo::sync_fup_data",
+      "kind": "field",
+      "signature": "sync_fup_data"
+    },
+    {
+      "name": "pdelay_data",
+      "qualified_name": "score::td::PtpTimeInfo::pdelay_data",
+      "kind": "field",
+      "signature": "pdelay_data"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::td::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const PtpStatus &, const PtpStatus &) noexcept"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::td::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const SyncFupData &, const SyncFupData &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::td::operator!=",
+      "kind": "function",
+      "signature": "operator!= : bool (const SyncFupData &, const SyncFupData &) noexcept"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::td::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const PDelayData &, const PDelayData &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::td::operator!=",
+      "kind": "function",
+      "signature": "operator!= : bool (const PDelayData &, const PDelayData &) noexcept"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::td::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const PtpTimeInfo &, const PtpTimeInfo &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::td::operator!=",
+      "kind": "function",
+      "signature": "operator!= : bool (const PtpTimeInfo &, const PtpTimeInfo &) noexcept"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : auto &(const PtpStatus &, OutputStream &)"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::td::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto &(OutputStream &, const PtpStatus &)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : auto &(const SyncFupData &, OutputStream &)"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::td::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto &(OutputStream &, const SyncFupData &)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : auto &(const PDelayData &, OutputStream &)"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::td::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto &(OutputStream &, const PDelayData &)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : auto &(const PtpTimeInfo &, OutputStream &)"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::td::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto &(OutputStream &, const PtpTimeInfo &)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "function",
+      "signature": "PrintTo : void (const PtpStatus &, std::ostream *)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "function",
+      "signature": "PrintTo : void (const SyncFupData &, std::ostream *)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "function",
+      "signature": "PrintTo : void (const PDelayData &, std::ostream *)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::td::PrintTo",
+      "kind": "function",
+      "signature": "PrintTo : void (const PtpTimeInfo &, std::ostream *)"
+    }
+  ],
+  "version": "1"
+}
