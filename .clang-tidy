@@ -13,7 +13,24 @@
 
 # Default clang-tidy configuration for S-CORE C++ modules.
 # NOTE: the set of enabled checks is yet subject to be tailored per module.
-Checks: "-*,clang-analyzer-*,cert-*,cppcoreguidelines-*,bugprone-*,misc-*,performance-*,readability-*,modernize-*,-modernize-use-trailing-return-type,-readability-redundant-member-init,-modernize-use-default-member-init,-cppcoreguidelines-use-default-member-init,-readability-avoid-const-params-in-decls"
+# -clang-diagnostic-builtin-macro-redefined: the LLVM toolchain's redacted_dates.h (injected via -include)
+# redefines __DATE__/__TIME__ for deterministic builds; it is not user code.
+Checks:
+  - "-*"
+  - "clang-analyzer-*"
+  - "cert-*"
+  - "cppcoreguidelines-*"
+  - "bugprone-*"
+  - "misc-*"
+  - "performance-*"
+  - "readability-*"
+  - "modernize-*"
+  - "-modernize-use-trailing-return-type"
+  - "-readability-redundant-member-init"
+  - "-modernize-use-default-member-init"
+  - "-cppcoreguidelines-use-default-member-init"
+  - "-readability-avoid-const-params-in-decls"
+  - "-clang-diagnostic-builtin-macro-redefined"
 
 # NOTE: WarningsAsErrors is yet subject to be expanded per module as compliance increases.
 WarningsAsErrors: "clang-analyzer-*"
