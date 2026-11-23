@@ -4832,7 +4832,7 @@
   {
     "name": "GptpEngineTest__Deinitialize_WhenNotInitialized_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "368",
+    "line": "365",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4846,7 +4846,7 @@
   {
     "name": "GptpEngineTest__Deinitialize_CalledTwice_BothReturnTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "373",
+    "line": "370",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4860,7 +4860,7 @@
   {
     "name": "GptpEngineTest__ReadPTPSnapshot_WhenNotInitialized_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "379",
+    "line": "376",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4874,7 +4874,7 @@
   {
     "name": "GptpEngineTest__ReadPTPSnapshot_InfoUnchanged_WhenNotInitialized",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "385",
+    "line": "382",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4888,7 +4888,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_WithFakeSocket_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "395",
+    "line": "392",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4902,7 +4902,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_CalledTwice_ReturnsTrueOnSecondCall",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "400",
+    "line": "397",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4916,7 +4916,7 @@
   {
     "name": "GptpEngineFakeTest__Deinitialize_AfterInitialize_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "406",
+    "line": "403",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4930,7 +4930,7 @@
   {
     "name": "GptpEngineFakeTest__ReadPTPSnapshot_AfterInitialize_ReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "412",
+    "line": "409",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4944,7 +4944,7 @@
   {
     "name": "GptpEngineFakeTest__ReadPTPSnapshot_NotSynchronized_BeforeAnySync",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "420",
+    "line": "417",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4958,7 +4958,7 @@
   {
     "name": "GptpEngineFakeTest__Initialize_HwTsUnavailable_StillReturnsTrue",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "442",
+    "line": "439",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4972,7 +4972,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_SyncFollowUp_SnapshotBecomesSync",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "450",
+    "line": "447",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4986,7 +4986,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_MultipleSyncFup_SnapshotUpdated",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "469",
+    "line": "466",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5000,7 +5000,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_PdelayRespSequence_DoesNotCrash",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "484",
+    "line": "481",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5014,7 +5014,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_PdelayReqWithAnyDomain_RespondsWithDomainZero",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "495",
+    "line": "492",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5028,7 +5028,7 @@
   {
     "name": "GptpEngineFakeTest__PdelayReqSent_WithConfiguredDomain_HasDomainZero",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "522",
+    "line": "519",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5042,7 +5042,7 @@
   {
     "name": "GptpEngineFakeTest__PdelayReq_Response_TimestampsInNetworkByteOrder",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "577",
+    "line": "574",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5056,7 +5056,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_UnknownMsgtype_DefaultBranchNocrash",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "601",
+    "line": "598",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5070,7 +5070,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TooShortFrame_EarlyReturn",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "610",
+    "line": "607",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5084,7 +5084,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TwoSyncFup_TimeJumpFuture_Detected",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "710",
+    "line": "707",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5098,7 +5098,7 @@
   {
     "name": "GptpEngineFakeTest__HandlePacket_TwoSyncFup_TimeJumpPast_Detected",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "736",
+    "line": "733",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5112,7 +5112,7 @@
   {
     "name": "GptpEngineIdentityFailTest__Initialize_IdentityResolveFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "431",
+    "line": "428",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5126,7 +5126,7 @@
   {
     "name": "GptpEngineTimeoutTest__ReadPTPSnapshot_TimeoutPath_IsTimeoutSet",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "619",
+    "line": "616",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5140,7 +5140,7 @@
   {
     "name": "GptpEngineTimeoutTest__ReadPTPSnapshot_TimeoutBeforeFirstSync_FlagIsReported",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "762",
+    "line": "759",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5154,7 +5154,7 @@
   {
     "name": "GptpEngineRealSocketTest__Initialize_NonExistentInterface_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "667",
+    "line": "664",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -5168,7 +5168,7 @@
   {
     "name": "GptpEngineSocketFailTest__Initialize_SocketOpenFails_ReturnsFalse",
     "file": "score/time_slave/src/gptp/gptp_engine_test.cpp",
-    "line": "679",
+    "line": "676",
     "result": "passed",
     "repo_name": null,
     "hash": null,
