@@ -44,7 +44,7 @@ class EventDrivenMachine : public ProactiveMachine
      * @param name The name of the machine instance.
      * @param timeout The timeout duration in milliseconds for waiting for events.
      */
-    explicit EventDrivenMachine(const std::string& name, std::chrono::milliseconds timeout);
+    explicit EventDrivenMachine(const std::string& name, const std::chrono::milliseconds timeout);
 
     EventDrivenMachine(const EventDrivenMachine&) = delete;
     EventDrivenMachine& operator=(const EventDrivenMachine&) = delete;
