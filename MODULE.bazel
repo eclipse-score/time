@@ -165,6 +165,7 @@ git_override(
 ## Configure the python toolchain
 
 bazel_dep(name = "rules_python", version = "1.8.5")
+bazel_dep(name = "aspect_rules_py", version = "1.4.0")
 
 PYTHON_VERSION = "3.12"
 
