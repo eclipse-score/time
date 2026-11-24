@@ -3738,6 +3738,20 @@
     "FullyVerifies": null
   },
   {
+    "name": "VerificationPipelineIntegrationTest__DataFlowsThroughPipeline",
+    "file": "score/time_daemon/src/verification_machine/svt/svt_verification_machine_pipeline_integration_test.cpp",
+    "line": "66",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "TimeoutValidatorTest__LogsErrorWhenClockAppearsToGoBackward",
     "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator_test.cpp",
     "line": "117",
