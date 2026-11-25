@@ -20,7 +20,8 @@ End-to-End Integration Tests
 
 The tests in ``score/tests`` run the real ``time_slave`` and ``time_daemon`` binaries together, in a virtual
 machine (QEMU). A software gPTP grandmaster on the host feeds them time. The tests read the resulting vehicle time
-and notifications through the public ``score::time`` client API. This checks the feature requirements on the whole time stack, not on single classes as the unit tests do.
+and notifications through the public ``score::time`` client API. This checks the feature and component
+requirements on the whole time stack, not on single classes as the unit tests do.
 
 The same tests run on two targets:
 
@@ -61,7 +62,8 @@ Layout
    │   ├── vehicle_time_probe/      C++ client that prints vehicle time as JSON
    │   ├── config/                  logging.json and time_slave_config.json deployed to /opt/etc
    │   └── qnx_aarch64/             QNX image build file and QEMU configuration
-   └── feature/                     tests of the feature requirements (feat_req__time__*)
+   ├── feature/                     tests of the feature requirements (feat_req__time__*)
+   └── component/                   tests of the component requirements (comp_req__time_slave__* / comp_req__time_daemon__*)
 
 Feature Tests (``feature/``)
 ----------------------------
@@ -74,10 +76,41 @@ Feature Tests (``feature/``)
      - Covers
    * - ``test_clocks.py``
      - SteadyClock and HighResSteadyClock
+   * - ``test_configuration.py``
+     - effect of configured values (Pdelay warm-up/interval, timeout, leap threshold)
+   * - ``test_gptp_messages.py``
+     - handling of gPTP messages: framing, Announce/Signaling, timestamp ranges, sequence ids, correction fields
+   * - ``test_notifications.py``
+     - notifications of status changes, sync updates and peer delay measurements
+   * - ``test_peer_delay.py``
+     - peer delay measurement and its use
    * - ``test_startup.py``
      - start-up behaviour and latency
    * - ``test_synchronization.py``
      - synchronization with the grandmaster, loss and recovery
+   * - ``test_time_leaps.py``
+     - time leap indications and their healing
+   * - ``test_vehicle_time.py``
+     - value, pace, precision and consistency of vehicle time
+
+Component Tests (``component/``)
+--------------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 65
+
+   * - Module
+     - Covers
+   * - ``test_lifecycle_requirements.py``
+     - start-up and shutdown of the time slave and time daemon
+   * - ``test_time_daemon_requirements.py``
+     - timeout, time jump detection, concurrent clients
+   * - ``test_time_slave_requirements.py``
+     - domain filtering, config file handling, frame validation, Pdelay responder
+
+The unit tests already cover the component requirements, so the component tests are **skipped by default**.
+Pass ``--run-component-requirement-tests`` to run them (see `Running the Tests`_).
 
 Each test names the requirement IDs it covers with the ``@add_test_properties`` decorator of the ``attribute_plugin``,
 so that docs-as-code links the tests to the requirements (see `test to requirement links <https://eclipse-score.github.io/docs-as-code/main/how-to/test_to_doc_links.html>`_).
@@ -205,6 +238,10 @@ name with ``--config=qemu``.
    # Feature tests on Linux x86_64 (KVM)
    sg kvm -c 'bazel test --config=qemu //score/tests/feature:test_feature_qemu_linux_x86_64'
 
+   # Component tests on Linux x86_64 (skipped unless enabled)
+   sg kvm -c 'bazel test --config=qemu //score/tests/component:test_component_qemu_linux_x86_64 \
+       --test_arg=--run-component-requirement-tests'
+
    # Feature tests on QNX aarch64 (emulated, no KVM needed; takes much longer, timeout "eternal")
    bazel test --config=arm64-qnx --config=qemu //score/tests/feature:test_feature_qemu_qnx_aarch64
 
@@ -215,7 +252,7 @@ Useful additions:
 .. code-block:: sh
 
    # Run a subset of tests (pytest -k expression)
-   --test_arg=-k --test_arg=startup
+   --test_arg=-k --test_arg=peer_delay
 
    # Show the test output live instead of only in the log
    --test_output=streamed
@@ -226,7 +263,7 @@ Useful additions:
    # Run although the host clock is slewed against the hardware clock (see "Host Clock")
    --test_arg=--skip-host-clock-check
 
-The pytest output is in ``bazel-testlogs/score/tests/feature/<target>/test.log``.
+The pytest output is in ``bazel-testlogs/score/tests/<feature|component>/<target>/test.log``.
 
 Troubleshooting
 ---------------
@@ -249,7 +286,7 @@ The grandmaster takes its time from the host's ``CLOCK_REALTIME``, while the clo
 hardware clock. If something adjusts the tick or the frequency of the host clock, the two run at different rates.
 Vehicle time then steps forward by a few milliseconds at every Sync, and the tests that compare vehicle time with
 the pace of the grandmaster fail their drift check (``SYNC_TOLERANCE_NS``, 50 ms over a few seconds), for example
-the tests in ``test_synchronization.py``.
+``test_synchronizes_at_the_ends_of_the_time_range`` and ``test_sequence_id_jumps_are_not_checked``.
 
 The session fixture ``host_clock_check`` measures ``CLOCK_MONOTONIC`` against ``CLOCK_MONOTONIC_RAW`` of the host
 for 5 s and stops the run if they differ by more than 0.5 %. A healthy host differs by far less than 0.05 %, the
@@ -281,7 +318,7 @@ check the clock again after the restart.
 Adding a Test
 =============
 
-#. Put it in ``feature/`` in the module for its topic, as ``test_<behaviour>()``. Decorate it
+#. Put it in ``feature/`` or ``component/`` in the module for its topic, as ``test_<behaviour>()``. Decorate it
    with ``@add_test_properties(partially_verifies=[...], test_type=..., derivation_technique=...)`` (imported from
    ``attribute_plugin``), naming the requirement ID(s) it verifies. The docstring is mandatory, it is the description.
 #. Use the fixtures above. For a non-default setup, create a
