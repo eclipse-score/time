@@ -20,9 +20,7 @@
 #include <chrono>
 #include <mutex>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -106,7 +104,6 @@ class EventDrivenMachine : public ProactiveMachine
     bool event_pending_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_EVENT_DRIVEN_MACHINE_H

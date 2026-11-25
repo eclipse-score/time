@@ -18,9 +18,7 @@
 #include <chrono>
 #include <thread>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -179,5 +177,4 @@ TEST_F(JobRunnerTest, StopMultipleJobsEarly)
     EXPECT_LE(counter.load(), 2);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

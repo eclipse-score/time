@@ -10,21 +10,41 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
-# Local clang-tidy overrides for the score_time module.
-#
-# The S-CORE baseline from @score_cpp_policies//clang_tidy:.clang-tidy is
-# applied first; settings here are layered on top per clang-tidy's standard
-# merge rules. Only module-specific suppressions belong here — do not remove
-# baseline checks.
 
-# Only analyze headers inside the score/ source tree. Without this,
-# clang-tidy picks up warnings from externally provided headers
-# (e.g. toolchain redacted_dates.h) that we cannot fix.
-HeaderFilterRegex: 'score/'
+# Default clang-tidy configuration for S-CORE C++ modules.
+# NOTE: the set of enabled checks is yet subject to be tailored per module.
+# -clang-diagnostic-builtin-macro-redefined: the LLVM toolchain's redacted_dates.h (injected via -include)
+# redefines __DATE__/__TIME__ for deterministic builds; it is not user code.
+Checks:
+  - "-*"
+  - "clang-analyzer-*"
+  - "cert-*"
+  - "cppcoreguidelines-*"
+  - "bugprone-*"
+  - "misc-*"
+  - "performance-*"
+  - "readability-*"
+  - "modernize-*"
+  - "-modernize-use-trailing-return-type"
+  - "-readability-redundant-member-init"
+  - "-modernize-use-default-member-init"
+  - "-cppcoreguidelines-use-default-member-init"
+  - "-readability-avoid-const-params-in-decls"
+  - "-clang-diagnostic-builtin-macro-redefined"
 
-# Suppress the builtin-macro-redefined diagnostic emitted by the LLVM
-# toolchain's redacted_dates.h (which redefines __DATE__/__TIME__ for
-# deterministic builds). This is injected by the toolchain via -include
-# and is not user code, so suppressing it here is appropriate.
-Checks: >-
-  -clang-diagnostic-builtin-macro-redefined
+# NOTE: WarningsAsErrors is yet subject to be expanded per module as compliance increases.
+WarningsAsErrors: "clang-analyzer-*"
+
+# HeaderFilterRegex is intentionally absent from the central baseline.
+# Each consuming module must set this in their local .clang-tidy to match
+# their own source tree (e.g., HeaderFilterRegex: 'score/mw/').
+# Setting it here would either suppress all header analysis (empty string)
+# or generate noise from external dependency headers (broad regex).
+# LLVM's regex engine does not reliably support POSIX lookaheads, so
+# negative-lookahead patterns like (?!.*/external/) must not be used here.
+
+FormatStyle: none
+
+# NOTE: CheckOptions are yet subject to be provided for each enabled check per module.
+CheckOptions:
+  misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic: true

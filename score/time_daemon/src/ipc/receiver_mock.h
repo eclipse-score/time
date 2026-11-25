@@ -17,9 +17,7 @@
 
 #include <gmock/gmock.h>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 ///
@@ -36,7 +34,6 @@ class ReceiverMock : public Receiver<T>
     MOCK_METHOD(std::optional<T>, Receive, (), (noexcept, override));
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // #ifndef SCORE_TIME_DAEMON_SRC_IPC_RECEIVER_MOCK_H
