@@ -99,7 +99,8 @@ class SharedMemoryHandler
     using Bytes = std::array<std::uint8_t, sizeof(DataType)>;
 
     ///
-    /// \brief Seqlock counter and payload, stored as atomic bytes to avoid a C++ data race with the reader
+    /// \brief Seqlock counter and payload, stored as atomic bytes to avoid a data race (undefined behavior) with the
+    /// reader
     /// \tparam DataType shall be trivially copyable data
     ///
     struct SharedData
