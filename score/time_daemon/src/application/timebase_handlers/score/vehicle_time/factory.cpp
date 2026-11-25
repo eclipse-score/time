@@ -13,10 +13,11 @@
 #include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/factory.h"
 
 #include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/score_vehicle_timebase_handler.h"
+#include "score/time_daemon/src/application/timebase_handlers/timebase_handler.h"
 
-namespace score
-{
-namespace td
+#include <memory>
+
+namespace score::td
 {
 
 std::unique_ptr<TimebaseHandler> CreateVehicleTimebase()
@@ -24,5 +25,4 @@ std::unique_ptr<TimebaseHandler> CreateVehicleTimebase()
     return std::make_unique<ScoreVehicleTimebaseHandler>();
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

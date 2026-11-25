@@ -49,7 +49,7 @@ exports_files(
     [
         # Used by the @score_tooling coverage reporter to locate the workspace root.
         "MODULE.bazel",
-        # Local clang-tidy overrides, layered on top of the S-CORE baseline.
+        # Referenced by //tools/lint:linters.bzl as a local_configs entry for the clang-tidy aspect.
         ".clang-tidy",
     ],
 )
