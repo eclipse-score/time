@@ -1,0 +1,331 @@
+{
+  "target": "//score/time/clock:clock_core",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "AvailabilityHook",
+      "qualified_name": "score::time::AvailabilityHook",
+      "kind": "template_class",
+      "signature": "AvailabilityHook"
+    },
+    {
+      "name": "AvailabilityHook",
+      "qualified_name": "score::time::AvailabilityHook",
+      "kind": "forward_class",
+      "signature": "struct AvailabilityHook"
+    },
+    {
+      "name": "HasAvailability",
+      "qualified_name": "score::time::HasAvailability",
+      "kind": "template_class",
+      "signature": "HasAvailability"
+    },
+    {
+      "name": "HasAvailability",
+      "qualified_name": "score::time::HasAvailability",
+      "kind": "struct",
+      "signature": "struct HasAvailability"
+    },
+    {
+      "name": "ScopedClockOverride",
+      "qualified_name": "score::time::test_utils::ScopedClockOverride",
+      "kind": "template_class",
+      "signature": "ScopedClockOverride"
+    },
+    {
+      "name": "ScopedClockOverride",
+      "qualified_name": "score::time::test_utils::ScopedClockOverride",
+      "kind": "forward_class",
+      "signature": "class ScopedClockOverride"
+    },
+    {
+      "name": "ClockTestFactory",
+      "qualified_name": "score::time::test_utils::ClockTestFactory",
+      "kind": "template_class",
+      "signature": "ClockTestFactory"
+    },
+    {
+      "name": "ClockTestFactory",
+      "qualified_name": "score::time::test_utils::ClockTestFactory",
+      "kind": "forward_class",
+      "signature": "class ClockTestFactory"
+    },
+    {
+      "name": "Clock",
+      "qualified_name": "score::time::Clock",
+      "kind": "template_class",
+      "signature": "Clock"
+    },
+    {
+      "name": "Clock",
+      "qualified_name": "score::time::Clock",
+      "kind": "class",
+      "signature": "class Clock"
+    },
+    {
+      "name": "duration",
+      "qualified_name": "score::time::Clock::duration",
+      "kind": "type_alias",
+      "signature": "using duration = typename Trait::Duration"
+    },
+    {
+      "name": "time_point",
+      "qualified_name": "score::time::Clock::time_point",
+      "kind": "type_alias",
+      "signature": "using time_point = typename Trait::Timepoint"
+    },
+    {
+      "name": "Snapshot",
+      "qualified_name": "score::time::Clock::Snapshot",
+      "kind": "type_alias",
+      "signature": "using Snapshot = typename Trait::Snapshot"
+    },
+    {
+      "name": "GetInstance",
+      "qualified_name": "score::time::Clock::GetInstance",
+      "kind": "method",
+      "signature": "static GetInstance : Clock<Tag> () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Now",
+      "qualified_name": "score::time::Clock::Now",
+      "kind": "method",
+      "signature": "Now : Snapshot () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Subscribe",
+      "qualified_name": "score::time::Clock::Subscribe",
+      "kind": "template_function",
+      "signature": "Subscribe : void (typename SubscriptionHook<Tag, EventType>::Callback) noexcept"
+    },
+    {
+      "name": "Unsubscribe",
+      "qualified_name": "score::time::Clock::Unsubscribe",
+      "kind": "template_function",
+      "signature": "Unsubscribe : void () noexcept"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::time::Clock::Init",
+      "kind": "template_function",
+      "signature": "Init : bool () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "IsAvailable",
+      "qualified_name": "score::time::Clock::IsAvailable",
+      "kind": "template_function",
+      "signature": "IsAvailable : bool () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "WaitUntilAvailable",
+      "qualified_name": "score::time::Clock::WaitUntilAvailable",
+      "kind": "template_function",
+      "signature": "WaitUntilAvailable : bool (const score::cpp::stop_token &, std::chrono::steady_clock::time_point) const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "ClockSnapshot",
+      "qualified_name": "score::time::ClockSnapshot",
+      "kind": "template_class",
+      "signature": "ClockSnapshot"
+    },
+    {
+      "name": "ClockSnapshot",
+      "qualified_name": "score::time::ClockSnapshot",
+      "kind": "class",
+      "signature": "class ClockSnapshot"
+    },
+    {
+      "name": "ClockSnapshot<TimepointT, StatusT>",
+      "qualified_name": "score::time::ClockSnapshot::ClockSnapshot<TimepointT, StatusT>",
+      "kind": "constructor",
+      "signature": "ClockSnapshot<TimepointT, StatusT> : void ()"
+    },
+    {
+      "name": "ClockSnapshot<TimepointT, StatusT>",
+      "qualified_name": "score::time::ClockSnapshot::ClockSnapshot<TimepointT, StatusT>",
+      "kind": "constructor",
+      "signature": "ClockSnapshot<TimepointT, StatusT> : void (TimepointT, StatusT) noexcept"
+    },
+    {
+      "name": "TimePoint",
+      "qualified_name": "score::time::ClockSnapshot::TimePoint",
+      "kind": "method",
+      "signature": "TimePoint : TimepointT () const noexcept"
+    },
+    {
+      "name": "Status",
+      "qualified_name": "score::time::ClockSnapshot::Status",
+      "kind": "method",
+      "signature": "Status : StatusT () const noexcept"
+    },
+    {
+      "name": "TimeSinceEpoch",
+      "qualified_name": "score::time::ClockSnapshot::TimeSinceEpoch",
+      "kind": "method",
+      "signature": "TimeSinceEpoch : typename TimepointT::duration () const noexcept"
+    },
+    {
+      "name": "TimePointNs",
+      "qualified_name": "score::time::ClockSnapshot::TimePointNs",
+      "kind": "method",
+      "signature": "TimePointNs : std::chrono::nanoseconds () const noexcept"
+    },
+    {
+      "name": "ClockStatus",
+      "qualified_name": "score::time::ClockStatus",
+      "kind": "template_class",
+      "signature": "ClockStatus"
+    },
+    {
+      "name": "ClockStatus",
+      "qualified_name": "score::time::ClockStatus",
+      "kind": "class",
+      "signature": "class ClockStatus"
+    },
+    {
+      "name": "ClockStatus<FlagEnumT, StorageT>",
+      "qualified_name": "score::time::ClockStatus::ClockStatus<FlagEnumT, StorageT>",
+      "kind": "constructor",
+      "signature": "ClockStatus<FlagEnumT, StorageT> : void (const std::initializer_list<FlagEnumT>) noexcept"
+    },
+    {
+      "name": "ClockStatus<FlagEnumT, StorageT>",
+      "qualified_name": "score::time::ClockStatus::ClockStatus<FlagEnumT, StorageT>",
+      "kind": "constructor",
+      "signature": "ClockStatus<FlagEnumT, StorageT> : void ()"
+    },
+    {
+      "name": "ClockStatus<FlagEnumT, StorageT>",
+      "qualified_name": "score::time::ClockStatus::ClockStatus<FlagEnumT, StorageT>",
+      "kind": "constructor",
+      "signature": "ClockStatus<FlagEnumT, StorageT> : void (const ClockStatus<FlagEnumT, StorageT> &)"
+    },
+    {
+      "name": "ClockStatus<FlagEnumT, StorageT>",
+      "qualified_name": "score::time::ClockStatus::ClockStatus<FlagEnumT, StorageT>",
+      "kind": "constructor",
+      "signature": "ClockStatus<FlagEnumT, StorageT> : void (ClockStatus<FlagEnumT, StorageT> &&) noexcept"
+    },
+    {
+      "name": "operator=",
+      "qualified_name": "score::time::ClockStatus::operator=",
+      "kind": "method",
+      "signature": "operator= : ClockStatus<FlagEnumT, StorageT> &(const ClockStatus<FlagEnumT, StorageT> &)"
+    },
+    {
+      "name": "operator=",
+      "qualified_name": "score::time::ClockStatus::operator=",
+      "kind": "method",
+      "signature": "operator= : ClockStatus<FlagEnumT, StorageT> &(ClockStatus<FlagEnumT, StorageT> &&) noexcept"
+    },
+    {
+      "name": "~ClockStatus<FlagEnumT, StorageT>",
+      "qualified_name": "score::time::ClockStatus::~ClockStatus<FlagEnumT, StorageT>",
+      "kind": "destructor",
+      "signature": "~ClockStatus<FlagEnumT, StorageT> : void () noexcept"
+    },
+    {
+      "name": "IsFlagActive",
+      "qualified_name": "score::time::ClockStatus::IsFlagActive",
+      "kind": "method",
+      "signature": "IsFlagActive : bool (const FlagEnumT) const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "IsAnyOfFlagsActive",
+      "qualified_name": "score::time::ClockStatus::IsAnyOfFlagsActive",
+      "kind": "method",
+      "signature": "IsAnyOfFlagsActive : bool (const std::initializer_list<FlagEnumT> &) const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::time::ClockStatus::PrintTo",
+      "kind": "method",
+      "signature": "PrintTo : std::ostringstream () const"
+    },
+    {
+      "name": "AddFlag",
+      "qualified_name": "score::time::ClockStatus::AddFlag",
+      "kind": "method",
+      "signature": "AddFlag : void (const FlagEnumT) noexcept"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::time::ClockStatus::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const ClockStatus<FlagEnumT, StorageT> &, const ClockStatus<FlagEnumT, StorageT> &) noexcept"
+    },
+    {
+      "name": "ToUnderlying",
+      "qualified_name": "score::time::ClockStatus::ToUnderlying",
+      "kind": "method",
+      "signature": "constexpr ToUnderlying : StorageT () const noexcept"
+    },
+    {
+      "name": "FromUnderlying",
+      "qualified_name": "score::time::ClockStatus::FromUnderlying",
+      "kind": "method",
+      "signature": "FromUnderlying : void (const StorageT) noexcept"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::time::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto (OutputStream &, const ClockStatus<FlagEnumT, StorageT> &) -> OutputStream &"
+    },
+    {
+      "name": "ClockTraits",
+      "qualified_name": "score::time::ClockTraits",
+      "kind": "template_class",
+      "signature": "ClockTraits"
+    },
+    {
+      "name": "ClockTraits",
+      "qualified_name": "score::time::ClockTraits",
+      "kind": "forward_class",
+      "signature": "struct ClockTraits"
+    },
+    {
+      "name": "InitializationHook",
+      "qualified_name": "score::time::InitializationHook",
+      "kind": "template_class",
+      "signature": "InitializationHook"
+    },
+    {
+      "name": "InitializationHook",
+      "qualified_name": "score::time::InitializationHook",
+      "kind": "forward_class",
+      "signature": "struct InitializationHook"
+    },
+    {
+      "name": "HasInitialization",
+      "qualified_name": "score::time::HasInitialization",
+      "kind": "template_class",
+      "signature": "HasInitialization"
+    },
+    {
+      "name": "HasInitialization",
+      "qualified_name": "score::time::HasInitialization",
+      "kind": "struct",
+      "signature": "struct HasInitialization"
+    },
+    {
+      "name": "NoStatus",
+      "qualified_name": "score::time::NoStatus",
+      "kind": "struct",
+      "signature": "struct NoStatus"
+    },
+    {
+      "name": "SubscriptionHook",
+      "qualified_name": "score::time::SubscriptionHook",
+      "kind": "template_class",
+      "signature": "SubscriptionHook"
+    },
+    {
+      "name": "SubscriptionHook",
+      "qualified_name": "score::time::SubscriptionHook",
+      "kind": "forward_class",
+      "signature": "struct SubscriptionHook"
+    }
+  ],
+  "version": "1"
+}

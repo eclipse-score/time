@@ -64,3 +64,16 @@ test_suite(
     ],
     visibility = ["//visibility:public"],
 )
+
+test_suite(
+    name = "api_surface_tests",
+    # Run only by name, so //... skips the Linux/clang-only checks.
+    tags = ["manual"],
+    tests = ["//tools/api_surface:api_surface_tests"],
+)
+
+alias(
+    name = "api_surface_update",
+    actual = "//tools/api_surface:update",
+    tags = ["manual"],
+)

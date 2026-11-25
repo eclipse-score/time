@@ -1,0 +1,169 @@
+{
+  "target": "//score/time_daemon:generic_timebase_handler",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "GenericTimebaseHandler",
+      "qualified_name": "score::td::GenericTimebaseHandler",
+      "kind": "template_class",
+      "signature": "GenericTimebaseHandler"
+    },
+    {
+      "name": "GenericTimebaseHandler",
+      "qualified_name": "score::td::GenericTimebaseHandler",
+      "kind": "class",
+      "signature": "class GenericTimebaseHandler"
+    },
+    {
+      "name": "~GenericTimebaseHandler<T>",
+      "qualified_name": "score::td::GenericTimebaseHandler::~GenericTimebaseHandler<T>",
+      "kind": "destructor",
+      "signature": "~GenericTimebaseHandler<T> : void () noexcept"
+    },
+    {
+      "name": "Initialize",
+      "qualified_name": "score::td::GenericTimebaseHandler::Initialize",
+      "kind": "method",
+      "signature": "Initialize : void () noexcept"
+    },
+    {
+      "name": "Start",
+      "qualified_name": "score::td::GenericTimebaseHandler::Start",
+      "kind": "method",
+      "signature": "Start : void (const score::cpp::stop_token &) noexcept"
+    },
+    {
+      "name": "RunOnce",
+      "qualified_name": "score::td::GenericTimebaseHandler::RunOnce",
+      "kind": "method",
+      "signature": "RunOnce : void () noexcept"
+    },
+    {
+      "name": "Stop",
+      "qualified_name": "score::td::GenericTimebaseHandler::Stop",
+      "kind": "method",
+      "signature": "Stop : void () noexcept"
+    },
+    {
+      "name": "IsFailed",
+      "qualified_name": "score::td::GenericTimebaseHandler::IsFailed",
+      "kind": "method",
+      "signature": "IsFailed : bool () const noexcept"
+    },
+    {
+      "name": "GenericTimebaseHandler<T>",
+      "qualified_name": "score::td::GenericTimebaseHandler::GenericTimebaseHandler<T>",
+      "kind": "protected_constructor",
+      "signature": "GenericTimebaseHandler<T> : void (std::string)"
+    },
+    {
+      "name": "Add",
+      "qualified_name": "score::td::GenericTimebaseHandler::Add",
+      "kind": "protected_template_function",
+      "signature": "Add : std::shared_ptr<M> (std::shared_ptr<M>, std::chrono::seconds)"
+    },
+    {
+      "name": "Publish",
+      "qualified_name": "score::td::GenericTimebaseHandler::Publish",
+      "kind": "protected_method",
+      "signature": "Publish : void (std::weak_ptr<Producer<T>>, const Topic &)"
+    },
+    {
+      "name": "Subscribe",
+      "qualified_name": "score::td::GenericTimebaseHandler::Subscribe",
+      "kind": "protected_method",
+      "signature": "Subscribe : void (std::weak_ptr<Consumer<T>>, const Topic &)"
+    },
+    {
+      "name": "GenericTimebaseHandler<T>",
+      "qualified_name": "score::td::GenericTimebaseHandler<T>",
+      "kind": "constructor",
+      "signature": "GenericTimebaseHandler<T> : void (std::string)"
+    },
+    {
+      "name": "~GenericTimebaseHandler<T>",
+      "qualified_name": "score::td::~GenericTimebaseHandler<T>",
+      "kind": "destructor",
+      "signature": "~GenericTimebaseHandler<T> : void () noexcept"
+    },
+    {
+      "name": "Add",
+      "qualified_name": "score::td::Add",
+      "kind": "template_function",
+      "signature": "Add : std::shared_ptr<M> (std::shared_ptr<M>, std::chrono::seconds)"
+    },
+    {
+      "name": "Publish",
+      "qualified_name": "score::td::Publish",
+      "kind": "method",
+      "signature": "Publish : void (std::weak_ptr<Producer<T>>, const Topic &)"
+    },
+    {
+      "name": "Subscribe",
+      "qualified_name": "score::td::Subscribe",
+      "kind": "method",
+      "signature": "Subscribe : void (std::weak_ptr<Consumer<T>>, const Topic &)"
+    },
+    {
+      "name": "Initialize",
+      "qualified_name": "score::td::Initialize",
+      "kind": "method",
+      "signature": "Initialize : void () noexcept"
+    },
+    {
+      "name": "RunOnce",
+      "qualified_name": "score::td::RunOnce",
+      "kind": "method",
+      "signature": "RunOnce : void () noexcept"
+    },
+    {
+      "name": "Start",
+      "qualified_name": "score::td::Start",
+      "kind": "method",
+      "signature": "Start : void (const score::cpp::stop_token &) noexcept"
+    },
+    {
+      "name": "Stop",
+      "qualified_name": "score::td::Stop",
+      "kind": "method",
+      "signature": "Stop : void () noexcept"
+    },
+    {
+      "name": "IsFailed",
+      "qualified_name": "score::td::IsFailed",
+      "kind": "method",
+      "signature": "IsFailed : bool () const noexcept"
+    },
+    {
+      "name": "PollInitialization",
+      "qualified_name": "score::td::PollInitialization",
+      "kind": "method",
+      "signature": "PollInitialization : void () noexcept"
+    },
+    {
+      "name": "StartMachines",
+      "qualified_name": "score::td::StartMachines",
+      "kind": "method",
+      "signature": "StartMachines : void () noexcept"
+    },
+    {
+      "name": "MoveToStartingState",
+      "qualified_name": "score::td::MoveToStartingState",
+      "kind": "method",
+      "signature": "MoveToStartingState : void () noexcept"
+    },
+    {
+      "name": "MoveToWorkingState",
+      "qualified_name": "score::td::MoveToWorkingState",
+      "kind": "method",
+      "signature": "MoveToWorkingState : void () noexcept"
+    },
+    {
+      "name": "MoveToStoppedState",
+      "qualified_name": "score::td::MoveToStoppedState",
+      "kind": "method",
+      "signature": "MoveToStoppedState : void () noexcept"
+    }
+  ],
+  "version": "1"
+}

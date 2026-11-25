@@ -1,0 +1,109 @@
+{
+  "target": "//score/time/high_res_steady_time:interface",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "ClockTraits",
+      "qualified_name": "score::time::ClockTraits<score::time::HighResSteadyTime>",
+      "kind": "extern_template",
+      "signature": "extern template struct ClockTraits<score::time::HighResSteadyTime>"
+    },
+    {
+      "name": "HighResSteadyClock",
+      "qualified_name": "score::time::HighResSteadyClock",
+      "kind": "type_alias",
+      "signature": "using HighResSteadyClock = Clock<HighResSteadyTime>"
+    },
+    {
+      "name": "GetInstance",
+      "qualified_name": "score::time::HighResSteadyClock::GetInstance",
+      "kind": "method",
+      "signature": "static GetInstance : Clock<Tag> () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::time::HighResSteadyClock::Init",
+      "kind": "template_function",
+      "signature": "Init : bool () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "IsAvailable",
+      "qualified_name": "score::time::HighResSteadyClock::IsAvailable",
+      "kind": "template_function",
+      "signature": "IsAvailable : bool () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Now",
+      "qualified_name": "score::time::HighResSteadyClock::Now",
+      "kind": "method",
+      "signature": "Now : Snapshot () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Subscribe",
+      "qualified_name": "score::time::HighResSteadyClock::Subscribe",
+      "kind": "template_function",
+      "signature": "Subscribe : void (typename SubscriptionHook<Tag, EventType>::Callback) noexcept"
+    },
+    {
+      "name": "Unsubscribe",
+      "qualified_name": "score::time::HighResSteadyClock::Unsubscribe",
+      "kind": "template_function",
+      "signature": "Unsubscribe : void () noexcept"
+    },
+    {
+      "name": "WaitUntilAvailable",
+      "qualified_name": "score::time::HighResSteadyClock::WaitUntilAvailable",
+      "kind": "template_function",
+      "signature": "WaitUntilAvailable : bool (const score::cpp::stop_token &, std::chrono::steady_clock::time_point) const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "HighResSteadyTimePoint",
+      "qualified_name": "score::time::HighResSteadyTimePoint",
+      "kind": "type_alias",
+      "signature": "using HighResSteadyTimePoint = ClockTraits<HighResSteadyTime>::Timepoint"
+    },
+    {
+      "name": "HighResSteadySnapshot",
+      "qualified_name": "score::time::HighResSteadySnapshot",
+      "kind": "type_alias",
+      "signature": "using HighResSteadySnapshot = ClockTraits<HighResSteadyTime>::Snapshot"
+    },
+    {
+      "name": "HighResSteadyClockBackend",
+      "qualified_name": "score::time::HighResSteadyClockBackend",
+      "kind": "class",
+      "signature": "class HighResSteadyClockBackend"
+    },
+    {
+      "name": "~HighResSteadyClockBackend",
+      "qualified_name": "score::time::HighResSteadyClockBackend::~HighResSteadyClockBackend",
+      "kind": "destructor",
+      "signature": "~HighResSteadyClockBackend : void () noexcept"
+    },
+    {
+      "name": "Now",
+      "qualified_name": "score::time::HighResSteadyClockBackend::Now",
+      "kind": "method",
+      "signature": "Now : ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> () const noexcept"
+    },
+    {
+      "name": "HighResSteadyTime",
+      "qualified_name": "score::time::HighResSteadyTime",
+      "kind": "struct",
+      "signature": "struct HighResSteadyTime"
+    },
+    {
+      "name": "Duration",
+      "qualified_name": "score::time::HighResSteadyTime::Duration",
+      "kind": "type_alias",
+      "signature": "using Duration = std::chrono::nanoseconds"
+    },
+    {
+      "name": "Timepoint",
+      "qualified_name": "score::time::HighResSteadyTime::Timepoint",
+      "kind": "type_alias",
+      "signature": "using Timepoint = std::chrono::time_point<HighResSteadyTime, Duration>"
+    }
+  ],
+  "version": "1"
+}
