@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>End-to-End Integration Tests &#8212; S-CORE Time  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=5737673c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=6a6a7ab0" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=f381fa98" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/modern.css?v=803738c0" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=7f41d439"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
+    <script src="../../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'module/manuals/integration_tests';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            false;
+        </script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Troubleshooting Guide" href="troubleshooting_guide.html" />
+    <link rel="prev" title="Manuals" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light dark"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="0.0.0" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/Eclipse-S-CORE-colour-horizontal.png" class="logo__image only-light" alt="Eclipse S-CORE documentation - Home"/>
+    <img src="../../_static/Eclipse-S-CORE-dark.png" class="logo__image only-dark pst-js-only" alt="Eclipse S-CORE documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../features/index.html">
+    Features
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../verification_report/module_verification_report.html">
+    Verification Report
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../quality_pack.html">
+    Quality Pack Targets
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../features/index.html">
+    Features
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Module
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../verification_report/module_verification_report.html">
+    Verification Report
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../quality_pack.html">
+    Quality Pack Targets
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/eclipse-score" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-3"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-3"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-3"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-3">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button type="button" id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Manuals</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a aria-current="page" class="current reference internal" href="#">End-to-End Integration Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="troubleshooting_guide.html">Troubleshooting Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_manual.html">User Manual</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_slave/index.html">Time Slave</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time_daemon/index.html">Time Daemon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ts_client/index.html">Time Sync Client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../time/index.html">Time</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">Manuals</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">End-to-End Integration Tests</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="end-to-end-integration-tests">
+<span id="manual-time-integration-tests"></span><h1>End-to-End Integration Tests<a class="headerlink" href="#end-to-end-integration-tests" title="Link to this heading">#</a></h1>
+<p>The tests in <code class="docutils literal notranslate"><span class="pre">score/tests</span></code> run the real <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> and <code class="docutils literal notranslate"><span class="pre">time_daemon</span></code> binaries together, in a virtual
+machine (QEMU). A software gPTP grandmaster on the host feeds them time. The tests read the resulting vehicle time
+and notifications through the public <code class="docutils literal notranslate"><span class="pre">score::time</span></code> client API. This checks the feature and component
+requirements on the whole time stack, not on single classes as the unit tests do.</p>
+<p>The same tests run on two targets:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 15.0%" />
+<col style="width: 40.0%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Target</p></th>
+<th class="head"><p>Image</p></th>
+<th class="head"><p>Bazel target suffix</p></th>
+<th class="head"><p>Acceleration</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Linux x86_64</p></td>
+<td><p>ITF Ubuntu image + ext4 disk on <code class="docutils literal notranslate"><span class="pre">/opt</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">_linux_x86_64</span></code></p></td>
+<td><p>KVM (<code class="docutils literal notranslate"><span class="pre">/dev/kvm</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>QNX aarch64</p></td>
+<td><p>QNX 8.0 IFS with the binaries in <code class="docutils literal notranslate"><span class="pre">/opt</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">_qnx_aarch64</span></code></p></td>
+<td><p>none (emulated, slow)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#layout" id="id1">Layout</a></p>
+<ul>
+<li><p><a class="reference internal" href="#feature-tests-feature" id="id2">Feature Tests (<code class="docutils literal notranslate"><span class="pre">feature/</span></code>)</a></p></li>
+<li><p><a class="reference internal" href="#component-tests-component" id="id3">Component Tests (<code class="docutils literal notranslate"><span class="pre">component/</span></code>)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#how-it-works" id="id4">How It Works</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fixtures" id="id5">Fixtures</a></p></li>
+<li><p><a class="reference internal" href="#known-issues-expected-failures" id="id6">Known Issues (Expected Failures)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-the-tests" id="id7">Running the Tests</a></p>
+<ul>
+<li><p><a class="reference internal" href="#host-setup" id="id8">Host Setup</a></p></li>
+<li><p><a class="reference internal" href="#commands" id="id9">Commands</a></p></li>
+<li><p><a class="reference internal" href="#troubleshooting" id="id10">Troubleshooting</a></p></li>
+<li><p><a class="reference internal" href="#host-clock" id="id11">Host Clock</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#adding-a-test" id="id12">Adding a Test</a></p></li>
+</ul>
+</nav>
+<section id="layout">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Layout</a><a class="headerlink" href="#layout" title="Link to this heading">#</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>score/tests/
+├── common/                      shared by both test suites
+│   ├── BUILD                    support library, probe binary, target images
+│   ├── qemu_tests.bzl           qemu_itf_tests() macro: one py_itf_test per target
+│   ├── fixtures.py              pytest fixtures (time stack, probe, grandmaster, ...)
+│   ├── helpers.py               constants, process control, waiting and assertion helpers
+│   ├── gptp_grandmaster.py      minimal IEEE 802.1AS grandmaster with fault injection
+│   ├── known_issues.py          every xfail marker, one per known defect
+│   ├── vehicle_time_probe/      C++ client that prints vehicle time as JSON
+│   ├── config/                  logging.json and time_slave_config.json deployed to /opt/etc
+│   └── qnx_aarch64/             QNX image build file and QEMU configuration
+├── feature/                     tests of the feature requirements (feat_req__time__*)
+└── component/                   tests of the component requirements (comp_req__time_slave__* / comp_req__time_daemon__*)
+</pre></div>
+</div>
+<section id="feature-tests-feature">
+<h3><a class="toc-backref" href="#id2" role="doc-backlink">Feature Tests (<code class="docutils literal notranslate"><span class="pre">feature/</span></code>)</a><a class="headerlink" href="#feature-tests-feature" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Covers</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_clocks.py</span></code></p></td>
+<td><p>SteadyClock and HighResSteadyClock</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_configuration.py</span></code></p></td>
+<td><p>effect of configured values (Pdelay warm-up/interval, timeout, leap threshold)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_gptp_messages.py</span></code></p></td>
+<td><p>handling of gPTP messages: framing, Announce/Signaling, timestamp ranges, sequence ids, correction fields</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_notifications.py</span></code></p></td>
+<td><p>notifications of status changes, sync updates and peer delay measurements</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_peer_delay.py</span></code></p></td>
+<td><p>peer delay measurement and its use</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_startup.py</span></code></p></td>
+<td><p>start-up behaviour and latency</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_synchronization.py</span></code></p></td>
+<td><p>synchronization with the grandmaster, loss and recovery</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_time_leaps.py</span></code></p></td>
+<td><p>time leap indications and their healing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_vehicle_time.py</span></code></p></td>
+<td><p>value, pace, precision and consistency of vehicle time</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="component-tests-component">
+<h3><a class="toc-backref" href="#id3" role="doc-backlink">Component Tests (<code class="docutils literal notranslate"><span class="pre">component/</span></code>)</a><a class="headerlink" href="#component-tests-component" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Module</p></th>
+<th class="head"><p>Covers</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_lifecycle_requirements.py</span></code></p></td>
+<td><p>start-up and shutdown of the time slave and time daemon</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_time_daemon_requirements.py</span></code></p></td>
+<td><p>timeout, time jump detection, concurrent clients</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test_time_slave_requirements.py</span></code></p></td>
+<td><p>domain filtering, config file handling, frame validation, Pdelay responder</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The unit tests already cover the component requirements, so the component tests are <strong>skipped by default</strong>.
+Pass <code class="docutils literal notranslate"><span class="pre">--run-component-requirement-tests</span></code> to run them (see <a class="reference internal" href="#running-the-tests">Running the Tests</a>).</p>
+<p>Each test names the requirement IDs it covers with the <code class="docutils literal notranslate"><span class="pre">&#64;add_test_properties</span></code> decorator of the <code class="docutils literal notranslate"><span class="pre">attribute_plugin</span></code>,
+so that docs-as-code links the tests to the requirements (see <a class="reference external" href="https://eclipse-score.github.io/docs-as-code/main/how-to/test_to_doc_links.html">test to requirement links</a>).</p>
+</section>
+</section>
+<section id="how-it-works">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">How It Works</a><a class="headerlink" href="#how-it-works" title="Link to this heading">#</a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>host (test process, pytest)                      QEMU guest (Linux or QNX)
+┌──────────────────────────────┐   tap0      ┌─────────────────────────────────┐
+│ GrandMaster (raw socket) ────┼── gPTP ─────┼─▶ time_slave ──shm──▶ time_daemon│
+│                              │             │                         │       │
+│ test code ──── ssh ──────────┼─────────────┼─▶ vehicle_time_probe ◀──┘       │
+│   (target fixture, ITF)      │◀── JSON ────┼──  (score::time client API)     │
+└──────────────────────────────┘             └─────────────────────────────────┘
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p><strong>Build.</strong> <code class="docutils literal notranslate"><span class="pre">qemu_itf_tests()</span></code> in <code class="docutils literal notranslate"><span class="pre">score/tests/common/qemu_tests.bzl</span></code> defines a
+<a class="reference external" href="https://github.com/eclipse-score/itf">score_itf</a> <code class="docutils literal notranslate"><span class="pre">py_itf_test</span></code> for each target. The binaries under test
+(<code class="docutils literal notranslate"><span class="pre">time_slave</span></code>, <code class="docutils literal notranslate"><span class="pre">time_daemon</span></code>, <code class="docutils literal notranslate"><span class="pre">vehicle_time_probe</span></code>) go to <code class="docutils literal notranslate"><span class="pre">/opt/bin</span></code> and the configuration to
+<code class="docutils literal notranslate"><span class="pre">/opt/etc</span></code>. On Linux they are packed into an ext4 disk (<code class="docutils literal notranslate"><span class="pre">target_opt_disk</span></code>) that the Ubuntu image from
+<code class="docutils literal notranslate"><span class="pre">&#64;score_os_images</span></code> mounts on <code class="docutils literal notranslate"><span class="pre">/opt</span></code>. On QNX they are built into the IFS boot image (<code class="docutils literal notranslate"><span class="pre">target_ifs</span></code>, see
+<code class="docutils literal notranslate"><span class="pre">score/tests/common/qnx_aarch64/init.build</span></code>).</p></li>
+<li><p><strong>Boot.</strong> The ITF QEMU plugin boots the image and provides the <code class="docutils literal notranslate"><span class="pre">target</span></code> fixture, which runs commands on the
+guest over SSH (<code class="docutils literal notranslate"><span class="pre">target.execute()</span></code> / <code class="docutils literal notranslate"><span class="pre">target.execute_async()</span></code>). With <code class="docutils literal notranslate"><span class="pre">--config=qemu</span></code> the test runs under
+<code class="docutils literal notranslate"><span class="pre">&#64;score_itf//scripts:run_under_qemu</span></code>. This creates a private user and network namespace with its own
+<code class="docutils literal notranslate"><span class="pre">tap0</span></code> device, so you don’t need sudo or a host tap device, and the grandmaster gets <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code>.</p></li>
+<li><p><strong>Grandmaster.</strong> <code class="docutils literal notranslate"><span class="pre">score/tests/common/gptp_grandmaster.py</span></code> sends two-step Sync/Follow_Up on <code class="docutils literal notranslate"><span class="pre">tap0</span></code>
+(125 ms by default) and answers the slave’s Pdelay_Req. Its time is the host <code class="docutils literal notranslate"><span class="pre">CLOCK_REALTIME</span></code> plus an offset
+(<code class="docutils literal notranslate"><span class="pre">GM_OFFSET_NS</span></code>, 1 h), so a result that just echoes the guest’s own clock cannot pass. Tests can change it
+while it runs: pause/resume, step, change the rate (<code class="docutils literal notranslate"><span class="pre">set_rate_ppm</span></code>), add link delay or correction fields,
+jump sequence ids, stop answering Pdelay, send Announce/Signaling, or corrupt the messages (<code class="docutils literal notranslate"><span class="pre">inject_fault</span></code>
+with the manglers <code class="docutils literal notranslate"><span class="pre">truncate_to</span></code>, <code class="docutils literal notranslate"><span class="pre">set_byte</span></code>, <code class="docutils literal notranslate"><span class="pre">set_message_length</span></code>, <code class="docutils literal notranslate"><span class="pre">set_origin_timestamp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">header_only</span></code>). It also records every frame it receives from the slave, so tests can check the slave’s
+traffic.</p></li>
+<li><p><strong>Time stack.</strong> The <code class="docutils literal notranslate"><span class="pre">time_stack</span></code> fixture removes stale shared memory, starts <code class="docutils literal notranslate"><span class="pre">time_slave</span></code> (with
+<code class="docutils literal notranslate"><span class="pre">GPTP_IFACE</span></code> set to the guest interface), waits for <code class="docutils literal notranslate"><span class="pre">TimeSlave</span> <span class="pre">initialized</span></code>, then starts <code class="docutils literal notranslate"><span class="pre">time_daemon</span></code>.
+It stops both and cleans up afterwards. Tests that need a different configuration or start order use
+<code class="docutils literal notranslate"><span class="pre">running_time_stack()</span></code> / <code class="docutils literal notranslate"><span class="pre">start_time_slave()</span></code> from <code class="docutils literal notranslate"><span class="pre">score/tests/common/helpers.py</span></code> directly.</p></li>
+<li><p><strong>Observation.</strong> <code class="docutils literal notranslate"><span class="pre">score/tests/common/vehicle_time_probe/main.cpp</span></code> reads <code class="docutils literal notranslate"><span class="pre">VehicleTime</span></code>,
+<code class="docutils literal notranslate"><span class="pre">HighResSteadyTime</span></code> and <code class="docutils literal notranslate"><span class="pre">SteadyTime</span></code> and prints one JSON object per sample (time values, status flags,
+<code class="docutils literal notranslate"><span class="pre">reliable</span></code>, <code class="docutils literal notranslate"><span class="pre">rate_deviation</span></code>, …). With <code class="docutils literal notranslate"><span class="pre">--events</span></code> it also subscribes to notifications and prints
+<code class="docutils literal notranslate"><span class="pre">EVENT</span> <span class="pre">{...}</span></code> lines. <code class="docutils literal notranslate"><span class="pre">ProbeStream</span></code> (fixtures <code class="docutils literal notranslate"><span class="pre">probe_stream</span></code> / <code class="docutils literal notranslate"><span class="pre">event_probe_stream</span></code>) runs the probe
+continuously at 20 ms and parses the output step by step. This makes short-lived states visible, such as a time
+jump flag that clears after two Syncs. <code class="docutils literal notranslate"><span class="pre">sample_vehicle_time()</span></code> takes one-off samples instead.</p></li>
+</ol>
+<section id="fixtures">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">Fixtures</a><a class="headerlink" href="#fixtures" title="Link to this heading">#</a></h3>
+<p>The fixtures are defined in <code class="docutils literal notranslate"><span class="pre">score/tests/common/fixtures.py</span></code> and re-exported by each directory’s
+<code class="docutils literal notranslate"><span class="pre">conftest.py</span></code>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Fixture</p></th>
+<th class="head"><p>Provides</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">target</span></code></p></td>
+<td><p>(from ITF) the booted guest</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">platform</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Platform</span></code> entry for the guest OS (<code class="docutils literal notranslate"><span class="pre">uname</span> <span class="pre">-s</span></code>): interface lookup, shm paths</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gptp_iface</span></code></p></td>
+<td><p>name of the guest interface connected to the grandmaster</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">time_stack</span></code></p></td>
+<td><p>running <code class="docutils literal notranslate"><span class="pre">(time_slave,</span> <span class="pre">time_daemon)</span></code> process handles</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">probe_stream</span></code></p></td>
+<td><p>continuously sampling <code class="docutils literal notranslate"><span class="pre">ProbeStream</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">event_probe_stream</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ProbeStream</span></code> that also records notifications</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">grandmaster</span></code></p></td>
+<td><p>running <code class="docutils literal notranslate"><span class="pre">GrandMaster</span></code> on <code class="docutils literal notranslate"><span class="pre">tap0</span></code> with the default offset</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jump_detection_armed</span></code></p></td>
+<td><p>synchronized stack where the 5 s start-up suppression of jump detection is over</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">host_clock_check</span></code></p></td>
+<td><p>(session, used automatically) stops the run if the host clock is slewed against the hardware clock, see
+<a class="reference internal" href="#host-clock">Host Clock</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Waiting for the guest is done with <code class="docutils literal notranslate"><span class="pre">wait_for()</span></code>, which polls a condition and raises <code class="docutils literal notranslate"><span class="pre">TimeoutError</span></code> with
+diagnostics (for example the latest probe sample) when the condition is not met in time.</p>
+</section>
+<section id="known-issues-expected-failures">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">Known Issues (Expected Failures)</a><a class="headerlink" href="#known-issues-expected-failures" title="Link to this heading">#</a></h3>
+<p>Some tests expose defects that are not fixed yet. Every such test is marked with an <code class="docutils literal notranslate"><span class="pre">xfail</span></code> marker from
+<code class="docutils literal notranslate"><span class="pre">score/tests/common/known_issues.py</span></code>, and markers are defined only in that file. Each marker is named
+<code class="docutils literal notranslate"><span class="pre">XFAIL_&lt;issue&gt;_&lt;what</span> <span class="pre">is</span> <span class="pre">wrong&gt;</span></code> and its reason links the GitHub issue and, if there is one, the fixing pull
+request.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">strict=True</span></code> is for deterministic failures. When the defect is fixed the test reports <code class="docutils literal notranslate"><span class="pre">XPASS(strict)</span></code> and
+fails. Remove the marker from the test (and from <code class="docutils literal notranslate"><span class="pre">known_issues.py</span></code> if nothing else uses it).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">strict=False</span></code> is for failures that depend on the platform, mostly the jitter of the software timestamps (the
+virtio NIC has no hardware timestamps). These tests can pass. The clock of the QEMU guest itself is accurate
+(a few ppm from the host), but a host clock that is slewed against the hardware clock adds a rate error of
+several percent, see <a class="reference internal" href="#host-clock">Host Clock</a>.</p></li>
+</ul>
+<p>To add a known issue, define the marker in <code class="docutils literal notranslate"><span class="pre">known_issues.py</span></code> under a <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">---</span> <span class="pre">#&lt;issue&gt;:</span> <span class="pre">...</span></code> heading and apply
+it as a decorator. If the test is expected to time out, pass <code class="docutils literal notranslate"><span class="pre">raises=TimeoutError</span></code> so that other errors still
+fail.</p>
+</section>
+</section>
+<section id="running-the-tests">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Running the Tests</a><a class="headerlink" href="#running-the-tests" title="Link to this heading">#</a></h2>
+<section id="host-setup">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Host Setup</a><a class="headerlink" href="#host-setup" title="Link to this heading">#</a></h3>
+<p>You need QEMU and, for the Linux target, access to <code class="docutils literal notranslate"><span class="pre">/dev/kvm</span></code>. On Debian/Ubuntu (including the dev container):</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>tools/qemu/setup_qemu_host.sh
+</pre></div>
+</div>
+<p>The script installs the QEMU packages and adds you to the group that owns <code class="docutils literal notranslate"><span class="pre">/dev/kvm</span></code>. If no group on the system
+owns that GID, as can happen in a container, it creates a local <code class="docutils literal notranslate"><span class="pre">kvm</span></code> group with it. Log in again, or prefix
+commands with <code class="docutils literal notranslate"><span class="pre">sg</span> <span class="pre">kvm</span> <span class="pre">-c</span> <span class="pre">'...'</span></code>.</p>
+</section>
+<section id="commands">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Commands</a><a class="headerlink" href="#commands" title="Link to this heading">#</a></h3>
+<p>The test targets are tagged <code class="docutils literal notranslate"><span class="pre">integration</span></code>, <code class="docutils literal notranslate"><span class="pre">qemu</span></code> and <code class="docutils literal notranslate"><span class="pre">manual</span></code>, so they are not part of <code class="docutils literal notranslate"><span class="pre">//score/...</span></code>; run them by
+name with <code class="docutils literal notranslate"><span class="pre">--config=qemu</span></code>.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Feature tests on Linux x86_64 (KVM)</span>
+sg<span class="w"> </span>kvm<span class="w"> </span>-c<span class="w"> </span><span class="s1">'bazel test --config=qemu //score/tests/feature:test_feature_qemu_linux_x86_64'</span>
+
+<span class="c1"># Component tests on Linux x86_64 (skipped unless enabled)</span>
+sg<span class="w"> </span>kvm<span class="w"> </span>-c<span class="w"> </span><span class="s1">'bazel test --config=qemu //score/tests/component:test_component_qemu_linux_x86_64 \</span>
+<span class="s1">    --test_arg=--run-component-requirement-tests'</span>
+
+<span class="c1"># Feature tests on QNX aarch64 (emulated, no KVM needed; takes much longer, timeout "eternal")</span>
+bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>arm64-qnx<span class="w"> </span>--config<span class="o">=</span>qemu<span class="w"> </span>//score/tests/feature:test_feature_qemu_qnx_aarch64
+</pre></div>
+</div>
+<p>The QNX target needs the QNX SDP toolchain and license, like any other <code class="docutils literal notranslate"><span class="pre">--config=arm64-qnx</span></code> build.</p>
+<p>Useful additions:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run a subset of tests (pytest -k expression)</span>
+--test_arg<span class="o">=</span>-k<span class="w"> </span>--test_arg<span class="o">=</span>peer_delay
+
+<span class="c1"># Show the test output live instead of only in the log</span>
+--test_output<span class="o">=</span>streamed
+
+<span class="c1"># Rerun even if the inputs did not change</span>
+--nocache_test_results
+
+<span class="c1"># Run although the host clock is slewed against the hardware clock (see "Host Clock")</span>
+--test_arg<span class="o">=</span>--skip-host-clock-check
+</pre></div>
+</div>
+<p>The pytest output is in <code class="docutils literal notranslate"><span class="pre">bazel-testlogs/score/tests/&lt;feature|component&gt;/&lt;target&gt;/test.log</span></code>.</p>
+</section>
+<section id="troubleshooting">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Troubleshooting</a><a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Permission denied on</strong> <code class="docutils literal notranslate"><span class="pre">/dev/kvm</span></code> <strong>, or a very slow boot / ping timeout on Linux:</strong> you are not in the KVM
+group in this shell. Re-run with <code class="docutils literal notranslate"><span class="pre">sg</span> <span class="pre">kvm</span> <span class="pre">-c</span> <span class="pre">'...'</span></code> or log in again.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PermissionError</span></code> <strong>when the grandmaster opens its socket:</strong> you ran without <code class="docutils literal notranslate"><span class="pre">--config=qemu</span></code>, so there is no
+namespace with <code class="docutils literal notranslate"><span class="pre">CAP_NET_RAW</span></code> and <code class="docutils literal notranslate"><span class="pre">tap0</span></code>.</p></li>
+<li><p><strong>Platform-dependent failures (timing, rate, jumps):</strong> check whether the test is covered by a non-strict marker
+in <code class="docutils literal notranslate"><span class="pre">known_issues.py</span></code>. A loaded host makes the guest clock and the software timestamps noisier.</p></li>
+<li><p><strong>The run stops at the start with “The clock of the host is not running at the pace of the hardware clock”, or
+many tests fail their drift check:</strong> the host clock is slewed, see <a class="reference internal" href="#host-clock">Host Clock</a>.</p></li>
+</ul>
+<p>See also the general <a class="reference internal" href="troubleshooting_guide.html#manual-time-troubleshooting"><span class="std std-ref">Troubleshooting Guide</span></a>.</p>
+</section>
+<section id="host-clock">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Host Clock</a><a class="headerlink" href="#host-clock" title="Link to this heading">#</a></h3>
+<p>The grandmaster takes its time from the host’s <code class="docutils literal notranslate"><span class="pre">CLOCK_REALTIME</span></code>, while the clock of a KVM guest follows the
+hardware clock. If something adjusts the tick or the frequency of the host clock, the two run at different rates.
+Vehicle time then steps forward by a few milliseconds at every Sync, and the tests that compare vehicle time with
+the pace of the grandmaster fail their drift check (<code class="docutils literal notranslate"><span class="pre">SYNC_TOLERANCE_NS</span></code>, 50 ms over a few seconds), for example
+<code class="docutils literal notranslate"><span class="pre">test_synchronizes_at_the_ends_of_the_time_range</span></code> and <code class="docutils literal notranslate"><span class="pre">test_sequence_id_jumps_are_not_checked</span></code>.</p>
+<p>The session fixture <code class="docutils literal notranslate"><span class="pre">host_clock_check</span></code> measures <code class="docutils literal notranslate"><span class="pre">CLOCK_MONOTONIC</span></code> against <code class="docutils literal notranslate"><span class="pre">CLOCK_MONOTONIC_RAW</span></code> of the host
+for 5 s and stops the run if they differ by more than 0.5 %. A healthy host differs by far less than 0.05 %, the
+most that an NTP client slews the clock. Pass <code class="docutils literal notranslate"><span class="pre">--test_arg=--skip-host-clock-check</span></code> to run anyway.</p>
+<p>To check by hand, this prints the relative difference, which is near 0 on a healthy host and <code class="docutils literal notranslate"><span class="pre">0.03</span></code> for a host
+clock that is 3 % fast:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-c<span class="w"> </span><span class="s1">'import time as t; a=(t.clock_gettime(t.CLOCK_MONOTONIC), t.clock_gettime(t.CLOCK_MONOTONIC_RAW)); t.sleep(5); b=(t.clock_gettime(t.CLOCK_MONOTONIC), t.clock_gettime(t.CLOCK_MONOTONIC_RAW)); print((b[0]-a[0])/(b[1]-a[1])-1)'</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">adjtimex</span> <span class="pre">--print</span></code> (Debian/Ubuntu package <code class="docutils literal notranslate"><span class="pre">adjtimex</span></code>) shows the tick, which is 10000 on a clock that is not
+adjusted by the tick.</p>
+<p>On WSL2, this was seen with <code class="docutils literal notranslate"><span class="pre">systemd-timesyncd</span></code> running in the distro: the tick of the VM moved by several
+percent in both directions and the host clock ran up to about 4 % fast. WSL2 synchronizes the clock of its VM with
+Windows itself, so the distro does not need an NTP client. Stopping the service made the clock stable and the
+tests passed. Other causes are possible, so check that the clock is stable before looking at individual tests.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>systemctl<span class="w"> </span>is-active<span class="w"> </span>systemd-timesyncd
+sudo<span class="w"> </span>systemctl<span class="w"> </span>disable<span class="w"> </span>--now<span class="w"> </span>systemd-timesyncd
+</pre></div>
+</div>
+<p>Stopping the service does not reset the tick that it left behind. Run <code class="docutils literal notranslate"><span class="pre">wsl</span> <span class="pre">--shutdown</span></code> in Windows afterwards, and
+check the clock again after the restart.</p>
+</section>
+</section>
+<section id="adding-a-test">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">Adding a Test</a><a class="headerlink" href="#adding-a-test" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Put it in <code class="docutils literal notranslate"><span class="pre">feature/</span></code> or <code class="docutils literal notranslate"><span class="pre">component/</span></code> in the module for its topic, as <code class="docutils literal notranslate"><span class="pre">test_&lt;behaviour&gt;()</span></code>. Decorate it
+with <code class="docutils literal notranslate"><span class="pre">&#64;add_test_properties(partially_verifies=[...],</span> <span class="pre">test_type=...,</span> <span class="pre">derivation_technique=...)</span></code> (imported from
+<code class="docutils literal notranslate"><span class="pre">attribute_plugin</span></code>), naming the requirement ID(s) it verifies. The docstring is mandatory, it is the description.</p></li>
+<li><p>Use the fixtures above. For a non-default setup, create a
+<code class="docutils literal notranslate"><span class="pre">GrandMaster(GM_IFACE,</span> <span class="pre">offset_ns=GM_OFFSET_NS,</span> <span class="pre">...)</span></code> or use <code class="docutils literal notranslate"><span class="pre">running_time_stack(...)</span></code> inside the test.</p></li>
+<li><p>Wait with <code class="docutils literal notranslate"><span class="pre">wait_for()</span></code> / <code class="docutils literal notranslate"><span class="pre">wait_for_stream*()</span></code> instead of sleeping where you can, and compare against the
+tolerances and defaults in <code class="docutils literal notranslate"><span class="pre">helpers.py</span></code> (<code class="docutils literal notranslate"><span class="pre">SYNC_TOLERANCE_NS</span></code>, <code class="docutils literal notranslate"><span class="pre">TIMEOUT_S</span></code>, <code class="docutils literal notranslate"><span class="pre">JUMP_THRESHOLD_NS</span></code>, …).</p></li>
+<li><p>Make the test work on both Linux and QNX. QNX has no <code class="docutils literal notranslate"><span class="pre">printf</span></code> (use <code class="docutils literal notranslate"><span class="pre">write_text_file()</span></code>), may lack
+<code class="docutils literal notranslate"><span class="pre">/proc/uptime</span></code>, and its shared memory is in <code class="docutils literal notranslate"><span class="pre">/dev/shmem</span></code>. Put platform differences in <code class="docutils literal notranslate"><span class="pre">Platform</span></code> in
+<code class="docutils literal notranslate"><span class="pre">helpers.py</span></code>.</p></li>
+<li><p>The BUILD files glob <code class="docutils literal notranslate"><span class="pre">test_*.py</span></code>, so you don’t need to change any BUILD file. If you deploy a new file to the
+guest, add it to <code class="docutils literal notranslate"><span class="pre">target_binaries</span></code> or <code class="docutils literal notranslate"><span class="pre">target_config</span></code> in <code class="docutils literal notranslate"><span class="pre">score/tests/common/BUILD</span></code>.</p></li>
+</ol>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Manuals</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="troubleshooting_guide.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Troubleshooting Guide</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#layout">Layout</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-tests-feature">Feature Tests (<code class="docutils literal notranslate"><span class="pre">feature/</span></code>)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#component-tests-component">Component Tests (<code class="docutils literal notranslate"><span class="pre">component/</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-it-works">How It Works</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixtures">Fixtures</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#known-issues-expected-failures">Known Issues (Expected Failures)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-the-tests">Running the Tests</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#host-setup">Host Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#host-clock">Host Clock</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-a-test">Adding a Test</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  
+  <div class="tocsection editthispage">
+    <a href="https://github.com/eclipse-score/time/edit/main/docs/module/manuals/integration_tests.rst">
+      <i class="fa-solid fa-pencil"></i>
+      
+      
+        
+          Edit on GitHub
+        
+      
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.1.
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
