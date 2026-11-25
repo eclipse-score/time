@@ -71,6 +71,7 @@ build:x86_64-qnx --extra_toolchains=@score_qnx_x86_64_ifs_toolchain//:ifs-x86_64
 build:arm64-qnx --config=shared
 build:arm64-qnx --platforms=@score_bazel_platforms//:aarch64-qnx-sdp_8.0.0-posix
 build:arm64-qnx --extra_toolchains=@score_qcc_aarch64_toolchain//:aarch64-qnx-sdp_8.0.0
+build:arm64-qnx --extra_toolchains=@score_qnx_aarch64_ifs_toolchain//:ifs-aarch64-qnx-sdp_8.0.0
 
 # -------------------------------------------------------------------------------
 # Import local user workspace file, if exists
@@ -130,6 +131,16 @@ test:tsan --build_tests_only
 test:clang-tidy --aspects=//tools/lint:linters.bzl%clang_tidy_aspect
 test:clang-tidy --output_groups=+rules_lint_report
 test:clang-tidy --extra_toolchains=@llvm_toolchain//:cc-toolchain-x86_64-linux
+
+# -------------------------------------------------------------------------------
+# QEMU integration tests (py_itf_test) — powered by score_itf
+# -------------------------------------------------------------------------------
+# Runs the test inside a user/network namespace that creates its own tap0 device,
+# so no host tap device or sudo is needed. Requires access to /dev/kvm.
+# Run with: bazel test --config=qemu //score/tests/feature:test_feature_qemu_linux_x86_64
+test:qemu --run_under=@score_itf//scripts:run_under_qemu
+# ext4 toolchain to build the disk image with the binaries under test (--qemu-disk).
+build:qemu --extra_toolchains=@score_linux_x86_64_ext4_toolchain//:ext4-x86_64-linux
 
 # -------------------------------------------------------------------------------
 # CodeQL static analysis — MISRA C++:2023

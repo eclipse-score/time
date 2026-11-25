@@ -1,0 +1,12 @@
+{
+    "iface_name": "PLACEHOLDER_OVERRIDDEN_BY_GPTP_IFACE",
+    "domain_number": 0,
+    "pdelay_req_interval_ms": 1000,
+    "pdelay_warmup_ms": 2000,
+    "sync_timeout_ms": 3300,
+    "jump_future_threshold_ns": 500000000,
+    "shm_path": "/gptp_shmem",
+    "phc": {
+        "enabled": false
+    }
+}
