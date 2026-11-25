@@ -28,35 +28,41 @@ members, comments) do not change the extracted API and pass.
 The public API is defined by Bazel visibility: every C++ library alias with
 `//visibility:public` has its own test and lock file `<name>.lock.json`. The
 packages whose headers those aliases expose to consumers are covered as well.
-[`BUILD`](BUILD) lists the covered targets:
+The surfaces are grouped in [`BUILD`](BUILD); the TimeDaemon groups mirror the
+alias sections of [`score/time_daemon/BUILD`](../../score/time_daemon/BUILD):
 
-| Test / lock file | Covered target | API |
-|------------------|----------------|-----|
-| `clock` | `//score/time/clock:clock_core` | `Clock<Tag>`, `ClockSnapshot`, statuses, hooks (exposed by every clock domain) |
-| `ptp_types` | `//score/time/ptp:ptp_types` | PTP data types (exposed by VehicleTime) |
-| `high_res_steady_time` | `//score/time/high_res_steady_time:interface` | HighResSteadyTime domain |
-| `steady_time` | `//score/time/steady_time:interface` | SteadyTime domain |
-| `system_time` | `//score/time/system_time:interface` | SystemTime domain |
-| `vehicle_time` | `//score/time/vehicle_time:interface` | VehicleTime domain |
-| `time_daemon_core` | `//score/time_daemon:time_daemon_core` | `TimeDaemon`, `TimebaseHandler`, `CreateTimebaseHandlers()` |
-| `time_daemon_main` | `//score/time_daemon:time_daemon_main` | Same as `time_daemon_core`, for custom daemon executables |
-| `time_daemon_timebase_handler_factory` | `//score/time_daemon:timebase_handler_factory` | `CreateTimebaseHandlers()` |
-| `time_daemon_generic_timebase_handler` | `//score/time_daemon:generic_timebase_handler` | `GenericTimebaseHandler<T>` |
-| `time_daemon_gptp_shm_machine` | `//score/time_daemon:gptp_shm_machine` | `CreateGPTPShmMachine()` |
-| `time_daemon_msg_broker` | `//score/time_daemon:msg_broker` | `Topic` |
-| `time_daemon_ptp_control_flow_divider` | `//score/time_daemon:ptp_control_flow_divider` | `CreatePtpControlFlowDivider()` |
-| `time_daemon_ptp_machine` | `//score/time_daemon:ptp_machine` | `PTPMachine<PTPEngine>` |
-| `time_daemon_ptp_time_info` | `//score/time_daemon:ptp_time_info` | `PtpTimeInfo` |
-| `time_daemon_svt_publisher` | `//score/time_daemon:svt_publisher` | `CreateSvtPublisher()` |
-| `time_daemon_svt_verification_machine` | `//score/time_daemon:svt_verification_machine` | `CreateSvtVerificationMachine()` |
+| Group | Test / lock file | Covered target | API |
+|-------|------------------|----------------|-----|
+| Time bases | `clock` | `//score/time/clock:clock_core` | `Clock<Tag>`, `ClockTraits`, `ClockSnapshot`, statuses and hooks, the base for custom time bases |
+| Time bases | `high_res_steady_time` | `//score/time/high_res_steady_time:interface` | HighResSteadyTime domain |
+| Time bases | `ptp_types` | `//score/time/ptp:ptp_types` | PTP event types (exposed by VehicleTime) |
+| Time bases | `steady_time` | `//score/time/steady_time:interface` | SteadyTime domain |
+| Time bases | `system_time` | `//score/time/system_time:interface` | SystemTime domain |
+| Time bases | `vehicle_time` | `//score/time/vehicle_time:interface` | VehicleTime domain |
+| TimeDaemon application | `time_daemon_core` | `//score/time_daemon:time_daemon_core` | `TimeDaemon`, `TimebaseHandler`, `CreateTimebaseHandlers()` |
+| TimeDaemon application | `time_daemon_main` | `//score/time_daemon:time_daemon_main` | Same as `time_daemon_core`, for custom daemon executables |
+| TimeDaemon handlers | `time_daemon_timebase_handler_factory` | `//score/time_daemon:timebase_handler_factory` | `CreateTimebaseHandlers()` |
+| TimeDaemon handlers | `time_daemon_generic_timebase_handler` | `//score/time_daemon:generic_timebase_handler` | `GenericTimebaseHandler<T>` |
+| TimeDaemon building blocks | `time_daemon_msg_broker` | `//score/time_daemon:msg_broker` | `Topic` |
+| TimeDaemon building blocks | `time_daemon_ptp_time_info` | `//score/time_daemon:ptp_time_info` | `PtpTimeInfo` |
+| TimeDaemon building blocks | `time_daemon_ptp_control_flow_divider` | `//score/time_daemon:ptp_control_flow_divider` | `CreatePtpControlFlowDivider()` |
+| TimeDaemon building blocks | `time_daemon_ptp_machine` | `//score/time_daemon:ptp_machine` | `PTPMachine<PTPEngine>` |
+| TimeDaemon building blocks | `time_daemon_gptp_shm_machine` | `//score/time_daemon:gptp_shm_machine` | `CreateGPTPShmMachine()` |
+| TimeDaemon SVT | `time_daemon_svt_publisher` | `//score/time_daemon:svt_publisher` | `CreateSvtPublisher()` |
+| TimeDaemon SVT | `time_daemon_svt_verification_machine` | `//score/time_daemon:svt_verification_machine` | `CreateSvtVerificationMachine()` |
 
 A test covers the public headers of the target and of its dependencies in the
 same Bazel package or its subpackages. Headers from other packages are not
-covered. The clock domain interfaces expose `Clock<Tag>` from
-`//score/time/clock` and, for VehicleTime, the subscription event types
-`TimeSlaveSyncData` and `PDelayMeasurementData` from `//score/time/ptp`.
-These two packages are therefore locked separately as `clock` and `ptp_types`,
-although their Bazel targets are not public. Symbols in `detail`, `details`,
+covered. Each time-base lock records the instantiated interface its users
+see, for example `VehicleClock::Init`, `Now` or `Subscribe`, together with the
+domain's traits and hook specializations. These specializations decide which
+lifecycle and subscription methods a time base offers, so such a change shows
+up in that time base's lock. `Clock<Tag>`, its traits and its hook templates are
+locked separately as `clock`, because a user can build a custom time base on
+them; its Bazel target is not public. VehicleTime also
+exposes the subscription event types `TimeSlaveSyncData` and
+`PDelayMeasurementData` from `//score/time/ptp`, which is locked as
+`ptp_types` although its Bazel target is not public. Symbols in `detail`, `details`,
 `internal` or `impl` namespaces are excluded by the tool. Some aliases share
 headers, so one API change can update more than one lock file.
 
@@ -72,7 +78,7 @@ Public targets that are not covered:
 - Non-C++ interfaces: IPC and shared-memory data layouts, the TimeSlave
   configuration schema, and documentation completeness (`check_docs = False`).
 
-When you add a public C++ library target, add it to `_API_SURFACES` in
+When you add a public C++ library target, add it to the matching group in
 [`BUILD`](BUILD) and generate its lock file.
 
 ## Running the check
@@ -82,8 +88,9 @@ bazel test --config x86_64-linux //:api_surface_tests
 ```
 
 `//:api_surface_tests` is a `test_suite` in the root [`BUILD`](../../BUILD) that
-runs all tests of this package. The tests are tagged `manual`, so
-`bazel test //...` skips them; run them through the suite or by name. A single surface, for example VehicleTime:
+runs all tests of this package. The tests and both suites are tagged `manual`,
+so `bazel test //...` skips them; run them through the suite or by name. A
+single surface, for example VehicleTime:
 
 ```bash
 bazel test --config x86_64-linux //tools/api_surface:vehicle_time
@@ -122,8 +129,22 @@ is backward compatible.
 - This check finds changes to declarations. It does not check ABI or behaviour.
   Changes to class layout, inline function bodies, default member values or
   constant values can go undetected.
-- Headers are parsed once, on Linux, with the hermetic LLVM toolchain
-  (`@llvm_toolchain`), not with the GCC or QNX toolchains. Declarations that
-  exist only under other platform conditions are not covered.
+- Headers are parsed once, for x86_64 Linux, with the hermetic LLVM toolchain
+  (`@llvm_toolchain`), not with the GCC or QNX toolchains. The tool fixes this
+  platform, so a run with another `--config` still extracts x86_64 Linux
+  declarations. Declarations that exist only under other platform conditions
+  are not covered.
 - The tests are Linux-only. They are not part of `//score/...` and do not run in
   the QNX or arm64 builds.
+- Template parameters, default template arguments and `enable_if` constraints
+  are not part of the extracted signatures.
+- The clock domain locks include the `<Domain>ClockBackend` interfaces and the
+  `test_utils` declarations. These are intentional: the backend is the public
+  interface that each domain implements and that the `*_mock` targets mock, and
+  `ScopedClockOverride` / `ClockTestFactory` are how clients inject the mocks.
+- The tool cannot exclude individual headers or symbols. The
+  `time_daemon_svt_verification_machine` lock therefore also contains the
+  internal SVT validators (`TimeoutValidator`, `TimeJumpsValidator`,
+  `SynchronizationValidator`), because the public header includes them. A change
+  to them fails the check without breaking clients; review the diff and update
+  the lock file.
