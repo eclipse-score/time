@@ -69,3 +69,9 @@ test_suite(
     name = "api_surface_tests",
     tests = ["//tools/api_surface:api_surface_tests"],
 )
+
+alias(
+    name = "api_surface_update",
+    actual = "//tools/api_surface:update",
+    tags = ["manual"],
+)

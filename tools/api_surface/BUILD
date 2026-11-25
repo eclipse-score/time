@@ -16,6 +16,7 @@
 # Kept outside //score so that consumers testing @score_time//score/... do not
 # pick up these Linux/clang-only checks.
 
+load("@rules_multirun//:defs.bzl", "multirun")
 load("@score_tooling//:defs.bzl", "api_surface_test")
 
 # One entry per public (//visibility:public) C++ library alias of the module,
@@ -52,6 +53,8 @@ _API_SURFACES = {
         # Documentation enforcement is out of scope for the compatibility gate.
         check_docs = False,
         lock_file = name + ".lock.json",
+        # Run only by name (//:api_surface_tests, CI api-surface job), not by //...
+        tags = ["manual"],
         target = target,
     )
     for name, target in _API_SURFACES.items()
@@ -60,5 +63,13 @@ _API_SURFACES = {
 test_suite(
     name = "api_surface_tests",
     tests = [":" + name for name in _API_SURFACES],
+    visibility = ["//:__pkg__"],
+)
+
+multirun(
+    name = "update",
+    commands = [":" + name + ".update" for name in _API_SURFACES],
+    jobs = 0,
+    tags = ["manual"],
     visibility = ["//:__pkg__"],
 )

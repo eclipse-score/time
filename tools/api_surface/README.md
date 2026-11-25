@@ -82,7 +82,8 @@ bazel test --config x86_64-linux //:api_surface_tests
 ```
 
 `//:api_surface_tests` is a `test_suite` in the root [`BUILD`](../../BUILD) that
-runs all tests of this package. A single surface, for example VehicleTime:
+runs all tests of this package. The tests are tagged `manual`, so
+`bazel test //...` skips them; run them through the suite or by name. A single surface, for example VehicleTime:
 
 ```bash
 bazel test --config x86_64-linux //tools/api_surface:vehicle_time
@@ -96,17 +97,16 @@ pull request. CI never updates the lock files.
 
 1. Make sure the API change is intended and agreed. For a breaking change, check
    the impact on consumers and the release notes.
-2. Regenerate the affected lock file, for example for VehicleTime:
+2. Regenerate all lock files:
+
+   ```bash
+   bazel run --config x86_64-linux //:api_surface_update
+   ```
+
+   Or only the affected one, for example for VehicleTime:
 
    ```bash
    bazel run --config x86_64-linux //tools/api_surface:vehicle_time.update
-   ```
-
-   To regenerate all lock files:
-
-   ```bash
-   bazel query 'filter("\.update$", //tools/api_surface:all)' \
-     | xargs -n1 bazel run --config x86_64-linux
    ```
 
 3. Review `git diff tools/api_surface/` and check that it contains only the
