@@ -37,9 +37,19 @@ namespace td
 ///
 /// \brief The class implements shared memory handling
 ///
-/// \details Only one thread at a time, across all processes, may call Send(). A single seqlock guards the
-///          payload, which is stored as relaxed atomic bytes so that concurrent reads and writes are
-///          well-defined (data-race-free) in C++. Readers always see a consistent, monotonically advancing snapshot.
+/// \details Only one thread at a time, across all processes, may call Send().
+///
+///          A single seqlock guards the payload. A reader may copy the payload while the writer is rewriting it.
+///          The reader then detects the overlap by re-checking seq_ and discards the copy. So the overlapping
+///          access is intentional and does happen.
+///
+///          If the payload were a plain DataType, that overlap would be a data race, which is undefined behaviour
+///          in C++ even though the torn copy is discarded. The compiler is allowed to assume it never happens
+///          (e.g. re-load or fuse the reads), so the seq_ check could not be relied upon. To avoid this, the
+///          payload is stored as individual std::atomic<std::uint8_t> bytes accessed with relaxed operations.
+///          A relaxed access never races, it just may return a mix of old and new bytes, and the seq_ check
+///          rejects such a copy. The atomics only remove the UB. The ordering comes from seq_ and the fences.
+///          Readers always see a consistent, monotonically advancing snapshot.
 ///
 template <typename DataType>
 class SharedMemoryHandler
@@ -106,8 +116,13 @@ class SharedMemoryHandler
         /// \brief seq_ seqlock counter: odd while a write is in progress, even otherwise.
         std::atomic<std::uint64_t> seq_{0U};
 
-        /// \brief Payload bytes (DataType object representation), zero-initialised, accessed only through relaxed
-        /// atomic loads/stores.
+        /// \brief Payload bytes (DataType object representation), zero-initialised.
+        ///
+        /// Each byte is atomic only to make the intentional reader/writer overlap well-defined (no UB). It does not
+        /// make the payload as a whole atomic: a reader can observe a torn mix of bytes, which is why a copy is only
+        /// valid if seq_ is even and unchanged. Bytes are used because std::atomic<DataType> may not be lock-free
+        /// for larger types, which is unsuitable in shared memory, and C++ has no portable relaxed atomic memcpy.
+        /// Access only with std::memory_order_relaxed.
         std::array<std::atomic<std::uint8_t>, sizeof(DataType)> bytes_{};
     };
 
@@ -176,6 +191,8 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 
             if (NoWriteInProgress(seq_before_read))
             {
+                // Relaxed loads may return a torn mix if a write overlaps. That is fine (not UB) because the copy
+                // is only used after seq_ is validated below.
                 Bytes bytes{};
                 auto source = shared_memory_data_->bytes_.cbegin();
                 for (auto& byte : bytes)
@@ -184,7 +201,8 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
                     ++source;
                 }
 
-                // Order the payload loads before the re-check of the counter
+                // Order the payload loads before the re-check of seq_. Without this, weakly ordered CPUs (ARM64)
+                // could satisfy the loads after the re-check, letting a torn copy pass validation.
                 std::atomic_thread_fence(std::memory_order_acquire);
 
                 // Unchanged counter: no write started or completed during the copy
@@ -213,7 +231,8 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
         const auto seq = shared_memory_data_->seq_.load(std::memory_order_relaxed);
         shared_memory_data_->seq_.store(seq + 1U, std::memory_order_relaxed);
 
-        // Order the odd counter before the payload stores
+        // Order the odd counter before the payload stores, so a reader that sees any new payload byte also sees
+        // that a write is in progress.
         std::atomic_thread_fence(std::memory_order_release);
 
         auto destination = shared_memory_data_->bytes_.begin();
