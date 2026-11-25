@@ -527,9 +527,10 @@ threshold.</p></li>
 clang-extracted API of each public target with a committed lock file.</p>
 <ul class="simple">
 <li><p><strong>Aggregate target:</strong> <code class="docutils literal notranslate"><span class="pre">//:api_surface_tests</span></code>.</p></li>
-<li><p><strong>Command:</strong> <code class="docutils literal notranslate"><span class="pre">bazel</span> <span class="pre">test</span> <span class="pre">--config</span> <span class="pre">x86_64-linux</span> <span class="pre">//:api_surface_tests</span></code>.</p></li>
-<li><p><strong>Lock file update:</strong> <code class="docutils literal notranslate"><span class="pre">bazel</span> <span class="pre">run</span> <span class="pre">--config</span> <span class="pre">x86_64-linux</span> <span class="pre">//tools/api_surface:&lt;name&gt;.update</span></code>,
-only after an intentional API change. Review the lock file diff and commit it
+<li><p><strong>Command:</strong> <code class="docutils literal notranslate"><span class="pre">bazel</span> <span class="pre">test</span> <span class="pre">--config</span> <span class="pre">x86_64-linux</span> <span class="pre">//:api_surface_tests</span></code>. The
+tests are tagged <code class="docutils literal notranslate"><span class="pre">manual</span></code> and are not part of <code class="docutils literal notranslate"><span class="pre">bazel</span> <span class="pre">test</span> <span class="pre">//...</span></code>.</p></li>
+<li><p><strong>Lock file update:</strong> <code class="docutils literal notranslate"><span class="pre">bazel</span> <span class="pre">run</span> <span class="pre">--config</span> <span class="pre">x86_64-linux</span> <span class="pre">//:api_surface_update</span></code>
+(or <code class="docutils literal notranslate"><span class="pre">//tools/api_surface:&lt;name&gt;.update</span></code> for one surface), only after an intentional API change. Review the lock file diff and commit it
 with the change.</p></li>
 <li><p><strong>CI:</strong> the <code class="docutils literal notranslate"><span class="pre">api-surface</span></code> job in <code class="docutils literal notranslate"><span class="pre">.github/workflows/build-linux.yml</span></code>
 fails the pull request on any difference.</p></li>
