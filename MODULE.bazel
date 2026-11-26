@@ -199,13 +199,6 @@ git_override(
     remote = "https://github.com/etas-contrib/score_tools.git",
 )
 
-pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip", dev_dependency = True)
-pip.parse(
-    hub_name = "time_codeql_coding_standards_pip_hub",
-    python_version = PYTHON_VERSION,
-    requirements_lock = "//third_party/codeql:requirements_lock.txt",
-)
-
 # The component-test package must also load when time is a dependency.
 # To regenerate the lock file after editing requirements.txt:
 #   bazel run //score/time_daemon/tests/component_tests:requirements.update
@@ -216,8 +209,6 @@ cit_pip.parse(
     requirements_lock = "//score/time_daemon/tests/component_tests:requirements.txt.lock",
 )
 use_repo(cit_pip, "pip_time_daemon_venv")
-
-use_repo(pip, codeql_coding_standards_pip_hub = "time_codeql_coding_standards_pip_hub")
 
 bazel_dep(name = "rules_cc", version = "0.2.25", dev_dependency = True)
 
