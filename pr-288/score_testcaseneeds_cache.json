@@ -2144,7 +2144,7 @@
   {
     "name": "JobRunnerTest__JobSucceedsImmediately",
     "file": "score/time_daemon/src/application/job_runner/job_runner_test.cpp",
-    "line": "54",
+    "line": "52",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2158,7 +2158,7 @@
   {
     "name": "JobRunnerTest__JobTimesOut",
     "file": "score/time_daemon/src/application/job_runner/job_runner_test.cpp",
-    "line": "72",
+    "line": "70",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2172,7 +2172,7 @@
   {
     "name": "JobRunnerTest__ResultWhileRunning",
     "file": "score/time_daemon/src/application/job_runner/job_runner_test.cpp",
-    "line": "90",
+    "line": "88",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2186,7 +2186,7 @@
   {
     "name": "JobRunnerTest__StopJobRunnerEarly",
     "file": "score/time_daemon/src/application/job_runner/job_runner_test.cpp",
-    "line": "116",
+    "line": "114",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2200,7 +2200,7 @@
   {
     "name": "JobRunnerTest__StopMultipleJobsEarly",
     "file": "score/time_daemon/src/application/job_runner/job_runner_test.cpp",
-    "line": "147",
+    "line": "145",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2424,7 +2424,7 @@
   {
     "name": "MessageBrokerTest__SingleSubscriberReceivesData",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "77",
+    "line": "79",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2438,7 +2438,7 @@
   {
     "name": "MessageBrokerTest__MultipleSubscribersReceiveData",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "91",
+    "line": "93",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2452,7 +2452,7 @@
   {
     "name": "MessageBrokerTest__NoSubscriberForOtherTopic",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "110",
+    "line": "112",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2466,7 +2466,7 @@
   {
     "name": "MessageBrokerTest__MultipleDataProduction",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "123",
+    "line": "125",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2480,7 +2480,7 @@
   {
     "name": "MessageBrokerTest__ExpiredSubscriberDoesNotReceiveData",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "139",
+    "line": "145",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2494,7 +2494,7 @@
   {
     "name": "MessageBrokerTest__ExpiredProducerNeverRegistersPublishCallback",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "156",
+    "line": "162",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2508,7 +2508,7 @@
   {
     "name": "MessageBrokerTest__ExpiredBrokerDoesNotProcessCallback",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "167",
+    "line": "173",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2522,7 +2522,7 @@
   {
     "name": "MessageBrokerTest__DestroyedBrokerDisconnectsAllSurvivingProducers",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "186",
+    "line": "192",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2536,7 +2536,7 @@
   {
     "name": "MessageBrokerTopicTest__LongNameIsTrimmedToMaximumLength",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "207",
+    "line": "213",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2550,7 +2550,7 @@
   {
     "name": "MessageBrokerTopicTest__TopicComparisonOperators",
     "file": "score/time_daemon/src/msg_broker/msg_broker_test.cpp",
-    "line": "216",
+    "line": "222",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2564,7 +2564,7 @@
   {
     "name": "TimeBaseStatusTest__EqualsWhenAllFieldsMatch",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "56",
+    "line": "52",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2578,7 +2578,7 @@
   {
     "name": "TimeBaseStatusTest__NotEqualsWhenAnyFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "64",
+    "line": "60",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2592,7 +2592,7 @@
   {
     "name": "TimeBaseStatusTest__NotEqualsWhenEachFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "72",
+    "line": "68",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2606,7 +2606,7 @@
   {
     "name": "SyncFupSnapshotTest__EqualsWhenAllFieldsMatch",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "102",
+    "line": "98",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2620,7 +2620,7 @@
   {
     "name": "SyncFupSnapshotTest__NotEqualsOperatorReturnsTrueWhenDifferent",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "110",
+    "line": "106",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2634,7 +2634,7 @@
   {
     "name": "SyncFupSnapshotTest__NotEqualsWhenEachFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "118",
+    "line": "114",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2648,7 +2648,7 @@
   {
     "name": "PDelayDataSnapshotTest__EqualsWhenAllFieldsMatch",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "160",
+    "line": "156",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2662,7 +2662,7 @@
   {
     "name": "PDelayDataSnapshotTest__NotEqualsOperatorReturnsTrueWhenDifferent",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "168",
+    "line": "164",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2676,7 +2676,7 @@
   {
     "name": "PDelayDataSnapshotTest__NotEqualsWhenEachFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "176",
+    "line": "172",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2690,7 +2690,7 @@
   {
     "name": "TimeBaseSnapshotTest__CreateFromCopiesAndConvertsFields",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "227",
+    "line": "223",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2704,7 +2704,7 @@
   {
     "name": "TimeBaseSnapshotTest__EqualsUsesToleranceForRateDeviation",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "243",
+    "line": "239",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2718,7 +2718,7 @@
   {
     "name": "TimeBaseSnapshotTest__NotEqualsWhenRateDeviationOutsideTolerance",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "259",
+    "line": "255",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2732,7 +2732,7 @@
   {
     "name": "TimeBaseSnapshotTest__EqualsPtpTimeInfoWhenAllFieldsMatch",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "275",
+    "line": "271",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2746,7 +2746,7 @@
   {
     "name": "TimeBaseSnapshotTest__NotEqualsPtpTimeInfoWhenRateDeviationOutsideTolerance",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "283",
+    "line": "279",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2760,7 +2760,7 @@
   {
     "name": "TimeBaseSnapshotTest__NotEqualsPtpTimeInfoWhenEachTopLevelFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "292",
+    "line": "288",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2774,7 +2774,7 @@
   {
     "name": "TimeBaseSnapshotTest__NotEqualsPtpTimeInfoWhenAnyStatusFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "326",
+    "line": "322",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2788,7 +2788,7 @@
   {
     "name": "TimeBaseSnapshotTest__NotEqualsPtpTimeInfoWhenAnySyncFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "357",
+    "line": "353",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2802,7 +2802,7 @@
   {
     "name": "TimeBaseSnapshotTest__NotEqualsPtpTimeInfoWhenAnyPdelayFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "400",
+    "line": "396",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2816,7 +2816,7 @@
   {
     "name": "TimeBaseSnapshotTest__NotEqualsWhenEachTopLevelFieldDiffers",
     "file": "score/time_daemon/src/ipc/svt/svt_time_info_test.cpp",
-    "line": "452",
+    "line": "448",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -2942,7 +2942,7 @@
   {
     "name": "BaseMachineTest__Construction",
     "file": "score/time_daemon/src/common/machines/base_machine_test.cpp",
-    "line": "33",
+    "line": "32",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3082,7 +3082,7 @@
   {
     "name": "PtpStatusTest__EqualsWhenAllFieldsMatch",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "64",
+    "line": "61",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3096,7 +3096,7 @@
   {
     "name": "PtpStatusTest__NotEqualsWhenAnyFieldDiffers",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "72",
+    "line": "69",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3110,7 +3110,7 @@
   {
     "name": "SyncFupDataTest__EqualsWhenAllFieldsMatch",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "120",
+    "line": "117",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3124,7 +3124,7 @@
   {
     "name": "SyncFupDataTest__NotEqualsOperatorReturnsTrueWhenDifferent",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "128",
+    "line": "125",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3138,7 +3138,7 @@
   {
     "name": "PDelayDataTest__EqualsWhenAllFieldsMatch",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "190",
+    "line": "187",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3152,7 +3152,7 @@
   {
     "name": "PDelayDataTest__NotEqualsOperatorReturnsTrueWhenDifferent",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "198",
+    "line": "195",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3166,7 +3166,7 @@
   {
     "name": "PtpTimeInfoTest__EqualsUsesToleranceForRateDeviation",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "273",
+    "line": "270",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3180,7 +3180,7 @@
   {
     "name": "PtpTimeInfoTest__NotEqualsWhenRateDeviationOutsideTolerance",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "281",
+    "line": "278",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3194,7 +3194,7 @@
   {
     "name": "PtpTimeInfoTest__EqualsWhenAllFieldsMatch",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "289",
+    "line": "286",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3208,7 +3208,7 @@
   {
     "name": "PtpTimeInfoTest__NotEqualsWhenStatusDiffers",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "297",
+    "line": "294",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3222,7 +3222,7 @@
   {
     "name": "AllFields/PtpStatusMutationTest__ChangingFieldBreaksEquality/is_synchronized",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "84",
+    "line": "81",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3236,7 +3236,7 @@
   {
     "name": "AllFields/PtpStatusMutationTest__ChangingFieldBreaksEquality/is_timeout",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "84",
+    "line": "81",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3250,7 +3250,7 @@
   {
     "name": "AllFields/PtpStatusMutationTest__ChangingFieldBreaksEquality/is_time_jump_future",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "84",
+    "line": "81",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3264,7 +3264,7 @@
   {
     "name": "AllFields/PtpStatusMutationTest__ChangingFieldBreaksEquality/is_time_jump_past",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "84",
+    "line": "81",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3278,7 +3278,7 @@
   {
     "name": "AllFields/PtpStatusMutationTest__ChangingFieldBreaksEquality/is_correct",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "84",
+    "line": "81",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3292,7 +3292,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/precise_origin_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3306,7 +3306,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/reference_global_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3320,7 +3320,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/reference_local_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3334,7 +3334,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/sync_ingress_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3348,7 +3348,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/correction_field",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3362,7 +3362,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/sequence_id",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3376,7 +3376,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/pdelay",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3390,7 +3390,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/port_number",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3404,7 +3404,7 @@
   {
     "name": "AllFields/SyncFupDataMutationTest__ChangingFieldBreaksEquality/clock_identity",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "140",
+    "line": "137",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3418,7 +3418,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/request_origin_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3432,7 +3432,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/request_receipt_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3446,7 +3446,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/response_origin_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3460,7 +3460,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/response_receipt_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3474,7 +3474,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/reference_global_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3488,7 +3488,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/reference_local_timestamp",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3502,7 +3502,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/sequence_id",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3516,7 +3516,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/pdelay",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3530,7 +3530,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/req_port_number",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3544,7 +3544,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/req_clock_identity",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3558,7 +3558,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/resp_port_number",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3572,7 +3572,7 @@
   {
     "name": "AllFields/PDelayDataMutationTest__ChangingFieldBreaksEquality/resp_clock_identity",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "210",
+    "line": "207",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3586,7 +3586,7 @@
   {
     "name": "AllTopLevelFields/PtpTimeInfoMutationTest__ChangingFieldBreaksEquality/local_time",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "310",
+    "line": "307",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3600,7 +3600,7 @@
   {
     "name": "AllTopLevelFields/PtpTimeInfoMutationTest__ChangingFieldBreaksEquality/ptp_assumed_time",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "310",
+    "line": "307",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3614,7 +3614,7 @@
   {
     "name": "AllTopLevelFields/PtpTimeInfoMutationTest__ChangingFieldBreaksEquality/rate_deviation",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "310",
+    "line": "307",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3628,7 +3628,7 @@
   {
     "name": "AllTopLevelFields/PtpTimeInfoMutationTest__ChangingFieldBreaksEquality/status",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "310",
+    "line": "307",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3642,7 +3642,7 @@
   {
     "name": "AllTopLevelFields/PtpTimeInfoMutationTest__ChangingFieldBreaksEquality/sync_fup_data",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "310",
+    "line": "307",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3656,7 +3656,7 @@
   {
     "name": "AllTopLevelFields/PtpTimeInfoMutationTest__ChangingFieldBreaksEquality/pdelay_data",
     "file": "score/time_daemon/src/common/data_types/ptp_time_info_test.cpp",
-    "line": "310",
+    "line": "307",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3670,7 +3670,7 @@
   {
     "name": "ProducerConsumerTest__TestProducerConsumerNotification",
     "file": "score/time_daemon/src/common/data_flow/producer_consumer_test.cpp",
-    "line": "160",
+    "line": "159",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3684,7 +3684,7 @@
   {
     "name": "ProducerConsumerTest__TestProducerConsumerNoNotification",
     "file": "score/time_daemon/src/common/data_flow/producer_consumer_test.cpp",
-    "line": "180",
+    "line": "179",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3698,7 +3698,7 @@
   {
     "name": "ProducerConsumerTest__TestProducerConsumerNotificationChain",
     "file": "score/time_daemon/src/common/data_flow/producer_consumer_test.cpp",
-    "line": "200",
+    "line": "199",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3712,7 +3712,7 @@
   {
     "name": "SvtVerificationMachineTest__ProcessesValidTimeInfo",
     "file": "score/time_daemon/src/verification_machine/svt/svt_verification_machine_test.cpp",
-    "line": "32",
+    "line": "33",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3726,7 +3726,7 @@
   {
     "name": "SvtVerificationMachineTest__HandlesPipelineValidation",
     "file": "score/time_daemon/src/verification_machine/svt/svt_verification_machine_test.cpp",
-    "line": "43",
+    "line": "44",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3754,7 +3754,7 @@
   {
     "name": "TimeoutValidatorTest__LogsErrorWhenClockAppearsToGoBackward",
     "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator_test.cpp",
-    "line": "117",
+    "line": "118",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3768,7 +3768,7 @@
   {
     "name": "TestIfTimeoutIsSetWhenThereIsNoNewFrame/TimeoutValidatorParamTest__ValidationTest/0",
     "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator_test.cpp",
-    "line": "91",
+    "line": "92",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3782,7 +3782,7 @@
   {
     "name": "TestTimeoutWhenNoFramesAtAll/TimeoutValidatorParamTest__ValidationTest/0",
     "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator_test.cpp",
-    "line": "91",
+    "line": "92",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3796,7 +3796,7 @@
   {
     "name": "TestIfTimeoutIsSetWithRepeatedFrames/TimeoutValidatorParamTest__ValidationTest/0",
     "file": "score/time_daemon/src/verification_machine/svt/validators/timeout_validator_test.cpp",
-    "line": "91",
+    "line": "92",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3810,7 +3810,7 @@
   {
     "name": "TestIfSynchronizedFlagIsNotCleared/SynchronizationValidatorParamTest__ValidationTest/0",
     "file": "score/time_daemon/src/verification_machine/svt/validators/synchronization_validator_test.cpp",
-    "line": "47",
+    "line": "45",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3824,7 +3824,7 @@
   {
     "name": "TimeJumpsValidatorTest__RepeatedDeliveryOfSameFrameDoesNotClearTimeJump",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
-    "line": "103",
+    "line": "104",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3838,7 +3838,7 @@
   {
     "name": "TimeJumpsValidatorTest__JumpToPastWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
-    "line": "149",
+    "line": "150",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3852,7 +3852,7 @@
   {
     "name": "TimeJumpsValidatorTest__JumpToFutureWithinThresholdIsNotFlagged",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
-    "line": "195",
+    "line": "196",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3866,7 +3866,7 @@
   {
     "name": "TimeJumpsValidatorTest__StaysInInitialSyncDebouncingWhenThresholdNotElapsed",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
-    "line": "241",
+    "line": "242",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3880,7 +3880,7 @@
   {
     "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedInIdleState",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
-    "line": "281",
+    "line": "282",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3894,7 +3894,7 @@
   {
     "name": "TimeJumpsValidatorTest__UpstreamTimeJumpFlagsAreClearedDuringInitialSyncDebouncing",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
-    "line": "302",
+    "line": "303",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3908,7 +3908,7 @@
   {
     "name": "TestIfSynchronizedFlagIsNotCleared/TimeJumpsValidatorParamTest__ValidationTest/0",
     "file": "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator_test.cpp",
-    "line": "62",
+    "line": "63",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3922,7 +3922,7 @@
   {
     "name": "VerificationMachineDeathTest__ConstructionWithNoFactoriesAborts",
     "file": "score/time_daemon/src/verification_machine/core/verification_machine_test.cpp",
-    "line": "136",
+    "line": "134",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3936,7 +3936,7 @@
   {
     "name": "VerificationMachineDeathTest__FactoryReturningNullptrAborts",
     "file": "score/time_daemon/src/verification_machine/core/verification_machine_test.cpp",
-    "line": "141",
+    "line": "139",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3950,7 +3950,7 @@
   {
     "name": "VerificationMachineTest__ControlFlowVerification",
     "file": "score/time_daemon/src/verification_machine/core/verification_machine_test.cpp",
-    "line": "31",
+    "line": "29",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3964,7 +3964,7 @@
   {
     "name": "VerificationMachineTest__DataFlowVerification",
     "file": "score/time_daemon/src/verification_machine/core/verification_machine_test.cpp",
-    "line": "64",
+    "line": "62",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -3978,7 +3978,7 @@
   {
     "name": "VerificationMachineTest__InitReturnsTrue",
     "file": "score/time_daemon/src/verification_machine/core/verification_machine_test.cpp",
-    "line": "121",
+    "line": "119",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4048,7 +4048,7 @@
   {
     "name": "PtpControlFlowDividerFactoryTest__CreateInstance",
     "file": "score/time_daemon/src/control_flow_divider/ptp/factory_test.cpp",
-    "line": "36",
+    "line": "29",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4062,7 +4062,7 @@
   {
     "name": "PtpControlFlowDividerFactoryTest__CreateMultipleInstances",
     "file": "score/time_daemon/src/control_flow_divider/ptp/factory_test.cpp",
-    "line": "44",
+    "line": "37",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4076,7 +4076,7 @@
   {
     "name": "PtpControlFlowDividerFactoryTest__InitializeCreatedInstance",
     "file": "score/time_daemon/src/control_flow_divider/ptp/factory_test.cpp",
-    "line": "55",
+    "line": "48",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4090,7 +4090,7 @@
   {
     "name": "ControlFlowDividerTest__TestInitialization",
     "file": "score/time_daemon/src/control_flow_divider/core/control_flow_divider_test.cpp",
-    "line": "101",
+    "line": "98",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4104,7 +4104,7 @@
   {
     "name": "ControlFlowDividerTest__TestPublishValidData",
     "file": "score/time_daemon/src/control_flow_divider/core/control_flow_divider_test.cpp",
-    "line": "107",
+    "line": "104",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4118,7 +4118,7 @@
   {
     "name": "ControlFlowDividerTest__TestPublishEmptyDataOnTimeout",
     "file": "score/time_daemon/src/control_flow_divider/core/control_flow_divider_test.cpp",
-    "line": "131",
+    "line": "128",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4132,7 +4132,7 @@
   {
     "name": "ControlFlowDividerTest__TestPublicationNotificationIsOneShot",
     "file": "score/time_daemon/src/control_flow_divider/core/control_flow_divider_test.cpp",
-    "line": "157",
+    "line": "154",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4146,7 +4146,7 @@
   {
     "name": "ControlFlowDividerTest__TestMultipleDataPublish",
     "file": "score/time_daemon/src/control_flow_divider/core/control_flow_divider_test.cpp",
-    "line": "185",
+    "line": "182",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4160,7 +4160,7 @@
   {
     "name": "ControlFlowDividerTest__TestNormalQueueBehavior",
     "file": "score/time_daemon/src/control_flow_divider/core/control_flow_divider_test.cpp",
-    "line": "212",
+    "line": "209",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4174,7 +4174,7 @@
   {
     "name": "GPTPStubMachineIntegrationTest__ConstructionTest",
     "file": "score/time_daemon/src/ptp_machine/stub/gptp_stub_machine_integration_test.cpp",
-    "line": "57",
+    "line": "55",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4188,7 +4188,7 @@
   {
     "name": "GPTPStubMachineIntegrationTest__InitializationTest",
     "file": "score/time_daemon/src/ptp_machine/stub/gptp_stub_machine_integration_test.cpp",
-    "line": "62",
+    "line": "60",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4202,7 +4202,7 @@
   {
     "name": "GPTPStubMachineIntegrationTest__GetSynchronizedDataTest",
     "file": "score/time_daemon/src/ptp_machine/stub/gptp_stub_machine_integration_test.cpp",
-    "line": "67",
+    "line": "65",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4216,7 +4216,7 @@
   {
     "name": "GPTPShmMachineIntegrationTest__GetName_ReturnsConstructionName",
     "file": "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine_test.cpp",
-    "line": "87",
+    "line": "88",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4230,7 +4230,7 @@
   {
     "name": "GPTPShmMachineIntegrationTest__Init_WhenShmExists_ReturnsTrue",
     "file": "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine_test.cpp",
-    "line": "92",
+    "line": "93",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4244,7 +4244,7 @@
   {
     "name": "GPTPShmMachineIntegrationTest__Init_WhenShmMissing_ReturnsFalse",
     "file": "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine_test.cpp",
-    "line": "97",
+    "line": "98",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4258,7 +4258,7 @@
   {
     "name": "GPTPShmMachineIntegrationTest__Start_DeliversPublishedData_ViaCallback",
     "file": "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine_test.cpp",
-    "line": "103",
+    "line": "104",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4272,7 +4272,7 @@
   {
     "name": "GPTPShmMachineIntegrationTest__Init_CalledTwice_SecondCallReturnsSameResult",
     "file": "score/time_daemon/src/ptp_machine/shm/gptp_shm_machine_test.cpp",
-    "line": "120",
+    "line": "121",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4286,7 +4286,7 @@
   {
     "name": "ShmPTPEngineTest__Initialize_WhenShmNotExist_ReturnsFalse",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "99",
+    "line": "97",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4300,7 +4300,7 @@
   {
     "name": "ShmPTPEngineTest__Initialize_WhenShmExists_ReturnsTrue",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "104",
+    "line": "102",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4314,7 +4314,7 @@
   {
     "name": "ShmPTPEngineTest__Initialize_CalledTwiceWhenInitialized_ReturnsTrue",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "110",
+    "line": "108",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4328,7 +4328,7 @@
   {
     "name": "ShmPTPEngineTest__Deinitialize_WhenNotInitialized_ReturnsTrue",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "117",
+    "line": "115",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4342,7 +4342,7 @@
   {
     "name": "ShmPTPEngineTest__Deinitialize_AfterInitialize_ReturnsTrue",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "122",
+    "line": "120",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4356,7 +4356,7 @@
   {
     "name": "ShmPTPEngineTest__Deinitialize_CalledTwice_BothReturnTrue",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "129",
+    "line": "127",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4370,7 +4370,7 @@
   {
     "name": "ShmPTPEngineTest__ReInitialize_AfterDeinitialize_Succeeds",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "137",
+    "line": "135",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4384,7 +4384,7 @@
   {
     "name": "ShmPTPEngineTest__ReadPTPSnapshot_WhenNotInitialized_ReturnsFalse",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "147",
+    "line": "145",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4398,7 +4398,7 @@
   {
     "name": "ShmPTPEngineTest__ReadPTPSnapshot_WithPublishedData_ReturnsTrue",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "153",
+    "line": "151",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4412,7 +4412,7 @@
   {
     "name": "ShmPTPEngineTest__ReadPTPSnapshot_CopiesTimeAndStatusCorrectly",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "163",
+    "line": "161",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4426,7 +4426,7 @@
   {
     "name": "ShmPTPEngineTest__ReadPTPSnapshot_CopiesSyncFupDataCorrectly",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "180",
+    "line": "178",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4440,7 +4440,7 @@
   {
     "name": "ShmPTPEngineTest__ReadPTPSnapshot_CopiesPDelayDataCorrectly",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "197",
+    "line": "195",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4454,7 +4454,7 @@
   {
     "name": "PTPMachineTest__Initialization",
     "file": "score/time_daemon/src/ptp_machine/core/ptp_machine_test.cpp",
-    "line": "68",
+    "line": "67",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4468,7 +4468,7 @@
   {
     "name": "PTPMachineTest__StartMachineTest",
     "file": "score/time_daemon/src/ptp_machine/core/ptp_machine_test.cpp",
-    "line": "78",
+    "line": "77",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4482,7 +4482,7 @@
   {
     "name": "PTPMachineTest__DataFlowTest",
     "file": "score/time_daemon/src/ptp_machine/core/ptp_machine_test.cpp",
-    "line": "94",
+    "line": "93",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4496,7 +4496,7 @@
   {
     "name": "PTPMachineTest__PeriodicTaskSkipsSnapshotReadWhenNotInitialized",
     "file": "score/time_daemon/src/ptp_machine/core/ptp_machine_test.cpp",
-    "line": "126",
+    "line": "125",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4510,7 +4510,7 @@
   {
     "name": "PTPMachineTest__PeriodicTaskDoesNotPublishWhenSnapshotReadFails",
     "file": "score/time_daemon/src/ptp_machine/core/ptp_machine_test.cpp",
-    "line": "137",
+    "line": "136",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4524,7 +4524,7 @@
   {
     "name": "PTPMachineStandaloneTest__PublishWithoutCallbackDoesNotCrash",
     "file": "score/time_daemon/src/ptp_machine/core/ptp_machine_test.cpp",
-    "line": "154",
+    "line": "153",
     "result": "passed",
     "repo_name": null,
     "hash": null,
@@ -4538,7 +4538,7 @@
   {
     "name": "PTPMachineStandaloneTest__StopWaitsForReadInProgressBeforeDeinitialize",
     "file": "score/time_daemon/src/ptp_machine/core/ptp_machine_test.cpp",
-    "line": "174",
+    "line": "173",
     "result": "passed",
     "repo_name": null,
     "hash": null,
