@@ -960,7 +960,7 @@
           "CodeLinks": [
             {
               "file": "score/time/high_res_steady_time/src/details/system_clock/high_res_steady_clock_backend_impl.cpp",
-              "line": 51,
+              "line": 53,
               "tag": "// req-Id:",
               "need": "comp_req__time__supported_platforms",
               "full_line": "// req-Id: comp_req__time__supported_platforms"
