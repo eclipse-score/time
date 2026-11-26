@@ -11,12 +11,12 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/ipc/receiver_mock.h"
+#include "score/time_daemon/src/ipc/svt/receiver/factory.h"
 #include "score/time_daemon/src/ipc/svt/receiver/svt_receiver.h"
 #include "score/time_daemon/src/ipc/svt/svt_time_info.h"
+#include <memory>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 std::shared_ptr<SvtReceiver> CreateSvtReceiver()
@@ -25,5 +25,4 @@ std::shared_ptr<SvtReceiver> CreateSvtReceiver()
     return receiver;
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

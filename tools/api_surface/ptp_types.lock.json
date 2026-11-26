@@ -1,0 +1,277 @@
+{
+  "target": "//score/time/ptp:ptp_types",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "LocalPTPDeviceTimer",
+      "qualified_name": "score::time::LocalPTPDeviceTimer",
+      "kind": "struct",
+      "signature": "struct LocalPTPDeviceTimer"
+    },
+    {
+      "name": "Duration",
+      "qualified_name": "score::time::LocalPTPDeviceTimer::Duration",
+      "kind": "type_alias",
+      "signature": "using Duration = std::chrono::nanoseconds"
+    },
+    {
+      "name": "LocalPTPDeviceTimerValue",
+      "qualified_name": "score::time::LocalPTPDeviceTimerValue",
+      "kind": "type_alias",
+      "signature": "using LocalPTPDeviceTimerValue = std::chrono::time_point<LocalPTPDeviceTimer, LocalPTPDeviceTimer::Duration>"
+    },
+    {
+      "name": "MasterPTPDeviceTimer",
+      "qualified_name": "score::time::MasterPTPDeviceTimer",
+      "kind": "struct",
+      "signature": "struct MasterPTPDeviceTimer"
+    },
+    {
+      "name": "Duration",
+      "qualified_name": "score::time::MasterPTPDeviceTimer::Duration",
+      "kind": "type_alias",
+      "signature": "using Duration = std::chrono::nanoseconds"
+    },
+    {
+      "name": "MasterPTPDeviceTimerValue",
+      "qualified_name": "score::time::MasterPTPDeviceTimerValue",
+      "kind": "type_alias",
+      "signature": "using MasterPTPDeviceTimerValue = std::chrono::time_point<MasterPTPDeviceTimer, MasterPTPDeviceTimer::Duration>"
+    },
+    {
+      "name": "PDelayMeasurementData",
+      "qualified_name": "score::time::PDelayMeasurementData",
+      "kind": "template_class",
+      "signature": "PDelayMeasurementData"
+    },
+    {
+      "name": "PDelayMeasurementData",
+      "qualified_name": "score::time::PDelayMeasurementData",
+      "kind": "struct",
+      "signature": "struct PDelayMeasurementData"
+    },
+    {
+      "name": "request_origin_timestamp",
+      "qualified_name": "score::time::PDelayMeasurementData::request_origin_timestamp",
+      "kind": "field",
+      "signature": "request_origin_timestamp"
+    },
+    {
+      "name": "request_receipt_timestamp",
+      "qualified_name": "score::time::PDelayMeasurementData::request_receipt_timestamp",
+      "kind": "field",
+      "signature": "request_receipt_timestamp"
+    },
+    {
+      "name": "response_origin_timestamp",
+      "qualified_name": "score::time::PDelayMeasurementData::response_origin_timestamp",
+      "kind": "field",
+      "signature": "response_origin_timestamp"
+    },
+    {
+      "name": "response_receipt_timestamp",
+      "qualified_name": "score::time::PDelayMeasurementData::response_receipt_timestamp",
+      "kind": "field",
+      "signature": "response_receipt_timestamp"
+    },
+    {
+      "name": "reference_global_timestamp",
+      "qualified_name": "score::time::PDelayMeasurementData::reference_global_timestamp",
+      "kind": "field",
+      "signature": "reference_global_timestamp"
+    },
+    {
+      "name": "reference_local_timestamp",
+      "qualified_name": "score::time::PDelayMeasurementData::reference_local_timestamp",
+      "kind": "field",
+      "signature": "reference_local_timestamp"
+    },
+    {
+      "name": "sequence_id",
+      "qualified_name": "score::time::PDelayMeasurementData::sequence_id",
+      "kind": "field",
+      "signature": "sequence_id"
+    },
+    {
+      "name": "pdelay",
+      "qualified_name": "score::time::PDelayMeasurementData::pdelay",
+      "kind": "field",
+      "signature": "pdelay"
+    },
+    {
+      "name": "request_port_identity",
+      "qualified_name": "score::time::PDelayMeasurementData::request_port_identity",
+      "kind": "field",
+      "signature": "request_port_identity"
+    },
+    {
+      "name": "response_port_identity",
+      "qualified_name": "score::time::PDelayMeasurementData::response_port_identity",
+      "kind": "field",
+      "signature": "response_port_identity"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::time::PDelayMeasurementData::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : auto &(OutputStream &) const"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::time::operator==",
+      "kind": "template_function",
+      "signature": "operator== : bool (const PDelayMeasurementData<Timebase> &, const PDelayMeasurementData<Timebase> &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::time::operator!=",
+      "kind": "template_function",
+      "signature": "operator!= : bool (const PDelayMeasurementData<Timebase> &, const PDelayMeasurementData<Timebase> &) noexcept"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::time::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto &(OutputStream &, const PDelayMeasurementData<Timebase> &)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::time::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : void (const PDelayMeasurementData<Timebase> &, std::ostream *const)"
+    },
+    {
+      "name": "PortIdentity",
+      "qualified_name": "score::time::PortIdentity",
+      "kind": "struct",
+      "signature": "struct PortIdentity"
+    },
+    {
+      "name": "clock_identity",
+      "qualified_name": "score::time::PortIdentity::clock_identity",
+      "kind": "field",
+      "signature": "clock_identity"
+    },
+    {
+      "name": "port_number",
+      "qualified_name": "score::time::PortIdentity::port_number",
+      "kind": "field",
+      "signature": "port_number"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::time::PortIdentity::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : auto &(OutputStream &) const"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::time::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const PortIdentity &, const PortIdentity &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::time::operator!=",
+      "kind": "function",
+      "signature": "operator!= : bool (const PortIdentity &, const PortIdentity &) noexcept"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::time::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto &(OutputStream &, const PortIdentity &)"
+    },
+    {
+      "name": "TimeSlaveSyncData",
+      "qualified_name": "score::time::TimeSlaveSyncData",
+      "kind": "template_class",
+      "signature": "TimeSlaveSyncData"
+    },
+    {
+      "name": "TimeSlaveSyncData",
+      "qualified_name": "score::time::TimeSlaveSyncData",
+      "kind": "struct",
+      "signature": "struct TimeSlaveSyncData"
+    },
+    {
+      "name": "precise_origin_timestamp",
+      "qualified_name": "score::time::TimeSlaveSyncData::precise_origin_timestamp",
+      "kind": "field",
+      "signature": "precise_origin_timestamp"
+    },
+    {
+      "name": "reference_global_timestamp",
+      "qualified_name": "score::time::TimeSlaveSyncData::reference_global_timestamp",
+      "kind": "field",
+      "signature": "reference_global_timestamp"
+    },
+    {
+      "name": "reference_local_timestamp",
+      "qualified_name": "score::time::TimeSlaveSyncData::reference_local_timestamp",
+      "kind": "field",
+      "signature": "reference_local_timestamp"
+    },
+    {
+      "name": "sync_ingress_timestamp",
+      "qualified_name": "score::time::TimeSlaveSyncData::sync_ingress_timestamp",
+      "kind": "field",
+      "signature": "sync_ingress_timestamp"
+    },
+    {
+      "name": "correction_field",
+      "qualified_name": "score::time::TimeSlaveSyncData::correction_field",
+      "kind": "field",
+      "signature": "correction_field"
+    },
+    {
+      "name": "sequence_id",
+      "qualified_name": "score::time::TimeSlaveSyncData::sequence_id",
+      "kind": "field",
+      "signature": "sequence_id"
+    },
+    {
+      "name": "pdelay",
+      "qualified_name": "score::time::TimeSlaveSyncData::pdelay",
+      "kind": "field",
+      "signature": "pdelay"
+    },
+    {
+      "name": "source_port_identity",
+      "qualified_name": "score::time::TimeSlaveSyncData::source_port_identity",
+      "kind": "field",
+      "signature": "source_port_identity"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::time::TimeSlaveSyncData::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : auto &(OutputStream &) const"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::time::operator==",
+      "kind": "template_function",
+      "signature": "operator== : bool (const TimeSlaveSyncData<Timebase> &, const TimeSlaveSyncData<Timebase> &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::time::operator!=",
+      "kind": "template_function",
+      "signature": "operator!= : bool (const TimeSlaveSyncData<Timebase> &, const TimeSlaveSyncData<Timebase> &) noexcept"
+    },
+    {
+      "name": "operator<<",
+      "qualified_name": "score::time::operator<<",
+      "kind": "template_function",
+      "signature": "operator<< : auto &(OutputStream &, const TimeSlaveSyncData<Timebase> &)"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::time::PrintTo",
+      "kind": "template_function",
+      "signature": "PrintTo : void (const TimeSlaveSyncData<Timebase> &, std::ostream *const)"
+    }
+  ],
+  "version": "1"
+}

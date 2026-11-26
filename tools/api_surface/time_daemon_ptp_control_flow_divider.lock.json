@@ -1,0 +1,145 @@
+{
+  "target": "//score/time_daemon:ptp_control_flow_divider",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "CreatePtpControlFlowDivider",
+      "qualified_name": "score::td::CreatePtpControlFlowDivider",
+      "kind": "function",
+      "signature": "CreatePtpControlFlowDivider : std::shared_ptr<PtpControlFlowDivider> (const std::string &, std::chrono::milliseconds)"
+    },
+    {
+      "name": "kBufferSize",
+      "qualified_name": "score::td::kBufferSize",
+      "kind": "variable",
+      "signature": "constexpr kBufferSize : const size_t"
+    },
+    {
+      "name": "PtpControlFlowDivider",
+      "qualified_name": "score::td::PtpControlFlowDivider",
+      "kind": "type_alias",
+      "signature": "using PtpControlFlowDivider = ControlFlowDivider<PtpTimeInfo, kBufferSize>"
+    },
+    {
+      "name": "BaseMachine",
+      "qualified_name": "score::td::PtpControlFlowDivider::BaseMachine",
+      "kind": "constructor",
+      "signature": "BaseMachine : void (std::string)"
+    },
+    {
+      "name": "ControlFlowDivider<DataType, BufferSize>",
+      "qualified_name": "score::td::PtpControlFlowDivider::ControlFlowDivider<DataType, BufferSize>",
+      "kind": "constructor",
+      "signature": "ControlFlowDivider<DataType, BufferSize> : void (const std::string &, std::chrono::milliseconds)"
+    },
+    {
+      "name": "EventDrivenMachine",
+      "qualified_name": "score::td::PtpControlFlowDivider::EventDrivenMachine",
+      "kind": "constructor",
+      "signature": "EventDrivenMachine : void (const std::string &, const std::chrono::milliseconds)"
+    },
+    {
+      "name": "GetName",
+      "qualified_name": "score::td::PtpControlFlowDivider::GetName",
+      "kind": "method",
+      "signature": "GetName : std::string () const noexcept"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::PtpControlFlowDivider::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::PtpControlFlowDivider::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "NotifyEvent",
+      "qualified_name": "score::td::PtpControlFlowDivider::NotifyEvent",
+      "kind": "method",
+      "signature": "NotifyEvent : void () noexcept"
+    },
+    {
+      "name": "OnMessage",
+      "qualified_name": "score::td::PtpControlFlowDivider::OnMessage",
+      "kind": "method",
+      "signature": "OnMessage : void (DataType)"
+    },
+    {
+      "name": "OnMessage",
+      "qualified_name": "score::td::PtpControlFlowDivider::OnMessage",
+      "kind": "method",
+      "signature": "OnMessage : void (T)"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::PtpControlFlowDivider::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const DataType &)>)"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::PtpControlFlowDivider::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const T &)>)"
+    },
+    {
+      "name": "Start",
+      "qualified_name": "score::td::PtpControlFlowDivider::Start",
+      "kind": "method",
+      "signature": "Start : void () noexcept"
+    },
+    {
+      "name": "Start",
+      "qualified_name": "score::td::PtpControlFlowDivider::Start",
+      "kind": "method",
+      "signature": "Start : void () noexcept"
+    },
+    {
+      "name": "Stop",
+      "qualified_name": "score::td::PtpControlFlowDivider::Stop",
+      "kind": "method",
+      "signature": "Stop : void () noexcept"
+    },
+    {
+      "name": "Stop",
+      "qualified_name": "score::td::PtpControlFlowDivider::Stop",
+      "kind": "method",
+      "signature": "Stop : void () noexcept"
+    },
+    {
+      "name": "~BaseMachine",
+      "qualified_name": "score::td::PtpControlFlowDivider::~BaseMachine",
+      "kind": "destructor",
+      "signature": "~BaseMachine : void () noexcept"
+    },
+    {
+      "name": "~Consumer<T>",
+      "qualified_name": "score::td::PtpControlFlowDivider::~Consumer<T>",
+      "kind": "destructor",
+      "signature": "~Consumer<T> : void ()"
+    },
+    {
+      "name": "~ControlFlowDivider<DataType, BufferSize>",
+      "qualified_name": "score::td::PtpControlFlowDivider::~ControlFlowDivider<DataType, BufferSize>",
+      "kind": "destructor",
+      "signature": "~ControlFlowDivider<DataType, BufferSize> : void ()"
+    },
+    {
+      "name": "~EventDrivenMachine",
+      "qualified_name": "score::td::PtpControlFlowDivider::~EventDrivenMachine",
+      "kind": "destructor",
+      "signature": "~EventDrivenMachine : void () noexcept"
+    },
+    {
+      "name": "~Producer<T>",
+      "qualified_name": "score::td::PtpControlFlowDivider::~Producer<T>",
+      "kind": "destructor",
+      "signature": "~Producer<T> : void ()"
+    }
+  ],
+  "version": "1"
+}

@@ -1,0 +1,151 @@
+{
+  "target": "//score/time_daemon:svt_verification_machine",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "CreateSvtVerificationMachine",
+      "qualified_name": "score::td::CreateSvtVerificationMachine",
+      "kind": "function",
+      "signature": "CreateSvtVerificationMachine : std::shared_ptr<SvtVerificationMachine> (const std::string &)"
+    },
+    {
+      "name": "SvtVerificationMachine",
+      "qualified_name": "score::td::SvtVerificationMachine",
+      "kind": "type_alias",
+      "signature": "using SvtVerificationMachine = VerificationMachine<PtpTimeInfo>"
+    },
+    {
+      "name": "BaseMachine",
+      "qualified_name": "score::td::SvtVerificationMachine::BaseMachine",
+      "kind": "constructor",
+      "signature": "BaseMachine : void (std::string)"
+    },
+    {
+      "name": "GetName",
+      "qualified_name": "score::td::SvtVerificationMachine::GetName",
+      "kind": "method",
+      "signature": "GetName : std::string () const noexcept"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::SvtVerificationMachine::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::SvtVerificationMachine::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "OnMessage",
+      "qualified_name": "score::td::SvtVerificationMachine::OnMessage",
+      "kind": "method",
+      "signature": "OnMessage : void (DataType)"
+    },
+    {
+      "name": "OnMessage",
+      "qualified_name": "score::td::SvtVerificationMachine::OnMessage",
+      "kind": "method",
+      "signature": "OnMessage : void (T)"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::SvtVerificationMachine::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const DataType &)>)"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::SvtVerificationMachine::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const T &)>)"
+    },
+    {
+      "name": "VerificationMachine<DataType>",
+      "qualified_name": "score::td::SvtVerificationMachine::VerificationMachine<DataType>",
+      "kind": "template_function",
+      "signature": "VerificationMachine<DataType>"
+    },
+    {
+      "name": "~BaseMachine",
+      "qualified_name": "score::td::SvtVerificationMachine::~BaseMachine",
+      "kind": "destructor",
+      "signature": "~BaseMachine : void () noexcept"
+    },
+    {
+      "name": "~Consumer<T>",
+      "qualified_name": "score::td::SvtVerificationMachine::~Consumer<T>",
+      "kind": "destructor",
+      "signature": "~Consumer<T> : void ()"
+    },
+    {
+      "name": "~Producer<T>",
+      "qualified_name": "score::td::SvtVerificationMachine::~Producer<T>",
+      "kind": "destructor",
+      "signature": "~Producer<T> : void ()"
+    },
+    {
+      "name": "~VerificationMachine<DataType>",
+      "qualified_name": "score::td::SvtVerificationMachine::~VerificationMachine<DataType>",
+      "kind": "destructor",
+      "signature": "~VerificationMachine<DataType> : void ()"
+    },
+    {
+      "name": "SynchronizationValidator",
+      "qualified_name": "score::td::SynchronizationValidator",
+      "kind": "class",
+      "signature": "class SynchronizationValidator"
+    },
+    {
+      "name": "SynchronizationValidator",
+      "qualified_name": "score::td::SynchronizationValidator::SynchronizationValidator",
+      "kind": "constructor",
+      "signature": "SynchronizationValidator : void ()"
+    },
+    {
+      "name": "DoValidation",
+      "qualified_name": "score::td::SynchronizationValidator::DoValidation",
+      "kind": "protected_method",
+      "signature": "DoValidation : void (PtpTimeInfo &)"
+    },
+    {
+      "name": "TimeJumpsValidator",
+      "qualified_name": "score::td::TimeJumpsValidator",
+      "kind": "class",
+      "signature": "class TimeJumpsValidator"
+    },
+    {
+      "name": "TimeJumpsValidator",
+      "qualified_name": "score::td::TimeJumpsValidator::TimeJumpsValidator",
+      "kind": "constructor",
+      "signature": "TimeJumpsValidator : void (PtpTimeInfo::ReferenceClock, std::chrono::nanoseconds, std::uint8_t, std::chrono::nanoseconds)"
+    },
+    {
+      "name": "DoValidation",
+      "qualified_name": "score::td::TimeJumpsValidator::DoValidation",
+      "kind": "protected_method",
+      "signature": "DoValidation : void (PtpTimeInfo &)"
+    },
+    {
+      "name": "TimeoutValidator",
+      "qualified_name": "score::td::TimeoutValidator",
+      "kind": "class",
+      "signature": "class TimeoutValidator"
+    },
+    {
+      "name": "TimeoutValidator",
+      "qualified_name": "score::td::TimeoutValidator::TimeoutValidator",
+      "kind": "constructor",
+      "signature": "TimeoutValidator : void (PtpTimeInfo::ReferenceClock, std::chrono::nanoseconds)"
+    },
+    {
+      "name": "DoValidation",
+      "qualified_name": "score::td::TimeoutValidator::DoValidation",
+      "kind": "protected_method",
+      "signature": "DoValidation : void (PtpTimeInfo &)"
+    }
+  ],
+  "version": "1"
+}

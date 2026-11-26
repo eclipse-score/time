@@ -12,17 +12,20 @@
  ********************************************************************************/
 #include "score/time_daemon/src/verification_machine/svt/validators/time_jumps_validator.h"
 #include "score/mw/log/logging.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/common/logging_contexts.h"
+#include <chrono>
+#include <cstdint>
+#include <optional>
+#include <utility>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 TimeJumpsValidator::TimeJumpsValidator(PtpTimeInfo::ReferenceClock debouncing_clock,
                                        std::chrono::nanoseconds max_time_jump_allowed,
-                                       std::chrono::nanoseconds sync_debounce_threshold,
-                                       std::uint8_t valid_frames_threshold)
+                                       std::uint8_t valid_frames_threshold,
+                                       std::chrono::nanoseconds sync_debounce_threshold)
     : max_time_jump_allowed_{max_time_jump_allowed},
       sync_debounce_threshold_{sync_debounce_threshold},
       valid_frames_threshold_{valid_frames_threshold},
@@ -43,7 +46,7 @@ void TimeJumpsValidator::DoValidation(PtpTimeInfo& data)
             HandleIdleState(data);
             break;
         case ProcessingStates::kInitialSyncDebouncing:
-            HandleInitialSyncDebouncingState();
+            HandleInitialSyncDebouncingState(data);
             break;
         case ProcessingStates::kTimeJumpHandling:
             SyncFramesHandler(data);
@@ -55,6 +58,11 @@ void TimeJumpsValidator::DoValidation(PtpTimeInfo& data)
 
 bool TimeJumpsValidator::IsTimeJumpDetected(const PtpTimeInfo& data)
 {
+    if (!last_sync_frame_.has_value())
+    {
+        return false;
+    }
+
     bool is_time_jump_detected{false};
 
     if (data.sync_fup_data.sync_ingress_timestamp > last_sync_frame_.value().sync_fup_data.sync_ingress_timestamp)
@@ -107,8 +115,17 @@ bool TimeJumpsValidator::IsTimeJumpDetected(const PtpTimeInfo& data)
     return is_time_jump_detected;
 }
 
-void TimeJumpsValidator::HandleIdleState(const PtpTimeInfo& data)
+void TimeJumpsValidator::ClearTimeJumpFlags(PtpTimeInfo& data)
 {
+    // Time jumps are only validated in kTimeJumpHandling. Flags from upstream (e.g. a stale snapshot after a
+    // restart) must not reach consumers before that.
+    data.status.is_time_jump_future = false;
+    data.status.is_time_jump_past = false;
+}
+
+void TimeJumpsValidator::HandleIdleState(PtpTimeInfo& data)
+{
+    ClearTimeJumpFlags(data);
     if (data.status.is_synchronized)
     {
         GoToInitialSyncDebouncing();
@@ -120,8 +137,9 @@ void TimeJumpsValidator::HandleIdleState(const PtpTimeInfo& data)
     }
 }
 
-void TimeJumpsValidator::HandleInitialSyncDebouncingState()
+void TimeJumpsValidator::HandleInitialSyncDebouncingState(PtpTimeInfo& data)
 {
+    ClearTimeJumpFlags(data);
     if ((sync_debouncing_init_time_ + sync_debounce_threshold_) < debouncing_clock_.Now().TimeSinceEpoch())
     {
         GoToTimeJumpHandling();
@@ -130,7 +148,10 @@ void TimeJumpsValidator::HandleInitialSyncDebouncingState()
 
 void TimeJumpsValidator::SyncFramesHandler(PtpTimeInfo& data)
 {
-    if (last_sync_frame_.has_value())
+    if (last_sync_frame_.has_value() &&
+        // When the same sync frame is delivered repeatedly, the repetition is neither a valid
+        // frame (which would otherwise clear a time jump too early) nor a jump.
+        (last_sync_frame_.value().sync_fup_data.sequence_id != data.sync_fup_data.sequence_id))
     {
         if (not(IsTimeJumpDetected(data)))
         {
@@ -189,5 +210,4 @@ void TimeJumpsValidator::GoToTimeJumpHandling()
     score::mw::log::LogDebug(kVerificationMachineContext) << "TimeJumpsValidator: Switch to kTimeJumpHandling state";
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

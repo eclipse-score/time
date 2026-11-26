@@ -18,15 +18,12 @@
 #include <memory>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Creates all handlers. Exactly one linked factory must define this function.
 std::vector<std::unique_ptr<TimebaseHandler>> CreateTimebaseHandlers();
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif
