@@ -74,7 +74,9 @@ bool ShmPTPEngine::ReadPTPSnapshot(PtpTimeInfo& info)
         initialized_ = was_waiting ? receiver_.Open(ipc_name_) : Initialize();
         waiting_for_channel_ = !initialized_;
         if (!initialized_)
+        {
             return false;
+        }
     }
 
     auto result = receiver_.Receive();
