@@ -46,7 +46,9 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     ipc_name_ = ipc_name;
     shm_resource_ = score::memory::shared::SharedMemoryFactory::Open(ipc_name, false);
     if (shm_resource_ == nullptr)
+    {
         return false;
+    }
 
     // construct<GptpIpcRegion>() on the publisher side aligns the object to
     // alignof(GptpIpcRegion) within the usable region.  We must apply the same
@@ -81,15 +83,21 @@ bool GptpIpcReceiver::LastReceiveStale() const
 bool GptpIpcReceiver::IsReplaced() const
 {
     if (shm_resource_ == nullptr)
+    {
         return false;
+    }
 
     struct stat mapped{};
     if (::fstat(static_cast<int>(shm_resource_->GetFileDescriptor()), &mapped) != 0)
+    {
         return false;
+    }
 
     const int fd = ::shm_open(ipc_name_.c_str(), O_RDONLY, static_cast<mode_t>(0));
     if (fd < 0)
+    {
         return false;  // name absent: nothing newer to switch to
+    }
 
     struct stat current{};
     const bool have_current = (::fstat(fd, &current) == 0);
