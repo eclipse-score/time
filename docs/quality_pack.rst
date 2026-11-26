@@ -67,6 +67,23 @@ Code coverage
   target and config and enforces the configured minimum coverage
   threshold.
 
+Public API surface
+==================
+
+Detects changes to the public C++ API by comparing the
+clang-extracted API of each public target with a committed lock file.
+
+- **Aggregate target:** ``//:api_surface_tests``.
+- **Command:** ``bazel test --config x86_64-linux //:api_surface_tests``. The
+  tests and suites are tagged ``manual`` and are not part of ``bazel test //...``.
+- **Lock file update:** ``bazel run --config x86_64-linux //:api_surface_update``
+  (or ``//tools/api_surface:<name>.update`` for one surface), only after an intentional API change. Review the lock file diff and commit it
+  with the change.
+- **CI:** the ``api-surface`` job in ``.github/workflows/build-linux.yml``
+  fails the pull request on any difference.
+- **Details:** scope, update procedure and limitations are described in
+  ``tools/api_surface/README.md``.
+
 Requirements traceability (dashboards + gate)
 =============================================
 

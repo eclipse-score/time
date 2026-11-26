@@ -21,9 +21,7 @@
 #include <memory>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Main entry point for the TimeDaemon process. Orchestrates the lifecycle
@@ -59,20 +57,22 @@ class TimeDaemon final : public score::mw::lifecycle::Application
     /// Execution loop monitors stop_token. On termination request, stops all
     /// ProactiveMachines in reverse order of startup for clean shutdown.
     ///
+    /// Also leaves the loop when a handler reports failure, e.g. an initialization timeout.
+    ///
     /// @param token Stop token for graceful shutdown.
-    /// @return 0 on success, non-zero on failure.
+    /// @return EXIT_SUCCESS after a requested stop, EXIT_FAILURE if a handler failed.
     std::int32_t Run(const score::cpp::stop_token& token) override;
 
   private:
     void InitializeAllTimebases();
     void StartAllTimebases(const score::cpp::stop_token& token);
     void IterateAllTimebases();
+    [[nodiscard]] bool AnyTimebaseFailed() const;
     void StopAllTimebases();
 
     std::vector<std::unique_ptr<TimebaseHandler>> timebase_handlers_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIME_DAEMON_H

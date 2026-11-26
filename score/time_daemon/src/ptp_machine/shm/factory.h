@@ -19,9 +19,7 @@
 #include <memory>
 #include <string>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -38,7 +36,6 @@ namespace td
 std::shared_ptr<GPTPShmMachine> CreateGPTPShmMachine(const std::string& name,
                                                      const std::string& ipc_name = score::ts::details::kGptpIpcName);
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_SHM_FACTORY_H

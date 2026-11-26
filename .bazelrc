@@ -33,7 +33,6 @@ common --http_timeout_scaling=4.0
 # use Android; unset ANDROID_HOME to prevent the extension from attempting the lookup.
 common --repo_env=ANDROID_HOME=
 
-build --@score_baselibs//score/json:base_library=nlohmann
 build --@score_communication//score/memory/shared/flags:use_typedshmd=False
 build --credential_helper="*.qnx.com=%workspace%/.github/tools/qnx_credential_helper.py"
 
@@ -96,7 +95,9 @@ build:asan_ubsan_lsan --config=with_debug_symbols
 build:asan_ubsan_lsan --copt=-fsanitize=undefined,address,leak
 build:asan_ubsan_lsan --linkopt=-fsanitize=undefined,address,leak
 build:asan_ubsan_lsan --platform_suffix=asan_ubsan_lsan
-build:asan_ubsan_lsan --@score_cpp_policies//sanitizers/flags:sanitizer=asan_ubsan_lsan
+build:asan_ubsan_lsan --@score_cpp_policies//sanitizers/flags:asan=True
+build:asan_ubsan_lsan --@score_cpp_policies//sanitizers/flags:ubsan=True
+build:asan_ubsan_lsan --@score_cpp_policies//sanitizers/flags:lsan=True
 test:asan_ubsan_lsan --run_under=@score_cpp_policies//sanitizers:wrapper
 test:asan_ubsan_lsan --test_tag_filters=-no-asan,-no-lsan,-no-ubsan
 test:asan_ubsan_lsan --build_tests_only
@@ -105,6 +106,20 @@ test:asan_ubsan_lsan --build_tests_only
 build:asan  --config=asan_ubsan_lsan
 build:ubsan --config=asan_ubsan_lsan
 build:lsan  --config=asan_ubsan_lsan
+
+# ThreadSanitizer — must run as a separate job (can't be combined with ASan/LSan;
+# TSan+UBSan on GCC 12 gives false data races)
+build:tsan --config=with_debug_symbols
+# -O1 to speed up TSan runs
+build:tsan --copt=-O1
+build:tsan --copt=-fsanitize=thread
+build:tsan --linkopt=-fsanitize=thread
+build:tsan --copt=-Wno-error=tsan
+build:tsan --platform_suffix=tsan
+build:tsan --@score_cpp_policies//sanitizers/flags:tsan=True
+test:tsan --run_under=@score_cpp_policies//sanitizers:wrapper
+test:tsan --test_tag_filters=-no-tsan
+test:tsan --build_tests_only
 
 # -------------------------------------------------------------------------------
 # Clang-tidy static analysis — powered by score_cpp_policies

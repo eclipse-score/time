@@ -1,0 +1,85 @@
+{
+  "target": "//score/time_daemon:ptp_machine",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "PTPMachine",
+      "qualified_name": "score::td::PTPMachine",
+      "kind": "template_class",
+      "signature": "PTPMachine"
+    },
+    {
+      "name": "PTPMachine",
+      "qualified_name": "score::td::PTPMachine",
+      "kind": "class",
+      "signature": "class PTPMachine"
+    },
+    {
+      "name": "PTPMachine<PTPEngine>",
+      "qualified_name": "score::td::PTPMachine::PTPMachine<PTPEngine>",
+      "kind": "template_function",
+      "signature": "PTPMachine<PTPEngine>"
+    },
+    {
+      "name": "~PTPMachine<PTPEngine>",
+      "qualified_name": "score::td::PTPMachine::~PTPMachine<PTPEngine>",
+      "kind": "destructor",
+      "signature": "~PTPMachine<PTPEngine> : void ()"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::PTPMachine::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::PTPMachine::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const PtpTimeInfo &)>)"
+    },
+    {
+      "name": "PeriodicTask",
+      "qualified_name": "score::td::PTPMachine::PeriodicTask",
+      "kind": "protected_method",
+      "signature": "PeriodicTask : void () noexcept"
+    },
+    {
+      "name": "~PTPMachine<PTPEngine>",
+      "qualified_name": "score::td::~PTPMachine<PTPEngine>",
+      "kind": "destructor",
+      "signature": "~PTPMachine<PTPEngine> : void ()"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const PtpTimeInfo &)>)"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "Deinit",
+      "qualified_name": "score::td::Deinit",
+      "kind": "method",
+      "signature": "Deinit : void ()"
+    },
+    {
+      "name": "PeriodicTask",
+      "qualified_name": "score::td::PeriodicTask",
+      "kind": "method",
+      "signature": "PeriodicTask : void () noexcept"
+    },
+    {
+      "name": "Publish",
+      "qualified_name": "score::td::Publish",
+      "kind": "method",
+      "signature": "Publish : void (const PtpTimeInfo &)"
+    }
+  ],
+  "version": "1"
+}

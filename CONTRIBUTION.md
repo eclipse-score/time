@@ -33,3 +33,5 @@ Please use the [Stakeholder and Tool Requirements Template](https://eclipse-scor
 Please note, that all Git commit messages must adhere the rules described in the [Eclipse Foundation Project Handbook](https://www.eclipse.org/projects/handbook/#resources-commit).
 
 Please find process descriptions here: [process description](https://eclipse-score.github.io/score/process_description/).
+
+Changes to the public C++ API are checked by the API surface gate in CI. If you change the API on purpose, update and commit the lock files as described in [tools/api_surface/README.md](tools/api_surface/README.md).
