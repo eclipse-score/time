@@ -26,15 +26,15 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=18bd87630a240e9c25be" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=75c7c72ae941e8b558d8" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=415257cb" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=82a1844f" />
-    <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=8048e6ee" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score.css?v=5737673c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_needs.css?v=6a6a7ab0" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/score_design.css?v=f381fa98" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
@@ -45,17 +45,17 @@
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-needs/modern.css?v=803738c0" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../_static/scripts/fontawesome.js?digest=18bd87630a240e9c25be"></script>
+  <script defer src="../../_static/scripts/fontawesome.js?digest=75c7c72ae941e8b558d8"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8" />
 
     <script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
     <script src="../../_static/documentation_options.js?v=7f41d439"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script src="../../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
     <script src="../../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
     <script src="../../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
@@ -63,7 +63,7 @@
     <script src="../../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'time_daemon/detailed_design/index';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.23.0';
+        DOCUMENTATION_OPTIONS.theme_version = '0.24.0';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://eclipse-score.github.io/time/versions.json';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = '';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
@@ -125,7 +125,7 @@
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation" aria-expanded="false" aria-controls="pst-primary-sidebar-modal">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -144,8 +144,14 @@
   
   
   
+    
+    
+      
+    
+    
+    <img src="../../_static/Eclipse-S-CORE-colour-horizontal.png" class="logo__image only-light" alt="Eclipse S-CORE documentation - Home"/>
+    <img src="../../_static/Eclipse-S-CORE-dark.png" class="logo__image only-dark pst-js-only" alt="Eclipse S-CORE documentation - Home"/>
   
-    <p class="title logo__title">Eclipse S-CORE</p>
   
 </a></div>
     
@@ -209,14 +215,14 @@
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
   <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -271,7 +277,7 @@
   
 
   
-    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+    <button type="button" class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page" aria-expanded="false" aria-controls="pst-secondary-sidebar-modal">
       <span class="fa-solid fa-outdent"></span>
     </button>
   
@@ -285,7 +291,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <dialog id="pst-primary-sidebar-modal" tabindex="-1"></dialog>
       <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
@@ -342,14 +348,14 @@
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
   <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
-    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -456,7 +462,7 @@
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="../../index.html" class="nav-link" aria-label="Home">
-        <i class="fa-solid fa-home"></i>
+        <i class="fa-solid fa-house"></i>
       </a>
     </li>
     
@@ -484,7 +490,7 @@
                   
   <section id="time-daemon-detailed-design">
 <span id="id1"></span><h1>Time Daemon Detailed Design<a class="headerlink" href="#time-daemon-detailed-design" title="Link to this heading">#</a></h1>
-<div class="need_container docutils container" id="SNCB-4de6c4d7">
+<div class="need_container docutils container" id="SNCB-4a39aab1">
 <div class="pst-scrollable-table-container"><table class="need needs_grid_complex needs_layout_score needs_style_none needs_type_document table" id="doc__time_daemon_detailed_design">
 <tbody>
 <tr class="head row-odd"><td class="head_left" colspan="2"><div class="needs_head_left line-block">
@@ -543,7 +549,7 @@
 </ol>
 <p>The raw architectural diagram is represented below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-ca95c2c272c47ba254f2e509928e8f9f2c3d4e08.svg" type="image/svg+xml" style="width:721px;height:1022px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-ca95c2c272c47ba254f2e509928e8f9f2c3d4e08.svg" type="image/svg+xml" style="width:729px;height:1030px;background:#FFFFFF;"></object></p>
 </div></section>
 </section>
 <section id="rationale-behind-decomposition-into-units">
@@ -568,14 +574,14 @@ and clear responsibility boundaries critical for ASIL_B safety qualification.</p
 <p>Main classes and unit relationships are presented on this diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><figure class="align-center">
 <p class="plantuml">
-<object data="../../_images/plantuml-806e4092fde127973d17e0a8f4e855b0528b900d.svg" type="image/svg+xml" style="width:1803px;height:937px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-806e4092fde127973d17e0a8f4e855b0528b900d.svg" type="image/svg+xml" style="width:1811px;height:945px;background:#FFFFFF;"></object></p>
 </figure>
 </div></section>
 <section id="deployment-view">
 <h3>Deployment View<a class="headerlink" href="#deployment-view" title="Link to this heading">#</a></h3>
 <p>The design deployment and process architecture is represented on this diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-315e6c0d3b3f6802e410968f8f94ba035004c8f6.svg" type="image/svg+xml" style="width:443px;height:898px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-315e6c0d3b3f6802e410968f8f94ba035004c8f6.svg" type="image/svg+xml" style="width:451px;height:906px;background:#FFFFFF;"></object></p>
 </div></section>
 </section>
 <section id="dynamic-diagrams-for-unit-interactions">
@@ -584,7 +590,7 @@ and clear responsibility boundaries critical for ASIL_B safety qualification.</p
 <h3>Data and Control Flow<a class="headerlink" href="#data-and-control-flow" title="Link to this heading">#</a></h3>
 <p>The data and control flow between units is presented in the following diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-f403f5c136569000ea63b8d95e5b4e84113a8c8b.svg" type="image/svg+xml" style="width:1863px;height:1142px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-f403f5c136569000ea63b8d95e5b4e84113a8c8b.svg" type="image/svg+xml" style="width:1839px;height:1201px;background:#FFFFFF;"></object></p>
 </div><p>On this view you can see several execution scopes:</p>
 <ol class="arabic simple">
 <li><p><strong>PTP retrieving scope</strong> — retrieves latest PTP data and publishes to <code class="docutils literal notranslate"><span class="pre">input_ptp_data</span></code> topic</p></li>
@@ -675,7 +681,7 @@ it invokes <code class="docutils literal notranslate"><span class="pre">CreateCo
 The status remains <code class="docutils literal notranslate"><span class="pre">kIdle</span></code>. Successful daemon initialization therefore means that setup is complete, not that
 machine initialization or startup is complete.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-1d87048b3a12eccda5bcffce0e181f83501e135b.svg" type="image/svg+xml" style="width:703px;height:606px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-1d87048b3a12eccda5bcffce0e181f83501e135b.svg" type="image/svg+xml" style="width:735px;height:625px;background:#FFFFFF;"></object></p>
 </div><p>The four status values have the following actions:</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">kIdle</span></code></dt><dd><p>The handler has not been started. <code class="docutils literal notranslate"><span class="pre">RunOnce()</span></code> does nothing in this state. After setup, <code class="docutils literal notranslate"><span class="pre">Start()</span></code>
@@ -722,101 +728,101 @@ receives <code class="docutils literal notranslate"><span class="pre">Stop()</sp
 <h5>Application Interaction Views<a class="headerlink" href="#application-interaction-views" title="Link to this heading">#</a></h5>
 <p>Class diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-12616954b6650f62bda0e6c4a53d2b52dc1ee303.svg" type="image/svg+xml" style="width:1582px;height:899px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-12616954b6650f62bda0e6c4a53d2b52dc1ee303.svg" type="image/svg+xml" style="width:1590px;height:907px;background:#FFFFFF;"></object></p>
 </div><p>Initialization sequence showing component creation order and MessageBroker subscription wiring:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-466c110fc8f9cb870fd230080acc5a3b67c135a9.svg" type="image/svg+xml" style="width:1867px;height:1053px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-466c110fc8f9cb870fd230080acc5a3b67c135a9.svg" type="image/svg+xml" style="width:1833px;height:1052px;background:#FFFFFF;"></object></p>
 </div><p>Application orchestration is split into four views. Startup, handler starting, and shutdown belong to the same
 <code class="docutils literal notranslate"><span class="pre">TimeDaemon::Run()</span></code> call, which returns only after shutdown. Handler state transitions and initialization-result
 handling are covered by <a class="reference internal" href="#time-daemon-handler-lifecycle"><span class="std std-ref">Generic Handler Lifecycle</span></a>.</p>
 <p>Setup: creation and topic wiring of each handler’s machines.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-e58cbc6ce88753343c6c913c0883e3318a335148.svg" type="image/svg+xml" style="width:845px;height:591px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-e58cbc6ce88753343c6c913c0883e3318a335148.svg" type="image/svg+xml" style="width:835px;height:602px;background:#FFFFFF;"></object></p>
 </div><p>Startup: launch of each handler’s initialization worker.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-f8ed9cd73a9c6e5305d97ae4abedf7f6b75143ad.svg" type="image/svg+xml" style="width:719px;height:400px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-f8ed9cd73a9c6e5305d97ae4abedf7f6b75143ad.svg" type="image/svg+xml" style="width:724px;height:421px;background:#FFFFFF;"></object></p>
 </div><p>Handler starting: asynchronous machine initialization, non-blocking result handling, and machine startup.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-f70526b251a4e1739298ab1dedd3fabc014198cb.svg" type="image/svg+xml" style="width:1178px;height:731px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-f70526b251a4e1739298ab1dedd3fabc014198cb.svg" type="image/svg+xml" style="width:1275px;height:840px;background:#FFFFFF;"></object></p>
 </div><p>Shutdown: reverse-order stopping of handlers and proactive machines.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-1718aa29de271e3cfbfe8fa17272e9a672c0a06f.svg" type="image/svg+xml" style="width:857px;height:412px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-1718aa29de271e3cfbfe8fa17272e9a672c0a06f.svg" type="image/svg+xml" style="width:965px;height:447px;background:#FFFFFF;"></object></p>
 </div></section>
 </section>
 <section id="messagebroker">
 <h4>MessageBroker<a class="headerlink" href="#messagebroker" title="Link to this heading">#</a></h4>
 <p>Class diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-88b8230891972792dbe446cfb749106b3aef48b8.svg" type="image/svg+xml" style="width:1005px;height:603px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-88b8230891972792dbe446cfb749106b3aef48b8.svg" type="image/svg+xml" style="width:1013px;height:611px;background:#FFFFFF;"></object></p>
 </div><p>Initialization workflow:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-36e8863260b7688ceb90b833f246cd87aebb3579.svg" type="image/svg+xml" style="width:983px;height:741px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-36e8863260b7688ceb90b833f246cd87aebb3579.svg" type="image/svg+xml" style="width:997px;height:738px;background:#FFFFFF;"></object></p>
 </div><p>Message flow through MessageBroker showing topic distribution to multiple subscribers:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-3ef914768ce44e6cf917df5f8e572ac37cf5eb16.svg" type="image/svg+xml" style="width:721px;height:448px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-3ef914768ce44e6cf917df5f8e572ac37cf5eb16.svg" type="image/svg+xml" style="width:761px;height:479px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="controlflowdivider">
 <h4>ControlFlowDivider<a class="headerlink" href="#controlflowdivider" title="Link to this heading">#</a></h4>
 <p>Class diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-171f4a8730ac697da43cb7ec61d088ea2de46ea4.svg" type="image/svg+xml" style="width:739px;height:883px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-171f4a8730ac697da43cb7ec61d088ea2de46ea4.svg" type="image/svg+xml" style="width:747px;height:891px;background:#FFFFFF;"></object></p>
 </div><p>Initialization workflow:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-aecf9c7e34bc627f63f88b842add6167a4b7d03c.svg" type="image/svg+xml" style="width:728px;height:650px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-aecf9c7e34bc627f63f88b842add6167a4b7d03c.svg" type="image/svg+xml" style="width:722px;height:647px;background:#FFFFFF;"></object></p>
 </div><p>Thread separation and periodic republishing workflow:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-faf567a6b64f3bef5263641d97e4a4c7a6bd7dea.svg" type="image/svg+xml" style="width:958px;height:1050px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-faf567a6b64f3bef5263641d97e4a4c7a6bd7dea.svg" type="image/svg+xml" style="width:957px;height:1085px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="ptpmachine">
 <h4>PTPMachine<a class="headerlink" href="#ptpmachine" title="Link to this heading">#</a></h4>
 <p>Class diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-6b3406668be50bd0fd83c34ecfefe755ef0d0771.svg" type="image/svg+xml" style="width:701px;height:867px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-6b3406668be50bd0fd83c34ecfefe755ef0d0771.svg" type="image/svg+xml" style="width:709px;height:875px;background:#FFFFFF;"></object></p>
 </div><p>Initialization workflow:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-e5002e56c70667eab9f5801f15ac505129db9e78.svg" type="image/svg+xml" style="width:777px;height:902px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-e5002e56c70667eab9f5801f15ac505129db9e78.svg" type="image/svg+xml" style="width:787px;height:889px;background:#FFFFFF;"></object></p>
 </div><p>PTP data retrieval cycle from shared memory:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-135b417eefd37671114b189dfa455a291cada404.svg" type="image/svg+xml" style="width:841px;height:680px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-135b417eefd37671114b189dfa455a291cada404.svg" type="image/svg+xml" style="width:824px;height:701px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="shmptpengine">
 <h4>ShmPTPEngine<a class="headerlink" href="#shmptpengine" title="Link to this heading">#</a></h4>
 <p>Class diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-13fc2129014c758a6ae4acfa1827a0160a7f046e.svg" type="image/svg+xml" style="width:1028px;height:1266px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-13fc2129014c758a6ae4acfa1827a0160a7f046e.svg" type="image/svg+xml" style="width:1036px;height:1274px;background:#FFFFFF;"></object></p>
 </div><p>Initialization workflow:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-52afceb35451c971f128df9e2c6d6bcf66e434ec.svg" type="image/svg+xml" style="width:1434px;height:1023px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-52afceb35451c971f128df9e2c6d6bcf66e434ec.svg" type="image/svg+xml" style="width:1427px;height:1024px;background:#FFFFFF;"></object></p>
 </div><p>Shared memory read from TimeSlave gPTP publisher:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-305a33deed2f0228d5fd6a1c6458275ef31273e3.svg" type="image/svg+xml" style="width:1424px;height:907px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-305a33deed2f0228d5fd6a1c6458275ef31273e3.svg" type="image/svg+xml" style="width:1591px;height:966px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="verificationmachine">
 <h4>VerificationMachine<a class="headerlink" href="#verificationmachine" title="Link to this heading">#</a></h4>
 <p>Class diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-a17eb8a77b088490421f32c104ecd934577d3901.svg" type="image/svg+xml" style="width:997px;height:851px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-a17eb8a77b088490421f32c104ecd934577d3901.svg" type="image/svg+xml" style="width:1005px;height:859px;background:#FFFFFF;"></object></p>
 </div><p>Initialization workflow:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-659ea2aba5fae3d26b16e7b0f1abf155881ab8b8.svg" type="image/svg+xml" style="width:912px;height:723px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-659ea2aba5fae3d26b16e7b0f1abf155881ab8b8.svg" type="image/svg+xml" style="width:922px;height:710px;background:#FFFFFF;"></object></p>
 </div><p>Time data validation stages (sync check, timeout, jump detection):</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-28db82f2db9ddab34b7bbd6c8ba2c2bfa7ab0675.svg" type="image/svg+xml" style="width:1128px;height:775px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-28db82f2db9ddab34b7bbd6c8ba2c2bfa7ab0675.svg" type="image/svg+xml" style="width:1113px;height:782px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="ipc-machine">
 <h4>IPC Machine<a class="headerlink" href="#ipc-machine" title="Link to this heading">#</a></h4>
 <p>Class diagram:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-f8b4c50d53ef2dc72b75fc502573e2e2212d9f97.svg" type="image/svg+xml" style="width:1001px;height:725px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-f8b4c50d53ef2dc72b75fc502573e2e2212d9f97.svg" type="image/svg+xml" style="width:1009px;height:733px;background:#FFFFFF;"></object></p>
 </div><p>Initialization workflow:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-7f5741df5cca1b0b7d80aa95736896b8e8e4b57a.svg" type="image/svg+xml" style="width:1412px;height:650px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-7f5741df5cca1b0b7d80aa95736896b8e8e4b57a.svg" type="image/svg+xml" style="width:1433px;height:671px;background:#FFFFFF;"></object></p>
 </div><p>Qualified time snapshot publishing to client shared memory:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-47eb4876d9c1b93672c8e7bc1bb3620cbe645be1.svg" type="image/svg+xml" style="width:775px;height:511px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-47eb4876d9c1b93672c8e7bc1bb3620cbe645be1.svg" type="image/svg+xml" style="width:898px;height:542px;background:#FFFFFF;"></object></p>
 </div><p>Client-side receive from TimeDaemon shared memory channel:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-68f3cafb04b9547ac34311cd73191ec5d7911628.svg" type="image/svg+xml" style="width:470px;height:341px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-68f3cafb04b9547ac34311cd73191ec5d7911628.svg" type="image/svg+xml" style="width:500px;height:358px;background:#FFFFFF;"></object></p>
 </div></section>
 </section>
 <section id="logging-configuration">
@@ -965,7 +971,7 @@ handling are covered by <a class="reference internal" href="#time-daemon-handler
 <li><p>A <code class="docutils literal notranslate"><span class="pre">score::time::qvt</span></code> library for diagnostic applications</p></li>
 </ol>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-77f38ffd697d542f55085a276855c3ca12aa56cb.svg" type="image/svg+xml" style="width:552px;height:1051px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-77f38ffd697d542f55085a276855c3ca12aa56cb.svg" type="image/svg+xml" style="width:560px;height:1059px;background:#FFFFFF;"></object></p>
 </div><p>The <code class="docutils literal notranslate"><span class="pre">Qualified</span> <span class="pre">Vehicle</span> <span class="pre">Time</span></code> component is integrated into the existing processing pipeline:</p>
 <ol class="arabic simple">
 <li><p>It subscribes to the <a class="reference internal" href="#verified-ptp-data"><span class="std std-ref">verified_ptp_data</span></a> topic from the <code class="docutils literal notranslate"><span class="pre">VerificationMachine</span></code></p></li>
@@ -979,7 +985,7 @@ handling are covered by <a class="reference internal" href="#time-daemon-handler
 </ol>
 <p>The extended data flow with Qualified Vehicle Time integration is shown below:</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-8a440da90b6394c6871ef4970751fe210c53ab89.svg" type="image/svg+xml" style="width:2661px;height:1681px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-8a440da90b6394c6871ef4970751fe210c53ab89.svg" type="image/svg+xml" style="width:2636px;height:1754px;background:#FFFFFF;"></object></p>
 </div></section>
 <section id="example-based-on-absolute-time-integration">
 <h5>Example based on Absolute Time integration<a class="headerlink" href="#example-based-on-absolute-time-integration" title="Link to this heading">#</a></h5>
@@ -993,10 +999,10 @@ handling are covered by <a class="reference internal" href="#time-daemon-handler
 </ol>
 <p>The way how it is integrated is presented below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-738d51a1415a2f35c5ace1a2d31a370fc4113c1b.svg" type="image/svg+xml" style="width:777px;height:1088px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-738d51a1415a2f35c5ace1a2d31a370fc4113c1b.svg" type="image/svg+xml" style="width:785px;height:1096px;background:#FFFFFF;"></object></p>
 </div><p>The control and data flow with Absolute Time integration is shown below.</p>
 <div style="overflow-x: auto; max-width: 100%;"><p class="plantuml">
-<object data="../../_images/plantuml-194554f8356adac513dedef431dbb518e91c757a.svg" type="image/svg+xml" style="width:1435px;height:751px;background:#FFFFFF;"></object></p>
+<object data="../../_images/plantuml-194554f8356adac513dedef431dbb518e91c757a.svg" type="image/svg+xml" style="width:1469px;height:768px;background:#FFFFFF;"></object></p>
 </div></section>
 </section>
 </section>
@@ -1108,7 +1114,7 @@ This component shall:</p>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <dialog id="pst-secondary-sidebar-modal" tabindex="-1"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
@@ -1213,8 +1219,8 @@ This component shall:</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=18bd87630a240e9c25be"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=18bd87630a240e9c25be"></script>
+  <script defer src="../../_static/scripts/bootstrap.js?digest=75c7c72ae941e8b558d8"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=75c7c72ae941e8b558d8"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1237,7 +1243,7 @@ This component shall:</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.23.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.24.0.
 </p></div>
       
     </div>
