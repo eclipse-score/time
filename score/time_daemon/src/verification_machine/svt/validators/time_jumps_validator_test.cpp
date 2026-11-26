@@ -339,8 +339,8 @@ TEST(TimeJumpsValidatorTest, EmptySnapshotDropsReferenceAndRestartsDebouncing)
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     const auto at = [](std::int64_t ns) {
         return score::time::ClockSnapshot<score::time::HighResSteadyTime::Timepoint, score::time::NoStatus>{
@@ -402,8 +402,8 @@ TEST(TimeJumpsValidatorTest, JumpAfterRestartIsStillDetectedOnceDebouncingComple
 
     TimeJumpsValidator validator(score::time::test_utils::ClockTestFactory<score::time::HighResSteadyTime>::Make(mock),
                                  std::chrono::nanoseconds(500'000),
-                                 std::chrono::nanoseconds(5'000'000),
-                                 2U);
+                                 2U,
+                                 std::chrono::nanoseconds(5'000'000));
 
     // Always 6 s after the previous call's init, so every debounce completes on its first check.
     std::int64_t now_ns = 0;
