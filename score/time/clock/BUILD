@@ -16,7 +16,10 @@ load("@score_baselibs//:bazel/unit_tests.bzl", "cc_unit_test_suites_for_host_and
 alias(
     name = "clock_core",
     actual = "//score/time/clock/src:clock_core",
-    visibility = ["//score/time:__subpackages__"],
+    visibility = [
+        "//score/time:__subpackages__",
+        "//tools/api_surface:__pkg__",
+    ],
 )
 
 alias(

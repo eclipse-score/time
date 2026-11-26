@@ -1,0 +1,313 @@
+{
+  "target": "//score/time/vehicle_time:interface",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "ClockTraits",
+      "qualified_name": "score::time::ClockTraits<score::time::VehicleTime>",
+      "kind": "extern_template",
+      "signature": "extern template struct ClockTraits<score::time::VehicleTime>"
+    },
+    {
+      "name": "InitializationHook",
+      "qualified_name": "score::time::InitializationHook<score::time::VehicleTime>",
+      "kind": "extern_template",
+      "signature": "extern template struct InitializationHook<score::time::VehicleTime>"
+    },
+    {
+      "name": "AvailabilityHook",
+      "qualified_name": "score::time::AvailabilityHook<score::time::VehicleTime>",
+      "kind": "extern_template",
+      "signature": "extern template struct AvailabilityHook<score::time::VehicleTime>"
+    },
+    {
+      "name": "SubscriptionHook",
+      "qualified_name": "score::time::SubscriptionHook<score::time::VehicleTime, score::time::TimeSlaveSyncData<score::time::VehicleTime>>",
+      "kind": "extern_template",
+      "signature": "extern template struct SubscriptionHook<score::time::VehicleTime, score::time::TimeSlaveSyncData<score::time::VehicleTime>>"
+    },
+    {
+      "name": "SubscriptionHook",
+      "qualified_name": "score::time::SubscriptionHook<score::time::VehicleTime, score::time::PDelayMeasurementData<score::time::VehicleTime>>",
+      "kind": "extern_template",
+      "signature": "extern template struct SubscriptionHook<score::time::VehicleTime, score::time::PDelayMeasurementData<score::time::VehicleTime>>"
+    },
+    {
+      "name": "SubscriptionHook",
+      "qualified_name": "score::time::SubscriptionHook<score::time::VehicleTime, score::time::VehicleTimeStatus>",
+      "kind": "extern_template",
+      "signature": "extern template struct SubscriptionHook<score::time::VehicleTime, score::time::VehicleTimeStatus>"
+    },
+    {
+      "name": "VehicleClock",
+      "qualified_name": "score::time::VehicleClock",
+      "kind": "type_alias",
+      "signature": "using VehicleClock = Clock<VehicleTime>"
+    },
+    {
+      "name": "GetInstance",
+      "qualified_name": "score::time::VehicleClock::GetInstance",
+      "kind": "method",
+      "signature": "static GetInstance : Clock<Tag> () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::time::VehicleClock::Init",
+      "kind": "template_function",
+      "signature": "Init : bool () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "IsAvailable",
+      "qualified_name": "score::time::VehicleClock::IsAvailable",
+      "kind": "template_function",
+      "signature": "IsAvailable : bool () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Now",
+      "qualified_name": "score::time::VehicleClock::Now",
+      "kind": "method",
+      "signature": "Now : Snapshot () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Subscribe",
+      "qualified_name": "score::time::VehicleClock::Subscribe",
+      "kind": "template_function",
+      "signature": "Subscribe : void (typename SubscriptionHook<Tag, EventType>::Callback) noexcept"
+    },
+    {
+      "name": "Unsubscribe",
+      "qualified_name": "score::time::VehicleClock::Unsubscribe",
+      "kind": "template_function",
+      "signature": "Unsubscribe : void () noexcept"
+    },
+    {
+      "name": "WaitUntilAvailable",
+      "qualified_name": "score::time::VehicleClock::WaitUntilAvailable",
+      "kind": "template_function",
+      "signature": "WaitUntilAvailable : bool (const score::cpp::stop_token &, std::chrono::steady_clock::time_point) const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "VehicleTimePoint",
+      "qualified_name": "score::time::VehicleTimePoint",
+      "kind": "type_alias",
+      "signature": "using VehicleTimePoint = ClockTraits<VehicleTime>::Timepoint"
+    },
+    {
+      "name": "VehicleSnapshot",
+      "qualified_name": "score::time::VehicleSnapshot",
+      "kind": "type_alias",
+      "signature": "using VehicleSnapshot = ClockTraits<VehicleTime>::Snapshot"
+    },
+    {
+      "name": "VehicleClockBackend",
+      "qualified_name": "score::time::VehicleClockBackend",
+      "kind": "class",
+      "signature": "class VehicleClockBackend"
+    },
+    {
+      "name": "~VehicleClockBackend",
+      "qualified_name": "score::time::VehicleClockBackend::~VehicleClockBackend",
+      "kind": "destructor",
+      "signature": "~VehicleClockBackend : void () noexcept"
+    },
+    {
+      "name": "Now",
+      "qualified_name": "score::time::VehicleClockBackend::Now",
+      "kind": "method",
+      "signature": "Now : ClockSnapshot<VehicleTime::Timepoint, VehicleTimeStatus> () const noexcept"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::time::VehicleClockBackend::Init",
+      "kind": "method",
+      "signature": "Init : bool () noexcept"
+    },
+    {
+      "name": "IsAvailable",
+      "qualified_name": "score::time::VehicleClockBackend::IsAvailable",
+      "kind": "method",
+      "signature": "IsAvailable : bool () const noexcept"
+    },
+    {
+      "name": "WaitUntilAvailable",
+      "qualified_name": "score::time::VehicleClockBackend::WaitUntilAvailable",
+      "kind": "method",
+      "signature": "WaitUntilAvailable : bool (const score::cpp::stop_token &, std::chrono::steady_clock::time_point) const noexcept"
+    },
+    {
+      "name": "SetTimeSlaveSyncDataReceivedCallback",
+      "qualified_name": "score::time::VehicleClockBackend::SetTimeSlaveSyncDataReceivedCallback",
+      "kind": "method",
+      "signature": "SetTimeSlaveSyncDataReceivedCallback : void (VehicleTime::TimeSlaveSyncDataReceivedCallback &&) noexcept"
+    },
+    {
+      "name": "UnsetTimeSlaveSyncDataReceivedCallback",
+      "qualified_name": "score::time::VehicleClockBackend::UnsetTimeSlaveSyncDataReceivedCallback",
+      "kind": "method",
+      "signature": "UnsetTimeSlaveSyncDataReceivedCallback : void () noexcept"
+    },
+    {
+      "name": "SetPDelayMeasurementFinishedCallback",
+      "qualified_name": "score::time::VehicleClockBackend::SetPDelayMeasurementFinishedCallback",
+      "kind": "method",
+      "signature": "SetPDelayMeasurementFinishedCallback : void (VehicleTime::PDelayMeasurementFinishedCallback &&) noexcept"
+    },
+    {
+      "name": "UnsetPDelayMeasurementFinishedCallback",
+      "qualified_name": "score::time::VehicleClockBackend::UnsetPDelayMeasurementFinishedCallback",
+      "kind": "method",
+      "signature": "UnsetPDelayMeasurementFinishedCallback : void () noexcept"
+    },
+    {
+      "name": "SetStatusChangedCallback",
+      "qualified_name": "score::time::VehicleClockBackend::SetStatusChangedCallback",
+      "kind": "method",
+      "signature": "SetStatusChangedCallback : void (VehicleTime::StatusChangedCallback &&) noexcept"
+    },
+    {
+      "name": "UnsetStatusChangedCallback",
+      "qualified_name": "score::time::VehicleClockBackend::UnsetStatusChangedCallback",
+      "kind": "method",
+      "signature": "UnsetStatusChangedCallback : void () noexcept"
+    },
+    {
+      "name": "VehicleTime",
+      "qualified_name": "score::time::VehicleTime",
+      "kind": "struct",
+      "signature": "struct VehicleTime"
+    },
+    {
+      "name": "StatusFlag",
+      "qualified_name": "score::time::VehicleTime::StatusFlag",
+      "kind": "enum",
+      "signature": "enum class StatusFlag"
+    },
+    {
+      "name": "kTimeOut",
+      "qualified_name": "score::time::VehicleTime::StatusFlag::kTimeOut",
+      "kind": "enum_value",
+      "signature": "kTimeOut"
+    },
+    {
+      "name": "kSynchronized",
+      "qualified_name": "score::time::VehicleTime::StatusFlag::kSynchronized",
+      "kind": "enum_value",
+      "signature": "kSynchronized"
+    },
+    {
+      "name": "kTimeLeapFuture",
+      "qualified_name": "score::time::VehicleTime::StatusFlag::kTimeLeapFuture",
+      "kind": "enum_value",
+      "signature": "kTimeLeapFuture"
+    },
+    {
+      "name": "kTimeLeapPast",
+      "qualified_name": "score::time::VehicleTime::StatusFlag::kTimeLeapPast",
+      "kind": "enum_value",
+      "signature": "kTimeLeapPast"
+    },
+    {
+      "name": "Duration",
+      "qualified_name": "score::time::VehicleTime::Duration",
+      "kind": "type_alias",
+      "signature": "using Duration = std::chrono::nanoseconds"
+    },
+    {
+      "name": "Timepoint",
+      "qualified_name": "score::time::VehicleTime::Timepoint",
+      "kind": "type_alias",
+      "signature": "using Timepoint = std::chrono::time_point<VehicleTime, Duration>"
+    },
+    {
+      "name": "kCallbackCapacity",
+      "qualified_name": "score::time::VehicleTime::kCallbackCapacity",
+      "kind": "variable",
+      "signature": "static constexpr kCallbackCapacity : const std::uint64_t"
+    },
+    {
+      "name": "TimeSlaveSyncDataReceivedCallback",
+      "qualified_name": "score::time::VehicleTime::TimeSlaveSyncDataReceivedCallback",
+      "kind": "type_alias",
+      "signature": "using TimeSlaveSyncDataReceivedCallback = score::cpp::callback<void (const TimeSlaveSyncData<VehicleTime> &), kCallbackCapacity>"
+    },
+    {
+      "name": "PDelayMeasurementFinishedCallback",
+      "qualified_name": "score::time::VehicleTime::PDelayMeasurementFinishedCallback",
+      "kind": "type_alias",
+      "signature": "using PDelayMeasurementFinishedCallback = score::cpp::callback<void (const PDelayMeasurementData<VehicleTime> &), kCallbackCapacity>"
+    },
+    {
+      "name": "StatusChangedCallback",
+      "qualified_name": "score::time::VehicleTime::StatusChangedCallback",
+      "kind": "type_alias",
+      "signature": "using StatusChangedCallback = score::cpp::callback<void (const VehicleTimeStatus &), kCallbackCapacity>"
+    },
+    {
+      "name": "PrintTo",
+      "qualified_name": "score::time::PrintTo",
+      "kind": "method",
+      "signature": "PrintTo : std::ostringstream () const"
+    },
+    {
+      "name": "VehicleTimeStatus",
+      "qualified_name": "score::time::VehicleTimeStatus",
+      "kind": "struct",
+      "signature": "struct VehicleTimeStatus"
+    },
+    {
+      "name": "flags",
+      "qualified_name": "score::time::VehicleTimeStatus::flags",
+      "kind": "field",
+      "signature": "flags"
+    },
+    {
+      "name": "rate_deviation",
+      "qualified_name": "score::time::VehicleTimeStatus::rate_deviation",
+      "kind": "field",
+      "signature": "rate_deviation"
+    },
+    {
+      "name": "IsReliable",
+      "qualified_name": "score::time::VehicleTimeStatus::IsReliable",
+      "kind": "method",
+      "signature": "IsReliable : bool () const noexcept"
+    },
+    {
+      "name": "HasBeenSynchronized",
+      "qualified_name": "score::time::VehicleTimeStatus::HasBeenSynchronized",
+      "kind": "method",
+      "signature": "HasBeenSynchronized : bool () const noexcept"
+    },
+    {
+      "name": "IsConsistent",
+      "qualified_name": "score::time::VehicleTimeStatus::IsConsistent",
+      "kind": "method",
+      "signature": "IsConsistent : bool () const noexcept"
+    },
+    {
+      "name": "RateDeviation",
+      "qualified_name": "score::time::VehicleTimeStatus::RateDeviation",
+      "kind": "method",
+      "signature": "RateDeviation : double () const noexcept"
+    },
+    {
+      "name": "IsFlagActive",
+      "qualified_name": "score::time::VehicleTimeStatus::IsFlagActive",
+      "kind": "method",
+      "signature": "IsFlagActive : bool (const VehicleTime::StatusFlag) const noexcept"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::time::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const VehicleTimeStatus &, const VehicleTimeStatus &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::time::operator!=",
+      "kind": "function",
+      "signature": "operator!= : bool (const VehicleTimeStatus &, const VehicleTimeStatus &) noexcept"
+    }
+  ],
+  "version": "1"
+}

@@ -11,9 +11,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
+load("@aspect_rules_py//py:defs.bzl", "py_venv")
 load("@pip_time_daemon_venv//:requirements.bzl", "all_requirements")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
-load("@score_tooling//python_basics:defs.bzl", "score_virtualenv")
 
 # To regenerate requirements.txt.lock after editing requirements.txt, run:
 #   bazel run //score/time_daemon/tests/component_tests:requirements.update
@@ -27,10 +27,16 @@ compile_pip_requirements(
     tags = ["manual"],
 )
 
-score_virtualenv(
+# Host-only developer venv: no Python toolchain exists for QNX target platforms.
+# Uses py_venv directly because score_virtualenv does not forward
+# target_compatible_with.
+py_venv(
     name = "python_tc_venv",
-    reqs = all_requirements,
+    data = ["@score_tooling//python_basics:pyproject.toml"],
+    package_collisions = "warning",
+    target_compatible_with = ["@platforms//os:linux"],
     venv_name = ".python_tc_venv",
+    deps = all_requirements + ["@rules_python//python/runfiles"],
 )
 
 # NOTE: The time_daemon_cit pytest target is intentionally absent.

@@ -21,9 +21,7 @@
 #include <memory>
 #include <vector>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Main entry point for the TimeDaemon process. Orchestrates the lifecycle
@@ -69,13 +67,12 @@ class TimeDaemon final : public score::mw::lifecycle::Application
     void InitializeAllTimebases();
     void StartAllTimebases(const score::cpp::stop_token& token);
     void IterateAllTimebases();
-    bool AnyTimebaseFailed() const;
+    [[nodiscard]] bool AnyTimebaseFailed() const;
     void StopAllTimebases();
 
     std::vector<std::unique_ptr<TimebaseHandler>> timebase_handlers_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIME_DAEMON_H

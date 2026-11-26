@@ -49,7 +49,7 @@ exports_files(
     [
         # Used by the @score_tooling coverage reporter to locate the workspace root.
         "MODULE.bazel",
-        # Local clang-tidy overrides, layered on top of the S-CORE baseline.
+        # Referenced by //tools/lint:linters.bzl as a local_configs entry for the clang-tidy aspect.
         ".clang-tidy",
     ],
 )
@@ -63,4 +63,17 @@ test_suite(
         "//score/ts_client/src:unit_test_suite_host",
     ],
     visibility = ["//visibility:public"],
+)
+
+test_suite(
+    name = "api_surface_tests",
+    # Run only by name, so //... skips the Linux/clang-only checks.
+    tags = ["manual"],
+    tests = ["//tools/api_surface:api_surface_tests"],
+)
+
+alias(
+    name = "api_surface_update",
+    actual = "//tools/api_surface:update",
+    tags = ["manual"],
 )

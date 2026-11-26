@@ -1,0 +1,91 @@
+{
+  "target": "//score/time/steady_time:interface",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "ClockTraits",
+      "qualified_name": "score::time::ClockTraits<std::chrono::steady_clock>",
+      "kind": "extern_template",
+      "signature": "extern template struct ClockTraits<std::chrono::steady_clock>"
+    },
+    {
+      "name": "SteadyClock",
+      "qualified_name": "score::time::SteadyClock",
+      "kind": "type_alias",
+      "signature": "using SteadyClock = Clock<std::chrono::steady_clock>"
+    },
+    {
+      "name": "GetInstance",
+      "qualified_name": "score::time::SteadyClock::GetInstance",
+      "kind": "method",
+      "signature": "static GetInstance : Clock<Tag> () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::time::SteadyClock::Init",
+      "kind": "template_function",
+      "signature": "Init : bool () noexcept [[nodiscard]]"
+    },
+    {
+      "name": "IsAvailable",
+      "qualified_name": "score::time::SteadyClock::IsAvailable",
+      "kind": "template_function",
+      "signature": "IsAvailable : bool () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Now",
+      "qualified_name": "score::time::SteadyClock::Now",
+      "kind": "method",
+      "signature": "Now : Snapshot () const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "Subscribe",
+      "qualified_name": "score::time::SteadyClock::Subscribe",
+      "kind": "template_function",
+      "signature": "Subscribe : void (typename SubscriptionHook<Tag, EventType>::Callback) noexcept"
+    },
+    {
+      "name": "Unsubscribe",
+      "qualified_name": "score::time::SteadyClock::Unsubscribe",
+      "kind": "template_function",
+      "signature": "Unsubscribe : void () noexcept"
+    },
+    {
+      "name": "WaitUntilAvailable",
+      "qualified_name": "score::time::SteadyClock::WaitUntilAvailable",
+      "kind": "template_function",
+      "signature": "WaitUntilAvailable : bool (const score::cpp::stop_token &, std::chrono::steady_clock::time_point) const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "SteadyTimePoint",
+      "qualified_name": "score::time::SteadyTimePoint",
+      "kind": "type_alias",
+      "signature": "using SteadyTimePoint = ClockTraits<std::chrono::steady_clock>::Timepoint"
+    },
+    {
+      "name": "SteadySnapshot",
+      "qualified_name": "score::time::SteadySnapshot",
+      "kind": "type_alias",
+      "signature": "using SteadySnapshot = ClockTraits<std::chrono::steady_clock>::Snapshot"
+    },
+    {
+      "name": "SteadyClockBackend",
+      "qualified_name": "score::time::SteadyClockBackend",
+      "kind": "class",
+      "signature": "class SteadyClockBackend"
+    },
+    {
+      "name": "~SteadyClockBackend",
+      "qualified_name": "score::time::SteadyClockBackend::~SteadyClockBackend",
+      "kind": "destructor",
+      "signature": "~SteadyClockBackend : void () noexcept"
+    },
+    {
+      "name": "Now",
+      "qualified_name": "score::time::SteadyClockBackend::Now",
+      "kind": "method",
+      "signature": "Now : ClockSnapshot<std::chrono::steady_clock::time_point, NoStatus> () const noexcept"
+    }
+  ],
+  "version": "1"
+}
