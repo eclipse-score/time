@@ -1,0 +1,79 @@
+{
+  "target": "//score/time_daemon:svt_publisher",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "CreateSvtPublisher",
+      "qualified_name": "score::td::CreateSvtPublisher",
+      "kind": "function",
+      "signature": "CreateSvtPublisher : std::shared_ptr<SvtPublisher> (const std::string &)"
+    },
+    {
+      "name": "SvtPublisher",
+      "qualified_name": "score::td::SvtPublisher",
+      "kind": "type_alias",
+      "signature": "using SvtPublisher = PublisherImpl<PtpTimeInfo, svt::TimeBaseSnapshot>"
+    },
+    {
+      "name": "BaseMachine",
+      "qualified_name": "score::td::SvtPublisher::BaseMachine",
+      "kind": "constructor",
+      "signature": "BaseMachine : void (std::string)"
+    },
+    {
+      "name": "GetName",
+      "qualified_name": "score::td::SvtPublisher::GetName",
+      "kind": "method",
+      "signature": "GetName : std::string () const noexcept"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::SvtPublisher::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::SvtPublisher::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "OnMessage",
+      "qualified_name": "score::td::SvtPublisher::OnMessage",
+      "kind": "method",
+      "signature": "OnMessage : void (DataType)"
+    },
+    {
+      "name": "OnMessage",
+      "qualified_name": "score::td::SvtPublisher::OnMessage",
+      "kind": "method",
+      "signature": "OnMessage : void (T)"
+    },
+    {
+      "name": "PublisherImpl<DataType, IpcDataType>",
+      "qualified_name": "score::td::SvtPublisher::PublisherImpl<DataType, IpcDataType>",
+      "kind": "constructor",
+      "signature": "PublisherImpl<DataType, IpcDataType> : void (const std::string &, const std::string &) noexcept"
+    },
+    {
+      "name": "~BaseMachine",
+      "qualified_name": "score::td::SvtPublisher::~BaseMachine",
+      "kind": "destructor",
+      "signature": "~BaseMachine : void () noexcept"
+    },
+    {
+      "name": "~Consumer<T>",
+      "qualified_name": "score::td::SvtPublisher::~Consumer<T>",
+      "kind": "destructor",
+      "signature": "~Consumer<T> : void ()"
+    },
+    {
+      "name": "~PublisherImpl<DataType, IpcDataType>",
+      "qualified_name": "score::td::SvtPublisher::~PublisherImpl<DataType, IpcDataType>",
+      "kind": "destructor",
+      "signature": "~PublisherImpl<DataType, IpcDataType> : void ()"
+    }
+  ],
+  "version": "1"
+}

@@ -20,9 +20,7 @@
 #include <chrono>
 #include <mutex>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /**
@@ -91,7 +89,6 @@ class PeriodicMachine : public ProactiveMachine
     const std::chrono::milliseconds kCycleTime_;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_COMMON_MACHINES_PERIODIC_MACHINE_H

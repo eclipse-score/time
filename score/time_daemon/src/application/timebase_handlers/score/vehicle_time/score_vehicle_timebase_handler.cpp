@@ -11,6 +11,8 @@
  * SPDX-License-Identifier: Apache-2.0
  ********************************************************************************/
 #include "score/time_daemon/src/application/timebase_handlers/score/vehicle_time/score_vehicle_timebase_handler.h"
+#include "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler.h"
+#include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 #include "score/time_daemon/src/control_flow_divider/ptp/factory.h"
 #include "score/time_daemon/src/ipc/svt/publisher/factory.h"
 #include "score/time_daemon/src/msg_broker/topic.h"
@@ -19,9 +21,7 @@
 
 #include <chrono>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 namespace
 {
@@ -38,9 +38,10 @@ ScoreVehicleTimebaseHandler::ScoreVehicleTimebaseHandler() noexcept
 
 void ScoreVehicleTimebaseHandler::CreateComponents() noexcept
 {
+    constexpr std::chrono::milliseconds kCtrlFlowDividerTimeout{250};
     // Start the control flow divider before the gPTP machine sends data.
     auto ctrl_flow_divider =
-        Add(CreatePtpControlFlowDivider("ptp_control_flow_divider", std::chrono::milliseconds{250}), kInitTimeout);
+        Add(CreatePtpControlFlowDivider("ptp_control_flow_divider", kCtrlFlowDividerTimeout), kInitTimeout);
     auto gptp_machine = Add(CreateGPTPShmMachine("ptp_worker"), kInitTimeout);
     auto verification_machine = Add(CreateSvtVerificationMachine("time_verification_worker"), kInitTimeout);
     auto ipc_publisher = Add(CreateSvtPublisher("svt_ipc_publisher"), kInitTimeout);
@@ -58,5 +59,4 @@ void ScoreVehicleTimebaseHandler::CreateComponents() noexcept
     Publish(verification_machine, validated_ptp_data_topic);
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td

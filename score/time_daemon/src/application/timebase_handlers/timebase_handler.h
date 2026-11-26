@@ -14,11 +14,10 @@
 #define SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLERS_TIMEBASE_HANDLER_H
 
 #include <score/stop_token.hpp>
+#include <cstdint>
 #include <future>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// \brief Abstract base class to handle timebase operations
@@ -48,7 +47,7 @@ class TimebaseHandler
     TimebaseHandler& operator=(TimebaseHandler&&) = delete;
 
     /// \brief Status of the timebase handler
-    enum class Status
+    enum class Status : std::uint8_t
     {
         kIdle = 0,  ///< Handler is idle, not initialized
         kStarting,  ///< Handler is starting
@@ -83,10 +82,9 @@ class TimebaseHandler
     ///
     /// Returns true once the handler gave up on its own, e.g. an initialization timeout.
     /// A stop requested from outside is not a failure. Call from the thread that calls RunOnce().
-    virtual bool IsFailed() const noexcept = 0;
+    [[nodiscard]] virtual bool IsFailed() const noexcept = 0;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLERS_TIMEBASE_HANDLER_H
