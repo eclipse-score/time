@@ -23,9 +23,7 @@
 #include <memory>
 #include <utility>
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// @brief Retrieves raw PTP time data from a customizable gPTP handler (e.g. Time Slave) and publishes it to
@@ -190,7 +188,6 @@ void PTPMachine<PTPEngine>::Publish(const PtpTimeInfo& data)
     }
 }
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_PTP_MACHINE_CORE_PTP_PTP_MACHINE_H

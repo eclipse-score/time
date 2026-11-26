@@ -1,0 +1,115 @@
+{
+  "target": "//score/time_daemon:gptp_shm_machine",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "CreateGPTPShmMachine",
+      "qualified_name": "score::td::CreateGPTPShmMachine",
+      "kind": "function",
+      "signature": "CreateGPTPShmMachine : std::shared_ptr<GPTPShmMachine> (const std::string &, const std::string &)"
+    },
+    {
+      "name": "GPTPShmMachine",
+      "qualified_name": "score::td::GPTPShmMachine",
+      "kind": "type_alias",
+      "signature": "using GPTPShmMachine = PTPMachine<details::ShmPTPEngine>"
+    },
+    {
+      "name": "BaseMachine",
+      "qualified_name": "score::td::GPTPShmMachine::BaseMachine",
+      "kind": "constructor",
+      "signature": "BaseMachine : void (std::string)"
+    },
+    {
+      "name": "GetName",
+      "qualified_name": "score::td::GPTPShmMachine::GetName",
+      "kind": "method",
+      "signature": "GetName : std::string () const noexcept"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::GPTPShmMachine::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "Init",
+      "qualified_name": "score::td::GPTPShmMachine::Init",
+      "kind": "method",
+      "signature": "Init : bool ()"
+    },
+    {
+      "name": "PTPMachine<PTPEngine>",
+      "qualified_name": "score::td::GPTPShmMachine::PTPMachine<PTPEngine>",
+      "kind": "template_function",
+      "signature": "PTPMachine<PTPEngine>"
+    },
+    {
+      "name": "PeriodicMachine",
+      "qualified_name": "score::td::GPTPShmMachine::PeriodicMachine",
+      "kind": "constructor",
+      "signature": "PeriodicMachine : void (const std::string &, const std::chrono::milliseconds)"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::GPTPShmMachine::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const PtpTimeInfo &)>)"
+    },
+    {
+      "name": "SetPublishCallback",
+      "qualified_name": "score::td::GPTPShmMachine::SetPublishCallback",
+      "kind": "method",
+      "signature": "SetPublishCallback : void (std::function<void (const T &)>)"
+    },
+    {
+      "name": "Start",
+      "qualified_name": "score::td::GPTPShmMachine::Start",
+      "kind": "method",
+      "signature": "Start : void () noexcept"
+    },
+    {
+      "name": "Start",
+      "qualified_name": "score::td::GPTPShmMachine::Start",
+      "kind": "method",
+      "signature": "Start : void () noexcept"
+    },
+    {
+      "name": "Stop",
+      "qualified_name": "score::td::GPTPShmMachine::Stop",
+      "kind": "method",
+      "signature": "Stop : void () noexcept"
+    },
+    {
+      "name": "Stop",
+      "qualified_name": "score::td::GPTPShmMachine::Stop",
+      "kind": "method",
+      "signature": "Stop : void () noexcept"
+    },
+    {
+      "name": "~BaseMachine",
+      "qualified_name": "score::td::GPTPShmMachine::~BaseMachine",
+      "kind": "destructor",
+      "signature": "~BaseMachine : void () noexcept"
+    },
+    {
+      "name": "~PTPMachine<PTPEngine>",
+      "qualified_name": "score::td::GPTPShmMachine::~PTPMachine<PTPEngine>",
+      "kind": "destructor",
+      "signature": "~PTPMachine<PTPEngine> : void ()"
+    },
+    {
+      "name": "~PeriodicMachine",
+      "qualified_name": "score::td::GPTPShmMachine::~PeriodicMachine",
+      "kind": "destructor",
+      "signature": "~PeriodicMachine : void () noexcept"
+    },
+    {
+      "name": "~Producer<T>",
+      "qualified_name": "score::td::GPTPShmMachine::~Producer<T>",
+      "kind": "destructor",
+      "signature": "~Producer<T> : void ()"
+    }
+  ],
+  "version": "1"
+}

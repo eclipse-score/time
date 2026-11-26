@@ -16,9 +16,7 @@
 #include "score/time_daemon/src/application/timebase_handlers/generic/generic_timebase_handler.h"
 #include "score/time_daemon/src/common/data_types/ptp_time_info.h"
 
-namespace score
-{
-namespace td
+namespace score::td
 {
 
 /// \brief S-CORE-specific implementation of a TimebaseHandler for Vehicle Time.
@@ -34,7 +32,7 @@ class ScoreVehicleTimebaseHandler final : public GenericTimebaseHandler<PtpTimeI
 {
   public:
     ScoreVehicleTimebaseHandler() noexcept;
-    virtual ~ScoreVehicleTimebaseHandler() noexcept = default;
+    ~ScoreVehicleTimebaseHandler() noexcept override = default;
     ScoreVehicleTimebaseHandler(const ScoreVehicleTimebaseHandler&) = delete;
     ScoreVehicleTimebaseHandler(ScoreVehicleTimebaseHandler&&) = delete;
     ScoreVehicleTimebaseHandler& operator=(const ScoreVehicleTimebaseHandler&) = delete;
@@ -44,7 +42,6 @@ class ScoreVehicleTimebaseHandler final : public GenericTimebaseHandler<PtpTimeI
     void CreateComponents() noexcept override;
 };
 
-}  // namespace td
-}  // namespace score
+}  // namespace score::td
 
 #endif  // SCORE_TIME_DAEMON_SRC_APPLICATION_TIMEBASE_HANDLERS_SCORE_VEHICLE_TIME_SCORE_VEHICLE_TIMEBASE_HANDLER_H

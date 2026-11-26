@@ -45,3 +45,19 @@ jobs:
       - name: Build with Bazel
         run: |
           bazel build --keep_going --verbose_failures --config ${{ matrix.config }} //score/... //examples/...
+
+  # Public C++ API surface gate (see tools/api_surface/README.md). Fails on any
+  # difference against the committed lock files; never regenerates them.
+  api-surface:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Setup Bazel
+        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
+        with:
+          unique-cache-name: ${{ github.workflow }}-${{ github.job }}
+
+      - name: Check public C++ API surface
+        run: |
+          bazel test --lockfile_mode=error --verbose_failures --config x86_64-linux //:api_surface_tests

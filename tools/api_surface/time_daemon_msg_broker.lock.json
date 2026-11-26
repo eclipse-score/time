@@ -1,0 +1,175 @@
+{
+  "target": "//score/time_daemon:msg_broker",
+  "symbols": [],
+  "undocumented_symbols": [
+    {
+      "name": "MessageBroker",
+      "qualified_name": "score::td::MessageBroker",
+      "kind": "template_class",
+      "signature": "MessageBroker"
+    },
+    {
+      "name": "MessageBroker",
+      "qualified_name": "score::td::MessageBroker",
+      "kind": "class",
+      "signature": "class MessageBroker"
+    },
+    {
+      "name": "MessageBroker<T>",
+      "qualified_name": "score::td::MessageBroker::MessageBroker<T>",
+      "kind": "constructor",
+      "signature": "MessageBroker<T> : void ()"
+    },
+    {
+      "name": "~MessageBroker<T>",
+      "qualified_name": "score::td::MessageBroker::~MessageBroker<T>",
+      "kind": "destructor",
+      "signature": "~MessageBroker<T> : void () noexcept"
+    },
+    {
+      "name": "AddSubscriber",
+      "qualified_name": "score::td::MessageBroker::AddSubscriber",
+      "kind": "method",
+      "signature": "AddSubscriber : void (const Topic &, std::weak_ptr<Consumer<T>>)"
+    },
+    {
+      "name": "AddProducer",
+      "qualified_name": "score::td::MessageBroker::AddProducer",
+      "kind": "method",
+      "signature": "AddProducer : void (const Topic &, std::weak_ptr<Producer<T>>)"
+    },
+    {
+      "name": "~MessageBroker<T>",
+      "qualified_name": "score::td::~MessageBroker<T>",
+      "kind": "destructor",
+      "signature": "~MessageBroker<T> : void () noexcept"
+    },
+    {
+      "name": "AddSubscriber",
+      "qualified_name": "score::td::AddSubscriber",
+      "kind": "method",
+      "signature": "AddSubscriber : void (const Topic &, std::weak_ptr<Consumer<T>>)"
+    },
+    {
+      "name": "AddProducer",
+      "qualified_name": "score::td::AddProducer",
+      "kind": "method",
+      "signature": "AddProducer : void (const Topic &, std::weak_ptr<Producer<T>>)"
+    },
+    {
+      "name": "Publish",
+      "qualified_name": "score::td::Publish",
+      "kind": "method",
+      "signature": "Publish : void (const Topic &, const T &) const"
+    },
+    {
+      "name": "Subscribe",
+      "qualified_name": "score::td::Subscribe",
+      "kind": "method",
+      "signature": "Subscribe : void (const Topic &, const Subscription<T> &)"
+    },
+    {
+      "name": "OnNewData",
+      "qualified_name": "score::td::OnNewData",
+      "kind": "method",
+      "signature": "OnNewData : void (const Topic &, const T &) const"
+    },
+    {
+      "name": "Subscription",
+      "qualified_name": "score::td::Subscription",
+      "kind": "template_class",
+      "signature": "Subscription"
+    },
+    {
+      "name": "Subscription",
+      "qualified_name": "score::td::Subscription",
+      "kind": "class",
+      "signature": "class Subscription"
+    },
+    {
+      "name": "Subscription<T>",
+      "qualified_name": "score::td::Subscription::Subscription<T>",
+      "kind": "constructor",
+      "signature": "Subscription<T> : void ()"
+    },
+    {
+      "name": "Subscription<T>",
+      "qualified_name": "score::td::Subscription::Subscription<T>",
+      "kind": "constructor",
+      "signature": "Subscription<T> : void (std::function<void (const T &)>)"
+    },
+    {
+      "name": "callback_",
+      "qualified_name": "score::td::Subscription::callback_",
+      "kind": "field",
+      "signature": "callback_"
+    },
+    {
+      "name": "Topic",
+      "qualified_name": "score::td::Topic",
+      "kind": "class",
+      "signature": "class Topic"
+    },
+    {
+      "name": "Topic",
+      "qualified_name": "score::td::Topic::Topic",
+      "kind": "constructor",
+      "signature": "Topic : void (const std::string &) noexcept"
+    },
+    {
+      "name": "Topic",
+      "qualified_name": "score::td::Topic::Topic",
+      "kind": "constructor",
+      "signature": "Topic : void (const char *) noexcept"
+    },
+    {
+      "name": "Topic",
+      "qualified_name": "score::td::Topic::Topic",
+      "kind": "constructor",
+      "signature": "Topic : void (const Topic &) noexcept(false)"
+    },
+    {
+      "name": "Topic",
+      "qualified_name": "score::td::Topic::Topic",
+      "kind": "constructor",
+      "signature": "Topic : void (Topic &&) noexcept"
+    },
+    {
+      "name": "~Topic",
+      "qualified_name": "score::td::Topic::~Topic",
+      "kind": "destructor",
+      "signature": "~Topic : void () noexcept"
+    },
+    {
+      "name": "Name",
+      "qualified_name": "score::td::Topic::Name",
+      "kind": "method",
+      "signature": "Name : const std::string &() const noexcept [[nodiscard]]"
+    },
+    {
+      "name": "operator==",
+      "qualified_name": "score::td::operator==",
+      "kind": "function",
+      "signature": "operator== : bool (const Topic &, const Topic &) noexcept"
+    },
+    {
+      "name": "operator!=",
+      "qualified_name": "score::td::operator!=",
+      "kind": "function",
+      "signature": "operator!= : bool (const Topic &, const Topic &) noexcept"
+    },
+    {
+      "name": "operator<",
+      "qualified_name": "score::td::operator<",
+      "kind": "function",
+      "signature": "operator< : bool (const Topic &, const Topic &) noexcept"
+    },
+    {
+      "name": "hash",
+      "qualified_name": "std::hash<score::td::Topic>",
+      "kind": "extern_template",
+      "signature": "extern template struct hash<score::td::Topic>"
+    }
+  ],
+  "version": "1"
+}

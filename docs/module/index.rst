@@ -23,6 +23,7 @@ The S-CORE ``time`` module provides a unified API for accessing system, steady, 
    :security: NO
    :safety: ASIL_B
    :status: valid
+   :maturity: preview
    :includes: comp__time, comp__time_daemon, comp__time_slave, comp__ts_client
 
 Module View
