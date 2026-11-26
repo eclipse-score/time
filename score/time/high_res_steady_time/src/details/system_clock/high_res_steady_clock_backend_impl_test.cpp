@@ -97,7 +97,7 @@ TEST_F(HighResSteadyClockBackendImplTest, CreateBackendReturnsHighResSteadyClock
 
     auto backend = detail::CreateBackend<HighResSteadyTime>();
     ASSERT_NE(backend, nullptr);
-    EXPECT_NE(dynamic_cast<HighResSteadyClockBackendImpl*>(backend.get()), nullptr);
+    EXPECT_EQ(typeid(*backend), typeid(HighResSteadyClockBackendImpl));
 }
 
 }  // namespace test
