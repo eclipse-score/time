@@ -37,16 +37,20 @@ jobs:
     with:
       bazel-docs-verify-target: "//:docs_check"
 
-  # Name and direct call keep the required check name "run-comp-tests / Test Execution".
+  # Name and direct call keep the required check name "run-comp-tests / Bazel".
   run-comp-tests:
-    uses: eclipse-score/cicd-workflows/.github/workflows/tests.yml@8d80e8df150cae21d53cbc8031d0f970648f7a67 # v0.0.3
     permissions:
       contents: read
-      pull-requests: read
+      # Allows bazel.yml to prune replaced cache generations once it supports this.
+      actions: write
+    uses: eclipse-score/cicd-workflows/.github/workflows/bazel.yml@419f87cb66c1a0eb444416ae47c4c97bdc5732fc # bazel/v0.1.0
     with:
-      bazel-target: 'test --config=x86_64-linux //score/...'
-      upload-name: 'tests-report'
-      packages: 'fakechroot'
+      test-targets: //score/...
+      bazel-configs: x86_64-linux
+      apt-packages: fakechroot
+      cache-key: comp-tests
+      # docs-build reads the test reports from this artifact.
+      artifact-name: tests-report
 
   docs-build:
     needs: [docs-verify, run-comp-tests] # Test reports are needed for the verification report
