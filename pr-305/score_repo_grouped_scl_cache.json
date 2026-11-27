@@ -577,21 +577,35 @@
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 28,
+              "line": 33,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shared_memory_mgmt",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 34,
+              "line": 39,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shared_memory_mgmt",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation"
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 105,
+              "line": 76,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shared_memory_mgmt",
+              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 82,
+              "tag": "// req-Id:",
+              "need": "comp_req__ts_client__shared_memory_mgmt",
+              "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
+            },
+            {
+              "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
+              "line": 154,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shared_memory_mgmt",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt"
@@ -628,7 +642,7 @@
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 35,
+              "line": 40,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__platform_support",
               "full_line": "// req-Id: comp_req__ts_client__platform_support, comp_req__ts_client__receiver_multi_reader"
@@ -650,14 +664,14 @@
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 25,
+              "line": 30,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__seqlock_protocol",
               "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol"
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 68,
+              "line": 109,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__seqlock_protocol",
               "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
@@ -686,7 +700,7 @@
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 68,
+              "line": 109,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__sync_status_data",
               "full_line": "// req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data"
@@ -715,7 +729,7 @@
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 69,
+              "line": 110,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__sync_fup_data",
               "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
@@ -744,7 +758,7 @@
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 69,
+              "line": 110,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__pdelay_data",
               "full_line": "// req-Id: comp_req__ts_client__sync_fup_data, comp_req__ts_client__pdelay_data"
@@ -773,7 +787,7 @@
             },
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 70,
+              "line": 111,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__time_correlation_data",
               "full_line": "// req-Id: comp_req__ts_client__time_correlation_data"
@@ -795,7 +809,7 @@
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 34,
+              "line": 39,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__shm_validation",
               "full_line": "// req-Id: comp_req__ts_client__shared_memory_mgmt, comp_req__ts_client__shm_validation"
@@ -817,7 +831,7 @@
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 35,
+              "line": 40,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__receiver_multi_reader",
               "full_line": "// req-Id: comp_req__ts_client__platform_support, comp_req__ts_client__receiver_multi_reader"
@@ -832,7 +846,7 @@
           "CodeLinks": [
             {
               "file": "score/ts_client/src/gptp_ipc_receiver.cpp",
-              "line": 58,
+              "line": 66,
               "tag": "// req-Id:",
               "need": "comp_req__ts_client__data_validity",
               "full_line": "// req-Id: comp_req__ts_client__data_validity"
