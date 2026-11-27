@@ -1,0 +1,9 @@
+{
+  "ecuId": "ECU1",
+  "appId": "TEST",
+  "appDesc": "End-to-end integration test",
+  "logMode": "kConsole",
+  "logLevel": "kInfo",
+  "logLevelThresholdConsole": "kInfo",
+  "contextConfigs": []
+}

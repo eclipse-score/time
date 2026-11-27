@@ -1,0 +1,76 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
+name: Test / End-to-End (QEMU, Linux x86_64)
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+# The QEMU tests are tagged "manual" (they need --config=qemu, KVM and CAP_NET_RAW), so they are
+# not part of //score/... and must be named explicitly here.
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - main
+  merge_group:
+    types: [checks_requested]
+  workflow_dispatch:
+
+jobs:
+  e2e-linux-x86_64:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Setup Bazel
+        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
+        with:
+          # Cache keys cannot contain commas, and the workflow name "Test / End-to-End (QEMU, Linux x86_64)" has one.
+          unique-cache-name: ${{ github.job }}
+
+      - name: Install QEMU and image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils cloud-image-utils
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+
+      - name: Allow unprivileged user namespaces
+        # run_under_qemu creates its own user/network namespace; Ubuntu 24.04 restricts this via AppArmor.
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Run end-to-end tests
+        run: |
+          bazel test --config=x86_64-linux --config=qemu --verbose_failures \
+            //score/tests/feature:test_feature_qemu_linux_x86_64
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-logs
+          path: bazel-testlogs/score/tests/**/test.log
+          if-no-files-found: ignore

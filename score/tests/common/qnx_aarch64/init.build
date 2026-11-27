@@ -1,0 +1,202 @@
+# *******************************************************************************
+# Copyright (c) 2026 Contributors to the Eclipse Foundation
+#
+# See the NOTICE file(s) distributed with this work for additional
+# information regarding copyright ownership.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Apache License Version 2.0 which is available at
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+#
+# QNX 8.0 aarch64 image for the end-to-end integration tests, booted by the ITF
+# QEMU plugin on the "virt" machine. It contains what the ITF needs (networking and
+# sshd, reachable at the address from qemu_config.json) and the binaries under test
+# in /opt, which the qnx_ifs rule adds from the pkg_files of the BUILD target.
+#
+
+[-optional]
+
+[image=0x40080000]
+[virtual=aarch64le,raw +compress] boot = {
+    startup-qemu-virt -m 1G
+    PATH=/proc/boot:/usr/bin:/usr/sbin:/sbin:/bin
+    LD_LIBRARY_PATH=/proc/boot:/lib:/usr/lib:/lib/dll
+    [+keeplinked] procnto-smp-instr -v
+}
+
+[+script] startup-script = {
+    procmgr_symlink /dev/shmem /tmp
+
+    display_msg Welcome to QNX OS 8.0 on aarch64 for S-CORE time integration tests!
+
+    ENV=/etc/profile
+    SYSNAME=nto
+    TERM=qansi
+
+    devc-serpl011 0x9000000,33 &
+    waitfor /dev/ser1 5
+    reopen /dev/ser1
+
+    /proc/boot/startup.sh
+
+    [+session] ksh -i &
+}
+
+[uid=0 gid=0 perms=0700] startup.sh = {
+    echo "---> Starting slogger2"
+    slogger2 -s 4096
+    waitfor /dev/slog
+
+    echo "---> Starting Pipe"
+    pipe
+    waitfor /dev/pipe
+
+    echo "---> Starting Random"
+    random
+    waitfor /dev/random
+
+    echo "---> Starting fsevmgr"
+    fsevmgr
+    waitfor /dev/fsnotify
+
+    echo "---> Starting mqueue"
+    mqueue
+    waitfor /dev/mqueue
+
+    echo "---> Starting devc-pty"
+    devc-pty -n 32
+
+    echo "---> Starting Networking"
+    io-sock -m fdt -d vtnet_mmio
+    waitfor /dev/socket
+
+    echo "---> Configuring network interface"
+    ifconfig lo0 127.0.0.1 up
+    if_up -p vtnet0
+    ifconfig vtnet0 169.254.158.190 netmask 255.255.0.0
+
+    echo "---> Starting sshd"
+    mkdir -p /tmp/ssh
+    ssh-keygen -q -t rsa -b 2048 -N '' -f /tmp/ssh/ssh_host_rsa_key
+    /usr/sbin/sshd -D -f /etc/ssh/sshd_config &
+    echo "SSH_READY"
+}
+
+[dperms=755 type=dir] /opt
+[dperms=755 type=dir] /var/chroot/sshd
+[dperms=700 type=dir] /var/ssh
+
+# Dynamic linker and shared libraries
+/usr/lib/ldqnx-64.so.2=ldqnx-64.so.2
+
+libc.so
+libc.so.6
+libc++.so.2
+libcrypto.so.3
+libexpat.so.2
+libfdt.so.1
+libfsnotify.so.1
+libgcc_s.so.1
+libiconv.so.1
+libjail.so.1
+libm.so
+libm.so.3
+libpam.so.2
+libqcrypto.so.1.0
+libqh.so.1
+libregex.so.1
+libsecpol.so.1
+libslog2.so.1
+libslog2parse.so.1
+libsocket.so.4
+libssl.so.3
+libz.so.2
+[type=link] libslog2.so=libslog2.so.1
+[type=link] libsocket.so=libsocket.so.4
+[type=link] libqh.so=libqh.so.1
+[type=link] libz.so=libz.so.2
+[search=${QNX_TARGET}/aarch64le/lib/dll] qcrypto-openssl-3.so
+[type=link] qcrypto-openssl.so=qcrypto-openssl-3.so
+
+# Network stack with the virtio-mmio driver of the QEMU virt machine
+io-sock
+mods-fdt.so
+devs-vtnet_mmio.so
+
+# System services and tools
+devc-pty
+devc-serpl011
+fsevmgr
+getconf
+hostname
+if_up
+ifconfig
+ksh
+mqueue
+on
+pidin
+pipe
+random
+route
+slay
+slog2info
+slogger2
+sysctl
+toybox
+[type=link] /bin/sh=/proc/boot/ksh
+[type=link] waitfor=on
+[type=link] cat=toybox
+[type=link] chmod=toybox
+[type=link] env=toybox
+[type=link] grep=toybox
+[type=link] head=toybox
+[type=link] ls=toybox
+[type=link] mkdir=toybox
+[type=link] rm=toybox
+[type=link] sleep=toybox
+[type=link] uname=toybox
+
+# sshd, used by the ITF to run commands on the target
+/usr/sbin/sshd=sshd
+/usr/bin/ssh-keygen=ssh-keygen
+/usr/libexec/sshd-session=${QNX_TARGET}/aarch64le/usr/libexec/sshd-session
+/usr/libexec/sftp-server=${QNX_TARGET}/aarch64le/usr/libexec/sftp-server
+
+[uid=0 gid=0 perms=0444] /etc/passwd = {
+root::0:0:Superuser:/:/bin/sh
+sshd::15:6:sshd:/:/bin/false
+}
+
+[uid=0 gid=0 perms=0444] /etc/group = {
+root::0:root
+sshd::6:sshd
+}
+
+[uid=0 gid=0 perms=0444] /etc/profile = {
+export TERM=qansi
+export PATH=/proc/boot:/usr/bin:/usr/sbin:/sbin:/bin
+export LD_LIBRARY_PATH=/proc/boot:/lib:/usr/lib:/lib/dll
+}
+
+[uid=0 gid=0 perms=0444] /etc/qcrypto.conf = {
+openssl tags=*
+}
+
+# The ITF logs in as root with an empty password.
+[uid=0 gid=0 perms=0444] /etc/ssh/sshd_config = {
+Port 22
+Protocol 2
+HostKey /tmp/ssh/ssh_host_rsa_key
+Subsystem sftp /usr/libexec/sftp-server
+PasswordAuthentication yes
+PermitEmptyPasswords yes
+PermitRootLogin yes
+PermitUserEnvironment yes
+PubkeyAuthentication no
+StrictModes no
+UseDNS no
+PidFile none
+}
