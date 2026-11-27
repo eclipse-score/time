@@ -13,6 +13,8 @@
 #ifndef SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H
 #define SCORE_TIME_DAEMON_SRC_MSG_BROKER_SHARED_DATA_H
 
+#include <score/bit.hpp>
+
 #include "score/memory/shared/managed_memory_resource.h"
 #include "score/memory/shared/shared_memory_factory.h"
 #include "score/memory/shared/shared_memory_resource.h"
@@ -33,8 +35,19 @@ namespace score::td
 ///
 /// \brief The class implements shared memory handling
 ///
-/// \details Only one thread at a time, across all processes, may call Send(). Slots use per-slot seqlocks.
-///          Payload accesses are not atomic yet; overlapping slot reuse and reads are not C++ data-race-free.
+/// \details Only one thread at a time, across all processes, may call Send().
+///
+///          A single seqlock guards the payload. A reader may copy the payload while the writer is rewriting it.
+///          The reader then detects the overlap by re-checking seq_ and discards the copy. So the overlapping
+///          access is intentional and does happen.
+///
+///          If the payload were a plain DataType, that overlap would be a data race, which is undefined behaviour
+///          in C++ even though the torn copy is discarded. The compiler is allowed to assume it never happens
+///          (e.g. re-load or fuse the reads), so the seq_ check could not be relied upon. To avoid this, the
+///          payload is stored as individual std::atomic<std::uint8_t> bytes accessed with relaxed operations.
+///          A relaxed access never races, it just may return a mix of old and new bytes, and the seq_ check
+///          rejects such a copy. The atomics only remove the UB. The ordering comes from seq_ and the fences.
+///          Readers always see a consistent, monotonically advancing snapshot.
 ///
 template <typename DataType>
 class SharedMemoryHandler
@@ -55,12 +68,12 @@ class SharedMemoryHandler
     bool Init();
 
     ///
-    /// \brief Read a snapshot from shared memory, retrying if the slot changes.
+    /// \brief Read a snapshot from shared memory, retrying if a write overlapped the read.
     ///
     std::optional<DataType> Receive() const;
 
     ///
-    /// \brief Write data to the next shared memory slot without waiting for readers.
+    /// \brief Write data to shared memory without waiting for readers.
     ///
     void Send(const DataType& data);
 
@@ -80,14 +93,15 @@ class SharedMemoryHandler
         return (seq & 1U) == 0U;
     }
 
-    static constexpr std::size_t kCacheLineSize{64U};
-    static constexpr std::uint32_t kNumberOfSlots{4U};
+    /// \brief Object representation of DataType, used to move the payload through the atomic bytes
+    using Bytes = std::array<std::uint8_t, sizeof(DataType)>;
 
     ///
-    /// \brief Common type to store seqlock and specified data
+    /// \brief Seqlock counter and payload, stored as atomic bytes to avoid a data race (undefined behavior) with the
+    /// reader
     /// \tparam DataType shall be trivially copyable data
     ///
-    struct alignas(kCacheLineSize) Slot
+    struct SharedData
     {
         static_assert(std::is_trivially_copyable_v<DataType>,
                       "DataType must be trivially copyable to be stored in shared memory!");
@@ -101,15 +115,14 @@ class SharedMemoryHandler
         /// \brief seq_ seqlock counter: odd while a write is in progress, even otherwise.
         std::atomic<std::uint64_t> seq_{0U};
 
-        /// \brief data_ specific data placed in share dmemory region. Note: It has to be trivially copyable with
-        // trivial simple types that are not allocated on heap!
-        DataType data_{};
-    };
-
-    struct alignas(kCacheLineSize) SharedData
-    {
-        std::atomic<std::uint64_t> published_slot_{0U};
-        std::array<Slot, kNumberOfSlots> slots_{};
+        /// \brief Payload bytes (DataType object representation), zero-initialised.
+        ///
+        /// Each byte is atomic only to make the intentional reader/writer overlap well-defined (no UB). It does not
+        /// make the payload as a whole atomic: a reader can observe a torn mix of bytes, which is why a copy is only
+        /// valid if seq_ is even and unchanged. Bytes are used because std::atomic<DataType> may not be lock-free
+        /// for larger types, which is unsuitable in shared memory, and C++ has no portable relaxed atomic memcpy.
+        /// Access only with std::memory_order_relaxed.
+        std::array<std::atomic<std::uint8_t>, sizeof(DataType)> bytes_{};
     };
 
     /// \brief Bytes to reserve. Aligning SharedData can add up to alignof(SharedData) bytes of padding.
@@ -171,24 +184,30 @@ std::optional<DataType> SharedMemoryHandler<DataType>::Receive() const
 {
     if (shared_memory_data_ != nullptr)
     {
-        DataType read_data{};
-
         for (std::uint8_t retry_cnt = 0U; retry_cnt < max_number_of_read_retries_; ++retry_cnt)
         {
-            const auto slot_index =
-                shared_memory_data_->published_slot_.load(std::memory_order_seq_cst) % kNumberOfSlots;
-            const auto& slot = shared_memory_data_->slots_[slot_index];
-            const auto seq_before_read = slot.seq_.load(std::memory_order_seq_cst);
+            const auto seq_before_read = shared_memory_data_->seq_.load(std::memory_order_acquire);
 
             if (NoWriteInProgress(seq_before_read))
             {
-                // Copy the payload
-                read_data = slot.data_;
+                // Relaxed loads may return a torn mix if a write overlaps. That is fine (not UB) because the copy
+                // is only used after seq_ is validated below.
+                Bytes bytes{};
+                auto source = shared_memory_data_->bytes_.cbegin();
+                for (auto& byte : bytes)
+                {
+                    byte = source->load(std::memory_order_relaxed);
+                    ++source;
+                }
+
+                // Order the payload loads before the re-check of seq_. Without this, weakly ordered CPUs (ARM64)
+                // could satisfy the loads after the re-check, letting a torn copy pass validation.
+                std::atomic_thread_fence(std::memory_order_acquire);
 
                 // Unchanged counter: no write started or completed during the copy
-                if (slot.seq_.load(std::memory_order_seq_cst) == seq_before_read)
+                if (shared_memory_data_->seq_.load(std::memory_order_relaxed) == seq_before_read)
                 {
-                    return read_data;
+                    return score::cpp::bit_cast<DataType>(bytes);
                 }
             }
         }
@@ -205,18 +224,25 @@ void SharedMemoryHandler<DataType>::Send(const DataType& data)
 {
     if (shared_memory_data_ != nullptr)
     {
-        const auto published_slot = shared_memory_data_->published_slot_.load(std::memory_order_relaxed);
-        const auto next_slot = (published_slot + 1U) % kNumberOfSlots;
-        auto& slot = shared_memory_data_->slots_[next_slot];
+        const auto bytes = score::cpp::bit_cast<Bytes>(data);
 
         // Single writer: counter becomes odd to signal write in progress
-        const auto seq = slot.seq_.fetch_add(1U, std::memory_order_seq_cst);
+        const auto seq = shared_memory_data_->seq_.load(std::memory_order_relaxed);
+        shared_memory_data_->seq_.store(seq + 1U, std::memory_order_relaxed);
 
-        slot.data_ = data;
+        // Order the odd counter before the payload stores, so a reader that sees any new payload byte also sees
+        // that a write is in progress.
+        std::atomic_thread_fence(std::memory_order_release);
+
+        auto destination = shared_memory_data_->bytes_.begin();
+        for (const auto byte : bytes)
+        {
+            destination->store(byte, std::memory_order_relaxed);
+            ++destination;
+        }
 
         // Even again: publishes the payload to readers
-        slot.seq_.store(seq + 2U, std::memory_order_seq_cst);
-        shared_memory_data_->published_slot_.store(next_slot, std::memory_order_seq_cst);
+        shared_memory_data_->seq_.store(seq + 2U, std::memory_order_release);
     }
 }
 

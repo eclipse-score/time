@@ -22,6 +22,9 @@
 #include <cstdint>
 #include <iostream>
 #include <memory>
+#include <random>
+#include <sstream>
+#include <string>
 #include <thread>
 #include <tuple>
 #include <vector>
@@ -59,6 +62,18 @@ bool IsConsistent(const SequencePayload& payload)
     return true;
 }
 
+///
+/// \brief Shared memory objects live in a global namespace (e.g. /dev/shm) that is shared by concurrently running test
+/// processes, even inside a sandbox where process IDs repeat. A random suffix keeps every test run's object distinct.
+///
+std::string MakeUniqueSharedMemoryPath()
+{
+    std::random_device random_device{};
+    std::ostringstream path{};
+    path << "/sh_some_data_" << std::hex << random_device() << random_device();
+    return path.str();
+}
+
 }  // namespace
 
 class SharedMemoryHandlerTest : public ::testing::Test
@@ -74,7 +89,7 @@ class SharedMemoryHandlerTest : public ::testing::Test
         score::memory::shared::SharedMemoryFactory::RemoveStaleArtefacts(shared_memory_path_);
     }
 
-    const std::string shared_memory_path_{"/sh_some_data"};
+    const std::string shared_memory_path_{MakeUniqueSharedMemoryPath()};
 };
 
 TEST_F(SharedMemoryHandlerTest, TestReadAndWrite)
