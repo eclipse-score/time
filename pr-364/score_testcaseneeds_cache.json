@@ -4424,7 +4424,7 @@
     "FullyVerifies": null
   },
   {
-    "name": "ShmPTPEngineTest__ReadPTPSnapshot_CopiesSyncFupDataCorrectly",
+    "name": "ShmPTPEngineTest__ReadPTPSnapshot_MapsLocalTimeToReferenceClockTimePoint",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
     "line": "178",
     "result": "passed",
@@ -4438,9 +4438,23 @@
     "FullyVerifies": null
   },
   {
+    "name": "ShmPTPEngineTest__ReadPTPSnapshot_CopiesSyncFupDataCorrectly",
+    "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
+    "line": "191",
+    "result": "passed",
+    "repo_name": null,
+    "hash": null,
+    "url": null,
+    "TestType": null,
+    "DerivationTechnique": null,
+    "result_text": "",
+    "PartiallyVerifies": null,
+    "FullyVerifies": null
+  },
+  {
     "name": "ShmPTPEngineTest__ReadPTPSnapshot_CopiesPDelayDataCorrectly",
     "file": "score/time_daemon/src/ptp_machine/shm/details/shm_ptp_engine_test.cpp",
-    "line": "195",
+    "line": "208",
     "result": "passed",
     "repo_name": null,
     "hash": null,
