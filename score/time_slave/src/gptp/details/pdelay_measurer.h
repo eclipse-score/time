@@ -49,11 +49,12 @@ struct PDelayResult
 class PeerDelayMeasurer final
 {
   public:
-    /// @brief Construct a new PeerDelayMeasurer with the local ClockIdentity and gPTP domain.
+    /// @brief Construct a new PeerDelayMeasurer with the local ClockIdentity.
+    ///
+    /// Pdelay_Req frames always carry @c kPdelayDomainNumber, independent of the configured gPTP domain.
     ///
     /// @param local_identity  The local ClockIdentity (used in Pdelay_Req).
-    /// @param domain          The gPTP domain number (0–127).
-    explicit PeerDelayMeasurer(const ClockIdentity& local_identity, std::uint8_t domain = 0U) noexcept;
+    explicit PeerDelayMeasurer(const ClockIdentity& local_identity) noexcept;
 
     /// @brief Build and transmit a Pdelay_Req frame. @p socket must be open.
     ///
@@ -83,7 +84,6 @@ class PeerDelayMeasurer final
     void ComputeAndStoreUnlocked() noexcept;
 
     ClockIdentity local_identity_{};
-    std::uint8_t domain_{0U};
 
     mutable std::mutex mutex_;
 

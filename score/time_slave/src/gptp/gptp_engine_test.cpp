@@ -19,6 +19,7 @@
 #include <arpa/inet.h>
 #include <chrono>
 #include <condition_variable>
+#include <cstddef>
 #include <cstring>
 #include <deque>
 #include <memory>
@@ -36,12 +37,19 @@ namespace details
 namespace
 {
 
+using Frame = std::vector<std::uint8_t>;
+
+constexpr std::size_t kEthHeaderLen = sizeof(ethhdr);
+constexpr std::size_t kTsmtOffset = kEthHeaderLen;
+constexpr std::size_t kDomainOffset = kEthHeaderLen + offsetof(PTPHeader, domainNumber);
+constexpr std::size_t kPdelayReqExtraLen = sizeof(PdelayReqBody) - sizeof(PTPHeader);
+
 // ── FakeSocket ────────────────────────────────────────────────────────────────
 
 class FakeSocket final : public RawSocket
 {
   public:
-    void Push(std::vector<std::uint8_t> data, ::timespec hwts = {})
+    void Push(Frame data, ::timespec hwts = {})
     {
         {
             std::lock_guard<std::mutex> lk(mtx_);
@@ -108,7 +116,7 @@ class FakeSocket final : public RawSocket
         send_hwts_ = ts;
     }
 
-    std::vector<std::vector<std::uint8_t>> SentFrames()
+    std::vector<Frame> SentFrames()
     {
         std::lock_guard<std::mutex> lk(sent_mtx_);
         return sent_;
@@ -124,14 +132,14 @@ class FakeSocket final : public RawSocket
     }
 
   private:
-    std::deque<std::pair<std::vector<std::uint8_t>, ::timespec>> frames_;
+    std::deque<std::pair<Frame, ::timespec>> frames_;
     std::mutex mtx_;
     std::condition_variable cv_;
     bool closed_{false};
     bool hw_ts_ok_{true};
     bool open_ok_{true};
     std::mutex sent_mtx_;
-    std::vector<std::vector<std::uint8_t>> sent_;
+    std::vector<Frame> sent_;
     ::timespec send_hwts_{};
 };
 
@@ -162,7 +170,7 @@ class FakeIdentity final : public NetworkIdentity
 // ── Frame builders ────────────────────────────────────────────────────────────
 
 // 14-byte Ethernet header with EtherType 0x88F7 (IEEE 1588)
-void AppendEthHeader(std::vector<std::uint8_t>& buf)
+void AppendEthHeader(Frame& buf)
 {
     // dst: 01:80:c2:00:00:0e
     const std::uint8_t dst[6] = {0x01, 0x80, 0xC2, 0x00, 0x00, 0x0E};
@@ -175,10 +183,7 @@ void AppendEthHeader(std::vector<std::uint8_t>& buf)
 }
 
 // Build a 34-byte PTP header at the back of buf.
-void AppendPtpHeader(std::vector<std::uint8_t>& buf,
-                     std::uint8_t msgtype,
-                     std::uint16_t seqId,
-                     std::uint8_t ctlField = 0)
+void AppendPtpHeader(Frame& buf, std::uint8_t msgtype, std::uint16_t seqId, std::uint8_t ctlField = 0)
 {
     const std::size_t start = buf.size();
     buf.resize(start + 34, 0);
@@ -193,7 +198,7 @@ void AppendPtpHeader(std::vector<std::uint8_t>& buf,
 }
 
 // Append a 10-byte Timestamp body (sec_msb=0, sec_lsb, ns).
-void AppendTimestamp(std::vector<std::uint8_t>& buf, std::uint32_t sec_lsb, std::uint32_t ns)
+void AppendTimestamp(Frame& buf, std::uint32_t sec_lsb, std::uint32_t ns)
 {
     const std::uint16_t msb = htons(0U);
     const std::uint32_t sl = htonl(sec_lsb);
@@ -208,15 +213,15 @@ void AppendTimestamp(std::vector<std::uint8_t>& buf, std::uint32_t sec_lsb, std:
 }
 
 // Patch messageLength (PTP header bytes 2..3) to cover header + body, excluding the Ethernet header.
-void FinalizeLength(std::vector<std::uint8_t>& buf)
+void FinalizeLength(Frame& buf)
 {
     const std::uint16_t len = htons(static_cast<std::uint16_t>(buf.size() - 14));
     std::memcpy(buf.data() + 14 + 2, &len, 2);
 }
 
-std::vector<std::uint8_t> MakeSyncFrame(std::uint16_t seqId)
+Frame MakeSyncFrame(std::uint16_t seqId)
 {
-    std::vector<std::uint8_t> f;
+    Frame f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypeSync, seqId, /*ctl=*/0);
     AppendTimestamp(f, 0, 0);  // Sync body (origin timestamp, unused)
@@ -224,9 +229,9 @@ std::vector<std::uint8_t> MakeSyncFrame(std::uint16_t seqId)
     return f;
 }
 
-std::vector<std::uint8_t> MakeFollowUpFrame(std::uint16_t seqId, std::uint32_t sec_lsb, std::uint32_t ns)
+Frame MakeFollowUpFrame(std::uint16_t seqId, std::uint32_t sec_lsb, std::uint32_t ns)
 {
-    std::vector<std::uint8_t> f;
+    Frame f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypeFollowUp, seqId, /*ctl=*/2);
     AppendTimestamp(f, sec_lsb, ns);
@@ -234,9 +239,9 @@ std::vector<std::uint8_t> MakeFollowUpFrame(std::uint16_t seqId, std::uint32_t s
     return f;
 }
 
-std::vector<std::uint8_t> MakePdelayRespFrame(std::uint16_t seqId)
+Frame MakePdelayRespFrame(std::uint16_t seqId)
 {
-    std::vector<std::uint8_t> f;
+    Frame f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayResp, seqId, /*ctl=*/5);
     AppendTimestamp(f, 1, 0);  // responseOriginTimestamp
@@ -246,9 +251,9 @@ std::vector<std::uint8_t> MakePdelayRespFrame(std::uint16_t seqId)
     return f;
 }
 
-std::vector<std::uint8_t> MakePdelayRespFupFrame(std::uint16_t seqId)
+Frame MakePdelayRespFupFrame(std::uint16_t seqId)
 {
-    std::vector<std::uint8_t> f;
+    Frame f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayRespFollowUp, seqId, /*ctl=*/5);
     AppendTimestamp(f, 2, 0);    // responseOriginReceiptTimestamp
@@ -257,9 +262,9 @@ std::vector<std::uint8_t> MakePdelayRespFupFrame(std::uint16_t seqId)
     return f;
 }
 
-std::vector<std::uint8_t> MakePdelayReqFrame(std::uint16_t seqId)
+Frame MakePdelayReqFrame(std::uint16_t seqId)
 {
-    std::vector<std::uint8_t> f;
+    Frame f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayReq, seqId, /*ctl=*/5);
     f.resize(f.size() + 20, 0);  // reserved body
@@ -267,13 +272,21 @@ std::vector<std::uint8_t> MakePdelayReqFrame(std::uint16_t seqId)
     return f;
 }
 
-std::vector<std::uint8_t> MakeUnknownFrame()
+Frame MakeUnknownFrame()
 {
-    std::vector<std::uint8_t> f;
+    Frame f;
     AppendEthHeader(f);
     AppendPtpHeader(f, kPtpMsgtypePdelayReq, 0, /*ctl=*/5);
     f.resize(f.size() + 20, 0);  // Pdelay_Req body: reserved (10) + reserved (10)
     FinalizeLength(f);
+    return f;
+}
+
+Frame MakePdelayReqFrameWithDomain(std::uint8_t domain)
+{
+    Frame f = MakeUnknownFrame();
+    f[kDomainOffset] = domain;
+    f.resize(f.size() + kPdelayReqExtraLen, 0);
     return f;
 }
 
@@ -476,6 +489,52 @@ TEST_F(GptpEngineFakeTest, HandlePacket_PdelayRespSequence_DoesNotCrash)
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 
+TEST_F(GptpEngineFakeTest, HandlePacket_PdelayReqWithAnyDomain_RespondsWithDomainZero)
+{
+    GptpEngineOptions opts = FastOptions();
+    opts.domain_number = 5U;
+    opts.pdelay_req_interval_ms = 100000;
+    opts.pdelay_warmup_ms = 100000;
+    auto sock = std::make_unique<FakeSocket>();
+    FakeSocket* raw = sock.get();
+    ::timespec tx{};
+    tx.tv_sec = 1;
+    raw->SetSendHwts(tx);  // engine skips FollowUp without a TX timestamp
+    GptpEngine eng{opts, std::move(sock), std::make_unique<FakeIdentity>()};
+    ASSERT_TRUE(eng.Initialize());
+
+    raw->Push(MakePdelayReqFrameWithDomain(9U));
+    for (int i = 0; i < 100 && raw->SentFrames().size() < 2U; ++i)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    const auto sent = raw->SentFrames();
+    ASSERT_EQ(sent.size(), 2U);
+    EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayResp);
+    EXPECT_EQ(sent[0][kDomainOffset], 0U);
+    EXPECT_EQ(sent[1][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayRespFollowUp);
+    EXPECT_EQ(sent[1][kDomainOffset], 0U);
+    eng.Deinitialize();
+}
+
+TEST_F(GptpEngineFakeTest, PdelayReqSent_WithConfiguredDomain_HasDomainZero)
+{
+    GptpEngineOptions opts = FastOptions();
+    opts.domain_number = 5U;
+    auto sock = std::make_unique<FakeSocket>();
+    FakeSocket* raw = sock.get();
+    GptpEngine eng{opts, std::move(sock), std::make_unique<FakeIdentity>()};
+    ASSERT_TRUE(eng.Initialize());
+
+    for (int i = 0; i < 100 && raw->SentFrames().empty(); ++i)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+    const auto sent = raw->SentFrames();
+    ASSERT_FALSE(sent.empty());
+    EXPECT_EQ(sent[0][kTsmtOffset] & 0x0FU, kPtpMsgtypePdelayReq);
+    EXPECT_EQ(sent[0][kDomainOffset], 0U);
+    eng.Deinitialize();
+}
+
 // ── GptpEngineFakeTest — PdelayReq → PdelayResp/FollowUp wire byte order ─────
 
 namespace
@@ -484,7 +543,7 @@ constexpr std::size_t kEthHdrLen = 14U;
 constexpr std::size_t kPtpBodyOffset = 34U;
 
 // Find the first sent frame with the given PTP message type; empty if none.
-std::vector<std::uint8_t> FindSent(FakeSocket& sock, std::uint8_t msgtype)
+Frame FindSent(FakeSocket& sock, std::uint8_t msgtype)
 {
     for (auto& f : sock.SentFrames())
     {
@@ -494,7 +553,7 @@ std::vector<std::uint8_t> FindSent(FakeSocket& sock, std::uint8_t msgtype)
     return {};
 }
 
-std::vector<std::uint8_t> WaitForSent(FakeSocket& sock, std::uint8_t msgtype)
+Frame WaitForSent(FakeSocket& sock, std::uint8_t msgtype)
 {
     for (int i = 0; i < 100; ++i)
     {
