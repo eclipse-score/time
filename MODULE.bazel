@@ -74,6 +74,7 @@ use_repo(
     "score_gcc_aarch64_toolchain",
     "score_gcc_x86_64_toolchain",
     "score_qcc_aarch64_toolchain",
+    "score_qcc_aarch64_toolchain_pkg",
     "score_qcc_x86_64_toolchain",
     "score_qcc_x86_64_toolchain_pkg",
 )
@@ -267,6 +268,7 @@ git_override(
 
 bazel_dep(name = "score_itf", version = "0.7.0")
 
+bazel_dep(name = "score_os_images", version = "0.0.5", dev_dependency = True)
 bazel_dep(name = "bazel_skylib", version = "1.9.0", dev_dependency = True)
 
 bazel_dep(name = "rules_pkg", version = "1.2.0")
@@ -299,7 +301,27 @@ imagefs.toolchain(
     target_os = "qnx",
     type = "ifs",
 )
-use_repo(imagefs, "score_qnx_x86_64_ifs_toolchain")
+imagefs.toolchain(
+    name = "score_qnx_aarch64_ifs_toolchain",
+    sdp_to_import = "@score_qcc_aarch64_toolchain_pkg",
+    # See score_qnx_x86_64_ifs_toolchain for why this is 8.0.0.
+    sdp_version = "8.0.0",
+    target_cpu = "aarch64",
+    target_os = "qnx",
+    type = "ifs",
+)
+imagefs.toolchain(
+    name = "score_linux_x86_64_ext4_toolchain",
+    target_cpu = "x86_64",
+    target_os = "linux",
+    type = "ext4",
+)
+use_repo(
+    imagefs,
+    "score_linux_x86_64_ext4_toolchain",
+    "score_qnx_aarch64_ifs_toolchain",
+    "score_qnx_x86_64_ifs_toolchain",
+)
 
 ## JSON Schema validation (build-time lint)
 
