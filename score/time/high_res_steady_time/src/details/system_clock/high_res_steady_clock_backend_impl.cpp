@@ -16,7 +16,10 @@
 #include "score/time/high_res_steady_time/src/high_res_steady_time.h"
 
 #include <chrono>
+#include <cstdint>
+#include <ctime>
 #include <memory>
+#include <ratio>
 
 namespace score
 {
@@ -32,7 +35,14 @@ HighResSteadyClockBackendImpl::~HighResSteadyClockBackendImpl() noexcept = defau
 
 ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus> HighResSteadyClockBackendImpl::Now() const noexcept
 {
-    const auto raw = std::chrono::high_resolution_clock::now().time_since_epoch();
+    // Must be CLOCK_MONOTONIC: the time slave stamps Sync frames with it and VehicleClock subtracts those
+    // stamps from this clock's readings. std::chrono::high_resolution_clock is CLOCK_REALTIME on Linux.
+    ::timespec spec{};
+    if (::clock_gettime(CLOCK_MONOTONIC, &spec) != 0)
+    {
+        return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{HighResSteadyTime::Timepoint{}, NoStatus{}};
+    }
+    const std::chrono::nanoseconds raw{(static_cast<std::int64_t>(spec.tv_sec) * std::nano::den) + spec.tv_nsec};
     const HighResSteadyTime::Timepoint tp{std::chrono::duration_cast<HighResSteadyTime::Duration>(raw)};
     return ClockSnapshot<HighResSteadyTime::Timepoint, NoStatus>{tp, NoStatus{}};
 }
