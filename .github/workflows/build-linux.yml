@@ -30,34 +30,30 @@ on:
     types: [checks_requested]
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      # Allows bazel.yml to prune replaced cache generations once it supports this.
+      actions: write
+    uses: eclipse-score/cicd-workflows/.github/workflows/bazel.yml@419f87cb66c1a0eb444416ae47c4c97bdc5732fc # bazel/v0.1.0
     strategy:
       matrix:
         config: [x86_64-linux, arm64-linux]
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-      - name: Setup Bazel
-        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
-        with:
-          unique-cache-name: ${{ github.workflow }}-${{ github.job }}-${{ matrix.config }}
-
-      - name: Build with Bazel
-        run: |
-          bazel build --keep_going --verbose_failures --config ${{ matrix.config }} //score/... //examples/...
+    with:
+      build-targets: //score/... //examples/...
+      bazel-configs: ${{ matrix.config }}
+      build-args: --keep_going --verbose_failures
+      cache-key: build-${{ matrix.config }}
 
   # Public C++ API surface gate (see tools/api_surface/README.md). Fails on any
   # difference against the committed lock files; never regenerates them.
   api-surface:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-      - name: Setup Bazel
-        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
-        with:
-          unique-cache-name: ${{ github.workflow }}-${{ github.job }}
-
-      - name: Check public C++ API surface
-        run: |
-          bazel test --lockfile_mode=error --verbose_failures --config x86_64-linux //:api_surface_tests
+    permissions:
+      contents: read
+      # Allows bazel.yml to prune replaced cache generations once it supports this.
+      actions: write
+    uses: eclipse-score/cicd-workflows/.github/workflows/bazel.yml@419f87cb66c1a0eb444416ae47c4c97bdc5732fc # bazel/v0.1.0
+    with:
+      test-targets: //:api_surface_tests
+      bazel-configs: x86_64-linux
+      test-args: --verbose_failures
+      cache-key: api-surface

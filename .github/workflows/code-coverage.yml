@@ -30,37 +30,17 @@ on:
 
 jobs:
   code-coverage:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v6
-
-      - name: Setup Bazel
-        uses: eclipse-score/cicd-actions/setup-bazel-cache@212bbf86267e9381da9d2daf962d12f6feafbc90 # v0.0.2
-        with:
-          unique-cache-name: ${{ github.workflow }}-${{ github.job }}
-
-      - name: Run coverage (LLVM source-based, @score_coverage)
-        run: |
-          set -euo pipefail
-          bazel coverage --lockfile_mode=error --config=llvm_cov \
-            //score/... --build_tests_only
-
-      - name: Generate coverage report and enforce threshold
-        env:
-          COVERAGE_THRESHOLD: "85"
-        run: |
-          set -euo pipefail
-          bazel run --lockfile_mode=error @score_coverage//:generate_coverage_html -- \
-            --testlogs-subdir score \
-            --archive-dir coverage_artifact \
-            --yaml tools/coverage/coverage_justifications.yaml
-
-      # upload-artifact zips its input itself; the script assembles an
-      # unzipped directory (--archive-dir) to avoid a zip inside a zip.
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ github.event.repository.name }}_coverage_report_cpp
-          path: coverage_artifact
-          retention-days: 10
+    permissions:
+      contents: read
+      # Allows bazel.yml to prune replaced cache generations once it supports this.
+      actions: write
+    uses: eclipse-score/cicd-workflows/.github/workflows/bazel.yml@419f87cb66c1a0eb444416ae47c4c97bdc5732fc # bazel/v0.1.0
+    with:
+      test-targets: //score/...
+      test-command: coverage
+      bazel-configs: llvm_cov
+      test-args: --build_tests_only
+      coverage-threshold: 85
+      coverage-justifications: tools/coverage/coverage_justifications.yaml
+      cache-key: code-coverage
+      retention-days: 10
