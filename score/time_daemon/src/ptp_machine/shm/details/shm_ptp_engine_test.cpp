@@ -308,6 +308,19 @@ TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesTimeAndStatusCorrectly)
     EXPECT_EQ(result.status.is_timeout, src.status.is_timeout);
 }
 
+TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_MapsLocalTimeToReferenceClockTimePoint)
+{
+    ASSERT_TRUE(pub_.Open(name_));
+    const score::ts::GptpIpcData src = MakeTestIpcData();
+    pub_.Publish(src);
+    ASSERT_TRUE(engine_->Initialize());
+
+    PtpTimeInfo result{};
+    ASSERT_TRUE(engine_->ReadPTPSnapshot(result));
+
+    EXPECT_EQ(result.local_time.time_since_epoch(), src.local_time);
+}
+
 TEST_F(ShmPTPEngineTest, ReadPTPSnapshot_CopiesSyncFupDataCorrectly)
 {
     ASSERT_TRUE(pub_.Open(name_));
