@@ -12,6 +12,7 @@
  ********************************************************************************/
 
 #include "score/time_slave/src/common/definitions.h"
+#include "score/time_slave/src/gptp/platform/qnx/timestamp_select.h"
 
 #include <arpa/inet.h>
 #include <fcntl.h>
@@ -121,6 +122,8 @@ struct QnxRawContext
 
     std::atomic<std::int64_t> inject_t1_ns{-1LL};
 
+    bool hw_ts_supported = false;
+
     ~QnxRawContext()
     {
         if (bpf_fd >= 0)
@@ -205,8 +208,25 @@ static const char* get_bpf_device_path() noexcept
                                              score::ts::env::qnx::kBpfDevicePathDefault);
 }
 
-static int open_tx_loopback_fd(const char* ifname) noexcept
+static bool ptp_get_time_works() noexcept
 {
+    if (g_qnx_ctx.promisc_sock < 0)
+        return false;
+    struct
+    {
+        struct ifdrv ifd;
+        struct ptp_time tm;
+    } cmd{};
+    std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1U);
+    cmd.ifd.ifd_len = sizeof(cmd.tm);
+    cmd.ifd.ifd_data = &cmd.tm;
+    cmd.ifd.ifd_cmd = PTP_GET_TIME;
+    return ::ioctl(g_qnx_ctx.promisc_sock, SIOCGDRVSPEC, &cmd) == 0;
+}
+
+static int open_tx_loopback_fd(const char* ifname, bool& ts_ok) noexcept
+{
+    ts_ok = false;
     const int fd = ::open(get_bpf_device_path(), O_RDWR);
     if (fd < 0)
         return -1;
@@ -224,7 +244,7 @@ static int open_tx_loopback_fd(const char* ifname) noexcept
     (void)::ioctl(fd, BIOCIMMEDIATE, &one);  // no batching delay
 
     u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
-    (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
+    ts_ok = ::ioctl(fd, BIOCSTSTAMP, &bpf_ts) == 0;
 
     struct bpf_program prog{kPdelayReqFilterLen, kPdelayReqFilterInsns};
     if (::ioctl(fd, BIOCSETF, &prog) < 0)
@@ -276,7 +296,7 @@ extern "C" int qnx_raw_open(const char* ifname)
     (void)::ioctl(fd, BIOCPROMISC, &yes);
 
     u_int bpf_ts = BPF_T_BINTIME | BPF_T_PTP;
-    (void)::ioctl(fd, BIOCSTSTAMP, &bpf_ts);
+    const bool rx_ts_ok = ::ioctl(fd, BIOCSTSTAMP, &bpf_ts) == 0;
 
     struct bpf_program prog{kPtp1588FilterLen, kPtp1588FilterInsns};
     if (::ioctl(fd, BIOCSETF, &prog) < 0)
@@ -300,7 +320,9 @@ extern "C" int qnx_raw_open(const char* ifname)
     g_qnx_ctx.bpf_fd = fd;
     g_qnx_ctx.initialized = true;
 
-    g_qnx_ctx.tx_lb_fd = open_tx_loopback_fd(ifname);
+    bool tx_ts_ok = false;
+    g_qnx_ctx.tx_lb_fd = open_tx_loopback_fd(ifname, tx_ts_ok);
+    g_qnx_ctx.hw_ts_supported = score::ts::details::qnx::SelectHwTsSupported(rx_ts_ok, tx_ts_ok, ptp_get_time_works());
 
     static const unsigned char kPtpP2PMac[6] = {0x01U, 0x80U, 0xC2U, 0x00U, 0x00U, 0x0EU};
     static const unsigned char kPtp1588Mac[6] = {0x01U, 0x1BU, 0x19U, 0x00U, 0x00U, 0x00U};
@@ -419,48 +441,26 @@ extern "C" int qnx_raw_recv(int fd, void* buf, int buf_len, timespec* hwts, int 
 
         const uint8_t msgtype = static_cast<uint8_t>(pkt[ptp_off]) & 0x0Fu;
         const auto* bh = reinterpret_cast<const bpf_xhdr*>(bh_raw);
-        bool t4_set = false;
-        if (bh->bh_tstamp.bt_sec != 0 || bh->bh_tstamp.bt_frac != 0)
+
+        bool bpf_ts_valid = false;
+        ::timespec bpf_ts{};
+        if (g_qnx_ctx.hw_ts_supported && (bh->bh_tstamp.bt_sec != 0 || bh->bh_tstamp.bt_frac != 0))
         {
-            bpf_ts_to_timespec(bh, hwts);
-            t4_set = true;
+            bpf_ts_to_timespec(bh, &bpf_ts);
+            bpf_ts_valid = true;
             if (msgtype == 0x03u)
             {
                 std::fprintf(
-                    stderr, "[t4] bpf_phc ts=%lld.%09ld\n", static_cast<long long>(hwts->tv_sec), hwts->tv_nsec);
+                    stderr, "[t4] bpf_phc ts=%lld.%09ld\n", static_cast<long long>(bpf_ts.tv_sec), bpf_ts.tv_nsec);
             }
         }
-        // PTP_GET_TIME fallback: use PHC hardware time when no BPF timestamp
-        // is available, so rate_ratio reflects ΔPHC / ΔCLOCK_REALTIME.
-        if (!t4_set && g_qnx_ctx.promisc_sock >= 0)
-        {
-            struct
-            {
-                struct ifdrv ifd;
-                struct ptp_time tm;
-            } cmd{};
-            std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1U);
-            cmd.ifd.ifd_len = sizeof(cmd.tm);
-            cmd.ifd.ifd_data = &cmd.tm;
-            cmd.ifd.ifd_cmd = PTP_GET_TIME;
-            if (::ioctl(g_qnx_ctx.promisc_sock, SIOCGDRVSPEC, &cmd) == 0)
-            {
-                hwts->tv_sec = static_cast<time_t>(cmd.tm.sec);
-                hwts->tv_nsec = static_cast<long>(cmd.tm.nsec);
-                t4_set = true;
-                if (msgtype == 0x03u)
-                {
-                    std::fprintf(stderr,
-                                 "[t4] PTP_GET_TIME ts=%lld.%09ld\n",
-                                 static_cast<long long>(cmd.tm.sec),
-                                 static_cast<long>(cmd.tm.nsec));
-                }
-            }
-        }
-        if (!t4_set)
-        {
-            (void)::clock_gettime(CLOCK_REALTIME, hwts);
-        }
+
+        ::timespec mono_fallback{};
+        if (!g_qnx_ctx.hw_ts_supported)
+            (void)::clock_gettime(CLOCK_MONOTONIC, &mono_fallback);
+
+        *hwts =
+            score::ts::details::qnx::SelectTimestamp(g_qnx_ctx.hw_ts_supported, bpf_ts_valid, bpf_ts, mono_fallback);
 
         const int frame_len = std::min(caplen, buf_len);
         std::memcpy(buf, pkt, static_cast<std::size_t>(frame_len));
@@ -489,47 +489,36 @@ extern "C" int qnx_raw_send(int fd, const void* buf, int len, timespec* hwts)
     if (::write(fd, g_qnx_ctx.tx_frame, static_cast<std::size_t>(len)) < 0)
         return -1;
 
+    if (!g_qnx_ctx.hw_ts_supported)
+    {
+        ::timespec mono_fallback{};
+        (void)::clock_gettime(CLOCK_MONOTONIC, &mono_fallback);
+        *hwts = mono_fallback;
+        return len;
+    }
+
+    bool bpf_ts_valid = false;
+    ::timespec bpf_ts{};
     for (int i = 0; i < 100; ++i)
     {
         const std::int64_t t1 = g_qnx_ctx.inject_t1_ns.load(std::memory_order_acquire);
         if (t1 > 0)
         {
-            hwts->tv_sec = static_cast<time_t>(t1 / kNsPerSec);
-            hwts->tv_nsec = static_cast<long>(t1 % kNsPerSec);
-            std::fprintf(stderr, "[t1] inject   ts=%lld.%09ld\n", static_cast<long long>(hwts->tv_sec), hwts->tv_nsec);
-            return len;
+            bpf_ts.tv_sec = static_cast<time_t>(t1 / kNsPerSec);
+            bpf_ts.tv_nsec = static_cast<long>(t1 % kNsPerSec);
+            bpf_ts_valid = true;
+            std::fprintf(
+                stderr, "[t1] inject   ts=%lld.%09ld\n", static_cast<long long>(bpf_ts.tv_sec), bpf_ts.tv_nsec);
+            break;
         }
         ::usleep(100U);  // 100 µs
     }
 
-    if (g_qnx_ctx.promisc_sock >= 0)
+    *hwts = score::ts::details::qnx::SelectTimestamp(g_qnx_ctx.hw_ts_supported, bpf_ts_valid, bpf_ts, ::timespec{});
+    if (hwts->tv_sec < 0)
     {
-        struct
-        {
-            struct ifdrv ifd;
-            struct ptp_time tm;
-        } cmd{};
-        std::strncpy(cmd.ifd.ifd_name, g_qnx_ctx.iface_name, sizeof(cmd.ifd.ifd_name) - 1U);
-        cmd.ifd.ifd_len = sizeof(cmd.tm);
-        cmd.ifd.ifd_data = &cmd.tm;
-        cmd.ifd.ifd_cmd = PTP_GET_TIME;
-        if (::ioctl(g_qnx_ctx.promisc_sock, SIOCGDRVSPEC, &cmd) == 0)
-        {
-            hwts->tv_sec = static_cast<time_t>(cmd.tm.sec);
-            hwts->tv_nsec = static_cast<long>(cmd.tm.nsec);
-            std::fprintf(stderr,
-                         "[t1] PTP_GET  ts=%lld.%09ld (inject timeout)\n",
-                         static_cast<long long>(hwts->tv_sec),
-                         hwts->tv_nsec);
-            return len;
-        }
+        std::fprintf(stderr, "[t1] MISSING  no timestamp from hardware source\n");
     }
-
-    (void)::clock_gettime(CLOCK_REALTIME, hwts);
-    std::fprintf(stderr,
-                 "[t1] CLOCK_RT ts=%lld.%09ld (fallback)\n",
-                 static_cast<long long>(hwts->tv_sec),
-                 static_cast<long>(hwts->tv_nsec));
     return len;
 }
 

@@ -68,7 +68,10 @@ cc_library(
         ":ptp_types",
         ":raw_socket",
         "//score/time_slave/src/common:definitions",
-    ],
+    ] + select({
+        "@platforms//os:qnx": ["//score/time_slave/src/gptp/platform/qnx:timestamp_select"],
+        "//conditions:default": [],
+    }),
 )
 
 cc_library(
@@ -122,6 +125,7 @@ cc_library(
     tags = ["QM"],
     visibility = ["//score:__subpackages__"],
     deps = [
+        ":clock_util",
         ":frame_codec",
         ":ptp_types",
         ":raw_socket",
