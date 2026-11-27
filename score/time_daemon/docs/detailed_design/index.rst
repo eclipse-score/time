@@ -698,71 +698,145 @@ The daemon should have the following logging contexts:
 Variability
 ~~~~~~~~~~~
 
-Configuration files
-^^^^^^^^^^^^^^^^^^^
+Link-time timebase configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``TimeDaemon`` uses structured configuration files to enable customization of its runtime behavior. These data could be configured:
+Timebases are configured in code, and their configuration is fixed when the daemon is linked. The configuration
+passes through the factory composition described in :ref:`time_daemon_factory_composition`: from
+``CreateTimebaseHandlers()`` to the timebase handlers, and from each handler to its machines.
 
-1. Component-specific Configuration:
+The integrator provides and links ``CreateTimebaseHandlers()``, selecting the timebases to include and returning
+their handlers. The configuration mirrors the machine composition of a timebase:
 
-   a. Each component can have dedicated configuration sections
-   b. Parameters such as update rates, timeouts, and thresholds can be specified
+- Each machine defines its own configuration struct, which its factory function accepts. The struct contains
+  only the settings of that machine, so the machine and its configuration can be reused in any timebase.
+- The configuration struct of a timebase is a struct of structs: it holds one machine configuration struct for
+  each machine of the timebase, together with the initialization timeout that the handler applies when
+  registering the machines.
 
-2. Topic Configuration:
+All members of the configuration structs are ``const`` and have literal types; for example, a machine name holds
+a ``std::string_view`` that refers to a string literal, not a ``std::string``. The integrator defines the
+configuration as a ``constexpr`` object, so its values are specified once, at compile time. Neither this object
+nor any copy of it, such as the copy that the handler retains, can be changed afterwards.
 
-   a. Topics for the ``Message Broker`` can be defined in configuration
-   b. Publisher and subscriber relationships can be specified externally
-   c. Component roles (publisher/subscriber) can be assigned through configuration
+The integrator must specify every value. Aggregate initialization initializes an omitted member from ``{}``, so a
+forgotten value of a plain type such as ``std::chrono::nanoseconds`` would silently become zero. Each value
+therefore has its own type, ``ConfigValue<T, Tag>``, which has an ``explicit`` constructor and no default
+constructor. A forgotten value, or a forgotten machine configuration struct, is then a compile error in the
+integrator's code, independent of the compiler warnings enabled there. This guarantee requires that each member
+of a configuration struct is either a ``ConfigValue`` or a machine configuration struct, and that no member has a
+default member initializer. Because a ``using`` alias does not create a new type, the alias of each value declares
+its own ``Tag`` type, which is never defined and only distinguishes the types of values that share ``T``, such as
+the ``std::chrono::nanoseconds`` values of the verification machine. The distinct types also reject values in the
+wrong order and name each value in the integrator's initializer.
 
-3. File Format and Structure: The configuration files use JSON format for readability and easy parsing:
+.. code-block:: cpp
 
-.. code-block:: json
-
+   template <typename T, typename Tag>
+   class ConfigValue
    {
-     "message_broker": {
-       "topics": [
-         {
-           "name": "raw_ptp_data",
-           "publishers": ["PtpMachine"],
-           "subscribers": ["ControlFlowDivider"]
-         },
-         {
-           "name": "input_ptp_data",
-           "publishers": ["ControlFlowDivider"],
-           "subscribers": ["VerificationMachine"]
-         },
-         {
-           "name": "verified_ptp_data",
-           "publishers": ["VerificationMachine"],
-           "subscribers": ["IPCMachine"]
-         }
-       ]
-     },
-     "ptp_machine": {
-       "update_interval_ms": 50,
-       "ptp_stack_type": "ptp",
-       "ptp_stack_parameters": {
-         "device": "/dev/ptp0"
+     public:
+       constexpr explicit ConfigValue(const T value) noexcept : value_{value} {}
+
+       constexpr T Get() const noexcept
+       {
+           return value_;
        }
-     },
-     "control_flow_divider": {
-       "timeout_ms": 500,
-       "publishing_rate_ms": 100
-     },
-     "verification_machine": {
-       "validation_stages": ["synchronization", "timejumps", "timeout"],
-       "timejumps_parameters": {
-         "max_backward_jump_ns": 100000
-       },
-       "timeout_parameters": {
-         "threshold_ns": 100000
-       }
-     },
-     "ipc_machine": {
-       "shared_memory_name": "vehicle_time",
-       "shared_memory_size": 4096
-     }
-   }
+
+     private:
+       const T value_;
+   };
+
+   using MachineName = ConfigValue<std::string_view, struct MachineNameTag>;
+   using InitTimeout = ConfigValue<std::chrono::seconds, struct InitTimeoutTag>;
+
+For the standard Vehicle Time setup, the proposed factory ``CreateVehicleTimebase()`` accepts the following
+configuration struct:
+
+.. code-block:: cpp
+
+   struct VehicleTimebaseConfig
+   {
+       const PtpControlFlowDividerConfig control_flow_divider;
+       const GPTPShmMachineConfig ptp_machine;
+       const SvtVerificationMachineConfig verification_machine;
+       const SvtPublisherConfig publisher;
+       const InitTimeout init_timeout;
+   };
+
+   std::unique_ptr<TimebaseHandler> CreateVehicleTimebase(const VehicleTimebaseConfig& config);
+
+The handler retains the configuration. In ``CreateComponents()``, it passes each machine configuration struct to
+the factory of that machine, registers each machine with ``init_timeout`` and connects the machines through the
+message broker.
+
+For example, ``SvtVerificationMachineConfig`` contains the instance name of the verification machine and the
+parameters of its timeout and time-jump validators. The synchronization validator has no parameters.
+
+.. code-block:: cpp
+
+   using ReceptionTimeout = ConfigValue<std::chrono::milliseconds, struct ReceptionTimeoutTag>;
+   using MaxTimeJumpAllowed = ConfigValue<std::chrono::microseconds, struct MaxTimeJumpAllowedTag>;
+   using SyncDebounceThreshold = ConfigValue<std::chrono::seconds, struct SyncDebounceThresholdTag>;
+   using ValidFramesThreshold = ConfigValue<std::uint8_t, struct ValidFramesThresholdTag>;
+
+   struct SvtVerificationMachineConfig
+   {
+       const MachineName name;
+
+       // TimeoutValidator
+       const ReceptionTimeout reception_timeout;
+
+       // TimeJumpsValidator
+       const MaxTimeJumpAllowed max_time_jump_allowed;
+       const SyncDebounceThreshold sync_debounce_threshold;
+       const ValidFramesThreshold valid_frames_threshold;
+   };
+
+   std::shared_ptr<SvtVerificationMachine> CreateSvtVerificationMachine(const SvtVerificationMachineConfig& config);
+
+The integrator specifies the values once, in ``constexpr`` objects, and composes the timebase configuration from
+the machine configurations. The configurations of the other machines are defined in the same way:
+
+.. code-block:: cpp
+
+   constexpr SvtVerificationMachineConfig kVerificationMachineConfig{
+       MachineName{"time_verification_worker"},
+       ReceptionTimeout{std::chrono::milliseconds{3300}},
+       MaxTimeJumpAllowed{std::chrono::microseconds{500}},
+       SyncDebounceThreshold{std::chrono::seconds{5}},
+       ValidFramesThreshold{2U},
+   };
+
+   constexpr VehicleTimebaseConfig kVehicleTimebaseConfig{
+       kControlFlowDividerConfig,
+       kPtpMachineConfig,
+       kVerificationMachineConfig,
+       kPublisherConfig,
+       InitTimeout{std::chrono::seconds{20}},
+   };
+
+An integrator can instead provide a custom handler and factory for a timebase with a different machine
+composition. For example, a vendor-specific Vehicle Time handler can use a different PTP machine while
+reusing suitable S-CORE machines. Its timebase configuration struct then combines the configuration struct of
+the vendor PTP machine with those of the reused S-CORE machines. The custom handler is responsible for
+selecting, configuring and wiring its machines; the standard Vehicle Time factory does not select a replacement
+machine.
+
+The following sequence illustrates the proposed standard Vehicle Time configuration. Handler setup creates
+the initialization job runner; machine initialization and startup occur later, as described in
+:ref:`time_daemon_handler_lifecycle`.
+
+.. raw:: html
+
+   <div style="overflow-x: auto; max-width: 100%;">
+
+.. uml:: _assets/config/config_vehicle_time_seq.puml
+   :alt: Proposed link-time configuration of the Vehicle Time handler and machines
+
+.. raw:: html
+
+   </div>
 
 Scalability
 ^^^^^^^^^^^
