@@ -68,7 +68,7 @@ The following table lists all available options and their default values as defi
    * - ``iface_name``
      - ``"emac0"``
      - The network interface to use for gPTP traffic.
-   * - ``pdelay_interval_ms``
+   * - ``pdelay_req_interval_ms``
      - ``1000``
      - The interval in milliseconds for sending Peer-Delay measurement requests.
    * - ``pdelay_warmup_ms``
@@ -86,6 +86,28 @@ The following table lists all available options and their default values as defi
    * - ``phc_config``
      - ``disabled``
      - Configuration for hardware clock (PHC) adjustments. Disabled by default.
+
+Validation
+----------
+
+``time_slave_config_schema.json`` defines the type and range (``minimum`` /
+``maximum``) of every option. The TimeSlave enforces these constraints when it
+loads the file. If any value has the wrong type (including a JSON boolean where
+an integer is expected), lies outside its allowed range, or if the file contains
+a key the schema does not define (matching ``"additionalProperties": false``,
+for example a misspelled option name), the TimeSlave logs one error naming each
+offending field and **refuses to start** (initialization fails). The same
+happens if the file cannot be read or parsed. Values are never silently
+clamped or applied, so a typo such as ``"domain_number": 128`` is reported at
+startup instead of causing every Sync message to be ignored.
+
+The parser enforces the keys, types and ranges listed in
+``config_schema_table.h``; defaults come from the C++ config structs. A unit
+test (``config_schema_consistency_test``) compares both with
+``time_slave_config_schema.json`` in both directions and fails if the schema
+uses a constraint the parser does not implement, so they cannot drift apart
+unnoticed. When changing the schema, update ``config_schema_table.h`` and the
+struct defaults accordingly.
 
 PHC configuration
 -----------------

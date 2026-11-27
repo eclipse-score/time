@@ -22,6 +22,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <utility>
 
 namespace score
 {
@@ -63,7 +64,18 @@ std::int32_t TimeSlave::Initialize(const score::mw::lifecycle::ApplicationContex
     TimeSlaveConfig cfg;
     if (fs::exists(config_path))
     {
-        cfg = ParseConfig(config_path.string());
+        auto parsed = ParseConfig(config_path.string());
+        if (!parsed.ok())
+        {
+            for (const auto& error : parsed.errors)
+            {
+                score::mw::log::LogError(kTimeSlaveAppContext) << error;
+            }
+            score::mw::log::LogError(kTimeSlaveAppContext)
+                << "Invalid configuration file " << config_path.string() << ", refusing to start";
+            return kInitFailure;
+        }
+        cfg = std::move(parsed.config);
         opts_ = cfg.engine_opts;
         score::mw::log::LogInfo(kTimeSlaveAppContext)
             << "Loaded config from " << config_path.string() << " (iface=" << opts_.iface_name

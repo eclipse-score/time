@@ -16,26 +16,44 @@
 #include "score/time_slave/src/application/configuration/time_slave_config.h"
 
 #include <string>
+#include <vector>
 
 namespace score
 {
 namespace ts
 {
 
+/// Outcome of ParseConfig(): either a fully valid config, or the list of problems found.
+struct ConfigParseResult
+{
+    /// Valid only if ok(). On errors it may be partially filled and must not be used.
+    TimeSlaveConfig config{};
+
+    /// One human-readable message per problem (all problems are collected, not just the first).
+    std::vector<std::string> errors{};
+
+    bool ok() const
+    {
+        return errors.empty();
+    }
+};
+
 /**
- * @brief Parse a TimeSlave JSON configuration file from @p path.
+ * @brief Parse and validate a TimeSlave JSON configuration file from @p path.
  *
- * On success, the returned config is fully populated with values from the
- * file; missing optional fields fall back to their defaults as described in
- * the JSON schema.
+ * Missing optional fields keep the defaults described in the JSON schema.
  *
- * On failure (file not found, invalid JSON, schema-violating structure)
- * the process terminates via LogFatal.
+ * Every constraint of the schema is enforced: value types (a JSON boolean is not an
+ * integer and vice versa), numeric ranges (``minimum`` / ``maximum``) and unknown keys
+ * (``additionalProperties: false``). Invalid values are never clamped or applied; they are
+ * reported in ConfigParseResult::errors. Invalid JSON or a root that is not an object is
+ * reported the same way. A path that is not a regular file (a directory or a missing file)
+ * is not a config file: the built-in defaults are returned with no errors.
  *
  * @param path  Filesystem path to the JSON config file.
- * @return Parsed TimeSlaveConfig.
+ * @return Parsed config, or the list of errors (check ConfigParseResult::ok()).
  */
-TimeSlaveConfig ParseConfig(const std::string& path);
+ConfigParseResult ParseConfig(const std::string& path);
 
 }  // namespace ts
 }  // namespace score
