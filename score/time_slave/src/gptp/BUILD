@@ -51,9 +51,30 @@ cc_test(
     ],
 )
 
+cc_test(
+    name = "gptp_engine_ipc_pipeline_integration_test",
+    srcs = [
+        "gptp_engine_ipc_pipeline_integration_test.cpp",
+    ],
+    tags = ["unit"],
+    deps = [
+        ":gptp_engine",
+        "//score/time_slave/src/gptp/details:network_identity",
+        "//score/time_slave/src/gptp/details:ptp_types",
+        "//score/time_slave/src/gptp/details:raw_socket",
+        "//score/ts_client/src:gptp_ipc",
+        "@googletest//:gtest",
+        "@googletest//:gtest_main",
+        "@score_baselibs//score/mw/log:console_only_backend",
+    ],
+)
+
 cc_unit_test_suites_for_host_and_qnx(
     name = "unit_test_suite",
-    cc_unit_tests = [":gptp_engine_test"],
+    cc_unit_tests = [
+        ":gptp_engine_test",
+        ":gptp_engine_ipc_pipeline_integration_test",
+    ],
     test_suites_from_sub_packages = [
         "//score/time_slave/src/gptp/details:unit_test_suite",
         "//score/time_slave/src/gptp/instrument:unit_test_suite",
