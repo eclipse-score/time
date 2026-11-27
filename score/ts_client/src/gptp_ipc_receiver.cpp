@@ -12,6 +12,11 @@
  ********************************************************************************/
 #include "score/ts_client/src/gptp_ipc_receiver.h"
 
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <cstring>
 #include <memory>
 
@@ -38,9 +43,12 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     if (shm_resource_ != nullptr)
         return true;
 
+    ipc_name_ = ipc_name;
     shm_resource_ = score::memory::shared::SharedMemoryFactory::Open(ipc_name, false);
     if (shm_resource_ == nullptr)
+    {
         return false;
+    }
 
     // construct<GptpIpcRegion>() on the publisher side aligns the object to
     // alignof(GptpIpcRegion) within the usable region.  We must apply the same
@@ -63,6 +71,39 @@ bool GptpIpcReceiver::Open(const std::string& ipc_name)
     }
 
     return true;
+}
+
+// req-Id: comp_req__ts_client__shared_memory_mgmt
+bool GptpIpcReceiver::LastReceiveStale() const
+{
+    return last_receive_stale_;
+}
+
+// req-Id: comp_req__ts_client__shared_memory_mgmt
+bool GptpIpcReceiver::IsReplaced() const
+{
+    if (shm_resource_ == nullptr)
+    {
+        return false;
+    }
+
+    struct stat mapped{};
+    if (::fstat(static_cast<int>(shm_resource_->GetFileDescriptor()), &mapped) != 0)
+    {
+        return false;
+    }
+
+    const int fd = ::shm_open(ipc_name_.c_str(), O_RDONLY, static_cast<mode_t>(0));
+    if (fd < 0)
+    {
+        return false;  // name absent: nothing newer to switch to
+    }
+
+    struct stat current{};
+    const bool have_current = (::fstat(fd, &current) == 0);
+    static_cast<void>(::close(fd));
+
+    return have_current && ((current.st_dev != mapped.st_dev) || (current.st_ino != mapped.st_ino));
 }
 
 // req-Id: comp_req__ts_client__seqlock_protocol, comp_req__ts_client__sync_status_data
@@ -96,9 +137,17 @@ std::optional<score::ts::GptpIpcData> GptpIpcReceiver::Receive()
         const std::uint32_t seq3 = region_->seq.load(std::memory_order_acquire);
 
         if (seq1 == seq2 && seq1 == seq3)
+        {
+            last_receive_stale_ = has_last_seq_ && (seq1 == last_seq_);
+            last_seq_ = seq1;
+            has_last_seq_ = true;
             return data;
+        }
     }
 
+    // No consistent read: the publisher may have died mid-Publish() leaving seq odd. Report as stale so the caller
+    // checks whether the segment was replaced; otherwise it would never reconnect.
+    last_receive_stale_ = true;
     return std::nullopt;
 }
 
@@ -107,6 +156,9 @@ void GptpIpcReceiver::Close()
 {
     shm_resource_.reset();
     region_ = nullptr;
+    ipc_name_.clear();
+    has_last_seq_ = false;
+    last_receive_stale_ = false;
 }
 
 }  // namespace details

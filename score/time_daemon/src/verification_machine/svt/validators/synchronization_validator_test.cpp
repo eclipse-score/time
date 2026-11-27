@@ -32,7 +32,7 @@ class SynchronizationValidatorParamTest : public ::testing::TestWithParam<std::v
     void TearDown() override {}
 };
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     TestIfSynchronizedFlagIsNotCleared,
     SynchronizationValidatorParamTest,
     ::testing::Values(std::vector<TestParams>{
