@@ -11,13 +11,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 
-name: Build / QNX8
+name: Gate / QNX builds
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-build-qnx-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 on:
@@ -26,6 +26,13 @@ on:
   merge_group:
     types: [checks_requested]
   workflow_call:
+    secrets:
+      SCORE_QNX_LICENSE:
+        required: true
+      SCORE_QNX_USER:
+        required: true
+      SCORE_QNX_PASSWORD:
+        required: true
 jobs:
   # Advisory feedback on PRs (fork PRs wait for environment approval) and
   # cache warm-up when called from cache_maintenance.yml.
@@ -67,8 +74,8 @@ jobs:
       score-qnx-user: ${{ secrets.SCORE_QNX_USER }}
       score-qnx-password: ${{ secrets.SCORE_QNX_PASSWORD }}
 
-  # Stable required status check. It must not depend on qnx-build: on fork PRs
-  # that job waits for environment approval and would block queue entry.
+  # This result depends only on queue builds, never on advisory PR builds that
+  # may wait for fork-environment approval.
   qnx-merge-queue-result:
     name: QNX merge queue result
     needs: qnx-merge-queue-build
@@ -88,5 +95,22 @@ jobs:
           fi
           if [ "${BUILD_RESULT}" != "success" ]; then
             echo "::error::QNX build of the merge-group commit did not succeed (${BUILD_RESULT})."
+            exit 1
+          fi
+
+  can_merge:
+    name: ci/qnx-validation
+    needs: qnx-merge-queue-result
+    if: ${{ always() && (github.event_name == 'pull_request_target' || github.event_name == 'merge_group') }}
+    runs-on: ubuntu-24.04
+    permissions: {}
+    steps:
+      - name: Require the QNX merge queue result to succeed
+        env:
+          QNX_RESULT: ${{ needs.qnx-merge-queue-result.result }}
+        run: |
+          echo "qnx-merge-queue-result=${QNX_RESULT}"
+          if [ "${QNX_RESULT}" != "success" ]; then
+            echo "::error::QNX merge queue result did not succeed (${QNX_RESULT})."
             exit 1
           fi

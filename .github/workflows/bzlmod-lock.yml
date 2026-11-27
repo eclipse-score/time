@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-bzlmod-lock-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 on:
@@ -30,6 +30,7 @@ on:
   push:
     branches:
       - main
+  workflow_call:
 
 jobs:
   bzlmod-lock:
