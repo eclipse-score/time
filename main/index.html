@@ -529,6 +529,10 @@ verifies and validates the timepoints, and distributes this time information acr
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>clang-tidy<span class="w"> </span>//score/...
 </pre></div>
 </div>
+<p>Run CodeQL (CERT C++, MISRA C++:2023, complexity; powered by <code class="docutils literal notranslate"><span class="pre">score_tools</span></code>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span>run<span class="w"> </span>//tools/codeql:sca_linux
+</pre></div>
+</div>
 <p><strong>Sanitizers</strong></p>
 <p>Run address, undefined-behaviour and leak sanitizers (powered by <code class="docutils literal notranslate"><span class="pre">score_cpp_policies</span></code>):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>bazel<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--config<span class="o">=</span>asan_ubsan_lsan<span class="w"> </span>--config<span class="o">=</span>x86_64-linux<span class="w"> </span>//score/...
