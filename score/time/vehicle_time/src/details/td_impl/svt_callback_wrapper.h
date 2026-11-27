@@ -15,11 +15,15 @@
 
 #include "score/time/vehicle_time/src/vehicle_time.h"
 
+#include <score/callback.hpp>
+
 #include <atomic>
+#include <cstddef>
 #include <memory>
 #include <mutex>
 #include <optional>
 #include <utility>
+#include <vector>
 
 namespace score
 {
@@ -43,26 +47,26 @@ inline bool IsSame(const VehicleTimeStatus& first, const VehicleTimeStatus& seco
     return first.flags == second.flags;
 }
 
-/// @brief Thread-safe holder for a single callback that is invoked from a different thread
+/// @brief Callback type stored for @c Data; identical to the matching @c VehicleTime callback alias.
+template <typename Data>
+using SvtCallback = score::cpp::callback<void(const Data&), VehicleTime::kCallbackCapacity>;
+
+/// @brief Thread-safe holder for any number of callbacks that are invoked from a different thread
 ///        whenever the observed value changes.
 ///
-/// The slot remembers the last @c Data delivered to the current callback, so
-/// @c TryToEnvoke() delivers only on change (@c IsSameForDelivery()).  @c Set() forgets that value
-/// together with the old callback: the first @c TryToEnvoke() after any (re-)registration therefore
-/// always delivers.
+/// Each callback remembers the last @c Data delivered to it, so @c TryToEnvoke() delivers to it only on
+/// change (@c IsSame()). A callback added with @c Add() is delivered by the next @c TryToEnvoke(), whether or
+/// not the data changed.
 ///
 /// Guarantees:
-///  - @c Set() / @c Unset() may be called from any thread at any time.
-///  - @c TryToEnvoke() runs the callback while the slot's recursive mutex is held, so:
-///     - @c Set() / @c Unset() from another thread block until the in-flight invocation has returned.
-///       Once they return, the previously stored callback is neither running nor will it ever be
-///       invoked again — the caller may safely destroy whatever the callback referenced.
-///     - @c Set() / @c Unset() called re-entrantly from inside the callback take effect immediately;
-///       the running invocation completes normally on a shared handle that outlives the slot contents.
+///  - @c Add() / @c Unset() may be called from any thread at any time.
+///  - @c TryToEnvoke() runs the callbacks while the slot's recursive mutex is held, so:
+///     - @c Add() / @c Unset() from another thread block until the in-flight pass has returned.
+///       Once @c Unset() returns, none of the removed callbacks is running or will ever be invoked again.
+///     - @c Add() / @c Unset() called re-entrantly from inside a callback are safe.
 ///
-/// @tparam Callback  A callable wrapper offering @c empty() and @c operator() (e.g. @c score::cpp::callback).
-/// @tparam Data      Equality-comparable, copyable value passed to the callback.
-template <typename Callback, typename Data>
+/// @tparam Data  Equality-comparable and copyable. Callbacks receive a @c const @c Data&.
+template <typename Data>
 class SvtCallbackWrapper final
 {
   public:
@@ -73,62 +77,60 @@ class SvtCallbackWrapper final
     SvtCallbackWrapper(SvtCallbackWrapper&&) = delete;
     SvtCallbackWrapper& operator=(SvtCallbackWrapper&&) = delete;
 
-    /// @brief Installs @p callback, replacing any previous one. An empty callback behaves like @c Unset().
-    ///
-    /// Forgets the last delivered value, so the next @c TryToEnvoke() delivers unconditionally.
-    void Set(Callback&& callback) noexcept
+    /// @brief Appends @p callback. An empty callback is ignored.
+    void Add(SvtCallback<Data>&& callback)
     {
-        const std::lock_guard<std::recursive_mutex> lock{mutex_};
         if (callback.empty())
         {
-            callback_.reset();
+            return;
         }
-        else
-        {
-            callback_ = std::make_shared<Callback>(std::move(callback));
-        }
-        last_data_.reset();
-        is_set_.store(callback_ != nullptr, std::memory_order_release);
+        const std::scoped_lock lock{mutex_};
+        entries_.push_back(Entry{std::make_shared<SvtCallback<Data>>(std::move(callback)), std::nullopt});
+        is_set_.store(true, std::memory_order_release);
     }
 
-    /// @brief Removes the stored callback.
+    /// @brief Removes all stored callbacks.
     void Unset() noexcept
     {
-        const std::lock_guard<std::recursive_mutex> lock{mutex_};
-        callback_.reset();
-        last_data_.reset();
+        const std::scoped_lock lock{mutex_};
+        entries_.clear();
         is_set_.store(false, std::memory_order_release);
     }
 
-    /// @brief Returns @c true if a callback is currently installed.
+    /// @brief Returns @c true if at least one callback is stored.
     bool IsSet() const noexcept
     {
         return is_set_.load(std::memory_order_acquire);
     }
 
-    /// @brief Delivers @p data to the stored callback when it differs from the last delivery.
-    ///
-    /// No-op if no callback is set, or if @c IsSame() reports @p data unchanged from the
-    /// value previously delivered to the same callback. The callback is invoked with the full @p data.
-    /// A call while no callback is installed does not update the remembered value.
+    /// @brief Delivers @p data to each stored callback whose last delivered value differs from it.
     void TryToEnvoke(const Data& data) noexcept
     {
-        const std::lock_guard<std::recursive_mutex> lock{mutex_};
-        if ((callback_ == nullptr) || (last_data_.has_value() && IsSame(last_data_.value(), data)))
+        const std::scoped_lock lock{mutex_};
+        // Index-based: a callback may Add() or Unset() re-entrantly, which invalidates references into entries_.
+        for (std::size_t index = 0U; index < entries_.size(); ++index)
         {
-            return;
-        }
-        last_data_ = data;
+            if (entries_[index].last_data.has_value() && IsSame(entries_[index].last_data.value(), data))
+            {
+                continue;
+            }
+            entries_[index].last_data = data;
 
-        // Local copy keeps the callback alive should it Unset() or replace itself while running.
-        const std::shared_ptr<Callback> callback = callback_;
-        (*callback)(data);
+            // Local copy keeps the callback alive should it Unset() itself while running.
+            const std::shared_ptr<SvtCallback<Data>> callback = entries_[index].callback;
+            (*callback)(data);
+        }
     }
 
   private:
+    struct Entry
+    {
+        std::shared_ptr<SvtCallback<Data>> callback;
+        std::optional<Data> last_data;
+    };
+
     std::recursive_mutex mutex_;
-    std::shared_ptr<Callback> callback_{};
-    std::optional<Data> last_data_{};
+    std::vector<Entry> entries_{};
     std::atomic_bool is_set_{false};
 };
 
